@@ -1,7 +1,6 @@
 package net.rush.model;
 
 import net.rush.packets.Packet;
-import net.rush.packets.packet.impl.SpawnMobPacketImpl;
 import net.rush.util.Parameter;
 import net.rush.world.World;
 
@@ -33,8 +32,8 @@ public class LivingEntity extends Mob {
 		int z = position.getPixelZ();
 		int yaw = rotation.getIntYaw();
 		int pitch = rotation.getIntPitch();	// FIXME byte headYaw?
-		
-		return new SpawnMobPacketImpl(id, (byte)getType().getTypeId(), new Position(x, y, z), (byte)yaw, (byte)pitch, (byte)yaw, new Position(0, 0, 0), metadata.clone());
+		throw new UnsupportedOperationException("biatch!");
+		//return new SpawnMobPacketImpl(id, (byte)getType().getTypeId(), new Position(x, y, z), (byte)yaw, (byte)pitch, (byte)yaw, new Position(0, 0, 0), metadata.clone());
 	}
 
 

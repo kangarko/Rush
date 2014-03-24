@@ -4,6 +4,7 @@ import net.rush.model.Position;
 import net.rush.packets.packet.NamedEntitySpawnPacket;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
+import net.rush.util.Parameter;
 
 public class NamedEntitySpawnPacketImpl extends AbstractPacket implements NamedEntitySpawnPacket {
     @Serialize(type = Type.INT, order = 0)
@@ -22,8 +23,10 @@ public class NamedEntitySpawnPacketImpl extends AbstractPacket implements NamedE
     private final byte pitch;
     @Serialize(type = Type.SHORT, order = 7)
     private final short currentItem;
+    @Serialize(type = Type.ENTITY_METADATA, order = 8)
+    private final Parameter<?>[] metadata;
 
-    public NamedEntitySpawnPacketImpl(int entityId, String playerName, Position pos, byte yaw, byte pitch, short currentItem) {
+    public NamedEntitySpawnPacketImpl(int entityId, String playerName, Position pos, byte yaw, byte pitch, short currentItem, Parameter<?>[] metadata) {
         super();
         this.entityId = entityId;
         this.entityName = playerName;
@@ -33,6 +36,7 @@ public class NamedEntitySpawnPacketImpl extends AbstractPacket implements NamedE
         this.yaw = yaw;
         this.pitch = pitch;
         this.currentItem = currentItem;
+        this.metadata = metadata;
     }
 
     @Override
@@ -78,6 +82,11 @@ public class NamedEntitySpawnPacketImpl extends AbstractPacket implements NamedE
     @Override
     public short getCurrentItem() {
         return currentItem;
+    }
+    
+    @Override
+    public Parameter<?>[] getMetadata() {
+        return metadata;
     }
 
     @Override

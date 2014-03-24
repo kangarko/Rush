@@ -8,7 +8,7 @@ import net.rush.util.Parameter;
 public class EntityMetadataPacketImpl extends AbstractPacket implements EntityMetadataPacket {
     @Serialize(type = Type.INT, order = 0)
     private final int entityId;
-    @Serialize(type = Type.METADATA, order = 1)
+    @Serialize(type = Type.ENTITY_METADATA, order = 1)
     private final Parameter<?>[] metadata;
 
     public EntityMetadataPacketImpl(int entityId, Parameter<?>[] metadata) {

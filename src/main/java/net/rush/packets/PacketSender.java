@@ -1,7 +1,7 @@
 package net.rush.packets;
 
-import org.jboss.netty.buffer.ChannelBufferOutputStream;
+import java.io.DataOutputStream;
 
 public interface PacketSender<T extends Packet> {
-    void send(ChannelBufferOutputStream stream, T packet);
+    void send(DataOutputStream stream, T packet);
 }

@@ -29,7 +29,7 @@ public class SpawnMobPacketImpl extends AbstractPacket implements SpawnMobPacket
     private final short velocityY;
     @Serialize(type = Type.SHORT, order = 10)
     private final short velocityZ;
-    @Serialize(type = Type.METADATA, order = 11)
+    @Serialize(type = Type.ENTITY_METADATA, order = 11)
     private final Parameter<?>[] metadata;
 
     public SpawnMobPacketImpl(int entityId, byte entityType, Position pos,

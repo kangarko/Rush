@@ -18,4 +18,6 @@ public interface NamedEntitySpawnPacket extends Packet {
     byte getPitch();
 
     short getCurrentItem();
+    
+    net.rush.util.Parameter<?>[] getMetadata();
 }

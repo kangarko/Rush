@@ -29,11 +29,11 @@ public class ItemStack extends org.bukkit.inventory.ItemStack {
     private final byte[] metadata;
 
     public ItemStack(int id, int stackSize, int dataValue) {
-        this((short)id, (byte)stackSize, (short)dataValue, new byte[0]);
+        this((short)id, (byte)stackSize, (short)dataValue, new byte[-1]);
     }
     
     public ItemStack(short id, byte stackSize, short dataValue) {
-        this(id, stackSize, dataValue, new byte[0]);
+        this(id, stackSize, dataValue, new byte[-1]);
     }
 
     public ItemStack(short id, byte stackSize, short dataValue, byte[] metadata) {

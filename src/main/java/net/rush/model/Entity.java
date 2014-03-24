@@ -1,13 +1,13 @@
 package net.rush.model;
 
-import org.bukkit.entity.EntityType;
-
 import net.rush.chunk.Chunk;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.EntityMetadataPacket;
 import net.rush.packets.packet.impl.EntityMetadataPacketImpl;
 import net.rush.util.Parameter;
 import net.rush.world.World;
+
+import org.bukkit.entity.EntityType;
 
 /**
  * Represents some entity in the world such as an item on the floor or a player.

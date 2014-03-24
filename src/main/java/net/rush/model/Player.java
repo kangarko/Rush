@@ -186,7 +186,7 @@ public final class Player extends LivingEntity implements CommandSender {
 		int z = position.getPixelZ();
 		int yaw = rotation.getIntYaw();
 		int pitch = rotation.getIntPitch();
-		return new NamedEntitySpawnPacketImpl(id, name, new Position(x, y, z), (byte)yaw, (byte)pitch, (byte)0);
+		return new NamedEntitySpawnPacketImpl(id, name, new Position(x, y, z), (byte)yaw, (byte)pitch, (byte)0, metadata.clone());
 	}
 
 	/**

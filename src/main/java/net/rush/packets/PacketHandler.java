@@ -1,7 +1,7 @@
 package net.rush.packets;
 
-import org.jboss.netty.buffer.ChannelBufferInputStream;
+import java.io.DataInputStream;
 
 public interface PacketHandler<T extends Packet> {
-    T handle(ChannelBufferInputStream buf, Class<T> packetType);
+    T handle(DataInputStream buf, Class<T> packetType);
 }
