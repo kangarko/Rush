@@ -33,7 +33,7 @@ public class SerializationPacketSender<T extends Packet> implements PacketSender
                 serializor.write(stream, getter.invoke(packet));
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error processing packet: " + packet.getPacketType().getSimpleName(), e);
+            throw new RuntimeException(e);
         }
     }
 }

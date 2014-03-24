@@ -14,6 +14,9 @@ import net.rush.packets.PacketHandler;
 
 import org.jboss.netty.buffer.ChannelBufferInputStream;
 
+/*
+ * This is magic. AWESOME magic!
+ */
 public class SerializationPacketHandler<T extends Packet> implements PacketHandler<T> {
     @SuppressWarnings("rawtypes")
     @Override
@@ -42,8 +45,8 @@ public class SerializationPacketHandler<T extends Packet> implements PacketHandl
             }
             Constructor<? extends T> ctor = implClazz.getConstructor(fixupClasses(paramTypes));
             return ctor.newInstance(params);
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

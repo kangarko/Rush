@@ -5,14 +5,17 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import net.rush.model.Coordinate;
-import net.rush.model.Item;
 import net.rush.packets.NetUtils;
+import net.rush.packets.misc.EntityMetadata;
+import net.rush.packets.misc.GenericMetadata;
 import net.rush.packets.misc.ItemStack;
 import net.rush.packets.misc.MetadataType;
-import net.rush.util.Parameter;
+
 
 public enum Type {
     INT(new Serializor<Integer>() {
@@ -24,23 +27,6 @@ public enum Type {
         @Override
         public void write(DataOutput out, Integer val) throws IOException {
             out.writeInt(val);
-        }
-    }),
-    INT_ARRAY(new ObjectUsingSerializor<int[]>() {
-        @Override
-        public int[] read(DataInput in, Object moreInfo) throws IOException {
-            int[] integers = new int[((Number) moreInfo).intValue()];
-            for(int integer = 0; integer < integers.length; integer++) {
-            	in.readInt();
-            }
-            return integers;
-        }
-
-        @Override
-        public void write(DataOutput out, int[] val) throws IOException {
-            for(int integer : val) {
-            	out.write(integer);
-            }
         }
     }),
     BYTE(new Serializor<Byte>() {
@@ -84,7 +70,7 @@ public enum Type {
 
         @Override
         public void write(DataOutput out, String val) throws IOException {
-        	NetUtils.writeString(out, val);
+            NetUtils.writeString(out, val);
         }
     }),
     SHORT(new Serializor<Short>() {
@@ -155,7 +141,7 @@ public enum Type {
             out.writeLong(val);
         }
     }),
-    /*ENTITY_METADATA(new Serializor<Map<Integer, EntityMetadata<?>>>() {
+    METADATA(new Serializor<Map<Integer, EntityMetadata<?>>>() {
         @Override
         public Map<Integer, EntityMetadata<?>> read(DataInput in) throws IOException {
             Map<Integer, EntityMetadata<?>> data = new LinkedHashMap<Integer, EntityMetadata<?>>();
@@ -184,12 +170,6 @@ public enum Type {
                     byte count = in.readByte();
                     short damage = in.readShort();
                     data.put(index, new GenericMetadata<ItemStack>(new ItemStack(id, count, damage), metaType));
-                    break;
-                case POSITION:
-                    int posX = in.readInt();
-                    int posY = in.readInt();
-                    int posZ = in.readInt();
-                    data.put(index, new GenericMetadata<Position>(new Position(posX, posY, posZ), metaType));
                     break;
                 default:
                     throw new UnsupportedOperationException("Metadata-type '" + metaType + "' is not implemented!");
@@ -231,98 +211,6 @@ public enum Type {
                 default:
                     throw new UnsupportedOperationException("Metadata-type '" + metaType + "' is not implemented!");
                 }
-            }
-            out.writeByte(127);
-        }
-    }),*/
-    @SuppressWarnings("unchecked")
-    METADATA(new Serializor<Parameter<?>[]>() {
-        @Override
-        public Parameter<?>[] read(DataInput in) throws IOException {
-        	Parameter<?>[] parameters = new Parameter<?>[Parameter.METADATA_SIZE];
-            for (int x = in.readUnsignedByte(); x != 127; x = in.readUnsignedByte()) {
-                int index = x & 0x1F;
-                int type = x >> 5;
-                MetadataType metaType = MetadataType.fromId(type);
-                switch (metaType) {
-                case BYTE:
-                	parameters[index] = new Parameter<Byte>(type, index, in.readByte());
-                    break;
-                case SHORT:
-                	parameters[index] = new Parameter<Short>(type, index, in.readShort());
-                    break;
-                case INT:
-                	parameters[index] = new Parameter<Integer>(type, index, in.readInt());
-                    break;
-                case FLOAT:
-                	parameters[index] = new Parameter<Float>(type, index, in.readFloat());
-                    break;
-                case STRING:
-                	parameters[index] = new Parameter<String>(type, index, NetUtils.readString(in, 1000));
-                    break;
-                case ITEM:
-                    short id = in.readShort();
-                    byte count = in.readByte();
-                    short damage = in.readShort();
-                    Item item = new Item(id, count, damage);
-                    parameters[index] = new Parameter<Item>(type, index, item);
-                    break;
-                case POSITION:
-                    int posX = in.readInt();
-                    int posY = in.readInt();
-                    int posZ = in.readInt();
-                    Coordinate coordinate = new Coordinate(posX, posY, posZ);
-    				parameters[index] = new Parameter<Coordinate>(type, index, coordinate);
-                    break;
-                default:
-                    throw new UnsupportedOperationException("Metadata-type '" + metaType + "' is not implemented!");
-                }
-            }
-            return parameters;
-        }
-
-        @Override
-        public void write(DataOutput out, Parameter<?>[] val) throws IOException {
-        	for (Parameter<?> parameter : val) {
-        		if (parameter == null)
-    				continue;
-
-    			int type  = parameter.getType();
-    			int index = parameter.getIndex();
-
-    			out.writeByte(((type & 0x07) << 5) | (index & 0x1F));
-
-    			switch (type) {
-    			case Parameter.TYPE_BYTE:
-    				out.writeByte(((Parameter<Byte>) parameter).getValue());
-    				break;
-    			case Parameter.TYPE_SHORT:
-    				out.writeShort(((Parameter<Short>) parameter).getValue());
-    				break;
-    			case Parameter.TYPE_INT:
-    				out.writeInt(((Parameter<Integer>) parameter).getValue());
-    				break;
-    			case Parameter.TYPE_FLOAT:
-    				out.writeFloat(((Parameter<Float>) parameter).getValue());
-    				break;
-    			case Parameter.TYPE_STRING:
-    				NetUtils.writeString(out, ((Parameter<String>) parameter).getValue());
-    				break;
-    			case Parameter.TYPE_ITEM:
-    				Item item = ((Parameter<Item>) parameter).getValue();
-    				out.writeShort(item.getId());
-    				out.writeByte(item.getCount());
-    				out.writeShort(item.getDamage());
-    				break;
-    			case Parameter.TYPE_COORDINATE:
-    				Coordinate coord = ((Parameter<Coordinate>) parameter).getValue();
-    				out.writeInt(coord.getX());
-    				out.writeInt(coord.getY());
-    				out.writeInt(coord.getZ());
-    				break;
-    			default:
-                    throw new UnsupportedOperationException("Metadata-type '" + type + "' is not implemented!");
-    			}
             }
             out.writeByte(127);
         }
@@ -432,7 +320,7 @@ public enum Type {
         }
     });
 
-   private static final int[] ENCHANTABLE_ITEMS = {
+    private static final int[] ENCHANTABLE_ITEMS = {
         // see http://wiki.vg/Slot_Data#Enchantable_items
         0x103, 0x105, 0x15A, 0x167, // flint'n'steel, bow, fishingRod, shears
         // TOOLS
@@ -456,7 +344,7 @@ public enum Type {
             if (ENCHANTABLE_ITEMS[i] == id)
                 return true;
         }
-    	return true;
+        return false;
     }
 
     private final Serializor<?> serializor;

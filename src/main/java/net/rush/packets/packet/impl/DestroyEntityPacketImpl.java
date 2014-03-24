@@ -7,7 +7,7 @@ import net.rush.packets.serialization.Type;
 public class DestroyEntityPacketImpl extends AbstractPacket implements DestroyEntityPacket {
     @Serialize(type = Type.BYTE, order = 0)
     private final byte entityCount;
-    @Serialize(type = Type.INT_ARRAY, order = 0)
+    @Serialize(type = Type.INT, order = 0)
     private final int[] entityIDs;
 
     public DestroyEntityPacketImpl(int[] entityIDs) {

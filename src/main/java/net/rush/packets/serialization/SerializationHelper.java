@@ -53,7 +53,7 @@ final class SerializationHelper {
             });
 
     static <T> Class<? extends T> getImplClass(Class<T> iFace) throws ClassNotFoundException {
-    	return Class.forName(iFace.getPackage().getName() + ".impl." + iFace.getSimpleName() + "Impl").asSubclass(iFace);
+        return Class.forName(iFace.getPackage().getName() + ".impl." + iFace.getSimpleName() + "Impl").asSubclass(iFace);
     }
 
     static Class<? extends Packet> getPacketInterface(Class<? extends Packet> clazz) {
