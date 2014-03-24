@@ -13,3 +13,4 @@ Feel free to post a pull request if you get following things working:
   and also some simple AI.
 * Server side inventory.
 * Make it compatible with both Minecraft 1.2.5 and 1.6.4. (Possible, but needs additional work)
+* Fix placing bug: Placing a block added in MC 1.3.2 and later causes client to crash.
