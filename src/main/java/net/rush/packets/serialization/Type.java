@@ -181,6 +181,7 @@ public enum Type {
 			return parameters;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public void write(DataOutput out, Parameter<?>[] val) throws IOException {
 			for (Parameter<?> parameter : val) {
