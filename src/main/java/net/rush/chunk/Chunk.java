@@ -2,7 +2,6 @@ package net.rush.chunk;
 
 import java.util.zip.Deflater;
 
-import net.rush.model.Block;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.impl.MapChunkPacketImpl;
 
@@ -82,17 +81,6 @@ public final class Chunk {
 			throw new IllegalArgumentException();
 
 		System.arraycopy(types, 0, this.types, 0, types.length);
-	}
-	
-	/**
-	 * Sets the type of a block within this chunk.
-	 * @param x The X coordinate.
-	 * @param z The Z coordinate.
-	 * @param y The Y coordinate.
-	 * @param block The block.
-	 */
-	public void setType(int x, int z, int y, Block block) {
-		setType(x, z, y, block.id);
 	}
 	
 	/**
