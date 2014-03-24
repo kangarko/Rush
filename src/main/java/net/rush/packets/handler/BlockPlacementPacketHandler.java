@@ -10,7 +10,6 @@ import net.rush.packets.packet.PlayerBlockPlacementPacket;
 import net.rush.packets.packet.impl.BlockChangePacketImpl;
 import net.rush.world.World;
 
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 
 public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlockPlacementPacket> {
@@ -30,20 +29,18 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		int localX = (x - chunkX * Chunk.WIDTH) % Chunk.WIDTH;
 		int localZ = (z - chunkZ * Chunk.HEIGHT) % Chunk.HEIGHT;
 
-		if(player.getGamemode() == GameMode.CREATIVE && message.getHeldItem() == ItemStack.NULL_ITEMSTACK) // FIXME remove gamemode check
+		if(message.getHeldItem() == ItemStack.NULL_ITEMSTACK)
 			return;
-		
-		int blockId = player.getGamemode() == GameMode.CREATIVE ? message.getHeldItem().getId() : 4; // FIXME 4 is cobblestone for debug purposes :P
-		
-		if(!Material.getMaterial(blockId).isBlock())
-			return;
+		System.out.println("BlockPlaced: " +  message.getHeldItem().toString());
+		System.out.println("BukkitMaterial: " + Material.getMaterial(message.getHeldItem().getId()));
+		int blockId = message.getHeldItem().getId();
 		
 		Chunk chunk = world.getChunks().getChunk(chunkX, chunkZ);
 		chunk.setType(localX, localZ, y + 1, blockId);
 		
 		Position pos = parseDirection(x, y, z, message.getDirection());
 		
-		BlockChangePacket bcmsg = new BlockChangePacketImpl((byte)pos.getX(), (byte)pos.getY(), (byte)pos.getZ(), (byte)blockId, player.getGamemode() == GameMode.CREATIVE ? (byte)message.getHeldItem().getDataValue() : 0); // remove gamemode check also
+		BlockChangePacket bcmsg = new BlockChangePacketImpl((byte)pos.getX(), (byte)pos.getY(), (byte)pos.getZ(), (byte)blockId, (byte)message.getHeldItem().getDataValue()); 
 		for (Player p: world.getRushPlayers()) {
 			p.getSession().send(bcmsg);
 		}
@@ -72,7 +69,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 			x = x + 1;
 			break;
 		default:
-			throw new Error("Unknown direction: " + direction);
+			throw new Error("[Block place] Unknown direction: " + direction);
 		}
 		Position pos = new Position(x, y, z);
 		return pos;

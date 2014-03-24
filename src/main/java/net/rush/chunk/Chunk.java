@@ -2,7 +2,7 @@ package net.rush.chunk;
 
 import java.util.zip.Deflater;
 
-import net.rush.model.Blocks;
+import net.rush.model.Block;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.impl.MapChunkPacketImpl;
 
@@ -83,7 +83,18 @@ public final class Chunk {
 
 		System.arraycopy(types, 0, this.types, 0, types.length);
 	}
-
+	
+	/**
+	 * Sets the type of a block within this chunk.
+	 * @param x The X coordinate.
+	 * @param z The Z coordinate.
+	 * @param y The Y coordinate.
+	 * @param block The block.
+	 */
+	public void setType(int x, int z, int y, Block block) {
+		setType(x, z, y, block.id);
+	}
+	
 	/**
 	 * Sets the type of a block within this chunk.
 	 * @param x The X coordinate.
@@ -92,7 +103,7 @@ public final class Chunk {
 	 * @param type The type.
 	 */
 	public void setType(int x, int z, int y, int type) {
-		if (type < 0 || type >= Blocks.NUMBER_OF_BLOCKS)
+		if (type < 0)
 			throw new IllegalArgumentException();
 
 		types[coordToIndex(x, z, y)] = (byte) type;
@@ -192,7 +203,7 @@ public final class Chunk {
 	 * @return The index within the arrays.
 	 */
 	public static int coordToIndex(int x, int z, int y) {
-		if (x < 0 || z < 0 || y < 0 /*|| x >= WIDTH || z >= HEIGHT || y >= DEPTH*/)
+		if (x < 0 || z < 0 || y < 0 || x >= WIDTH || z >= HEIGHT || y >= DEPTH)
 			throw new IndexOutOfBoundsException();
 
 		return (y * HEIGHT + z) * WIDTH + x;

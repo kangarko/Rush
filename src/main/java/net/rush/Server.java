@@ -212,8 +212,6 @@ public final class Server {
 
 	/**
 	 * A {@link Runnable} which saves chunks on shutdown.
-	
-
 	 */
 	private class ServerShutdownHandler implements Runnable {
 		@Override
