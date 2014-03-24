@@ -3,6 +3,7 @@ package net.rush.packets.serialization;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -164,15 +165,15 @@ public enum Type {
 					//data.put(index, new GenericMetadata<Float>(in.readFloat(), metaType));
 					break;
 				case STRING:
-					parameters[index] = new Parameter<String>(type, index, readString(in));
+					parameters[index] = new Parameter<String>(type, index, readUtf8String(in));
 					//data.put(index, new GenericMetadata<String>(NetUtils.readString(in, 1000), metaType));
 					break;
 				case ITEM:
-					System.out.println("unsupported!");
-					//short id = in.readShort();
-					//byte count = in.readByte();
-					//short damage = in.readShort();
+					short id = in.readShort();
+					byte count = in.readByte();
+					short damage = in.readShort();
 					//data.put(index, new GenericMetadata<ItemStack>(new ItemStack(id, count, damage), metaType));
+					parameters[index] = new Parameter<ItemStack>(type, index, new ItemStack(id, count, damage));
 					break;
 				default:
 					throw new UnsupportedOperationException("Metadata-type '" + metaType + "' is not implemented!");
@@ -185,7 +186,7 @@ public enum Type {
 		@Override
 		public void write(DataOutput out, Parameter<?>[] val) throws IOException {
 			for (Parameter<?> parameter : val) {
-				
+
 				if (parameter == null)
 					continue;
 
@@ -208,7 +209,7 @@ public enum Type {
 					out.writeFloat(((Parameter<Float>) parameter).getValue());
 					break;
 				case Parameter.TYPE_STRING:
-					writeString(out, ((Parameter<String>) parameter).getValue());
+					writeUtf8String(out, ((Parameter<String>) parameter).getValue());
 					break;
 				case Parameter.TYPE_ITEM:
 					ItemStack item = ((Parameter<ItemStack>) parameter).getValue();
@@ -223,41 +224,11 @@ public enum Type {
 					out.writeInt(coord.getZ());
 					break;
 				}
-				
-				/*int index = entry.getKey();
-				MetadataType metaType = entry.getValue().getType();
-				int type = metaType.getId();
-				int x = (type << 5) | (index & 0x1F);
-				out.writeByte(x);
-				switch (metaType) {
-				case BYTE:
-					out.writeByte((Byte) entry.getValue().getValue());
-					break;
-				case SHORT:
-					out.writeShort((Short) entry.getValue().getValue());
-					break;
-				case INT:
-					out.writeInt((Integer) entry.getValue().getValue());
-					break;
-				case FLOAT:
-					out.writeFloat((Float) entry.getValue().getValue());
-					break;
-				case STRING:
-					NetUtils.writeString(out, (String) entry.getValue().getValue());
-					break;
-				case ITEM:
-					ItemStack item = (ItemStack) entry.getValue().getValue();
-					out.writeShort(item.getId());
-					out.writeByte(item.getStackSize());
-					out.writeShort(item.getDataValue());
-					break;
-				default:
-					throw new UnsupportedOperationException("Metadata-type '" + metaType + "' is not implemented!");
-				}*/
 			}
 			out.writeByte(127);
 		}
 	}),
+	// This is the original one, that wasnt compatible due to the entitymetadata map. Rush use Parameter (original from LightStone).
 	/*ENTITY_METADATA(new Serializor<Map<Integer, EntityMetadata<?>>>() {
         @Override
         public Map<Integer, EntityMetadata<?>> read(DataInput in) throws IOException {
@@ -341,27 +312,36 @@ public enum Type {
 			} else {
 				byte stackSize = in.readByte();
 				short dataValue = in.readShort();
+				short dataLenght = in.readShort();
 				byte[] metadata = new byte[0];
-				if (isEnchantable(id)) {
-					short metadataLength = in.readShort();
-					if (metadataLength > 0) {
-						metadata = new byte[metadataLength];
-						in.readFully(metadata);
+				if(dataLenght > 0) {
+					if (id != 0) { // FIXME previous check if its enchantable
+						short metadataLength = in.readShort();
+						if (metadataLength > 0) {
+							metadata = new byte[metadataLength];
+							in.readFully(metadata);
+						}
 					}
 				}
-				return new ItemStack(id, stackSize, dataValue, metadata);
+				return new ItemStack(id, stackSize, dataValue, dataLenght, metadata);
 			}
 		}
 
 		@Override
 		public void write(DataOutput out, ItemStack val) throws IOException {
-			if (val == ItemStack.NULL_ITEMSTACK) {
+			/*if(true) {
+				out.writeShort(-1);
+				return;
+			}*/
+				
+			if (val == ItemStack.NULL_ITEMSTACK || val.getId() < 0) { // FIXME less then zero check
 				out.writeShort(-1);
 			} else {
 				out.writeShort(val.getId());
 				out.writeByte(val.getStackSize());
 				out.writeShort(val.getDataValue());
-				if (isEnchantable(val.getId())) {
+				out.writeShort(val.getDataLength());
+				if (val.getId() != 0) { // FIXME previous check if its enchantable
 					byte[] metadata = val.getMetadata();
 					if (metadata.length == 0) {
 						out.writeShort(-1);
@@ -377,6 +357,8 @@ public enum Type {
 	ITEMSTACK_ARRAY(new ObjectUsingSerializor<ItemStack[]>() {
 		@Override
 		public ItemStack[] read(DataInput in, Object more) throws IOException {
+			if(true)
+				throw new UnsupportedOperationException("I cought you! Type.java line 356");
 			int count = ((Number) more).intValue();
 			ItemStack[] items = new ItemStack[count];
 			Serializor<ItemStack> itemstackSerializor = (Serializor<ItemStack>) ITEMSTACK.getSerializor();
@@ -388,6 +370,8 @@ public enum Type {
 
 		@Override
 		public void write(DataOutput out, ItemStack[] val) throws IOException {
+			if(true)
+				throw new UnsupportedOperationException("I cought you! Type.java line 369");
 			Serializor itemstackSerializor = ITEMSTACK.getSerializor();
 			for (int i = 0; i < val.length; i++) {
 				itemstackSerializor.write(out, val[i]);
@@ -398,19 +382,19 @@ public enum Type {
 		/*
 		 * ugly hack, but I don't see a better solution :/
 		 */
-		 @Override
-		 public Short read(DataInput in, Object moreInfo) throws IOException {
-			 if (((Number) moreInfo).intValue() > 0) {
-				 return in.readShort();
-			 } else {
-				 return Short.MIN_VALUE;
-			 }
-		 }
-		 @Override
-		 public void write(DataOutput out, Short val) throws IOException {
-			 if (val != Short.MIN_VALUE)
-				 out.writeShort(val);
-		 }
+		@Override
+		public Short read(DataInput in, Object moreInfo) throws IOException {
+			if (((Number) moreInfo).intValue() > 0) {
+				return in.readShort();
+			} else {
+				return Short.MIN_VALUE;
+			}
+		}
+		@Override
+		public void write(DataOutput out, Short val) throws IOException {
+			if (val != Short.MIN_VALUE)
+				out.writeShort(val);
+		}
 	}),
 	BLOCKCOORD_COLLECTION(new Serializor<Collection<Coordinate>>() {
 		@Override
@@ -437,7 +421,7 @@ public enum Type {
 		}
 	});
 
-	private static final int[] ENCHANTABLE_ITEMS = {
+	/*private static final int[] ENCHANTABLE_ITEMS = {
 		// see http://wiki.vg/Slot_Data#Enchantable_items
 		0x103, 0x105, 0x15A, 0x167, // flint'n'steel, bow, fishingRod, shears
 		// TOOLS
@@ -462,7 +446,7 @@ public enum Type {
 				return true;
 		}
 		return false;
-	}
+	}*/
 
 	private final Serializor<?> serializor;
 
@@ -473,39 +457,38 @@ public enum Type {
 	public Serializor<?> getSerializor() {
 		return serializor;
 	}
+
+	private static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
 	
 	/**
-	 * Reads a string from the buffer.
+	 * Reads a UTF-8 encoded string from the buffer.
 	 * @param buf The buffer.
 	 * @return The string.
 	 */
-	public static String readString(DataInput buf) throws IOException {
+	public static String readUtf8String(DataInput buf) throws IOException {
 		int len = buf.readUnsignedShort();
 
-		char[] characters = new char[len];
-		for (int i = 0; i < len; i++) {
-			characters[i] = buf.readChar();
-		}
+		byte[] bytes = new byte[len];
+		buf.readFully(bytes);
 
-		return new String(characters);
+		return new String(bytes, CHARSET_UTF8);
 	}
 	
 	/**
-	 * Writes a string to the buffer.
+	 * Writes a UTF-8 string to the buffer.
 	 * @param buf The buffer.
 	 * @param str The string.
 	 * @throws IllegalArgumentException if the string is too long
 	 * <em>after</em> it is encoded.
 	 */
-	public static void writeString(DataOutput buf, String str) throws IOException {
-		int len = str.length();
-		if (len >= 65536) {
-			throw new IllegalArgumentException("String too long.");
+	public static void writeUtf8String(DataOutput buf, String str) throws IOException {
+		byte[] bytes = str.getBytes(CHARSET_UTF8);
+		if (bytes.length >= 65536) {
+			throw new IllegalArgumentException("Encoded UTF-8 string too long.");
 		}
 
-		buf.writeShort(len);
-		for (int i = 0; i < len; i++) {
-			buf.writeChar(str.charAt(i));
-		}
+		buf.writeShort(bytes.length);
+		buf.write(bytes);
 	}
+
 }
