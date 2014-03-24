@@ -316,11 +316,8 @@ public enum Type {
 				byte[] metadata = new byte[0];
 				if(dataLenght > 0) {
 					if (id != 0) { // FIXME previous check if its enchantable
-						short metadataLength = in.readShort();
-						if (metadataLength > 0) {
-							metadata = new byte[metadataLength];
-							in.readFully(metadata);
-						}
+						metadata = new byte[dataLenght];
+						in.readFully(metadata);
 					}
 				}
 				return new ItemStack(id, stackSize, dataValue, dataLenght, metadata);
@@ -329,11 +326,6 @@ public enum Type {
 
 		@Override
 		public void write(DataOutput out, ItemStack val) throws IOException {
-			/*if(true) {
-				out.writeShort(-1);
-				return;
-			}*/
-				
 			if (val == ItemStack.NULL_ITEMSTACK || val.getId() < 0) { // FIXME less then zero check
 				out.writeShort(-1);
 			} else {
@@ -342,14 +334,29 @@ public enum Type {
 				out.writeShort(val.getDataValue());
 				out.writeShort(val.getDataLength());
 				if (val.getId() != 0) { // FIXME previous check if its enchantable
-					byte[] metadata = val.getMetadata();
-					if (metadata.length == 0) {
-						out.writeShort(-1);
-					} else {
-						out.writeShort(metadata.length);
-						out.write(metadata);
-					}
+					out.write(val.getMetadata());
 				}
+			}
+		}
+	}),
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	INT_ARRAY(new ObjectUsingSerializor<int[]>() {
+		@Override
+		public int[] read(DataInput in, Object more) throws IOException {
+			int count = ((Number) more).intValue();
+			int[] array = new int[count];
+			Serializor<Integer> intserializator = (Serializor<Integer>) INT.getSerializor();
+			for (int i = 0; i < count; i++) {
+				array[i] = intserializator.read(in);
+			}
+			return array;
+		}
+
+		@Override
+		public void write(DataOutput out, int[] val) throws IOException {
+			Serializor intSerializor = INT.getSerializor();
+			for (int i = 0; i < val.length; i++) {
+				intSerializor.write(out, val[i]);
 			}
 		}
 	}),
@@ -357,8 +364,6 @@ public enum Type {
 	ITEMSTACK_ARRAY(new ObjectUsingSerializor<ItemStack[]>() {
 		@Override
 		public ItemStack[] read(DataInput in, Object more) throws IOException {
-			if(true)
-				throw new UnsupportedOperationException("I cought you! Type.java line 356");
 			int count = ((Number) more).intValue();
 			ItemStack[] items = new ItemStack[count];
 			Serializor<ItemStack> itemstackSerializor = (Serializor<ItemStack>) ITEMSTACK.getSerializor();
@@ -370,8 +375,6 @@ public enum Type {
 
 		@Override
 		public void write(DataOutput out, ItemStack[] val) throws IOException {
-			if(true)
-				throw new UnsupportedOperationException("I cought you! Type.java line 369");
 			Serializor itemstackSerializor = ITEMSTACK.getSerializor();
 			for (int i = 0; i < val.length; i++) {
 				itemstackSerializor.write(out, val[i]);
