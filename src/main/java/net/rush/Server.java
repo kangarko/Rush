@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 import net.rush.cmd.CommandManager;
+import net.rush.console.ConsoleCommandSender;
 import net.rush.console.ConsoleLogManager;
 import net.rush.console.ThreadConsoleReader;
 import net.rush.gui.Notifications;
@@ -21,6 +22,7 @@ import net.rush.world.ForestWorldGenerator;
 import net.rush.world.World;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
+import org.jboss.netty.channel.ChannelException;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.group.ChannelGroup;
@@ -36,12 +38,13 @@ public final class Server {
 	 * The logger for this class.
 	 */
 	private static final ConsoleLogManager logger = new ConsoleLogManager("Minecraft");
+	
+	private final ConsoleCommandSender consoleSender = new ConsoleCommandSender(this);
 
-	public static Server instance;
 
 	private static Notifications gui;
-	
-	
+
+
 	/**
 	 * Creates a new server on TCP port 25565 and starts listening for
 	 * connections.
@@ -49,14 +52,13 @@ public final class Server {
 	 */
 	public static void main(String[] args) {
 		try {
-
 			Server server = new Server();
 			server.bind(new InetSocketAddress(25565));
 			server.start();
 
 			Thread threadConsoleReader = new ThreadConsoleReader(server);
 			threadConsoleReader.start();
-			
+
 		} catch (Throwable t) {
 			logger.log(Level.SEVERE, "Error during server startup.", t);
 		}
@@ -91,7 +93,7 @@ public final class Server {
 	/**
 	 * The command manager.
 	 */
-	private final CommandManager commandManager = new CommandManager();
+	private final CommandManager commandManager = new CommandManager(this);
 
 	/**
 	 * The world this server is managing.
@@ -104,20 +106,19 @@ public final class Server {
 	private boolean saveEnabled = true;	// TODO: Does this belong in a different class e.g. the chunk IO service or the chunk manager?
 
 	/**
-	 * Creates a new server.
+	 * Creates and initializes a new server.
 	 */
 	public Server() {
-		logger.info("Starting Lightstone...");
-		instance = this;
+		logger.info("Starting minecraft server version 1.6.4");
 		this.world = new World(new McRegionChunkIoService(new File("world")), new ForestWorldGenerator());
-		gui = new Notifications();
-		this.init();
-	}
+		
 
-	/**
-	 * Initializes the server.
-	 */
-	private void init() {
+        if (Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L) {
+            logger.warning("To start the server with more ram, launch it as \"java -Xmx1024M -Xms1024M -jar project-rush.jar\"");
+        }
+		
+		gui = new Notifications();
+        
 		/* initialize channel and pipeline factories */
 		ChannelFactory factory = new NioServerSocketChannelFactory(executor, executor);
 		bootstrap.setFactory(factory);
@@ -134,8 +135,15 @@ public final class Server {
 	 * @param address The addresss.
 	 */
 	public void bind(SocketAddress address) {
-		logger.info("Binding to address: " + address + "...");
-		group.add(bootstrap.bind(address));
+		logger.info("Starting Minecraft server on: " + address);
+		try {
+			group.add(bootstrap.bind(address));
+		} catch (Throwable ex) {
+			logger.warning("**** FAILED TO BIND TO PORT!");
+			logger.warning("The exception was: " + ex.toString());
+			logger.warning("Perhaps a server is already running on that port?");
+			System.exit(1);
+		}
 	}
 
 	/**
@@ -205,9 +213,13 @@ public final class Server {
 	public static ConsoleLogManager getLogger() {
 		return logger;
 	}
-	
+
 	public static Notifications getGui() {
 		return gui;
+	}
+	
+	public ConsoleCommandSender getConsoleSender() {
+		return consoleSender;
 	}
 
 	/**
