@@ -1,6 +1,5 @@
 package net.rush.cmd;
 
-import net.rush.Server;
 import net.rush.model.CommandSender;
 import net.rush.world.World;
 
@@ -34,7 +33,7 @@ public final class TimeCommand extends Command {
 			return;
 		}
 
-		World world = Server.instance.getWorld();
+		World world = player.getServer().getWorld();
 		if (mode.equals("add")) {
 			world.setTime(world.getTime() + value);
 		} else if (mode.equals("set")) {

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.rush.Server;
 import net.rush.model.CommandSender;
 
 /**
@@ -29,7 +28,7 @@ public final class SaveAllCommand extends Command {
 	public void execute(CommandSender player, String[] args) {
 		// Should this start a separate thread instead?
 		try {
-			Server.instance.getWorld().getChunks().saveAll();
+			player.getServer().getWorld().getChunks().saveAll();
 			player.sendMessage("&3Rush // &fChunks were successfully saved.");
 		} catch (IOException e) {
 			logger.log(Level.WARNING, "Failed to save some chunks.", e);

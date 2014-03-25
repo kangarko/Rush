@@ -246,5 +246,9 @@ public final class Player extends LivingEntity implements CommandSender {
 		getSession().send(new SetWindowItemsPacketImpl(inv.getId(), index, new net.rush.packets.misc.ItemStack[] {(net.rush.packets.misc.ItemStack) itemStack}));
 		System.out.println("sending inv packet");
 	}
+
+	public Server getServer() {
+		return session.getServer();
+	}
 }
 

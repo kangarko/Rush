@@ -1,6 +1,5 @@
 package net.rush.cmd;
 
-import net.rush.Server;
 import net.rush.model.CommandSender;
 import net.rush.model.Player;
 
@@ -23,7 +22,7 @@ public final class ListCommand extends Command {
 		StringBuilder builder = new StringBuilder();
 		builder.append("§ePlayers online: ");
 
-		for (Player pl : Server.instance.getWorld().getRushPlayers()) {
+		for (Player pl : player.getServer().getWorld().getRushPlayers()) {
 			builder.append(pl.getName());
 			builder.append(", ");
 		}

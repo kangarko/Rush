@@ -1,6 +1,5 @@
 package net.rush.cmd;
 
-import net.rush.Server;
 import net.rush.model.CommandSender;
 
 /**
@@ -18,7 +17,7 @@ public final class SaveOnCommand extends Command {
 
 	@Override
 	public void execute(CommandSender player, String[] args) {
-		Server.instance.setSaveEnabled(true);
+		player.getServer().setSaveEnabled(true);
 	}
 
 }

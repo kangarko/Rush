@@ -7,7 +7,7 @@ import net.rush.model.CommandSender;
 
  */
 public abstract class Command {
-
+	
 	/**
 	 * The name of the command.
 	 */

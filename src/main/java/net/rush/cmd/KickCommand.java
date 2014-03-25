@@ -1,6 +1,5 @@
 package net.rush.cmd;
 
-import net.rush.Server;
 import net.rush.model.CommandSender;
 import net.rush.model.Player;
 import net.rush.packets.packet.impl.KickPacketImpl;
@@ -28,7 +27,7 @@ public final class KickCommand extends Command {
 
 		String name = args[0];
 
-		for (Player p : Server.instance.getWorld().getRushPlayers()) {
+		for (Player p : player.getServer().getWorld().getRushPlayers()) {
 			if (p.getName().equalsIgnoreCase(name)) {
 				player.sendMessage("§eKicking " + p.getName());
 				p.getSession().send(new KickPacketImpl("Kicked by " + player.getName()));

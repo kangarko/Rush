@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.rush.Server;
-import net.rush.console.ConsoleCommandSender;
 import net.rush.model.Player;
 
 /**
@@ -19,12 +18,15 @@ public final class CommandManager {
 	 * A map of commands to their handlers.
 	 */
 	private final Map<String, Command> commands = new HashMap<String, Command>();
+	
+	private final Server server;
 
 	/**
 	 * Creates the command manager and populates it with a basic set of core
 	 * commands.
 	 */
-	public CommandManager() {
+	public CommandManager(Server server) {
+		this.server = server;
 		bind(new MeCommand());
 		bind(new SaveAllCommand());
 		bind(new SaveOffCommand());
@@ -65,7 +67,7 @@ public final class CommandManager {
 		if (handler != null) {
 			String[] shiftedArgs = new String[args.length - 1];
 			System.arraycopy(args, 1, shiftedArgs, 0, shiftedArgs.length);
-			handler.execute(new ConsoleCommandSender(), shiftedArgs);
+			handler.execute(server.getConsoleSender(), shiftedArgs);
 		} else {
 			Server.getLogger().info("&eI don't understand that command. Try /help for assistance.");
 		}
@@ -85,6 +87,10 @@ public final class CommandManager {
 	 */
 	public void bind(Command command) {
 		commands.put(command.getCommand(), command);
+	}
+	
+	public Server getServer() {
+		return server;
 	}
 
 }
