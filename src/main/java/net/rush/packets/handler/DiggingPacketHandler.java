@@ -2,6 +2,8 @@ package net.rush.packets.handler;
 
 import net.rush.chunk.Chunk;
 import net.rush.model.Block;
+import net.rush.model.Item;
+import net.rush.model.ItemEntity;
 import net.rush.model.Player;
 import net.rush.net.Session;
 import net.rush.packets.packet.BlockChangePacket;
@@ -67,6 +69,10 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 			}
 			chunk.setType(localX, localZ, y, Block.AIR);
 			
+			ItemEntity item = new ItemEntity(player.getWorld(), new Item(4));
+			
+			player.getSession().send(item.createSpawnMessage());
+			item.setupMetadata();
 			player.sendMessage("survival block break: " + Material.getMaterial(oldType) + " at X: " + x + " Y: " + y + " Z: " + z);
 		}
 	}

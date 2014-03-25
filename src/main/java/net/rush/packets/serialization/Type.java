@@ -170,10 +170,21 @@ public enum Type {
 					break;
 				case ITEM:
 					short id = in.readShort();
-					byte count = in.readByte();
-					short damage = in.readShort();
+					if (id <= 0) {
+						parameters[index] = new Parameter<ItemStack>(type, index, ItemStack.NULL_ITEMSTACK);
+					} else {
+						byte stackSize = in.readByte();
+						short dataValue = in.readShort();
+						short dataLenght = in.readShort();
+						byte[] metadata = new byte[0];
+						//if(dataLenght > 0) {
+							// FIXME previous check if its enchantable
+							//metadata = new byte[dataLenght];
+							//in.readFully(metadata);
+						//}
+						parameters[index] = new Parameter<ItemStack>(type, index, new ItemStack(id, stackSize, dataValue));
+					}
 					//data.put(index, new GenericMetadata<ItemStack>(new ItemStack(id, count, damage), metaType));
-					parameters[index] = new Parameter<ItemStack>(type, index, new ItemStack(id, count, damage));
 					break;
 				default:
 					throw new UnsupportedOperationException("Metadata-type '" + metaType + "' is not implemented!");
@@ -213,6 +224,19 @@ public enum Type {
 					break;
 				case Parameter.TYPE_ITEM:
 					ItemStack item = ((Parameter<ItemStack>) parameter).getValue();
+
+					if (item.getId() <= 0) { // FIXME less then zero check
+						out.writeShort(-1);
+					} else {
+						out.writeShort(item.getId());
+						out.writeByte(item.getStackSize());
+						out.writeShort(item.getDataValue());
+						out.writeShort(item.getDataLength());
+						//if (item.getDataLength() >= 0) { // FIXME previous check if its enchantable
+						//	out.write(item.getMetadata());
+						//}
+					}
+
 					out.writeShort(item.getId());
 					out.writeByte(item.getStackSize());
 					out.writeShort(item.getDataValue());
@@ -307,14 +331,14 @@ public enum Type {
 		@Override
 		public ItemStack read(DataInput in) throws IOException {
 			short id = in.readShort();
-			if (id < 0) {
+			if (id <= 0) {
 				return ItemStack.NULL_ITEMSTACK;
 			} else {
 				byte stackSize = in.readByte();
 				short dataValue = in.readShort();
 				short dataLenght = in.readShort();
 				byte[] metadata = new byte[0];
-				if(dataLenght > 0) {
+				if(dataLenght >= 0) {
 					if (id != 0) { // FIXME previous check if its enchantable
 						metadata = new byte[dataLenght];
 						in.readFully(metadata);
@@ -333,7 +357,7 @@ public enum Type {
 				out.writeByte(val.getStackSize());
 				out.writeShort(val.getDataValue());
 				out.writeShort(val.getDataLength());
-				if (val.getId() != 0) { // FIXME previous check if its enchantable
+				if (val.getDataLength() != 0) { // FIXME previous check if its enchantable // TODO is is Id or datalength?
 					out.write(val.getMetadata());
 				}
 			}
@@ -462,7 +486,7 @@ public enum Type {
 	}
 
 	private static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
-	
+
 	/**
 	 * Reads a UTF-8 encoded string from the buffer.
 	 * @param buf The buffer.
@@ -476,7 +500,7 @@ public enum Type {
 
 		return new String(bytes, CHARSET_UTF8);
 	}
-	
+
 	/**
 	 * Writes a UTF-8 string to the buffer.
 	 * @param buf The buffer.

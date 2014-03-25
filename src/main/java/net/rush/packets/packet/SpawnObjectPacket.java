@@ -10,7 +10,8 @@ public interface SpawnObjectPacket extends Packet {
     int getZ();
     byte getPitch();
     byte getYaw();
-    short getSpeedX();
+    int getInteger();
+    /*short getSpeedX();
     short getSpeedY();
-    short getSpeedZ();
+    short getSpeedZ();*/
 }

@@ -1,7 +1,7 @@
 package net.rush.model;
 
 import net.rush.packets.Packet;
-import net.rush.packets.packet.impl.EntityMetadataPacketImpl;
+import net.rush.packets.misc.ItemStack;
 import net.rush.packets.packet.impl.SpawnObjectPacketImpl;
 import net.rush.util.Parameter;
 import net.rush.world.World;
@@ -37,10 +37,6 @@ public final class ItemEntity extends Entity {
 		return item;
 	}
 
-	/**
-	 * @deprecated Crashes client :(
-	 * */
-	@Override
 	public Packet createSpawnMessage() {
 		int x = position.getPixelX();
 		int y = position.getPixelY();
@@ -48,13 +44,12 @@ public final class ItemEntity extends Entity {
 		int yaw = rotation.getIntYaw();
 		int pitch = rotation.getIntPitch();
 
-		return new SpawnObjectPacketImpl(id, (byte)2, new Position(x, y, z), (byte)yaw, (byte)pitch, (short)0, (short)0, (short)0);
+		return new SpawnObjectPacketImpl(id, (byte)2, new Position(x, y, z), (byte)pitch, (byte)yaw, 0);
 		//return new SpawnDroppedItemPacketImpl(id, (short)item.getId(), (byte)item.getCount(), (short)item.getDamage(), x, y, z, (byte)yaw, (byte)pitch, (byte)roll);
 	}
-	
-	public Packet createMetadataMessage() {
-		metadata[5] = new Parameter<Item>(Parameter.TYPE_ITEM, 5, item);
-		return new EntityMetadataPacketImpl(id, metadata);
+
+	public void setupMetadata() {
+		setMetadata(new Parameter<ItemStack>(Parameter.TYPE_ITEM, 10, new ItemStack(item.getId(), item.getCount(), item.getDamage())));
 	}
 
 	@Override

@@ -20,14 +20,10 @@ public class SpawnObjectPacketImpl extends AbstractPacket implements SpawnObject
     private final byte pitch;
     @Serialize(type = Type.BYTE, order = 6)
     private final byte yaw;
-    @Serialize(type = Type.CONDITIONAL_SHORT, order = 7, moreInfo = 5)
-    private final short speedX;
-    @Serialize(type = Type.CONDITIONAL_SHORT, order = 8, moreInfo = 5)
-    private final short speedY;
-    @Serialize(type = Type.CONDITIONAL_SHORT, order = 9, moreInfo = 5)
-    private final short speedZ;
+    @Serialize(type = Type.INT, order = 7)
+    private final int integer;
 
-    public SpawnObjectPacketImpl(int entityId, byte type, Position pos, byte pitch, byte yaw, short speedX, short speedY, short speedZ) {
+    public SpawnObjectPacketImpl(int entityId, byte type, Position pos, byte pitch, byte yaw, int integer) {
         super();
         this.entityId = entityId;
         this.type = type;
@@ -36,9 +32,7 @@ public class SpawnObjectPacketImpl extends AbstractPacket implements SpawnObject
         this.z = (int)pos.getZ();
         this.pitch = pitch;
         this.yaw = yaw;
-        this.speedX = speedX;
-        this.speedY = speedY;
-        this.speedZ = speedZ;
+        this.integer = integer;
     }
 
     @Override
@@ -82,24 +76,14 @@ public class SpawnObjectPacketImpl extends AbstractPacket implements SpawnObject
     }
     
     @Override
-    public short getSpeedX() {
-        return speedX;
-    }
-
-    @Override
-    public short getSpeedY() {
-        return speedY;
-    }
-
-    @Override
-    public short getSpeedZ() {
-        return speedZ;
+    public int getInteger() {
+        return integer;
     }
 
     @Override
     public String getToStringDescription() {
         return String.format("entityId=\"%d\",type=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",fireballThrower=\"%d\","
                         + "fireballSpeedX=\"%d\",fireballSpeedY=\"%d\",fireballSpeedZ=\"%d\"",
-                        entityId, type, x, y, z, speedX, speedY, speedZ);
+                        entityId, type, x, y, z);
     }
 }
