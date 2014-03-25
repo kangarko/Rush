@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import net.rush.cmd.CommandManager;
 import net.rush.console.ConsoleCommandSender;
 import net.rush.console.ConsoleLogManager;
-import net.rush.console.ThreadConsoleReader;
 import net.rush.gui.Notifications;
 import net.rush.io.McRegionChunkIoService;
 import net.rush.net.MinecraftPipelineFactory;
@@ -22,7 +21,6 @@ import net.rush.world.ForestWorldGenerator;
 import net.rush.world.World;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.channel.ChannelException;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.group.ChannelGroup;
@@ -34,35 +32,13 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
  */
 public final class Server {
 
-	/**
-	 * The logger for this class.
-	 */
 	private static final ConsoleLogManager logger = new ConsoleLogManager("Minecraft");
 	
+	private final static Notifications gui = new Notifications();
+	
 	private final ConsoleCommandSender consoleSender = new ConsoleCommandSender(this);
-
-
-	private static Notifications gui;
-
-
-	/**
-	 * Creates a new server on TCP port 25565 and starts listening for
-	 * connections.
-	 * @param args The command-line arguments.
-	 */
-	public static void main(String[] args) {
-		try {
-			Server server = new Server();
-			server.bind(new InetSocketAddress(25565));
-			server.start();
-
-			Thread threadConsoleReader = new ThreadConsoleReader(server);
-			threadConsoleReader.start();
-
-		} catch (Throwable t) {
-			logger.log(Level.SEVERE, "Error during server startup.", t);
-		}
-	}
+	
+	private SocketAddress socketAddress = new InetSocketAddress(25565);
 
 	/**
 	 * The {@link ServerBootstrap} used to initialize Netty.
@@ -110,14 +86,13 @@ public final class Server {
 	 */
 	public Server() {
 		logger.info("Starting minecraft server version 1.6.4");
-		this.world = new World(new McRegionChunkIoService(new File("world")), new ForestWorldGenerator());
+		long initialTime = System.currentTimeMillis();
 		
+		world = new World(new McRegionChunkIoService(new File("world")), new ForestWorldGenerator());
 
         if (Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L) {
             logger.warning("To start the server with more ram, launch it as \"java -Xmx1024M -Xms1024M -jar project-rush.jar\"");
         }
-		
-		gui = new Notifications();
         
 		/* initialize channel and pipeline factories */
 		ChannelFactory factory = new NioServerSocketChannelFactory(executor, executor);
@@ -126,32 +101,24 @@ public final class Server {
 		ChannelPipelineFactory pipelineFactory = new MinecraftPipelineFactory(this);
 		bootstrap.setPipelineFactory(pipelineFactory);
 
-		/* add shutdown hook */
-		Runtime.getRuntime().addShutdownHook(new Thread(new ServerShutdownHandler()));
-	}
-
-	/**
-	 * Binds this server to the specified address.
-	 * @param address The addresss.
-	 */
-	public void bind(SocketAddress address) {
-		logger.info("Starting Minecraft server on: " + address);
+        /* try to bind to a port (TODO: Configurable in the future) */
+		logger.info("Binding to address: " + socketAddress);
 		try {
-			group.add(bootstrap.bind(address));
+			group.add(bootstrap.bind(socketAddress));
 		} catch (Throwable ex) {
 			logger.warning("**** FAILED TO BIND TO PORT!");
 			logger.warning("The exception was: " + ex.toString());
 			logger.warning("Perhaps a server is already running on that port?");
 			System.exit(1);
 		}
-	}
-
-	/**
-	 * Starts this server.
-	 */
-	public void start() {
+		
+		/* add shutdown hook */
+		Runtime.getRuntime().addShutdownHook(new Thread(new ServerShutdownHandler()));
+		
+		/* start scheduling */
 		scheduler.start();
-		logger.info("Ready for connections.");
+		
+		logger.info("Ready for connections. (Took " + (System.currentTimeMillis() - initialTime) + " ms!)");
 	}
 
 	/**
@@ -228,6 +195,7 @@ public final class Server {
 	private class ServerShutdownHandler implements Runnable {
 		@Override
 		public void run() {
+			logger.info("Server is shutting down.");
 			// Save chunks on shutdown.
 			if (saveEnabled) {
 				logger.info("Saving chunks...");
