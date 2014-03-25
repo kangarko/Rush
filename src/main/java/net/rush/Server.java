@@ -17,6 +17,7 @@ import net.rush.net.MinecraftPipelineFactory;
 import net.rush.net.Session;
 import net.rush.net.SessionRegistry;
 import net.rush.task.TaskScheduler;
+import net.rush.util.NumberUtils;
 import net.rush.world.ForestWorldGenerator;
 import net.rush.world.World;
 
@@ -38,7 +39,7 @@ public final class Server {
 	
 	private final ConsoleCommandSender consoleSender = new ConsoleCommandSender(this);
 	
-	private SocketAddress socketAddress = new InetSocketAddress(25565);
+	private final SocketAddress socketAddress = new InetSocketAddress(25565);
 
 	/**
 	 * The {@link ServerBootstrap} used to initialize Netty.
@@ -118,7 +119,7 @@ public final class Server {
 		/* start scheduling */
 		scheduler.start();
 		
-		logger.info("Ready for connections. (Took " + (System.currentTimeMillis() - initialTime) + " ms!)");
+		logger.info("Ready for connections. (Took " + NumberUtils.msToSeconds(System.currentTimeMillis() - initialTime) + "s !)");
 	}
 
 	/**
