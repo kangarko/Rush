@@ -9,7 +9,7 @@ public class AttachEntityPacketImpl extends AbstractPacket implements AttachEnti
     private final int entityId;
     @Serialize(type = Type.INT, order = 1)
     private final int vehicleId;
-    @Serialize(type = Type.UNSIGNED_BYTE, order = 1)
+    @Serialize(type = Type.UNSIGNED_BYTE, order = 2)
     private final byte leash;
 
     public AttachEntityPacketImpl(int entityId, int vehicleId, boolean leashed) {
@@ -35,7 +35,7 @@ public class AttachEntityPacketImpl extends AbstractPacket implements AttachEnti
     }
     
     @Override
-    public byte getIsLeashed() {
+    public byte getLeash() {
         return leash;
     }
 

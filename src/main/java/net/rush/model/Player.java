@@ -44,6 +44,7 @@ public final class Player extends LivingEntity implements CommandSender {
 	private final String name;
 	private GameMode gamemode;
 	private boolean sprinting = false;
+	private boolean riding = false;
 	
 	private PlayerInventory inventory = new PlayerInventory();
 	
@@ -228,6 +229,14 @@ public final class Player extends LivingEntity implements CommandSender {
 	public void setGamemode(GameMode gamemode) {
 		this.gamemode = gamemode;
 		this.getSession().send(new ChangeGameStatePacketImpl((byte)3, (byte)gamemode.getValue()));
+	}
+	
+	public boolean isRiding() {
+		return riding;
+	}
+	
+	public void setRiding(boolean riding) {
+		this.riding = riding;
 	}
 	
 	// Inventory
