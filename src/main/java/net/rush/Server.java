@@ -86,7 +86,7 @@ public final class Server {
 	 * Creates and initializes a new server.
 	 */
 	public Server() {
-		logger.info("Starting minecraft server version 1.6.4");
+		logger.info("Initializing Rush for Minecraft 1.6.4");
 		long initialTime = System.currentTimeMillis();
 		
 		world = new World(new McRegionChunkIoService(new File("world")), new ForestWorldGenerator());

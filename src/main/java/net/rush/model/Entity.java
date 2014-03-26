@@ -244,10 +244,11 @@ public abstract class Entity {
 	}
 	
 	public void updateMetadata() {
-		EntityMetadataPacket message = new EntityMetadataPacketImpl(id, metadata.clone());
+		EntityMetadataPacket message = new EntityMetadataPacketImpl(id, metadata);
 		for (Player player : world.getRushPlayers()) {
 			if (player != this) {
 				player.getSession().send(message);
+				player.sendMessage("You recieved item metadata of entity id " + id);
 			}
 		}
 	}

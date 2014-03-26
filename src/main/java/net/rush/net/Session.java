@@ -159,7 +159,7 @@ public final class Session {
 				}
 			} else {
 				Server.getLogger().info("&cMissing handler for packet: " + message.getPacketType().getSimpleName());
-				server.getGui().showNotification(new Notification("Unhandled packet", "Missing handler for packet:", message.getPacketType().getSimpleName(), Color.RED, Color.WHITE, Color.WHITE));
+				Server.getGui().showNotification(new Notification("Unhandled packet", "Missing handler for packet:", message.getPacketType().getSimpleName(), Color.RED, Color.WHITE, Color.WHITE));
 			}
 		}
 

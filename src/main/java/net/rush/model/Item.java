@@ -1,5 +1,6 @@
 package net.rush.model;
 
+
 /**
  * An immutable class which represents an in-game item (this also includes
  * blocks which are dropped on the floor or placed in the player's inventory).
@@ -7,6 +8,33 @@ package net.rush.model;
  */
 public class Item {
 
+	public static final Item NULL_ITEM = new Item(-1, -1, -1) {
+        @Override
+        public int getId() {
+            throw new NullPointerException("You tried to use the NULL-Item!");
+        }
+
+        @Override
+        public int getCount() {
+            throw new NullPointerException("You tried to use the NULL-Item!");
+        }
+
+        @Override
+        public int getDamage() {
+            throw new NullPointerException("You tried to use the NULL-Item!");
+        }
+        
+        /*@Override
+        public int getDataLength() {
+            throw new NullPointerException("You tried to use the NULL-Item!");
+        }*/
+
+        /*@Override
+        public byte[] getMetadata() {
+            throw new NullPointerException("You tried to use the NULL-Item!");
+        }*/
+    };
+	
 	/**
 	 * The item's id.
 	 */
@@ -102,6 +130,11 @@ public class Item {
 		if (id != other.id)
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("Item [id=%s,count=%d,damage=%d])", id, count, damage);
 	}
 
 }

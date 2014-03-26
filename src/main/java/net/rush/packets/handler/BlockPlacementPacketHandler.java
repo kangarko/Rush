@@ -1,10 +1,10 @@
 package net.rush.packets.handler;
 
 import net.rush.chunk.Chunk;
+import net.rush.model.Item;
 import net.rush.model.Player;
 import net.rush.model.Position;
 import net.rush.net.Session;
-import net.rush.packets.misc.ItemStack;
 import net.rush.packets.packet.BlockChangePacket;
 import net.rush.packets.packet.PlayerBlockPlacementPacket;
 import net.rush.packets.packet.impl.BlockChangePacketImpl;
@@ -29,7 +29,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		int localX = (x - chunkX * Chunk.WIDTH) % Chunk.WIDTH;
 		int localZ = (z - chunkZ * Chunk.HEIGHT) % Chunk.HEIGHT;
 
-		if(message.getHeldItem() == ItemStack.NULL_ITEMSTACK)
+		if(message.getHeldItem() == Item.NULL_ITEM)
 			return;
 		System.out.println("BlockPlaced: " +  message.getHeldItem().toString());
 		System.out.println("BukkitMaterial: " + Material.getMaterial(message.getHeldItem().getId()));
@@ -40,7 +40,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		
 		Position pos = parseDirection(x, y, z, message.getDirection());
 		
-		BlockChangePacket bcmsg = new BlockChangePacketImpl((byte)pos.getX(), (byte)pos.getY(), (byte)pos.getZ(), (byte)blockId, (byte)message.getHeldItem().getDataValue()); 
+		BlockChangePacket bcmsg = new BlockChangePacketImpl((byte)pos.getX(), (byte)pos.getY(), (byte)pos.getZ(), (byte)blockId, (byte)message.getHeldItem().getDamage()); 
 		for (Player p: world.getRushPlayers()) {
 			p.getSession().send(bcmsg);
 		}

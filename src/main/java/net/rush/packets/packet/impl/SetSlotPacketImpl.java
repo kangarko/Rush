@@ -1,6 +1,6 @@
 package net.rush.packets.packet.impl;
 
-import net.rush.packets.misc.ItemStack;
+import net.rush.model.Item;
 import net.rush.packets.packet.SetSlotPacket;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -10,10 +10,10 @@ public class SetSlotPacketImpl extends AbstractPacket implements SetSlotPacket {
     private final byte windowId;
     @Serialize(type = Type.SHORT, order = 1)
     private final short slot;
-    @Serialize(type = Type.ITEMSTACK, order = 2)
-    private final ItemStack item;
+    @Serialize(type = Type.ITEM, order = 2)
+    private final Item item;
 
-    public SetSlotPacketImpl(byte windowId, short slot, ItemStack item) {
+    public SetSlotPacketImpl(byte windowId, short slot, Item item) {
         super();
         this.windowId = windowId;
         this.slot = slot;
@@ -36,7 +36,7 @@ public class SetSlotPacketImpl extends AbstractPacket implements SetSlotPacket {
     }
 
     @Override
-    public ItemStack getItem() {
+    public Item getItem() {
         return item;
     }
 

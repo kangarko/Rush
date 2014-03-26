@@ -242,8 +242,9 @@ public final class Player extends LivingEntity implements CommandSender {
         inventory.setItemInHand(paramItemStack);
     }
 
+    // FIXME don´t work, yet
 	public void onSlotSet(Inventory inv, int index, ItemStack itemStack) {
-		getSession().send(new SetWindowItemsPacketImpl(inv.getId(), index, new net.rush.packets.misc.ItemStack[] {(net.rush.packets.misc.ItemStack) itemStack}));
+		getSession().send(new SetWindowItemsPacketImpl(inv.getId(), index, new Item[] {new Item(itemStack.getTypeId(), itemStack.getAmount(), itemStack.getData().getData())}));
 		System.out.println("sending inv packet");
 	}
 

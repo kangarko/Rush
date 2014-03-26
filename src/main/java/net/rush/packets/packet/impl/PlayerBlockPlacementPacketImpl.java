@@ -1,6 +1,6 @@
 package net.rush.packets.packet.impl;
 
-import net.rush.packets.misc.ItemStack;
+import net.rush.model.Item;
 import net.rush.packets.packet.PlayerBlockPlacementPacket;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -14,8 +14,8 @@ public class PlayerBlockPlacementPacketImpl extends AbstractPacket implements Pl
     private final int z;
     @Serialize(type = Type.BYTE, order = 3)
     private final byte direction;
-    @Serialize(type = Type.ITEMSTACK, order = 4)
-    private final ItemStack heldItem;
+    @Serialize(type = Type.ITEM, order = 4)
+    private final Item heldItem;
     @Serialize(type = Type.BYTE, order = 5)
     private final byte cursorX;
     @Serialize(type = Type.BYTE, order = 6)
@@ -23,7 +23,7 @@ public class PlayerBlockPlacementPacketImpl extends AbstractPacket implements Pl
     @Serialize(type = Type.BYTE, order = 7)
     private final byte cursorZ;
 
-    public PlayerBlockPlacementPacketImpl(int x, byte y, int z, byte action, ItemStack heldItem, byte cursorX, byte cursorY, byte cursorZ) {
+    public PlayerBlockPlacementPacketImpl(int x, byte y, int z, byte action, Item heldItem, byte cursorX, byte cursorY, byte cursorZ) {
         super();
         this.x = x;
         this.y = y;
@@ -61,7 +61,7 @@ public class PlayerBlockPlacementPacketImpl extends AbstractPacket implements Pl
     }
 
     @Override
-    public ItemStack getHeldItem() {
+    public Item getHeldItem() {
         return heldItem;
     }
     

@@ -9,10 +9,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.rush.model.Coordinate;
+import net.rush.model.Item;
 import net.rush.packets.NetUtils;
-import net.rush.packets.misc.ItemStack;
 import net.rush.packets.misc.MetadataType;
 import net.rush.util.Parameter;
+
 
 
 public enum Type {
@@ -171,20 +172,20 @@ public enum Type {
 				case ITEM:
 					short id = in.readShort();
 					if (id <= 0) {
-						parameters[index] = new Parameter<ItemStack>(type, index, ItemStack.NULL_ITEMSTACK);
+						parameters[index] = new Parameter<Item>(type, index, Item.NULL_ITEM);
 					} else {
 						byte stackSize = in.readByte();
 						short dataValue = in.readShort();
-						short dataLenght = in.readShort();
-						byte[] metadata = new byte[0];
+						//short dataLenght = in.readShort();
+						//byte[] metadata = new byte[0];
 						//if(dataLenght > 0) {
 							// FIXME previous check if its enchantable
 							//metadata = new byte[dataLenght];
 							//in.readFully(metadata);
 						//}
-						parameters[index] = new Parameter<ItemStack>(type, index, new ItemStack(id, stackSize, dataValue));
+						parameters[index] = new Parameter<Item>(type, index, new Item(id, stackSize, dataValue));
 					}
-					//data.put(index, new GenericMetadata<ItemStack>(new ItemStack(id, count, damage), metaType));
+					//data.put(index, new GenericMetadata<Item>(new Item(id, count, damage), metaType));
 					break;
 				default:
 					throw new UnsupportedOperationException("Metadata-type '" + metaType + "' is not implemented!");
@@ -223,23 +224,19 @@ public enum Type {
 					writeUtf8String(out, ((Parameter<String>) parameter).getValue());
 					break;
 				case Parameter.TYPE_ITEM:
-					ItemStack item = ((Parameter<ItemStack>) parameter).getValue();
+					Item item = ((Parameter<Item>) parameter).getValue();
 
 					if (item.getId() <= 0) { // FIXME less then zero check
 						out.writeShort(-1);
 					} else {
 						out.writeShort(item.getId());
-						out.writeByte(item.getStackSize());
-						out.writeShort(item.getDataValue());
-						out.writeShort(item.getDataLength());
+						out.writeByte(item.getCount());
+						out.writeShort(item.getDamage());
+						out.writeShort(-1);
 						//if (item.getDataLength() >= 0) { // FIXME previous check if its enchantable
 						//	out.write(item.getMetadata());
 						//}
 					}
-
-					out.writeShort(item.getId());
-					out.writeByte(item.getStackSize());
-					out.writeShort(item.getDataValue());
 					break;
 				case Parameter.TYPE_COORDINATE:
 					Coordinate coord = ((Parameter<Coordinate>) parameter).getValue();
@@ -252,114 +249,39 @@ public enum Type {
 			out.writeByte(127);
 		}
 	}),
-	// This is the original one, that wasnt compatible due to the entitymetadata map. Rush use Parameter (original from LightStone).
-	/*ENTITY_METADATA(new Serializor<Map<Integer, EntityMetadata<?>>>() {
-        @Override
-        public Map<Integer, EntityMetadata<?>> read(DataInput in) throws IOException {
-            Map<Integer, EntityMetadata<?>> data = new LinkedHashMap<Integer, EntityMetadata<?>>();
-            for (int x = in.readUnsignedByte(); x != 127; x = in.readUnsignedByte()) {
-                int index = x & 0x1F;
-                int type = x >> 5;
-                MetadataType metaType = MetadataType.fromId(type);
-                switch (metaType) {
-                case BYTE:
-                    data.put(index, new GenericMetadata<Byte>(in.readByte(), metaType));
-                    break;
-                case SHORT:
-                    data.put(index, new GenericMetadata<Short>(in.readShort(), metaType));
-                    break;
-                case INT:
-                    data.put(index, new GenericMetadata<Integer>(in.readInt(), metaType));
-                    break;
-                case FLOAT:
-                    data.put(index, new GenericMetadata<Float>(in.readFloat(), metaType));
-                    break;
-                case STRING:
-                    data.put(index, new GenericMetadata<String>(NetUtils.readString(in, 1000), metaType));
-                    break;
-                case ITEM:
-                    short id = in.readShort();
-                    byte count = in.readByte();
-                    short damage = in.readShort();
-                    data.put(index, new GenericMetadata<ItemStack>(new ItemStack(id, count, damage), metaType));
-                    break;
-                default:
-                    throw new UnsupportedOperationException("Metadata-type '" + metaType + "' is not implemented!");
-                }
-            }
-            return data;
-        }
-
-        @Override
-        public void write(DataOutput out, Map<Integer, EntityMetadata<?>> val) throws IOException {
-            for (Map.Entry<Integer, EntityMetadata<?>> entry : val.entrySet()) {
-                int index = entry.getKey();
-                MetadataType metaType = entry.getValue().getType();
-                int type = metaType.getId();
-                int x = (type << 5) | (index & 0x1F);
-                out.writeByte(x);
-                switch (metaType) {
-                case BYTE:
-                    out.writeByte((Byte) entry.getValue().getValue());
-                    break;
-                case SHORT:
-                    out.writeShort((Short) entry.getValue().getValue());
-                    break;
-                case INT:
-                    out.writeInt((Integer) entry.getValue().getValue());
-                    break;
-                case FLOAT:
-                    out.writeFloat((Float) entry.getValue().getValue());
-                    break;
-                case STRING:
-                    NetUtils.writeString(out, (String) entry.getValue().getValue());
-                    break;
-                case ITEM:
-                    ItemStack item = (ItemStack) entry.getValue().getValue();
-                    out.writeShort(item.getId());
-                    out.writeByte(item.getStackSize());
-                    out.writeShort(item.getDataValue());
-                    break;
-                default:
-                    throw new UnsupportedOperationException("Metadata-type '" + metaType + "' is not implemented!");
-                }
-            }
-            out.writeByte(127);
-        }
-    }),*/
-	ITEMSTACK(new Serializor<ItemStack>() {
+	ITEM(new Serializor<Item>() {
 		@Override
-		public ItemStack read(DataInput in) throws IOException {
+		public Item read(DataInput in) throws IOException {
 			short id = in.readShort();
 			if (id <= 0) {
-				return ItemStack.NULL_ITEMSTACK;
+				return Item.NULL_ITEM;
 			} else {
 				byte stackSize = in.readByte();
 				short dataValue = in.readShort();
-				short dataLenght = in.readShort();
+				/*short dataLenght = in.readShort();
 				byte[] metadata = new byte[0];
 				if(dataLenght >= 0) {
 					if (id != 0) { // FIXME previous check if its enchantable
 						metadata = new byte[dataLenght];
 						in.readFully(metadata);
 					}
-				}
-				return new ItemStack(id, stackSize, dataValue, dataLenght, metadata);
+				}*/
+				return new Item(id, stackSize, dataValue);
 			}
 		}
 
 		@Override
-		public void write(DataOutput out, ItemStack val) throws IOException {
-			if (val == ItemStack.NULL_ITEMSTACK || val.getId() < 0) { // FIXME less then zero check
+		public void write(DataOutput out, Item val) throws IOException {
+			if (val == Item.NULL_ITEM || val.getId() <= 0) { // FIXME less then zero check
 				out.writeShort(-1);
 			} else {
 				out.writeShort(val.getId());
-				out.writeByte(val.getStackSize());
-				out.writeShort(val.getDataValue());
-				out.writeShort(val.getDataLength());
-				if (val.getDataLength() != 0) { // FIXME previous check if its enchantable // TODO is is Id or datalength?
+				out.writeByte(val.getCount());
+				out.writeShort(val.getDamage());
+				out.writeShort(-1);
+				/*if (val.getDataLength() != 0) { // FIXME previous check if its enchantable // TODO is is Id or datalength?
 					out.write(val.getMetadata());
-				}
+				}*/
 			}
 		}
 	}),
@@ -385,23 +307,23 @@ public enum Type {
 		}
 	}),
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	ITEMSTACK_ARRAY(new ObjectUsingSerializor<ItemStack[]>() {
+	ITEM_ARRAY(new ObjectUsingSerializor<Item[]>() {
 		@Override
-		public ItemStack[] read(DataInput in, Object more) throws IOException {
+		public Item[] read(DataInput in, Object more) throws IOException {
 			int count = ((Number) more).intValue();
-			ItemStack[] items = new ItemStack[count];
-			Serializor<ItemStack> itemstackSerializor = (Serializor<ItemStack>) ITEMSTACK.getSerializor();
+			Item[] items = new Item[count];
+			Serializor<Item> itemSerializor = (Serializor<Item>) ITEM.getSerializor();
 			for (int i = 0; i < count; i++) {
-				items[i] = itemstackSerializor.read(in);
+				items[i] = itemSerializor.read(in);
 			}
 			return items;
 		}
 
 		@Override
-		public void write(DataOutput out, ItemStack[] val) throws IOException {
-			Serializor itemstackSerializor = ITEMSTACK.getSerializor();
+		public void write(DataOutput out, Item[] val) throws IOException {
+			Serializor itemSerializor = ITEM.getSerializor();
 			for (int i = 0; i < val.length; i++) {
-				itemstackSerializor.write(out, val[i]);
+				itemSerializor.write(out, val[i]);
 			}
 		}
 	}),

@@ -1,7 +1,6 @@
 package net.rush.model;
 
 import net.rush.packets.Packet;
-import net.rush.packets.misc.ItemStack;
 import net.rush.packets.packet.impl.SpawnObjectPacketImpl;
 import net.rush.util.Parameter;
 import net.rush.world.World;
@@ -38,18 +37,21 @@ public final class ItemEntity extends Entity {
 	}
 
 	public Packet createSpawnMessage() {
-		int x = position.getPixelX();
-		int y = position.getPixelY();
-		int z = position.getPixelZ();
+		//int x = position.getPixelX();
+		//int y = position.getPixelY();
+		//int z = position.getPixelZ();
 		int yaw = rotation.getIntYaw();
 		int pitch = rotation.getIntPitch();
 
-		return new SpawnObjectPacketImpl(id, (byte)2, new Position(x, y, z), (byte)pitch, (byte)yaw, 0);
+		// According to the wiki.vg (http://wiki.vg/Protocol_History#1.4.x)
+		// Removed packet: 0x15 Spawn Dropped Item - Now merged into 0x17 Spawn Object/Vehicle.
+		// The Entity Type ID is 2. Set the item type by sending 0x28 Entity Metadata with a slot at index 10. 
+		return new SpawnObjectPacketImpl(id, (byte)2, position, (byte)pitch, (byte)yaw);
 		//return new SpawnDroppedItemPacketImpl(id, (short)item.getId(), (byte)item.getCount(), (short)item.getDamage(), x, y, z, (byte)yaw, (byte)pitch, (byte)roll);
 	}
 
 	public void setupMetadata() {
-		setMetadata(new Parameter<ItemStack>(Parameter.TYPE_ITEM, 10, new ItemStack(item.getId(), item.getCount(), item.getDamage())));
+		setMetadata(new Parameter<Item>(Parameter.TYPE_ITEM, 10, item));
 	}
 
 	@Override

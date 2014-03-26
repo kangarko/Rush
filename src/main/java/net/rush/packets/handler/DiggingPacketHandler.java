@@ -70,10 +70,10 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 			chunk.setType(localX, localZ, y, Block.AIR);
 			
 			ItemEntity item = new ItemEntity(player.getWorld(), new Item(4));
-			
+			player.sendMessage("dropping item [id=" + item.getId() + "]: " + item.toString());
 			player.getSession().send(item.createSpawnMessage());
-			item.setupMetadata();
 			player.sendMessage("survival block break: " + Material.getMaterial(oldType) + " at X: " + x + " Y: " + y + " Z: " + z);
+			item.setupMetadata();
 		}
 	}
 

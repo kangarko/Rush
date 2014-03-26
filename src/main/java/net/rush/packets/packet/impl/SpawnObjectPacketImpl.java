@@ -22,8 +22,16 @@ public class SpawnObjectPacketImpl extends AbstractPacket implements SpawnObject
     private final byte yaw;
     @Serialize(type = Type.INT, order = 7)
     private final int integer;
-
-    public SpawnObjectPacketImpl(int entityId, byte type, Position pos, byte pitch, byte yaw, int integer) {
+    
+    // Unused yet. If the number of "integer" isnt 0 than following will also be send:
+    /*@Serialize(type = Type.SHORT, order = 8) // FIXME is it SHORT or CONDITIONAL SHORT? In notchian server the datainput read it as a short so I dunno.
+    private final short speedZ;
+    @Serialize(type = Type.SHORT, order = 9)
+    private final short speedY;
+    @Serialize(type = Type.SHORT, order = 10)
+    private final short shortspeedZ;*/
+    
+    public SpawnObjectPacketImpl(int entityId, byte type, Position pos, byte pitch, byte yaw) {
         super();
         this.entityId = entityId;
         this.type = type;
@@ -32,7 +40,7 @@ public class SpawnObjectPacketImpl extends AbstractPacket implements SpawnObject
         this.z = (int)pos.getZ();
         this.pitch = pitch;
         this.yaw = yaw;
-        this.integer = integer;
+        this.integer = 0; // TODO
     }
 
     @Override
