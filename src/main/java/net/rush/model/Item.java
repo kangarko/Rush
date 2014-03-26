@@ -24,15 +24,15 @@ public class Item {
             throw new NullPointerException("You tried to use the NULL-Item!");
         }
         
-        /*@Override
+        @Override
         public int getDataLength() {
             throw new NullPointerException("You tried to use the NULL-Item!");
-        }*/
+        }
 
-        /*@Override
-        public byte[] getMetadata() {
+        @Override
+        public byte[] getData() {
             throw new NullPointerException("You tried to use the NULL-Item!");
-        }*/
+        }
     };
 	
 	/**
@@ -49,6 +49,16 @@ public class Item {
 	 * The item's damage.
 	 */
 	private final int damage;
+	
+	/**
+	 * The item's NBT data length. -1 to disable
+	 */
+	private final int dataLength;
+	
+	/**
+	 * The item's NBT byte array storing data (enchantments, etc).
+	 */
+	private final byte[] data;
 
 	/**
 	 * Creates a single item with no damage.
@@ -75,9 +85,22 @@ public class Item {
 	 * @param damage The damage.
 	 */
 	public Item(int id, int count, int damage) {
+		this(id, count, damage, -1, null);
+	}
+	
+	/**
+	 * Creates an item with the specified count, damage, data length and data. Generally items that
+	 * can be damaged cannot be stacked so the count should be one.
+	 * @param id The id.
+	 * @param count The number of items within the stack.
+	 * @param damage The damage.
+	 */
+	public Item(int id, int count, int damage, int dataLength, byte[] data) {
 		this.id = id;
 		this.count = count;
 		this.damage = damage;
+		this.dataLength = dataLength;
+		this.data = data;
 	}
 
 	/**
@@ -103,7 +126,23 @@ public class Item {
 	public int getDamage() {
 		return damage;
 	}
+	
+	/**
+	 * Gets the length of NBT data byte array.
+	 * @return The length of NBT data byte array.
+	 */
+	public int getDataLength() {
+		return dataLength;
+	}
 
+	/**
+	 * Gets the NBT data byte array.
+	 * @return The NBT data byte array.
+	 */
+	public byte[] getData() {
+		return data;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

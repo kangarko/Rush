@@ -179,9 +179,9 @@ public enum Type {
 						//short dataLenght = in.readShort();
 						//byte[] metadata = new byte[0];
 						//if(dataLenght > 0) {
-							// FIXME previous check if its enchantable
-							//metadata = new byte[dataLenght];
-							//in.readFully(metadata);
+						// FIXME previous check if its enchantable
+						//metadata = new byte[dataLenght];
+						//in.readFully(metadata);
 						//}
 						parameters[index] = new Parameter<Item>(type, index, new Item(id, stackSize, dataValue));
 					}
@@ -258,14 +258,12 @@ public enum Type {
 			} else {
 				byte stackSize = in.readByte();
 				short dataValue = in.readShort();
-				/*short dataLenght = in.readShort();
+				short dataLenght = in.readShort();
 				byte[] metadata = new byte[0];
-				if(dataLenght >= 0) {
-					if (id != 0) { // FIXME previous check if its enchantable
-						metadata = new byte[dataLenght];
-						in.readFully(metadata);
-					}
-				}*/
+				if(dataLenght >= 0 && id != 0) { // FIXME previous check if its enchantable. Since MC 1.3.2 all items except 0 (empty hand) can send this.
+					metadata = new byte[dataLenght];
+					in.readFully(metadata);
+				}
 				return new Item(id, stackSize, dataValue);
 			}
 		}
@@ -278,10 +276,10 @@ public enum Type {
 				out.writeShort(val.getId());
 				out.writeByte(val.getCount());
 				out.writeShort(val.getDamage());
-				out.writeShort(-1);
-				/*if (val.getDataLength() != 0) { // FIXME previous check if its enchantable // TODO is is Id or datalength?
-					out.write(val.getMetadata());
-				}*/
+				out.writeShort(val.getDataLength());
+				if (val.getDataLength() > 0) { // FIXME previous check if its enchantable // TODO is is Id or datalength?
+					out.write(val.getData());
+				}
 			}
 		}
 	}),

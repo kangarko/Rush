@@ -28,6 +28,9 @@ public class LivingEntity extends Mob {
 	@SuppressWarnings("deprecation")
 	@Override
 	public Packet createSpawnMessage() {
+		if(position == null)
+			throw new NullPointerException("Entity position is null!");
+		
 		int x = position.getPixelX();
 		int y = position.getPixelY();
 		int z = position.getPixelZ();

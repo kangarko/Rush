@@ -77,10 +77,10 @@ public final class Player extends LivingEntity implements CommandSender {
 		this.name = name;
 		this.session = session;
 		this.gamemode = gamemode;
-
+		this.position = world.getSpawnPosition();
+		
 		// stream the initial set of blocks and teleport us
 		this.streamBlocks();
-		this.position = world.getSpawnPosition();
 
 		this.session.send(new SpawnPositionPacketImpl(position));
 		this.session.send(new PlayerPositionAndLookPacketImpl(position.getX(), position.getY(), position.getZ(), position.getY() + NORMAL_EYE_HEIGHT, (float) rotation.getYaw(), (float) rotation.getPitch(), true));
@@ -92,6 +92,8 @@ public final class Player extends LivingEntity implements CommandSender {
 			pl.getSession().send(new PlayerListItemPacketImpl(name, true, (short)100));
 			session.send(new PlayerListItemPacketImpl(pl.getName(), true, (short)100));
 		}
+		
+		getWorld().broadcastMessage("&e" + name + " has joined the game.");
 	}
 
 	/**
@@ -243,6 +245,7 @@ public final class Player extends LivingEntity implements CommandSender {
     }
 
     // FIXME don´t work, yet
+	@SuppressWarnings("deprecation")
 	public void onSlotSet(Inventory inv, int index, ItemStack itemStack) {
 		getSession().send(new SetWindowItemsPacketImpl(inv.getId(), index, new Item[] {new Item(itemStack.getTypeId(), itemStack.getAmount(), itemStack.getData().getData())}));
 		System.out.println("sending inv packet");

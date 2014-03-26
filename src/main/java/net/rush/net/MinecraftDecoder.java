@@ -17,7 +17,7 @@ import org.jboss.netty.handler.codec.replay.VoidEnum;
 
 /**
  * A {@link ReplayingDecoder} which decodes {@link ChannelBuffer}s into
- * Minecraft {@link net.lightstone.msg.Message}s.
+ * Minecraft {@link Packet}s.
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class MinecraftDecoder extends ReplayingDecoder<VoidEnum> {

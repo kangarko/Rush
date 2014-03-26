@@ -29,7 +29,7 @@ import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
 /**
- * The core class of the Lightstone server.
+ * The core class of the Rush server.
  */
 public final class Server {
 

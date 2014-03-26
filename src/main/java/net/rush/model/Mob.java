@@ -25,6 +25,9 @@ public abstract class Mob extends Entity {
 
 	@Override
 	public Packet createUpdateMessage() {
+		if(position == null)
+			throw new NullPointerException("Entity position is null!");
+		
 		boolean moved = !position.equals(previousPosition);
 		boolean rotated = !rotation.equals(previousRotation);
 

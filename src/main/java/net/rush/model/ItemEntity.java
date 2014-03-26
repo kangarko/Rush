@@ -37,9 +37,6 @@ public final class ItemEntity extends Entity {
 	}
 
 	public Packet createSpawnMessage() {
-		//int x = position.getPixelX();
-		//int y = position.getPixelY();
-		//int z = position.getPixelZ();
 		int yaw = rotation.getIntYaw();
 		int pitch = rotation.getIntPitch();
 

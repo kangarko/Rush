@@ -5,6 +5,8 @@ import net.rush.model.Block;
 import net.rush.model.Item;
 import net.rush.model.ItemEntity;
 import net.rush.model.Player;
+import net.rush.model.Position;
+import net.rush.model.Rotation;
 import net.rush.net.Session;
 import net.rush.packets.packet.BlockChangePacket;
 import net.rush.packets.packet.PlayerDiggingPacket;
@@ -70,9 +72,10 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 			chunk.setType(localX, localZ, y, Block.AIR);
 			
 			ItemEntity item = new ItemEntity(player.getWorld(), new Item(4));
-			player.sendMessage("dropping item [id=" + item.getId() + "]: " + item.toString());
+			item.setPosition(new Position(x, y, z));
+			item.setRotation(new Rotation(player.getRotation().getYaw(), player.getRotation().getPitch(), player.getRotation().getIntRoll()));
 			player.getSession().send(item.createSpawnMessage());
-			player.sendMessage("survival block break: " + Material.getMaterial(oldType) + " at X: " + x + " Y: " + y + " Z: " + z);
+			//player.sendMessage("survival block break: " + Material.getMaterial(oldType) + " at X: " + x + " Y: " + y + " Z: " + z);
 			item.setupMetadata();
 		}
 	}

@@ -38,7 +38,7 @@ public abstract class Entity {
 	/**
 	 * The current position.
 	 */
-	protected Position position = Position.ZERO;
+	protected Position position = null;
 
 	/**
 	 * The position in the last cycle.
@@ -75,6 +75,9 @@ public abstract class Entity {
 	 * not.
 	 */
 	public boolean isWithinDistance(Entity other) {
+		if(position == null)
+			throw new Error("Position of entity is null!");
+			
 		double dx = Math.abs(position.getX() - other.position.getX());
 		double dz = Math.abs(position.getZ() - other.position.getZ());
 		return dx <= (Chunk.VISIBLE_RADIUS * Chunk.WIDTH) && dz <= (Chunk.VISIBLE_RADIUS * Chunk.HEIGHT);
@@ -117,9 +120,7 @@ public abstract class Entity {
 	 * Called every game cycle. Subclasses should implement this to implement
 	 * periodic functionality e.g. mob AI.
 	 */
-	public void pulse() {
-
-	}
+	public void pulse() {}
 
 	/**
 	 * Resets the previous position and rotations of the entity to the current
@@ -135,6 +136,8 @@ public abstract class Entity {
 	 * @return The position of this entity.
 	 */
 	public Position getPosition() {
+		if (position == null)
+			throw new Error("Position of entity is null!");
 		return position;
 	}
 
@@ -219,6 +222,9 @@ public abstract class Entity {
 	 * @return {@code true} if so, {@code false} if not.
 	 */
 	public boolean hasMoved() {
+		if(position == null)
+			throw new Error("Position of entity is null!");
+		
 		return !position.equals(previousPosition);
 	}
 
