@@ -1,4 +1,4 @@
-package net.lightstone.util;
+package net.rush.test.util;
 
 import static org.junit.Assert.assertEquals;
 
