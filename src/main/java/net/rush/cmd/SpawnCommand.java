@@ -29,8 +29,6 @@ public final class SpawnCommand extends Command {
 			player.sendMessage("&cUsage: /spawn <entityType>");
 			return;
 		}
-		if(args[0].equalsIgnoreCase("player"))
-			throw new Error("Cannot spawn a player!");
 		Player pl = (Player) player;
 		try {
 			LivingEntity entity = pl.getWorld().spawnEntity(pl.getPosition(), EntityType.valueOf(args[0].toUpperCase()));

@@ -254,7 +254,7 @@ public abstract class Entity {
 		for (Player player : world.getRushPlayers()) {
 			if (player != this) {
 				player.getSession().send(message);
-				player.sendMessage("You recieved item metadata of entity id " + id);
+				player.sendMessage("You recieved metadata of " + entityType.toString() + " , id " + id);
 			}
 		}
 	}

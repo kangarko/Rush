@@ -29,10 +29,9 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		int localX = (x - chunkX * Chunk.WIDTH) % Chunk.WIDTH;
 		int localZ = (z - chunkZ * Chunk.HEIGHT) % Chunk.HEIGHT;
 
-		if(message.getHeldItem() == Item.NULL_ITEM)
+		if(message.getHeldItem() == Item.NULL_ITEM || !Material.getMaterial(message.getHeldItem().getId()).isBlock())
 			return;
-		System.out.println("BlockPlaced: " +  message.getHeldItem().toString());
-		System.out.println("BukkitMaterial: " + Material.getMaterial(message.getHeldItem().getId()));
+
 		int blockId = message.getHeldItem().getId();
 		
 		Chunk chunk = world.getChunks().getChunk(chunkX, chunkZ);
