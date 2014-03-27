@@ -12,12 +12,12 @@ import org.bukkit.entity.EntityType;
  */
 public class LivingEntity extends Mob {
 
-	// TODO ageable
-
+	// TODO Horse, Bat, Sheep
+	
 	/**
-	 * Creates a new monster.
-	 * @param world The world this monster is in.
-	 * @param type The type of monster.
+	 * Creates a new living entity (e.g. zombie or a pig).
+	 * @param world The world this living entity is in.
+	 * @param type The type of living entity.
 	 */
 	protected LivingEntity(World world, EntityType type) {
 		super(world, type);
@@ -38,31 +38,57 @@ public class LivingEntity extends Mob {
 		int pitch = rotation.getIntPitch();	// FIXME byte headYaw?
 		return new SpawnMobPacketImpl(id, (byte)getType().getTypeId(), new Position(x, y, z), (byte)yaw, (byte)pitch, (byte)yaw, new Position(0, 0, 0), metadata.clone());
 	}
-
+	
+	// METADATA START
+	
+	public float getHealth() {
+		return (Float) getMetadata(6).getValue();
+	}
 
 	public void setHealth(float health) {
 		setMetadata(new Parameter<Float>(Parameter.TYPE_FLOAT, 6, health));
 	}
 	
-	public float getHealth() {
-		return (Float) getMetadata(6).getValue();
+	public int getPotionEffectColor() {
+		return (Integer) getMetadata(7).getValue();
 	}
 	
-	public void setName(String name) {
-		setMetadata(new Parameter<String>(Parameter.TYPE_STRING, 10, name.replace("&", "§")));
+	public void setPotionEffectColor(int effectColor) {
+		setMetadata(new Parameter<Integer>(Parameter.TYPE_INT, 7, effectColor));
+	}
+	
+	public byte getIsPotionEffectAmbient() {
+		return (Byte) getMetadata(8).getValue();
+	}
+	
+	public void setIsPotionEffectAmbient(boolean ambient) {
+		setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 8, ambient ? (byte)1 : (byte)0));
+	}
+	
+	public byte getArrowsInEntity() {
+		return (Byte) getMetadata(9).getValue();
+	}
+	
+	public void setArrowsInEntity(int howManyArrows) {
+		setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 9, (byte)howManyArrows));
 	}
 	
 	public String getName() {
 		return (String) getMetadata(10).getValue();
 	}
 	
-	public void setNameVisible(boolean alwaysVisible) {
-		setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 11, (byte)(alwaysVisible ? 1 : 0)));
+	public void setName(String name) {
+		setMetadata(new Parameter<String>(Parameter.TYPE_STRING, 10, name.replace("&", "§")));
 	}
 	
 	public boolean getNameVisible() {
 		return (Byte) getMetadata(11).getValue() == 1;
 	}
 	
+	public void setNameVisible(boolean alwaysVisible) {
+		setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 11, (byte)(alwaysVisible ? 1 : 0)));
+	}
+	
+	// METADATA END
 }
 

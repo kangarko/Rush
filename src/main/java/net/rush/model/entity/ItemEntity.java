@@ -2,9 +2,7 @@ package net.rush.model.entity;
 
 import net.rush.model.Entity;
 import net.rush.model.Item;
-import net.rush.model.Position;
 import net.rush.packets.Packet;
-import net.rush.packets.packet.impl.SpawnMobPacketImpl;
 import net.rush.packets.packet.impl.SpawnObjectPacketImpl;
 import net.rush.util.Parameter;
 import net.rush.world.World;

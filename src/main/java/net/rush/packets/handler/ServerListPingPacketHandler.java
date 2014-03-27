@@ -18,4 +18,3 @@ public final class ServerListPingPacketHandler extends PacketHandler<ServerListP
 	}
 
 }
-

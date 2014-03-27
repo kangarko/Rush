@@ -1,8 +1,10 @@
 package net.rush.cmd;
 
 import net.rush.model.CommandSender;
+import net.rush.model.Entity;
+import net.rush.model.LivingEntity;
 import net.rush.model.Player;
-import net.rush.model.entity.Pig;
+import net.rush.util.Parameter;
 
 /**
  * A command that allows users to modify metadata
@@ -23,20 +25,39 @@ public final class MetaCommand extends Command {
 			player.sendMessage("Cannot assesible from console.");
 			return;
 		}
-		if(args.length != 2) {
-			player.sendMessage("&cUsage: /meta <entityId> <pigHasSaddle>");
+		if(args.length <= 3) {
+			player.sendMessage("&cUsage: /meta <entityId> <index> <type> <value>");
 			return;
 		}
 		Player pl = (Player) player;
-		if(!(pl.getWorld().getRushEntities().getEntity(Integer.valueOf(args[0])) instanceof Pig)) {
-			pl.sendMessage("&cEntity with that ID isnt a pig (or ID is invalid)!");
+		Entity entity = pl.getWorld().getRushEntities().getEntity(Integer.valueOf(args[0]));
+		if(!(entity instanceof LivingEntity)) {
+			pl.sendMessage("&cEntity must be living entity (or ID is invalid)!");
 			return;
 		}
-		
-		Pig pig = (Pig) pl.getWorld().getRushEntities().getEntity(Integer.valueOf(args[0]));
-		pig.setSaddle(Boolean.valueOf(args[1]));
-		
-		pl.sendMessage("&3Rush // &9Updated metadata of " + pig.getType());
+
+		int index = Integer.valueOf(args[1]);
+		String type = args[2];
+		Object param = args[3];
+		LivingEntity living = (LivingEntity) entity;
+		try {
+			if("int".equalsIgnoreCase(type)) {
+				living.setMetadata(new Parameter<Integer>(Parameter.TYPE_INT, index, Integer.valueOf(String.valueOf(param))));
+			} else if ("short".equalsIgnoreCase(type)) {
+				living.setMetadata(new Parameter<Short>(Parameter.TYPE_SHORT, index, Short.valueOf(String.valueOf(param))));
+			} else if ("byte".equalsIgnoreCase(type)) {
+				living.setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, index, Byte.valueOf(String.valueOf(param))));
+			} else if ("string".equalsIgnoreCase(type)) {
+				living.setMetadata(new Parameter<String>(Parameter.TYPE_STRING, index, String.valueOf(param)));
+			} else {
+				pl.sendMessage("&cType must be either: integer or short or byte or string!");
+			}
+		} catch (Exception ex) {
+			pl.sendMessage("&cMetadata wasnt updated. Check console for stack trace.");
+			throw new Error("Error updating metadata of " + living.getType(), ex);
+		}
+
+		pl.sendMessage("&3Rush // &9Updated metadata of " + living.getType());
 	}
 
 }

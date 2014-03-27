@@ -1,12 +1,12 @@
 package net.rush.model.entity;
 
-import net.rush.model.LivingEntity;
+import net.rush.model.EntityAgeable;
 import net.rush.util.Parameter;
 import net.rush.world.World;
 
 import org.bukkit.entity.EntityType;
 
-public class Pig extends LivingEntity {
+public class Pig extends EntityAgeable {
 	
 	public Pig(World world) {
 		super(world, EntityType.PIG);

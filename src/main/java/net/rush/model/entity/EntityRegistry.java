@@ -13,6 +13,13 @@ public class EntityRegistry {
 	
 	static {
 		registerEntity(EntityType.PIG, Pig.class);
+		registerEntity(EntityType.BLAZE, Blaze.class);
+		registerEntity(EntityType.ENDERMAN, Enderman.class);
+		registerEntity(EntityType.OCELOT, Ocelot.class);
+		registerEntity(EntityType.SPIDER, Spider.class);
+		registerEntity(EntityType.VILLAGER, Villager.class);
+		registerEntity(EntityType.WOLF, Wolf.class);
+		registerEntity(EntityType.ZOMBIE, Zombie.class);
 	}
 	
 	public static Class<? extends LivingEntity> entityLookup(EntityType type) {
