@@ -51,7 +51,7 @@ public class ClientSettingsPacketImpl extends AbstractPacket implements ClientSe
     }
 
     @Override
-    public boolean showCape() {
+    public boolean getShowCape() {
         return showCape;
     }
     

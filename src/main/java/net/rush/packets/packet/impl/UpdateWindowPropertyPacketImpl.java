@@ -4,8 +4,7 @@ import net.rush.packets.packet.UpdateWindowPropertyPacket;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
-public class UpdateWindowPropertyPacketImpl extends AbstractPacket implements
-        UpdateWindowPropertyPacket {
+public class UpdateWindowPropertyPacketImpl extends AbstractPacket implements UpdateWindowPropertyPacket {
     @Serialize(type = Type.BYTE, order = 0)
     private final byte windowId;
     @Serialize(type = Type.SHORT, order = 1)

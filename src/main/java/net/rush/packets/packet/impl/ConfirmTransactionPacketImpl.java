@@ -4,8 +4,7 @@ import net.rush.packets.packet.ConfirmTransactionPacket;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
-public class ConfirmTransactionPacketImpl extends AbstractPacket implements
-        ConfirmTransactionPacket {
+public class ConfirmTransactionPacketImpl extends AbstractPacket implements ConfirmTransactionPacket {
     @Serialize(type = Type.BYTE, order = 0)
     private final byte windowId;
     @Serialize(type = Type.SHORT, order = 1)

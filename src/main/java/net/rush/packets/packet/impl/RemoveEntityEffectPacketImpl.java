@@ -4,8 +4,7 @@ import net.rush.packets.packet.RemoveEntityEffectPacket;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
-public class RemoveEntityEffectPacketImpl extends AbstractPacket implements
-        RemoveEntityEffectPacket {
+public class RemoveEntityEffectPacketImpl extends AbstractPacket implements RemoveEntityEffectPacket {
     @Serialize(type = Type.INT, order = 0)
     private final int entityId;
     @Serialize(type = Type.BYTE, order = 1)

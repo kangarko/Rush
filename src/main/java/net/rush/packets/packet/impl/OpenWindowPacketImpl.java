@@ -54,7 +54,7 @@ public class OpenWindowPacketImpl extends AbstractPacket implements OpenWindowPa
     }
     
     @Override
-    public boolean useProvidedWindowTitle() {
+    public boolean getUseProvidedWindowTitle() {
         return useProvidedWindowTitle;
     }
     

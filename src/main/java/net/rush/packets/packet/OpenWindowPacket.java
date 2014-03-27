@@ -7,6 +7,6 @@ public interface OpenWindowPacket extends Packet {
     byte getInventoryType();
     String getWindowTitle();
     byte getNumberOfSlots();
-    boolean useProvidedWindowTitle();
+    boolean getUseProvidedWindowTitle();
     int getHorseId();
 }

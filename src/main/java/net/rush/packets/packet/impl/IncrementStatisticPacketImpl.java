@@ -4,8 +4,7 @@ import net.rush.packets.packet.IncrementStatisticPacket;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
-public class IncrementStatisticPacketImpl extends AbstractPacket implements
-        IncrementStatisticPacket {
+public class IncrementStatisticPacketImpl extends AbstractPacket implements IncrementStatisticPacket {
     @Serialize(type = Type.INT, order = 0)
     private final int statisticId;
     @Serialize(type = Type.BYTE, order = 1)

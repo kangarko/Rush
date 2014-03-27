@@ -38,12 +38,12 @@ public class SteerVehiclePacketImpl extends AbstractPacket implements SteerVehic
 	}
 
 	@Override
-	public boolean jump() {
+	public boolean getJump() {
 		return jump;
 	}
 
 	@Override
-	public boolean unmount() {
+	public boolean getUnmount() {
 		return unmount;
 	}
 

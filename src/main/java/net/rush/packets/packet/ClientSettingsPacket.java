@@ -7,5 +7,5 @@ public interface ClientSettingsPacket extends Packet {
     byte getViewDistance();
     byte getChatFlags();
     byte getDifficulty();
-    boolean showCape();
+    boolean getShowCape();
 }

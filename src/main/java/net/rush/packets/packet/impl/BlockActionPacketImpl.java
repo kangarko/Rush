@@ -15,7 +15,7 @@ public class BlockActionPacketImpl extends AbstractPacket implements BlockAction
     private final byte byte1;
     @Serialize(type = Type.BYTE, order = 4)
     private final byte byte2;
-    @Serialize(type = Type.SHORT, order = 4)
+    @Serialize(type = Type.SHORT, order = 5)
     private final short blockId;
 
     public BlockActionPacketImpl(int x, short y, int z, byte byte1, byte byte2, short blockId) {
