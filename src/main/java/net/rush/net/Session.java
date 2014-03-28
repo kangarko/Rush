@@ -29,7 +29,7 @@ public final class Session {
 	 * The number of ticks which are elapsed before a client is disconnected due
 	 * to a timeout.
 	 */
-	private static final int TIMEOUT_TICKS = 1200; //20 * 8;
+	private static final int TIMEOUT_TICKS = 20 * 20;
 
 	/**
 	 * The state this connection is currently in.
