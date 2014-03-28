@@ -12,7 +12,8 @@ public final class PlayerOnGroundPacketHandler extends PacketHandler<PlayerOnGro
 
 	@Override
 	public void handle(Session session, Player player, PlayerOnGroundPacket message) {
-		// TODO fall dmg?
+		player.sendMessage("&6on ground: " + (message.getOnGround() ? "&atrue" : "&cfalse"));
+		player.
 	}
 
 }

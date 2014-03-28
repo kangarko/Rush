@@ -6,21 +6,18 @@ import java.util.Map;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.AnimationPacket;
 import net.rush.packets.packet.ChatPacket;
-import net.rush.packets.packet.ClientStatusPacket;
 import net.rush.packets.packet.EntityActionPacket;
 import net.rush.packets.packet.HandshakePacket;
+import net.rush.packets.packet.HeldItemChangePacket;
 import net.rush.packets.packet.KeepAlivePacket;
 import net.rush.packets.packet.KickPacket;
 import net.rush.packets.packet.PlayerBlockPlacementPacket;
 import net.rush.packets.packet.PlayerDiggingPacket;
-import net.rush.packets.packet.PlayerListItemPacket;
 import net.rush.packets.packet.PlayerLookPacket;
 import net.rush.packets.packet.PlayerOnGroundPacket;
 import net.rush.packets.packet.PlayerPositionAndLookPacket;
 import net.rush.packets.packet.PlayerPositionPacket;
 import net.rush.packets.packet.PluginMessagePacket;
-import net.rush.packets.packet.ServerListPingPacket;
-import net.rush.packets.packet.UseEntityPacket;
 
 /**
  * A class used to look up message handlers.
@@ -47,17 +44,16 @@ public final class HandlerLookupService {
 			bind(PlayerDiggingPacket.class, DiggingPacketHandler.class);
 			bind(AnimationPacket.class, AnimationPacketHandler.class);
 			bind(EntityActionPacket.class, EntityActionPacketHandler.class);
-			bind(ServerListPingPacket.class, ServerListPingPacketHandler.class);
 			bind(PlayerBlockPlacementPacket.class, BlockPlacementPacketHandler.class);
 			bind(KeepAlivePacket.class, KeepAlivePacketHandler.class);
-			bind(PlayerListItemPacket.class, PlayerListItemPacketHandler.class);
 			bind(PlayerOnGroundPacket.class, PlayerOnGroundPacketHandler.class);
 			// 1.3.x
-			bind(ClientStatusPacket.class, ClientStatusPacketHandler.class);
+			//bind(ClientStatusPacket.class, ClientStatusPacketHandler.class);
 			// 1.6.x
 			bind(PluginMessagePacket.class, PluginMessagePacketHandler.class);
 			// added in later versions of Rush
-			bind(UseEntityPacket.class, UseEntityPacketHandler.class);
+			//bind(UseEntityPacket.class, UseEntityPacketHandler.class); // FIXME many things
+			bind(HeldItemChangePacket.class, HeldItemChangePacketHandler.class);
 		} catch (Exception ex) {
 			throw new ExceptionInInitializerError(ex);
 		}

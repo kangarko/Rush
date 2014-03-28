@@ -1,6 +1,6 @@
 package net.rush.inventory;
 
-import org.bukkit.inventory.ItemStack;
+import net.rush.model.Item;
 
 public class PlayerInventory extends Inventory {
 
@@ -21,8 +21,8 @@ public class PlayerInventory extends Inventory {
         super(0, PLAYER_INVENTORY_SIZE);
     }
 
-    public ItemStack[] getArmorContents() {
-        ItemStack[] armor = new ItemStack[4];
+    public Item[] getArmorContents() {
+        Item[] armor = new Item[4];
 
         armor[0] = this.getHelmet();
         armor[1] = this.getChestplate();
@@ -32,23 +32,23 @@ public class PlayerInventory extends Inventory {
         return armor;
     }
 
-    public ItemStack getHelmet() {
+    public Item getHelmet() {
         return this.getItem(HELMET_SLOT);
     }
 
-    public ItemStack getChestplate() {
+    public Item getChestplate() {
         return this.getItem(CHESTPLATE_SLOT);
     }
 
-    public ItemStack getLeggings() {
+    public Item getLeggings() {
         return this.getItem(LEGGINGS_SLOT);
     }
 
-    public ItemStack getBoots() {
+    public Item getBoots() {
         return this.getItem(BOOTS_SLOT);
     }
 
-    public void setArmorContents(ItemStack[] newArmor) {
+    public void setArmorContents(Item[] newArmor) {
         if (newArmor.length != 4)
             throw new IllegalArgumentException();
 
@@ -58,32 +58,36 @@ public class PlayerInventory extends Inventory {
         this.setBoots(newArmor[3]);
     }
 
-    public void setHelmet(ItemStack paramItemStack) {
-        this.setItem(HELMET_SLOT, paramItemStack);
+    public void setHelmet(Item paramItem) {
+        this.setItem(HELMET_SLOT, paramItem);
     }
 
-    public void setChestplate(ItemStack paramItemStack) {
-        this.setItem(CHESTPLATE_SLOT, paramItemStack);
+    public void setChestplate(Item paramItem) {
+        this.setItem(CHESTPLATE_SLOT, paramItem);
     }
 
-    public void setLeggings(ItemStack paramItemStack) {
-        this.setItem(LEGGINGS_SLOT, paramItemStack);
+    public void setLeggings(Item paramItem) {
+        this.setItem(LEGGINGS_SLOT, paramItem);
     }
 
-    public void setBoots(ItemStack paramItemStack) {
-        this.setItem(BOOTS_SLOT, paramItemStack);
+    public void setBoots(Item paramItem) {
+        this.setItem(BOOTS_SLOT, paramItem);
     }
 
-    public ItemStack getItemInHand() {
+    public Item getItemInHand() {
         return this.getItem(heldItemSlot);
     }
 
-    public void setItemInHand(ItemStack paramItemStack) {
-        this.setItem(heldItemSlot, paramItemStack);
+    public void setItemInHand(Item paramItem) {
+        this.setItem(heldItemSlot, paramItem);
     }
 
     public int getHeldItemSlot() {
         return heldItemSlot;
+    }
+    
+    public void setHeldItemSlot(int heldItemSlot) {
+    	this.heldItemSlot = heldItemSlot;
     }
 
     public SlotConverter getSlotConverter() {

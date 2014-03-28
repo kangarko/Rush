@@ -38,6 +38,7 @@ public final class CommandManager {
 		bind(new SpawnCommand());
 		bind(new MetaCommand());
 		bind(new ListCommand());
+		bind(new TestCommand());
 	}
 
 	/**

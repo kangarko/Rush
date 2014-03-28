@@ -24,7 +24,6 @@ import net.rush.util.Parameter;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * Represents an in-game player.
@@ -45,6 +44,7 @@ public final class Player extends LivingEntity implements CommandSender {
 	private GameMode gamemode;
 	private boolean sprinting = false;
 	private boolean riding = false;
+	private boolean onGround = true;
 	
 	private PlayerInventory inventory = new PlayerInventory();
 	
@@ -239,25 +239,25 @@ public final class Player extends LivingEntity implements CommandSender {
 		this.riding = riding;
 	}
 	
+	
 	// Inventory
 	
     public PlayerInventory getInventory() {
         return inventory;
     }
 
-    public ItemStack getItemInHand() {
+    public Item getItemInHand() {
         return inventory.getItemInHand();
     }
 
-    public void setItemInHand(ItemStack paramItemStack) {
-        inventory.setItemInHand(paramItemStack);
+    public void setItemInHand(Item item) {
+        inventory.setItemInHand(item);
     }
 
     // FIXME don´t work, yet
-	@SuppressWarnings("deprecation")
-	public void onSlotSet(Inventory inv, int index, ItemStack itemStack) {
-		getSession().send(new SetWindowItemsPacketImpl(inv.getId(), index, new Item[] {new Item(itemStack.getTypeId(), itemStack.getAmount(), itemStack.getData().getData())}));
+	public void onSlotSet(Inventory inv, int index, Item item) {
 		System.out.println("sending inv packet");
+		getSession().send(new SetWindowItemsPacketImpl(inv.getId(), index, new Item[] {item}));
 	}
 
 	public Server getServer() {

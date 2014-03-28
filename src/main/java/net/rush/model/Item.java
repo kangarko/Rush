@@ -43,7 +43,7 @@ public class Item {
 	/**
 	 * The number of items within the stack.
 	 */
-	private final int count;
+	private int count;
 
 	/**
 	 * The item's damage.
@@ -141,6 +141,14 @@ public class Item {
 	 */
 	public byte[] getData() {
 		return data;
+	}
+	
+	
+	/**
+	 * Sets the amount of the item.
+	 */
+	public void setCount(int count) {
+		this.count = count;
 	}
 	
 	@Override
