@@ -1,7 +1,10 @@
 package net.rush.cmd;
 
+import org.bukkit.Material;
+
 import net.rush.model.CommandSender;
 import net.rush.model.Entity;
+import net.rush.model.Item;
 import net.rush.model.LivingEntity;
 import net.rush.model.Player;
 import net.rush.util.Parameter;
@@ -45,6 +48,10 @@ public final class MetaCommand extends Command {
 				living.setMetadata(new Parameter<Integer>(Parameter.TYPE_INT, index, Integer.valueOf(String.valueOf(param))));
 			} else if ("short".equalsIgnoreCase(type)) {
 				living.setMetadata(new Parameter<Short>(Parameter.TYPE_SHORT, index, Short.valueOf(String.valueOf(param))));
+			} else if ("float".equalsIgnoreCase(type)) {
+				living.setMetadata(new Parameter<Float>(Parameter.TYPE_FLOAT, index, Float.valueOf(String.valueOf(param))));
+			} else if ("item".equalsIgnoreCase(type)) {
+				living.setMetadata(new Parameter<Item>(Parameter.TYPE_ITEM, index, new Item(Material.valueOf(args[4]).getId(), Integer.valueOf(args[5]), Integer.valueOf(args[6]))));
 			} else if ("byte".equalsIgnoreCase(type)) {
 				living.setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, index, Byte.valueOf(String.valueOf(param))));
 			} else if ("string".equalsIgnoreCase(type)) {

@@ -46,7 +46,7 @@ public final class Player extends LivingEntity implements CommandSender {
 	private boolean riding = false;
 	private boolean onGround = true;
 	
-	private PlayerInventory inventory = new PlayerInventory();
+	private final PlayerInventory inventory = new PlayerInventory();
 	
 	/**
 	 * This player's session.
@@ -79,21 +79,20 @@ public final class Player extends LivingEntity implements CommandSender {
 		this.session = session;
 		this.gamemode = gamemode;
 		this.position = world.getSpawnPosition();
+
+		this.inventory.addViewer(this);
 		
 		// stream the initial set of blocks and teleport us
 		this.streamBlocks();
+		
+		// display player in the TAB list
+		this.updateTabList();
 
 		this.session.send(new SpawnPositionPacketImpl(position));
 		this.session.send(new PlayerPositionAndLookPacketImpl(position.getX(), position.getY(), position.getZ(), position.getY() + NORMAL_EYE_HEIGHT, (float) rotation.getYaw(), (float) rotation.getPitch(), true));
 
 		this.sendMessage("&3Rush // &fWelcome to Rush, " + name);
-		
 		Server.getLogger().info(getName() + "[" + getSession().getRemoveAddress() + "] logged in with entity id " + getId());
-		for(Player pl : session.getServer().getWorld().getRushPlayers()) {
-			pl.getSession().send(new PlayerListItemPacketImpl(name, true, (short)100));
-			session.send(new PlayerListItemPacketImpl(pl.getName(), true, (short)100));
-		}
-		
 		getWorld().broadcastMessage("&e" + name + " has joined the game.");
 	}
 
@@ -113,6 +112,13 @@ public final class Player extends LivingEntity implements CommandSender {
 		session.send(new ChatPacketImpl(ChatColor.translateAlternateColorCodes("&".charAt(0), message)));
 	}
 
+	public void updateTabList() {
+		for(Player pl : session.getServer().getWorld().getRushPlayers()) {
+			pl.getSession().send(new PlayerListItemPacketImpl(name, true, (short)100));
+			session.send(new PlayerListItemPacketImpl(pl.getName(), true, (short)100));
+		}
+	}
+	
 	@Override
 	public void pulse() {
 		super.pulse();
@@ -225,6 +231,14 @@ public final class Player extends LivingEntity implements CommandSender {
 		return gamemode;
 	}
 	
+	public boolean isOnGround() {
+		return onGround;
+	}
+	
+	public void setOnGround(boolean onGround) {
+		this.onGround = onGround;
+	}
+	
 	@SuppressWarnings("deprecation")
 	public void setGamemode(GameMode gamemode) {
 		this.gamemode = gamemode;
@@ -256,8 +270,7 @@ public final class Player extends LivingEntity implements CommandSender {
 
     // FIXME don´t work, yet
 	public void onSlotSet(Inventory inv, int index, Item item) {
-		System.out.println("sending inv packet");
-		getSession().send(new SetWindowItemsPacketImpl(inv.getId(), index, new Item[] {item}));
+		getSession().send(new SetWindowItemsPacketImpl(0, index, new Item[] {item}));
 	}
 
 	public Server getServer() {
