@@ -20,7 +20,7 @@ public final class MeCommand extends Command {
 	@Override
 	public void execute(CommandSender player, String[] args) {
 		String message = StringUtils.join(args, " ");
-		player.getServer().getWorld().broadcastMessage(" * " + player.getName() + " " + message);
+		player.getServer().broadcastMessage(" * " + player.getName() + " " + message);
 	}
 
 }

@@ -7,15 +7,20 @@ import java.net.SocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.rush.cmd.CommandManager;
 import net.rush.console.ConsoleCommandSender;
 import net.rush.console.ConsoleLogManager;
+import net.rush.console.ThreadConsoleReader;
 import net.rush.gui.Notifications;
 import net.rush.io.McRegionChunkIoService;
+import net.rush.model.Player;
 import net.rush.net.MinecraftPipelineFactory;
 import net.rush.net.Session;
 import net.rush.net.SessionRegistry;
+import net.rush.packets.packet.ChatPacket;
+import net.rush.packets.packet.impl.ChatPacketImpl;
 import net.rush.task.TaskScheduler;
 import net.rush.util.NumberUtils;
 import net.rush.world.ForestWorldGenerator;
@@ -83,6 +88,23 @@ public final class Server {
 	private boolean saveEnabled = true;	// TODO: Does this belong in a different class e.g. the chunk IO service or the chunk manager?
 
 	/**
+	 * Creates a new server on TCP port 25565 and starts listening for
+	 * connections.
+	 * @param args The command-line arguments.
+	 */
+	public static void main(String[] args) {
+		try {
+			Server server = new Server();
+
+			Thread threadConsoleReader = new ThreadConsoleReader(server);
+			threadConsoleReader.start();
+
+		} catch (Throwable t) {
+			Logger.getGlobal().log(Level.SEVERE, "Error during server initializing", t);
+		}
+	}
+	
+	/**
 	 * Creates and initializes a new server.
 	 */
 	public Server() {
@@ -110,7 +132,7 @@ public final class Server {
 			logger.warning("**** FAILED TO BIND TO PORT!");
 			logger.warning("The exception was: " + ex.toString());
 			logger.warning("Perhaps a server is already running on that port?");
-			System.exit(1);
+			System.exit(0);
 		}
 		
 		/* add shutdown hook */
@@ -170,6 +192,17 @@ public final class Server {
 		return saveEnabled;
 	}
 
+	/**
+	 * Broadcasts a message to every player.
+	 * 
+	 * @param text The message text.
+	 */
+	public void broadcastMessage(String text) {
+		ChatPacket message = new ChatPacketImpl(text);
+		for (Player player : getWorld().getPlayers())
+			player.getSession().send(message);
+	}
+	
 	/**
 	 * Sets the saving enabled flag.
 	 * @param saveEnabled The saving enabled flag.

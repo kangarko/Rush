@@ -3,7 +3,7 @@ package net.rush.inventory;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.rush.model.Item;
+import net.rush.model.ItemStack;
 import net.rush.model.Player;
 
 import org.bukkit.Material;
@@ -15,11 +15,11 @@ public abstract class Inventory {
 
     protected final ArrayList<Player> viewers = new ArrayList<Player>();
 
-    private final Item[] slots;
+    private final ItemStack[] slots;
 
     protected Inventory(int id, int size) {
         this.id = id;
-        slots = new Item[size];
+        slots = new ItemStack[size];
     }
 
     public void addViewer(Player viewer) {
@@ -49,17 +49,17 @@ public abstract class Inventory {
         }
     }
 
-    public Item getItem(int index) {
+    public ItemStack getItem(int index) {
         return slots[index];
     }
 
-    public void setItem(int index, Item item) {
+    public void setItem(int index, ItemStack item) {
         slots[index] = item;
         sendUpdate(index);
     }
 
-    public HashMap<Integer, Item> addItem(Item... items) {
-        HashMap<Integer, Item> result = new HashMap<Integer, Item>();
+    public HashMap<Integer, ItemStack> addItem(ItemStack... items) {
+        HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
 
         for (int i = 0; i < items.length; ++i) {
             int maxStackSize = Material.getMaterial(items[i].getId())
@@ -87,7 +87,7 @@ public abstract class Inventory {
                 for (int j = 0; toAdd > 0 && j < getSize(); ++j) {
                     if (slots[j] == null) {
                         int num = toAdd > maxStackSize ? maxStackSize : toAdd;
-                        slots[j] = new Item(mat, num, damage);
+                        slots[j] = new ItemStack(mat, num, damage);
                         toAdd -= num;
                         sendUpdate(j);
                     }
@@ -95,15 +95,15 @@ public abstract class Inventory {
             }
 
             if (toAdd > 0) {
-                result.put(i, new Item(mat, toAdd, damage));
+                result.put(i, new ItemStack(mat, toAdd, damage));
             }
         }
 
         return result;
     }
 
-    public HashMap<Integer, Item> removeItem(Item... items) {
-        HashMap<Integer, Item> result = new HashMap<Integer, Item>();
+    public HashMap<Integer, ItemStack> removeItem(ItemStack... items) {
+        HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
 
         for (int i = 0; i < items.length; ++i) {
             int mat = items[i].getId();
@@ -125,18 +125,18 @@ public abstract class Inventory {
             }
 
             if (toRemove > 0) {
-                result.put(i, new Item(mat, toRemove, damage));
+                result.put(i, new ItemStack(mat, toRemove, damage));
             }
         }
 
         return result;
     }
 
-    public Item[] getContents() {
+    public ItemStack[] getContents() {
         return slots.clone();
     }
 
-    public void setContents(Item[] items) {
+    public void setContents(ItemStack[] items) {
         if (items.length != slots.length) {
             throw new IllegalArgumentException();
         }
@@ -153,7 +153,7 @@ public abstract class Inventory {
         return first(material) >= 0;
     }
 
-    public boolean contains(Item item) {
+    public boolean contains(ItemStack item) {
         return first(item) >= 0;
     }
 
@@ -161,25 +161,25 @@ public abstract class Inventory {
         return contains(material.getId(), amount);
     }
 
-    public boolean contains(Item item, int amount) {
+    public boolean contains(ItemStack item, int amount) {
         return contains(item.getId(), amount);
     }
 
     public boolean contains(int materialId, int amount) {
-        HashMap<Integer, ? extends Item> found = all(materialId);
+        HashMap<Integer, ? extends ItemStack> found = all(materialId);
         int total = 0;
-        for (Item stack : found.values()) {
+        for (ItemStack stack : found.values()) {
             total += stack.getCount();
         }
         return total >= amount;
     }
 
-    public HashMap<Integer, Item> all(Material material) {
+    public HashMap<Integer, ItemStack> all(Material material) {
         return all(material.getId());
     }
 
-    public HashMap<Integer, Item> all(int materialId) {
-        HashMap<Integer, Item> result = new HashMap<Integer, Item>();
+    public HashMap<Integer, ItemStack> all(int materialId) {
+        HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
         for (int i = 0; i < slots.length; ++i) {
             if (slots[i].getId() == materialId) {
                 result.put(i, slots[i]);
@@ -188,8 +188,8 @@ public abstract class Inventory {
         return result;
     }
 
-    public HashMap<Integer, Item> all(Item item) {
-        HashMap<Integer, Item> result = new HashMap<Integer, Item>();
+    public HashMap<Integer, ItemStack> all(ItemStack item) {
+        HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
         for (int i = 0; i < slots.length; i++) {
             if (slots[i] != null && slots[i].equals(item)) {
                 result.put(i, slots[i]);
@@ -210,7 +210,7 @@ public abstract class Inventory {
         return -1;
     }
 
-    public int first(Item item) {
+    public int first(ItemStack item) {
         for (int i = 0; i < slots.length; ++i) {
             if (slots[i] != null && slots[i].equals(item))
                 return i;
@@ -227,21 +227,21 @@ public abstract class Inventory {
     }
 
     public void remove(int materialId) {
-        HashMap<Integer, ? extends Item> stacks = all(materialId);
+        HashMap<Integer, ? extends ItemStack> stacks = all(materialId);
         for (Integer slot : stacks.keySet()) {
             setItem(slot, null);
         }
     }
 
     public void remove(Material material) {
-        HashMap<Integer, ? extends Item> stacks = all(material);
+        HashMap<Integer, ? extends ItemStack> stacks = all(material);
         for (Integer slot : stacks.keySet()) {
             setItem(slot, null);
         }
     }
 
-    public void remove(Item item) {
-        HashMap<Integer, ? extends Item> stacks = all(item);
+    public void remove(ItemStack item) {
+        HashMap<Integer, ? extends ItemStack> stacks = all(item);
         for (Integer slot : stacks.keySet()) {
             setItem(slot, null);
         }

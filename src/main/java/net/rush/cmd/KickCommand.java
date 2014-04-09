@@ -27,7 +27,7 @@ public final class KickCommand extends Command {
 
 		String name = args[0];
 
-		for (Player p : player.getServer().getWorld().getRushPlayers()) {
+		for (Player p : player.getServer().getWorld().getPlayers()) {
 			if (p.getName().equalsIgnoreCase(name)) {
 				player.sendMessage("§eKicking " + p.getName());
 				p.getSession().send(new KickPacketImpl("Kicked by " + player.getName()));

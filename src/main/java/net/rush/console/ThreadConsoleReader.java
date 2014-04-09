@@ -29,7 +29,7 @@ public class ThreadConsoleReader extends Thread {
 			while (true) {
 				msg = reader.readLine(">", null);
 				if (msg != null && msg.length() > 0) {
-					server.getCommandManager().executeConsole("/" + msg);
+					server.getCommandManager().execute(server.getConsoleSender(), "/" + msg);
 				}
 			}
 		} catch (IOException ioexception) {

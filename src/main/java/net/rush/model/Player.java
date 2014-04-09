@@ -93,7 +93,7 @@ public final class Player extends LivingEntity implements CommandSender {
 
 		this.sendMessage("&3Rush // &fWelcome to Rush, " + name);
 		Server.getLogger().info(getName() + "[" + getSession().getRemoveAddress() + "] logged in with entity id " + getId());
-		getWorld().broadcastMessage("&e" + name + " has joined the game.");
+		getServer().broadcastMessage("&e" + name + " has joined the game.");
 	}
 
 	/**
@@ -113,7 +113,7 @@ public final class Player extends LivingEntity implements CommandSender {
 	}
 
 	public void updateTabList() {
-		for(Player pl : session.getServer().getWorld().getRushPlayers()) {
+		for(Player pl : session.getServer().getWorld().getPlayers()) {
 			pl.getSession().send(new PlayerListItemPacketImpl(name, true, (short)100));
 			session.send(new PlayerListItemPacketImpl(pl.getName(), true, (short)100));
 		}
@@ -139,7 +139,7 @@ public final class Player extends LivingEntity implements CommandSender {
 			}
 		}
 
-		for (Entity entity : world.getRushEntities()) {
+		for (Entity entity : world.getEntities()) {
 			if (entity == this)
 				continue;
 			boolean withinDistance = entity.isActive() && isWithinDistance(entity);
@@ -260,17 +260,17 @@ public final class Player extends LivingEntity implements CommandSender {
         return inventory;
     }
 
-    public Item getItemInHand() {
+    public ItemStack getItemInHand() {
         return inventory.getItemInHand();
     }
 
-    public void setItemInHand(Item item) {
+    public void setItemInHand(ItemStack item) {
         inventory.setItemInHand(item);
     }
 
     // FIXME don´t work, yet
-	public void onSlotSet(Inventory inv, int index, Item item) {
-		getSession().send(new SetWindowItemsPacketImpl(0, index, new Item[] {item}));
+	public void onSlotSet(Inventory inv, int index, ItemStack item) {
+		getSession().send(new SetWindowItemsPacketImpl(0, index, new ItemStack[] {item}));
 	}
 
 	public Server getServer() {

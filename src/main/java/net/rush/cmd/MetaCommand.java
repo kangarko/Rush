@@ -4,7 +4,7 @@ import org.bukkit.Material;
 
 import net.rush.model.CommandSender;
 import net.rush.model.Entity;
-import net.rush.model.Item;
+import net.rush.model.ItemStack;
 import net.rush.model.LivingEntity;
 import net.rush.model.Player;
 import net.rush.util.Parameter;
@@ -22,6 +22,7 @@ public final class MetaCommand extends Command {
 		super("meta");
 	}
 
+	@SuppressWarnings("deprecation") 
 	@Override
 	public void execute(CommandSender player, String[] args) {
 		if (!(player instanceof Player)) {
@@ -33,7 +34,7 @@ public final class MetaCommand extends Command {
 			return;
 		}
 		Player pl = (Player) player;
-		Entity entity = pl.getWorld().getRushEntities().getEntity(Integer.valueOf(args[0]));
+		Entity entity = pl.getWorld().getEntities().getEntity(Integer.valueOf(args[0]));
 		if(!(entity instanceof LivingEntity)) {
 			pl.sendMessage("&cEntity must be living entity (or ID is invalid)!");
 			return;
@@ -51,7 +52,7 @@ public final class MetaCommand extends Command {
 			} else if ("float".equalsIgnoreCase(type)) {
 				living.setMetadata(new Parameter<Float>(Parameter.TYPE_FLOAT, index, Float.valueOf(String.valueOf(param))));
 			} else if ("item".equalsIgnoreCase(type)) {
-				living.setMetadata(new Parameter<Item>(Parameter.TYPE_ITEM, index, new Item(Material.valueOf(args[4]).getId(), Integer.valueOf(args[5]), Integer.valueOf(args[6]))));
+				living.setMetadata(new Parameter<ItemStack>(Parameter.TYPE_ITEM, index, new ItemStack(Material.valueOf(args[4]).getId(), Integer.valueOf(args[5]), Integer.valueOf(args[6]))));
 			} else if ("byte".equalsIgnoreCase(type)) {
 				living.setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, index, Byte.valueOf(String.valueOf(param))));
 			} else if ("string".equalsIgnoreCase(type)) {

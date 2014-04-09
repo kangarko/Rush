@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.rush.Server;
-import net.rush.model.Player;
+import net.rush.model.CommandSender;
 
 /**
  * A class which manages in-game commands.
@@ -46,7 +46,7 @@ public final class CommandManager {
 	 * @param player The player that is trying to execute the command.
 	 * @param text The unparsed command string.
 	 */
-	public void execute(Player player, String text) {
+	public void execute(CommandSender player, String text) {
 		String[] args = text.substring(1).split(" ");
 		String command = args[0];
 
@@ -57,20 +57,6 @@ public final class CommandManager {
 			handler.execute(player, shiftedArgs);
 		} else {
 			player.sendMessage("&eI don't understand that command. Try /help for assistance.");
-		}
-	}
-	
-	public void executeConsole(String text) {
-		String[] args = text.substring(1).split(" ");
-		String command = args[0];
-
-		Command handler = commands.get(command);
-		if (handler != null) {
-			String[] shiftedArgs = new String[args.length - 1];
-			System.arraycopy(args, 1, shiftedArgs, 0, shiftedArgs.length);
-			handler.execute(server.getConsoleSender(), shiftedArgs);
-		} else {
-			Server.getLogger().info("&eI don't understand that command. Try /help for assistance.");
 		}
 	}
 

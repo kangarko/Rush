@@ -64,7 +64,7 @@ public abstract class Entity {
 	protected Entity(World world, EntityType entityType) {
 		this.world = world;
 		this.entityType = entityType;
-		world.getRushEntities().allocate(this);
+		world.getEntities().allocate(this);
 	}
 
 	/**
@@ -97,7 +97,7 @@ public abstract class Entity {
 	 */
 	public void destroy() {
 		active = false;
-		world.getRushEntities().deallocate(this);
+		world.getEntities().deallocate(this);
 	}
 
 	/**
@@ -251,10 +251,10 @@ public abstract class Entity {
 	
 	public void updateMetadata() {
 		EntityMetadataPacket message = new EntityMetadataPacketImpl(id, metadata);
-		for (Player player : world.getRushPlayers()) {
+		for (Player player : world.getPlayers()) {
 			if (player != this) {
 				player.getSession().send(message);
-				player.sendMessage("You recieved metadata of " + entityType.toString() + " , id " + id);
+				player.sendMessage("You have recieved metadata of " + entityType.toString() + " , id " + id);
 			}
 		}
 	}

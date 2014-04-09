@@ -82,7 +82,7 @@ public final class Chunk {
 
 		System.arraycopy(types, 0, this.types, 0, types.length);
 	}
-	
+
 	/**
 	 * Sets the type of a block within this chunk.
 	 * @param x The X coordinate.
@@ -106,6 +106,14 @@ public final class Chunk {
 	 */
 	public int getMetaData(int x, int z, int y) {
 		return metaData[coordToIndex(x, z, y)];
+	}
+
+	public boolean isBlockAir(int x, int z, int y) {
+		try {
+			return getType(x, z, y) == 0;
+		} catch (Exception ex) {
+			return true;
+		}
 	}
 
 	/**
@@ -172,6 +180,11 @@ public final class Chunk {
 		this.blockLight[coordToIndex(x, z, y)] = (byte) blockLight;
 	}
 
+	public void setTypeAndData(int x, int z, int y, int type, int data) {
+		setType(x, z, y, type);
+		setMetaData(x, z, y, data);
+	}
+	
 	/**
 	 * Creates a new {@link Packet} which can be sent to a client to stream
 	 * this chunk to them.

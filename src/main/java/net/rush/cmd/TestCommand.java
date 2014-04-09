@@ -1,7 +1,7 @@
 package net.rush.cmd;
 
 import net.rush.model.CommandSender;
-import net.rush.model.Item;
+import net.rush.model.ItemStack;
 import net.rush.model.Player;
 
 /**
@@ -21,7 +21,7 @@ public final class TestCommand extends Command {
 			return;
 		}
 		Player pl = (Player) player;
-		pl.setItemInHand(new Item(1));
+		pl.setItemInHand(new ItemStack(1));
 	}
 
 }

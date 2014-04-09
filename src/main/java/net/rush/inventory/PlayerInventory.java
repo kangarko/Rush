@@ -1,6 +1,6 @@
 package net.rush.inventory;
 
-import net.rush.model.Item;
+import net.rush.model.ItemStack;
 
 public class PlayerInventory extends Inventory {
 
@@ -21,8 +21,8 @@ public class PlayerInventory extends Inventory {
         super(0, PLAYER_INVENTORY_SIZE);
     }
 
-    public Item[] getArmorContents() {
-        Item[] armor = new Item[4];
+    public ItemStack[] getArmorContents() {
+        ItemStack[] armor = new ItemStack[4];
 
         armor[0] = this.getHelmet();
         armor[1] = this.getChestplate();
@@ -32,23 +32,23 @@ public class PlayerInventory extends Inventory {
         return armor;
     }
 
-    public Item getHelmet() {
+    public ItemStack getHelmet() {
         return this.getItem(HELMET_SLOT);
     }
 
-    public Item getChestplate() {
+    public ItemStack getChestplate() {
         return this.getItem(CHESTPLATE_SLOT);
     }
 
-    public Item getLeggings() {
+    public ItemStack getLeggings() {
         return this.getItem(LEGGINGS_SLOT);
     }
 
-    public Item getBoots() {
+    public ItemStack getBoots() {
         return this.getItem(BOOTS_SLOT);
     }
 
-    public void setArmorContents(Item[] newArmor) {
+    public void setArmorContents(ItemStack[] newArmor) {
         if (newArmor.length != 4)
             throw new IllegalArgumentException();
 
@@ -58,27 +58,27 @@ public class PlayerInventory extends Inventory {
         this.setBoots(newArmor[3]);
     }
 
-    public void setHelmet(Item paramItem) {
+    public void setHelmet(ItemStack paramItem) {
         this.setItem(HELMET_SLOT, paramItem);
     }
 
-    public void setChestplate(Item paramItem) {
+    public void setChestplate(ItemStack paramItem) {
         this.setItem(CHESTPLATE_SLOT, paramItem);
     }
 
-    public void setLeggings(Item paramItem) {
+    public void setLeggings(ItemStack paramItem) {
         this.setItem(LEGGINGS_SLOT, paramItem);
     }
 
-    public void setBoots(Item paramItem) {
+    public void setBoots(ItemStack paramItem) {
         this.setItem(BOOTS_SLOT, paramItem);
     }
 
-    public Item getItemInHand() {
+    public ItemStack getItemInHand() {
         return this.getItem(heldItemSlot);
     }
 
-    public void setItemInHand(Item paramItem) {
+    public void setItemInHand(ItemStack paramItem) {
         this.setItem(heldItemSlot, paramItem);
     }
 

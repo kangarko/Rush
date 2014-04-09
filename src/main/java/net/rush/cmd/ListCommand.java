@@ -22,7 +22,7 @@ public final class ListCommand extends Command {
 		StringBuilder builder = new StringBuilder();
 		builder.append("§ePlayers online: ");
 
-		for (Player pl : player.getServer().getWorld().getRushPlayers()) {
+		for (Player pl : player.getServer().getWorld().getPlayers()) {
 			builder.append(pl.getName());
 			builder.append(", ");
 		}
