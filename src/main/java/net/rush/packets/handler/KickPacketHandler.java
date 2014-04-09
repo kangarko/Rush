@@ -16,7 +16,7 @@ public final class KickPacketHandler extends PacketHandler<KickPacket> {
 	@Override
 	public void handle(Session session, Player player, KickPacket message) {
 		session.disconnect("Goodbye!");
-		for(Player pl : session.getServer().getWorld().getRushPlayers()) {
+		for(Player pl : session.getServer().getWorld().getPlayers()) {
 			pl.getSession().send(new PlayerListItemPacketImpl(player.getName(), false, (short)100));
 		}
 		Server.getLogger().info(player.getName() + " lost connection: " + message.getReason());

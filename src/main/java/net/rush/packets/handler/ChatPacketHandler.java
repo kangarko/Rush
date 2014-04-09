@@ -24,7 +24,7 @@ public final class ChatPacketHandler extends PacketHandler<ChatPacket> {
 			CommandManager manager = session.getServer().getCommandManager();
 			manager.execute(player, text);
 		} else {
-			player.getWorld().broadcastMessage("<" + player.getName() + "> " + text);
+			player.getServer().broadcastMessage("<" + player.getName() + "> " + text);
 		}
 	}
 

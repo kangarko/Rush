@@ -21,12 +21,6 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 
 	private static final int TREE_CANOPY_WIDTH = 5;
 
-	private static final int TREE_TYPE_NORMAL = 0;
-
-	private static final int TREE_TYPE_REDWOOD = 1;
-
-	private static final int TREE_TYPE_BIRCH = 2;
-
 	private Random random = new Random();
 
 	@Override
@@ -41,15 +35,28 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 			int type = random.nextInt(3); // standard, redwood, birch
 			makeTree(chunk, x, z, 61, height, type);
 		}
+		
+		for (int cislo = 0; cislo < 8; cislo++) {
+			int x = random.nextInt(Chunk.WIDTH);
+			int z = random.nextInt(Chunk.HEIGHT);
+			if (chunk.isBlockAir(x, z, 61) /*&& ((BlockFlower) Block.blocksList[plantBlockId]).canBlockStay(world, i1, j1, k1)*/)
+				if(random.nextBoolean())
+					chunk.setType(x, z, 61, 37 + random.nextInt(2));
+		}
+		
+		for (int cislo = 0; cislo < 16; cislo++) {
+			int x = random.nextInt(Chunk.WIDTH);
+			int z = random.nextInt(Chunk.HEIGHT);
+			if (chunk.isBlockAir(x, z, 61) /*&& ((BlockFlower) Block.blocksList[plantBlockId]).canBlockStay(world, i1, j1, k1)*/)
+				chunk.setType(x, z, 61, 31);
+				chunk.setMetaData(x, z, 61, 1);
+		}
 
 		return chunk;
 	}
 
 	/** Grows a tree in a chunk. */
 	private static void makeTree(Chunk chunk, int x, int z, int y, int height, int type) {
-		if (type != TREE_TYPE_NORMAL && type != TREE_TYPE_BIRCH && type != TREE_TYPE_REDWOOD) {
-			throw new IllegalArgumentException("Type of tree not valid");
-		}
 
 		int center = (TREE_CANOPY_WIDTH) / 2;
 		int trunkX = x + center;
@@ -79,11 +86,9 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 			for (int cx = startX; cx < endX; cx++) {
 				for (int cz = startZ; cz < endZ; cz++) {
 					if (cx == trunkX && cz == trunkZ && cy < (height - 2)) { // trunk, leave some leaves above it
-						chunk.setType(trunkX, trunkZ, y + cy, Block.LOG);
-						chunk.setMetaData(trunkX, trunkZ, y + cy, type);
+						chunk.setTypeAndData(trunkX, trunkZ, y + cy, Block.LOG, type);
 					} else {
-						chunk.setType(cx, cz, y + cy, Block.LEAVES);
-						chunk.setMetaData(cx, cz, y + cy, type);
+						chunk.setTypeAndData(cx, cz, y + cy, Block.LEAVES, type);
 					}
 				}
 			}

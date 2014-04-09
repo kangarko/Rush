@@ -15,7 +15,7 @@ public final class AnimationPacketHandler extends PacketHandler<AnimationPacket>
 	public void handle(Session session, Player player, AnimationPacket message) {
 		// TODO check the animation id is valid?
 		message = new AnimationPacketImpl(player.getId(), message.getAnimation());
-		for (Player p : player.getWorld().getRushPlayers()) {
+		for (Player p : player.getWorld().getPlayers()) {
 			if (p != player) {
 				p.getSession().send(message);
 			}

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import net.rush.model.Coordinate;
-import net.rush.model.Item;
+import net.rush.model.ItemStack;
 import net.rush.util.ChannelBufferUtils;
 import net.rush.util.Parameter;
 
@@ -32,7 +32,7 @@ public final class ChannelBufferUtilsTest {
 		params[2] = new Parameter<Integer>(Parameter.TYPE_INT, 2, (int) 0x12345678);
 		params[3] = new Parameter<Float>(Parameter.TYPE_FLOAT, 3, 1234.5678F);
 		params[4] = new Parameter<String>(Parameter.TYPE_STRING, 4, "test");
-		params[5] = new Parameter<Item>(Parameter.TYPE_ITEM, 5, new Item(1, 64, 0));
+		params[5] = new Parameter<ItemStack>(Parameter.TYPE_ITEM, 5, new ItemStack(1, 64, 0));
 		params[6] = new Parameter<Coordinate>(Parameter.TYPE_COORDINATE, 6, new Coordinate(10, 11, 12));
 
 		ChannelBuffer buffer = ChannelBuffers.buffer(46);
@@ -133,7 +133,7 @@ public final class ChannelBufferUtilsTest {
 
 		Parameter<?> itemParam = params[5];
 		assertEquals(Parameter.TYPE_ITEM, itemParam.getType());
-		assertEquals(new Item(1, 64, 0), itemParam.getValue());
+		assertEquals(new ItemStack(1, 64, 0), itemParam.getValue());
 
 		Parameter<?> coordinateParam = params[6];
 		assertEquals(Parameter.TYPE_COORDINATE, coordinateParam.getType());

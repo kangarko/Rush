@@ -1,6 +1,6 @@
 package net.rush.packets.packet.impl;
 
-import net.rush.model.Item;
+import net.rush.model.ItemStack;
 import net.rush.packets.packet.CreativeInventoryActionPacket;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -9,9 +9,9 @@ public class CreativeInventoryActionPacketImpl extends AbstractPacket implements
     @Serialize(type = Type.SHORT, order = 0)
     private final short slot;
     @Serialize(type = Type.ITEM, order = 1)
-    private final Item item;
+    private final ItemStack item;
 
-    public CreativeInventoryActionPacketImpl(short slot, Item item) {
+    public CreativeInventoryActionPacketImpl(short slot, ItemStack item) {
         super();
         this.slot = slot;
         this.item = item;
@@ -28,7 +28,7 @@ public class CreativeInventoryActionPacketImpl extends AbstractPacket implements
     }
 
     @Override
-    public Item getItem() {
+    public ItemStack getItem() {
         return item;
     }
 

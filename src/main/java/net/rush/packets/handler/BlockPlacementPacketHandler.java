@@ -1,7 +1,7 @@
 package net.rush.packets.handler;
 
 import net.rush.chunk.Chunk;
-import net.rush.model.Item;
+import net.rush.model.ItemStack;
 import net.rush.model.Player;
 import net.rush.model.Position;
 import net.rush.net.Session;
@@ -29,7 +29,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		int localX = (x - chunkX * Chunk.WIDTH) % Chunk.WIDTH;
 		int localZ = (z - chunkZ * Chunk.HEIGHT) % Chunk.HEIGHT;
 
-		if(message.getHeldItem() == Item.NULL_ITEM || !Material.getMaterial(message.getHeldItem().getId()).isBlock())
+		if(message.getHeldItem() == ItemStack.NULL_ITEM || !Material.getMaterial(message.getHeldItem().getId()).isBlock())
 			return;
 
 		int blockId = message.getHeldItem().getId();
@@ -40,7 +40,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		Position pos = parseDirection(x, y, z, message.getDirection());
 		
 		BlockChangePacket bcmsg = new BlockChangePacketImpl((byte)pos.getX(), (byte)pos.getY(), (byte)pos.getZ(), (byte)blockId, (byte)message.getHeldItem().getDamage()); 
-		for (Player p: world.getRushPlayers()) {
+		for (Player p: world.getPlayers()) {
 			p.getSession().send(bcmsg);
 		}
 		player.sendMessage("&bYou have placed " + Material.getMaterial(blockId));

@@ -7,7 +7,7 @@ import java.nio.charset.Charset;
 import java.util.Map;
 
 import net.rush.model.Coordinate;
-import net.rush.model.Item;
+import net.rush.model.ItemStack;
 import net.rush.util.nbt.CompoundTag;
 import net.rush.util.nbt.NBTInputStream;
 import net.rush.util.nbt.NBTOutputStream;
@@ -64,7 +64,7 @@ public final class ChannelBufferUtils {
 				writeString(buf, ((Parameter<String>) parameter).getValue());
 				break;
 			case Parameter.TYPE_ITEM:
-				Item item = ((Parameter<Item>) parameter).getValue();
+				ItemStack item = ((Parameter<ItemStack>) parameter).getValue();
 				buf.writeShort(item.getId());
 				buf.writeByte(item.getCount());
 				buf.writeShort(item.getDamage());
@@ -114,8 +114,8 @@ public final class ChannelBufferUtils {
 				int id = buf.readShort();
 				int count = buf.readByte();
 				int damage = buf.readShort();
-				Item item = new Item(id, count, damage);
-				parameters[index] = new Parameter<Item>(type, index, item);
+				ItemStack item = new ItemStack(id, count, damage);
+				parameters[index] = new Parameter<ItemStack>(type, index, item);
 				break;
 			case Parameter.TYPE_COORDINATE:
 				int x = buf.readInt();

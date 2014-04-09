@@ -1,6 +1,6 @@
 package net.rush.packets.packet.impl;
 
-import net.rush.model.Item;
+import net.rush.model.ItemStack;
 import net.rush.packets.packet.SetWindowItemsPacket;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -11,13 +11,13 @@ public class SetWindowItemsPacketImpl extends AbstractPacket implements SetWindo
     @Serialize(type = Type.SHORT, order = 1)
     private final short size;
     @Serialize(type = Type.ITEM_ARRAY, order = 2, moreInfo = 1)
-    private final Item[] items;
+    private final ItemStack[] items;
 
-    public SetWindowItemsPacketImpl(int windowId, int size, Item[] items) {
+    public SetWindowItemsPacketImpl(int windowId, int size, ItemStack[] items) {
         this((byte)windowId, (short)size, items);
     }
     
-    public SetWindowItemsPacketImpl(byte windowId, short size, Item[] items) {
+    public SetWindowItemsPacketImpl(byte windowId, short size, ItemStack[] items) {
         super();
         this.windowId = windowId;
         this.size = size;
@@ -40,7 +40,7 @@ public class SetWindowItemsPacketImpl extends AbstractPacket implements SetWindo
     }
 
     @Override
-    public Item[] getItems() {
+    public ItemStack[] getItems() {
         return items;
     }
 

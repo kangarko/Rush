@@ -1,6 +1,6 @@
 package net.rush.packets.packet;
 
-import net.rush.model.Item;
+import net.rush.model.ItemStack;
 import net.rush.packets.Packet;
 
 public interface PlayerBlockPlacementPacket extends Packet {
@@ -8,7 +8,7 @@ public interface PlayerBlockPlacementPacket extends Packet {
     byte getY();
     int getZ();
     byte getDirection();
-    Item getHeldItem();
+    ItemStack getHeldItem();
     byte getCursorX();
     byte getCursorY();
     byte getCursorZ();

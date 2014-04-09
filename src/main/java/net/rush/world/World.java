@@ -14,12 +14,11 @@ import net.rush.model.Player;
 import net.rush.model.Position;
 import net.rush.model.entity.EntityRegistry;
 import net.rush.packets.Packet;
-import net.rush.packets.packet.ChatPacket;
 import net.rush.packets.packet.TimeUpdatePacket;
-import net.rush.packets.packet.impl.ChatPacketImpl;
 import net.rush.packets.packet.impl.TimeUpdatePacketImpl;
 
 import org.bukkit.Difficulty;
+import org.bukkit.Material;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
 import org.bukkit.entity.EntityType;
@@ -53,6 +52,8 @@ public class World {
 	 * The current time.
 	 */
 	private long time = 0;
+	
+	public int worldYMax = 256;
 
 	/**
 	 * Creates a new world with the specified chunk I/O service and world
@@ -94,7 +95,7 @@ public class World {
 	 * 
 	 * @return The entity manager.
 	 */
-	public EntityManager getRushEntities() {
+	public EntityManager getEntities() {
 		return entities;
 	}
 
@@ -103,7 +104,7 @@ public class World {
 	 * 
 	 * @return A {@link Collection} of {@link Player} objects.
 	 */
-	public Collection<Player> getRushPlayers() {
+	public Collection<Player> getPlayers() {
 		return entities.getAll(Player.class);
 	}
 
@@ -114,18 +115,6 @@ public class World {
 	 */
 	public Position getSpawnPosition() {
 		return spawnPosition;
-	}
-
-	/**
-	 * Broadcasts a message to every player.
-	 * 
-	 * @param text
-	 *            The message text.
-	 */
-	public void broadcastMessage(String text) {
-		ChatPacket message = new ChatPacketImpl(text);
-		for (Player player : getRushPlayers())
-			player.getSession().send(message);
 	}
 
 	/**
@@ -147,7 +136,7 @@ public class World {
 		this.time = time % PULSES_PER_DAY;
 
 		TimeUpdatePacket msg = new TimeUpdatePacketImpl(0, time); // TODO Correct world age?
-		for (Player player : getRushPlayers())
+		for (Player player : getPlayers())
 			player.getSession().send(msg);
 	}
 
@@ -164,6 +153,46 @@ public class World {
 		return chunks.getChunk(x, z);
 	}
 	
+	public int getTypeAt(int x, int y, int z) {
+		return chunks.getChunk(x, z).getType(x, z, y);
+	}
+	
+	public void setTypeId(int x, int y, int z, int type) {
+		chunks.getChunk(x, z).setType(x, z, y, type);
+	}
+	
+	public void setTypeAndData(int x, int y, int z, int type, int data) {
+		chunks.getChunk(x, z).setType(x, z, y, type);
+		chunks.getChunk(x, z).setMetaData(x, z, y, data);
+	}
+	
+	@SuppressWarnings("deprecation") 
+	public int getHighestBlockAt(int i, int j) {
+		Chunk chunk = getChunkAt(i, j);
+		int posY = worldYMax - 1;
+		i &= 0xf;
+		j &= 0xf;
+		while (posY > 0) {
+			int l = chunk.getType(i, posY, j);
+			if (l == 0 || !Material.getMaterial(l).isSolid() /*!Block.blocksList[l].blockMaterial.getIsSolid() || Block.blocksList[l].blockMaterial == Material.leaves*/)
+				posY--;
+			else
+				return posY + 1;
+		}
+		return -1;
+	}
+	
+	@SuppressWarnings("deprecation") 
+	public Material getBlockMaterial(int x, int y, int z) {
+		return Material.getMaterial(getTypeAt(x, y, z));
+	}
+	
+	public boolean isAirBlock(int x, int y, int z) {
+		int type = 0;
+		type = getTypeAt(x, y, z);
+		return type == 0;
+	}
+	
 	public LivingEntity spawnEntity(Position pos, Class<? extends LivingEntity> clazz) {
 		try {
 			LivingEntity entity = clazz.getDeclaredConstructor(World.class).newInstance(this);
@@ -171,7 +200,7 @@ public class World {
 			entity.setPosition(pos);
 			Packet smp = entity.createSpawnMessage();
 
-			for(Player pl : getRushPlayers()) {
+			for(Player pl : getPlayers()) {
 				pl.getSession().send(smp);
 			}
 
@@ -190,7 +219,7 @@ public class World {
 			entity.setPosition(pos);
 			Packet smp = entity.createSpawnMessage();
 
-			for(Player pl : getRushPlayers()) {
+			for(Player pl : getPlayers()) {
 				pl.getSession().send(smp);
 			}
 
@@ -221,6 +250,10 @@ public class World {
 
 	public WorldType getWorldType() {
 		return WorldType.NORMAL;
+	}
+	
+	public long getSeed() {
+		return 0; // FIXME
 	}
 
 	public void save() {

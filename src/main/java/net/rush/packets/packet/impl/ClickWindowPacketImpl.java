@@ -1,6 +1,6 @@
 package net.rush.packets.packet.impl;
 
-import net.rush.model.Item;
+import net.rush.model.ItemStack;
 import net.rush.packets.packet.ClickWindowPacket;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -17,9 +17,9 @@ public class ClickWindowPacketImpl extends AbstractPacket implements ClickWindow
     @Serialize(type = Type.BOOL, order = 4)
     private final boolean shiftHold;
     @Serialize(type = Type.ITEM, order = 5)
-    private final Item clickedItem;
+    private final ItemStack clickedItem;
 
-    public ClickWindowPacketImpl(byte windowId, short slot, byte rightClick, short action, boolean shiftHold, Item clickedItem) {
+    public ClickWindowPacketImpl(byte windowId, short slot, byte rightClick, short action, boolean shiftHold, ItemStack clickedItem) {
         super();
         this.windowId = windowId;
         this.slot = slot;
@@ -60,7 +60,7 @@ public class ClickWindowPacketImpl extends AbstractPacket implements ClickWindow
     }
 
     @Override
-    public Item getClickedItem() {
+    public ItemStack getClickedItem() {
         return clickedItem;
     }
 

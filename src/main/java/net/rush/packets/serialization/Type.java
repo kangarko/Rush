@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.rush.model.Coordinate;
-import net.rush.model.Item;
+import net.rush.model.ItemStack;
 import net.rush.packets.NetUtils;
 import net.rush.packets.misc.MetadataType;
 import net.rush.util.Parameter;
@@ -172,7 +172,7 @@ public enum Type {
 				case ITEM:
 					short id = in.readShort();
 					if (id <= 0) {
-						parameters[index] = new Parameter<Item>(type, index, Item.NULL_ITEM);
+						parameters[index] = new Parameter<ItemStack>(type, index, ItemStack.NULL_ITEM);
 					} else {
 						byte stackSize = in.readByte();
 						short dataValue = in.readShort();
@@ -183,7 +183,7 @@ public enum Type {
 						//metadata = new byte[dataLenght];
 						//in.readFully(metadata);
 						//}
-						parameters[index] = new Parameter<Item>(type, index, new Item(id, stackSize, dataValue));
+						parameters[index] = new Parameter<ItemStack>(type, index, new ItemStack(id, stackSize, dataValue));
 					}
 					//data.put(index, new GenericMetadata<Item>(new Item(id, count, damage), metaType));
 					break;
@@ -224,7 +224,7 @@ public enum Type {
 					writeUtf8String(out, ((Parameter<String>) parameter).getValue());
 					break;
 				case Parameter.TYPE_ITEM:
-					Item item = ((Parameter<Item>) parameter).getValue();
+					ItemStack item = ((Parameter<ItemStack>) parameter).getValue();
 
 					if (item.getId() <= 0) { // FIXME less then zero check
 						out.writeShort(-1);
@@ -249,12 +249,12 @@ public enum Type {
 			out.writeByte(127);
 		}
 	}),
-	ITEM(new Serializor<Item>() {
+	ITEM(new Serializor<ItemStack>() {
 		@Override
-		public Item read(DataInput in) throws IOException {
+		public ItemStack read(DataInput in) throws IOException {
 			short id = in.readShort();
 			if (id <= 0) {
-				return Item.NULL_ITEM;
+				return ItemStack.NULL_ITEM;
 			} else {
 				byte stackSize = in.readByte();
 				short dataValue = in.readShort();
@@ -264,13 +264,13 @@ public enum Type {
 					metadata = new byte[dataLenght];
 					in.readFully(metadata);
 				}
-				return new Item(id, stackSize, dataValue);
+				return new ItemStack(id, stackSize, dataValue);
 			}
 		}
 
 		@Override
-		public void write(DataOutput out, Item val) throws IOException {
-			if (val == Item.NULL_ITEM || val.getId() <= 0) { // FIXME less then zero check
+		public void write(DataOutput out, ItemStack val) throws IOException {
+			if (val == ItemStack.NULL_ITEM || val.getId() <= 0) { // FIXME less then zero check
 				out.writeShort(-1);
 			} else {
 				out.writeShort(val.getId());
@@ -305,12 +305,12 @@ public enum Type {
 		}
 	}),
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	ITEM_ARRAY(new ObjectUsingSerializor<Item[]>() {
+	ITEM_ARRAY(new ObjectUsingSerializor<ItemStack[]>() {
 		@Override
-		public Item[] read(DataInput in, Object more) throws IOException {
+		public ItemStack[] read(DataInput in, Object more) throws IOException {
 			int count = ((Number) more).intValue();
-			Item[] items = new Item[count];
-			Serializor<Item> itemSerializor = (Serializor<Item>) ITEM.getSerializor();
+			ItemStack[] items = new ItemStack[count];
+			Serializor<ItemStack> itemSerializor = (Serializor<ItemStack>) ITEM.getSerializor();
 			for (int i = 0; i < count; i++) {
 				items[i] = itemSerializor.read(in);
 			}
@@ -318,7 +318,7 @@ public enum Type {
 		}
 
 		@Override
-		public void write(DataOutput out, Item[] val) throws IOException {
+		public void write(DataOutput out, ItemStack[] val) throws IOException {
 			Serializor itemSerializor = ITEM.getSerializor();
 			for (int i = 0; i < val.length; i++) {
 				itemSerializor.write(out, val[i]);

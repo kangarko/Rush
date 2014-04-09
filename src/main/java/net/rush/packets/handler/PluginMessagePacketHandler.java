@@ -16,7 +16,7 @@ public final class PluginMessagePacketHandler extends PacketHandler<PluginMessag
 	public void handle(Session session, Player player, PluginMessagePacket message) {
 		System.out.println("pluginMessage channel: " + message.getChannel());
 		if(message.getChannel().equals("MC|PingHost")) {
-			session.send(new KickPacketImpl("[1.6.4] Rush server" + "\u00A7" + session.getServer().getWorld().getRushPlayers().size() + "\u00A7" + "20"));
+			session.send(new KickPacketImpl("[1.6.4] Rush server" + "\u00A7" + session.getServer().getWorld().getPlayers().size() + "\u00A7" + "20"));
 		}
 	}
 
