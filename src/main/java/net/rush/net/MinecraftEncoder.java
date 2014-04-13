@@ -1,6 +1,5 @@
 package net.rush.net;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.rush.packets.Packet;
@@ -40,9 +39,8 @@ public class MinecraftEncoder extends OneToOneEncoder {
 			opcodeBuf.writeByte(message.getOpcode());
 
 			ChannelBufferOutputStream output = new ChannelBufferOutputStream(opcodeBuf);
-			DataOutputStream dos = new DataOutputStream(output);
 			
-			sender.send(dos, message);
+			sender.send(output, message);
 			
 			return ChannelBuffers.wrappedBuffer(opcodeBuf);
 		}

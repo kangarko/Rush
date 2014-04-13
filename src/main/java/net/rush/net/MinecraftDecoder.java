@@ -1,6 +1,5 @@
 package net.rush.net;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 
 import net.rush.packets.Packet;
@@ -37,11 +36,9 @@ public class MinecraftDecoder extends ReplayingDecoder<VoidEnum> {
 			throw new IOException("Unknown operation code: " + opcode + " (previous opcode: " + previousOpcode + ").");	
 		}
 		
-		DataInputStream dis = new DataInputStream(input);
-		
 		previousOpcode = opcode;
 
-		return handler.handle(dis, packet);
+		return handler.handle(input, packet);
 	}
 
 }

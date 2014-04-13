@@ -3,7 +3,6 @@ package net.rush.packets.serialization;
 import static net.rush.packets.serialization.SerializationHelper.getSerializationInfos;
 import static net.rush.packets.serialization.SerializationHelper.toMethodName;
 
-import java.io.DataOutputStream;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.ListIterator;
@@ -11,13 +10,15 @@ import java.util.ListIterator;
 import net.rush.packets.Packet;
 import net.rush.packets.PacketSender;
 
+import org.jboss.netty.buffer.ChannelBufferOutputStream;
+
 public class SerializationPacketSender<T extends Packet> implements PacketSender<T> {
     /**
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void send(DataOutputStream stream, T packet) {
+    public void send(ChannelBufferOutputStream stream, T packet) {
         try {
             Class<? extends Packet> iFace = packet.getPacketType();
             List<SerializationInfo> serInfos = getSerializationInfos(iFace);

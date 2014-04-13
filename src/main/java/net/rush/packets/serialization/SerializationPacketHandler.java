@@ -4,7 +4,6 @@ import static net.rush.packets.serialization.SerializationHelper.fixupClasses;
 import static net.rush.packets.serialization.SerializationHelper.getImplClass;
 import static net.rush.packets.serialization.SerializationHelper.getSerializationInfos;
 
-import java.io.DataInputStream;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
@@ -13,13 +12,15 @@ import java.util.Set;
 import net.rush.packets.Packet;
 import net.rush.packets.PacketHandler;
 
+import org.jboss.netty.buffer.ChannelBufferInputStream;
+
 /*
  * This is magic. AWESOME magic!
  */
 public class SerializationPacketHandler<T extends Packet> implements PacketHandler<T> {
     @SuppressWarnings("rawtypes")
     @Override
-    public T handle(DataInputStream in, Class<T> type) {
+    public T handle(ChannelBufferInputStream in, Class<T> type) {
         try {
             // get the implementation-class
             Class<? extends T> implClazz = getImplClass(type);
