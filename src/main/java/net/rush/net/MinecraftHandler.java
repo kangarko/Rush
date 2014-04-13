@@ -1,5 +1,6 @@
 package net.rush.net;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -71,7 +72,10 @@ public class MinecraftHandler extends SimpleChannelUpstreamHandler {
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
 		Channel c = e.getChannel();
 		if (c.isOpen()) {
-			logger.log(Level.WARNING, "Exception caught, closing channel: " + c + "...", e.getCause());
+			if (e.getCause() instanceof IOException)
+				logger.info("End of stream");
+			else
+				logger.log(Level.WARNING, "Exception caught, closing channel: " + c + "...", e.getCause());
 			c.close();
 		}
 	}
