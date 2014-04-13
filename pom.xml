@@ -15,10 +15,6 @@
             <url>http://repo.bukkit.org/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/groups/public</url>
-        </repository>
-        <repository>
             <id>mvn-repo</id>
             <url>http://mvnrepository.com/artifact</url>
         </repository>
@@ -28,7 +24,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.7.5-R0.1-SNAPSHOT</version>
+            <version>1.7.8-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
@@ -52,7 +48,6 @@
     <build>
         <defaultGoal>clean install</defaultGoal>
         <plugins>
-            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -67,7 +62,6 @@
                     <finalName>project-rush</finalName>
                 </configuration>
             </plugin>
-            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -88,7 +82,6 @@
                     </execution>
                 </executions>
             </plugin>
-            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
