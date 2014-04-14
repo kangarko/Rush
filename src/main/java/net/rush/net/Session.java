@@ -12,8 +12,8 @@ import net.rush.model.Player;
 import net.rush.packets.Packet;
 import net.rush.packets.handler.HandlerLookupService;
 import net.rush.packets.handler.PacketHandler;
-import net.rush.packets.packet.impl.KeepAlivePacketImpl;
-import net.rush.packets.packet.impl.KickPacketImpl;
+import net.rush.packets.packet.KeepAlivePacket;
+import net.rush.packets.packet.KickPacket;
 
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFutureListener;
@@ -154,8 +154,8 @@ public final class Session {
 			if (handler != null) {
 				handler.handle(this, player, message);
 				String name = message.getPacketType().getSimpleName();
-				if(!name.contains("Position") && !name.contains("PlayerOnGround") && !name.contains("Look") && !name.contains("KeepAlive")) {
-					Server.getLogger().info("handling packet: " + message.getPacketType().getSimpleName());
+				if(!name.contains("Position") && !name.contains("PlayerOnGround") && !name.contains("Look") && !name.contains("KeepAlive") && !name.contains("ChatPacket")) {
+					Server.getLogger().info("Handling packet: " + message.getPacketType().getSimpleName());
 				}
 			} else {
 				Server.getLogger().info("&cMissing handler for packet: " + message.getPacketType().getSimpleName());
@@ -166,7 +166,7 @@ public final class Session {
 		if (timeoutCounter >= TIMEOUT_TICKS) {
 			if (pingMessageId == 0) {
 				pingMessageId = new Random().nextInt();
-				send(new KeepAlivePacketImpl(pingMessageId));
+				send(new KeepAlivePacket(pingMessageId));
 			} else {
 				disconnect("Timed out");
 			}
@@ -192,7 +192,7 @@ public final class Session {
 	 * @param reason The reason for disconnection.
 	 */
 	public void disconnect(String reason) {
-		channel.write(new KickPacketImpl(reason)).addListener(ChannelFutureListener.CLOSE);
+		channel.write(new KickPacket(reason)).addListener(ChannelFutureListener.CLOSE);
 	}
 
 	/**

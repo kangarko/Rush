@@ -1,10 +1,10 @@
 package net.rush.model;
 
 import net.rush.packets.Packet;
-import net.rush.packets.packet.impl.EntityLookAndRelMovePacketImpl;
-import net.rush.packets.packet.impl.EntityLookPacketImpl;
-import net.rush.packets.packet.impl.EntityRelMovePacketImpl;
-import net.rush.packets.packet.impl.EntityTeleportPacketImpl;
+import net.rush.packets.packet.EntityLookAndRelMovePacket;
+import net.rush.packets.packet.EntityLookPacket;
+import net.rush.packets.packet.EntityRelMovePacket;
+import net.rush.packets.packet.EntityTeleportPacket;
 import net.rush.world.World;
 
 import org.bukkit.entity.EntityType;
@@ -45,13 +45,13 @@ public abstract class Mob extends Entity {
 		int pitch = rotation.getIntPitch();
 
 		if (moved && teleport) {
-			return new EntityTeleportPacketImpl(id, x, y, z, yaw, pitch);
+			return new EntityTeleportPacket(id, x, y, z, yaw, pitch);
 		} else if (moved && rotated) {
-			return new EntityLookAndRelMovePacketImpl(id, (byte)dx, (byte)dy, (byte)dz, (byte)yaw, (byte)pitch);
+			return new EntityLookAndRelMovePacket(id, (byte)dx, (byte)dy, (byte)dz, (byte)yaw, (byte)pitch);
 		} else if (moved) {
-			return new EntityRelMovePacketImpl(id, (byte)dx, (byte)dy, (byte)dz);
+			return new EntityRelMovePacket(id, (byte)dx, (byte)dy, (byte)dz);
 		} else if (rotated) {
-			return new EntityLookPacketImpl(id, (byte)yaw, (byte)pitch);
+			return new EntityLookPacket(id, (byte)yaw, (byte)pitch);
 		}
 
 		return null;

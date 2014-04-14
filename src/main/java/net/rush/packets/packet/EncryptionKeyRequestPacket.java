@@ -1,15 +1,55 @@
 package net.rush.packets.packet;
 
 import net.rush.packets.Packet;
+import net.rush.packets.serialization.Serialize;
+import net.rush.packets.serialization.Type;
 
-public interface EncryptionKeyRequestPacket extends Packet {
-    String getServerId();
+public class EncryptionKeyRequestPacket extends Packet {
+	@Serialize(type = Type.STRING, order = 0)
+	private final String serverId;
+	@Serialize(type = Type.SHORT, order = 1)
+	private final short publicKeyLength;
+	@Serialize(type = Type.BYTE_ARRAY, order = 2)
+	private final byte[] publicKey;
+	@Serialize(type = Type.SHORT, order = 3)
+	private final short verifyTokenLength;
+	@Serialize(type = Type.BYTE_ARRAY, order = 4)
+	private final byte[] verifyToken;
 
-    short getPublicKeyLength();
-    
-    byte[] getPublicKey();
-    
-    short getVerifyTokenLength();
-    
-    byte[] getVerifyToken();
+	public EncryptionKeyRequestPacket(String serverId, short publicKeyLength, byte[] publicKey, short verifyTokenLength, byte[] verifyToken) {
+		super();
+		this.serverId = serverId;
+		this.publicKeyLength = publicKeyLength;
+		this.publicKey = publicKey;
+		this.verifyTokenLength = verifyTokenLength;
+		this.verifyToken = verifyToken;
+	}
+
+	public int getOpcode() {
+		return 0xFD;
+	}
+
+	public String getServerId() {
+		return serverId;
+	}
+
+	public short getPublicKeyLength() {
+		return publicKeyLength;
+	}
+
+	public byte[] getPublicKey() {
+		return publicKey;
+	}
+
+	public short getVerifyTokenLength() {
+		return verifyTokenLength;
+	}
+
+	public byte[] getVerifyToken() {
+		return verifyToken;
+	}
+
+	public String getToStringDescription() {
+		return String.format("reason=\"%s\"", serverId);
+	}
 }

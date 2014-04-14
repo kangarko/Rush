@@ -4,7 +4,7 @@ import net.rush.Server;
 import net.rush.model.Player;
 import net.rush.net.Session;
 import net.rush.packets.packet.KickPacket;
-import net.rush.packets.packet.impl.PlayerListItemPacketImpl;
+import net.rush.packets.packet.PlayerListItemPacket;
 
 /**
  * A {@link PacketHandler} which disconnects clients when they send a
@@ -17,7 +17,7 @@ public final class KickPacketHandler extends PacketHandler<KickPacket> {
 	public void handle(Session session, Player player, KickPacket message) {
 		session.disconnect("Goodbye!");
 		for(Player pl : session.getServer().getWorld().getPlayers()) {
-			pl.getSession().send(new PlayerListItemPacketImpl(player.getName(), false, (short)100));
+			pl.getSession().send(new PlayerListItemPacket(player.getName(), false, (short)100));
 		}
 		Server.getLogger().info(player.getName() + " lost connection: " + message.getReason());
 	}

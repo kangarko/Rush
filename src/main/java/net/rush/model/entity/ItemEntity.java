@@ -4,7 +4,7 @@ import net.rush.model.Entity;
 import net.rush.model.ItemStack;
 import net.rush.model.Rotation;
 import net.rush.packets.Packet;
-import net.rush.packets.packet.impl.SpawnObjectPacketImpl;
+import net.rush.packets.packet.SpawnObjectPacket;
 import net.rush.util.Parameter;
 import net.rush.world.World;
 
@@ -44,7 +44,7 @@ public final class ItemEntity extends Entity {
 		int yaw = rotation.getIntYaw();
 		int pitch = rotation.getIntPitch();
 		
-		return new SpawnObjectPacketImpl(id, (byte)2, position, (byte)yaw, (byte)pitch);
+		return new SpawnObjectPacket(id, (byte)2, position, (byte)yaw, (byte)pitch);
 	}
 	
 	public void handleMetadata() {

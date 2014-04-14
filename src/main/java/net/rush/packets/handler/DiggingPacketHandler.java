@@ -10,8 +10,6 @@ import net.rush.net.Session;
 import net.rush.packets.packet.BlockChangePacket;
 import net.rush.packets.packet.PlayerDiggingPacket;
 import net.rush.packets.packet.SoundOrParticleEffectPacket;
-import net.rush.packets.packet.impl.BlockChangePacketImpl;
-import net.rush.packets.packet.impl.SoundOrParticleEffectPacketImpl;
 import net.rush.world.World;
 
 import org.bukkit.GameMode;
@@ -45,8 +43,8 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 		int oldType = chunk.getType(localX, localZ, y);
 		
 		if (player.getGamemode() == GameMode.CREATIVE) {
-			SoundOrParticleEffectPacket soundMsg = new SoundOrParticleEffectPacketImpl(SoundOrParticleEffectPacket.DIG_SOUND, x, (byte)y, z, oldType, false);
-			BlockChangePacket blockChangePacket = new BlockChangePacketImpl(x, (byte)y, z, (byte)0, (byte)0);
+			SoundOrParticleEffectPacket soundMsg = new SoundOrParticleEffectPacket(SoundOrParticleEffectPacket.DIG_SOUND, x, (byte)y, z, oldType, false);
+			BlockChangePacket blockChangePacket = new BlockChangePacket(x, (byte)y, z, (byte)0, (byte)0);
 			for (Player p: world.getPlayers()) {
 				p.getSession().send(blockChangePacket);
 				if(p != player && player.isWithinDistance(p)) {
@@ -60,8 +58,8 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 		}
 		
 		if (message.getStatus() == PlayerDiggingPacket.STATE_DONE_DIGGING) {
-			SoundOrParticleEffectPacket soundMsg = new SoundOrParticleEffectPacketImpl(SoundOrParticleEffectPacket.DIG_SOUND, x, (byte)y, z, oldType, false);
-			BlockChangePacket blockChangePacket = new BlockChangePacketImpl(x, (byte)y, z, (byte)0, (byte)0);
+			SoundOrParticleEffectPacket soundMsg = new SoundOrParticleEffectPacket(SoundOrParticleEffectPacket.DIG_SOUND, x, (byte)y, z, oldType, false);
+			BlockChangePacket blockChangePacket = new BlockChangePacket(x, (byte)y, z, (byte)0, (byte)0);
 			for (Player p: world.getPlayers()) {
 				p.getSession().send(blockChangePacket);
 				if(p != player && player.isWithinDistance(p)) {

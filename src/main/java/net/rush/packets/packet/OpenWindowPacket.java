@@ -1,12 +1,62 @@
 package net.rush.packets.packet;
 
 import net.rush.packets.Packet;
+import net.rush.packets.serialization.Serialize;
+import net.rush.packets.serialization.Type;
 
-public interface OpenWindowPacket extends Packet {
-    byte getWindowId();
-    byte getInventoryType();
-    String getWindowTitle();
-    byte getNumberOfSlots();
-    boolean getUseProvidedWindowTitle();
-    int getHorseId();
+public class OpenWindowPacket extends Packet {
+	@Serialize(type = Type.BYTE, order = 0)
+	private final byte windowId;
+	@Serialize(type = Type.BYTE, order = 1)
+	private final byte inventoryType;
+	@Serialize(type = Type.STRING, order = 2)
+	private final String windowTitle;
+	@Serialize(type = Type.BYTE, order = 3)
+	private final byte numberOfSlots;
+	@Serialize(type = Type.BOOL, order = 4)
+	private final boolean useProvidedWindowTitle;
+	@Serialize(type = Type.INT, order = 5)
+	private final int horseId;
+
+	public OpenWindowPacket(byte windowId, byte inventoryType, String windowTitle, byte numberOfSlots, boolean useProvidedWindowTitle, int horseId) {
+		super();
+		this.windowId = windowId;
+		this.inventoryType = inventoryType;
+		this.windowTitle = windowTitle;
+		this.numberOfSlots = numberOfSlots;
+		this.useProvidedWindowTitle = useProvidedWindowTitle;
+		this.horseId = horseId;
+	}
+
+	public int getOpcode() {
+		return 0x64;
+	}
+
+	public byte getWindowId() {
+		return windowId;
+	}
+
+	public byte getInventoryType() {
+		return inventoryType;
+	}
+
+	public String getWindowTitle() {
+		return windowTitle;
+	}
+
+	public byte getNumberOfSlots() {
+		return numberOfSlots;
+	}
+
+	public boolean getUseProvidedWindowTitle() {
+		return useProvidedWindowTitle;
+	}
+
+	public int getHorseId() {
+		return horseId;
+	}
+
+	public String getToStringDescription() {
+		return String.format("windowId=\"%d\",inventoryType=\"%d\",windowTitle=\"%s\",numberOfSlots=\"%d\",useProvidedTitle=\"%b\",horseIdé\"%d\"", windowId, inventoryType, windowTitle, numberOfSlots, useProvidedWindowTitle, horseId);
+	}
 }

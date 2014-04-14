@@ -15,7 +15,6 @@ import net.rush.model.Position;
 import net.rush.model.entity.EntityRegistry;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.TimeUpdatePacket;
-import net.rush.packets.packet.impl.TimeUpdatePacketImpl;
 
 import org.bukkit.Difficulty;
 import org.bukkit.Material;
@@ -135,7 +134,7 @@ public class World {
 	public void setTime(long time) {
 		this.time = time % PULSES_PER_DAY;
 
-		TimeUpdatePacket msg = new TimeUpdatePacketImpl(0, time); // TODO Correct world age?
+		TimeUpdatePacket msg = new TimeUpdatePacket(0, time); // TODO Correct world age?
 		for (Player player : getPlayers())
 			player.getSession().send(msg);
 	}

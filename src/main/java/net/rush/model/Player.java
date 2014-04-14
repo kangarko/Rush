@@ -11,14 +11,14 @@ import net.rush.inventory.Inventory;
 import net.rush.inventory.PlayerInventory;
 import net.rush.net.Session;
 import net.rush.packets.Packet;
-import net.rush.packets.packet.impl.ChangeGameStatePacketImpl;
-import net.rush.packets.packet.impl.ChatPacketImpl;
-import net.rush.packets.packet.impl.DestroyEntityPacketImpl;
-import net.rush.packets.packet.impl.NamedEntitySpawnPacketImpl;
-import net.rush.packets.packet.impl.PlayerListItemPacketImpl;
-import net.rush.packets.packet.impl.PlayerPositionAndLookPacketImpl;
-import net.rush.packets.packet.impl.SetWindowItemsPacketImpl;
-import net.rush.packets.packet.impl.SpawnPositionPacketImpl;
+import net.rush.packets.packet.ChangeGameStatePacket;
+import net.rush.packets.packet.ChatPacket;
+import net.rush.packets.packet.DestroyEntityPacket;
+import net.rush.packets.packet.NamedEntitySpawnPacket;
+import net.rush.packets.packet.PlayerListItemPacket;
+import net.rush.packets.packet.PlayerPositionAndLookPacket;
+import net.rush.packets.packet.SetWindowItemsPacket;
+import net.rush.packets.packet.SpawnPositionPacket;
 import net.rush.util.Parameter;
 
 import org.bukkit.ChatColor;
@@ -88,8 +88,8 @@ public final class Player extends LivingEntity implements CommandSender {
 		// display player in the TAB list
 		this.updateTabList();
 
-		this.session.send(new SpawnPositionPacketImpl(position));
-		this.session.send(new PlayerPositionAndLookPacketImpl(position.getX(), position.getY(), position.getZ(), position.getY() + NORMAL_EYE_HEIGHT, (float) rotation.getYaw(), (float) rotation.getPitch(), true));
+		this.session.send(new SpawnPositionPacket(position));
+		this.session.send(new PlayerPositionAndLookPacket(position.getX(), position.getY(), position.getZ(), position.getY() + NORMAL_EYE_HEIGHT, (float) rotation.getYaw(), (float) rotation.getPitch(), true));
 
 		this.sendMessage("&3Rush // &fWelcome to Rush, " + name);
 		Server.getLogger().info(getName() + "[" + getSession().getRemoveAddress() + "] logged in with entity id " + getId());
@@ -109,13 +109,13 @@ public final class Player extends LivingEntity implements CommandSender {
 	 * @param message The message.
 	 */
 	public void sendMessage(String message) {
-		session.send(new ChatPacketImpl(ChatColor.translateAlternateColorCodes("&".charAt(0), message)));
+		session.send(new ChatPacket(ChatColor.translateAlternateColorCodes("&".charAt(0), message)));
 	}
 
 	public void updateTabList() {
 		for(Player pl : session.getServer().getWorld().getPlayers()) {
-			pl.getSession().send(new PlayerListItemPacketImpl(name, true, (short)100));
-			session.send(new PlayerListItemPacketImpl(pl.getName(), true, (short)100));
+			pl.getSession().send(new PlayerListItemPacket(name, true, (short)100));
+			session.send(new PlayerListItemPacket(pl.getName(), true, (short)100));
 		}
 	}
 	
@@ -134,7 +134,7 @@ public final class Player extends LivingEntity implements CommandSender {
 				if (msg != null)
 					session.send(msg);
 			} else {
-				session.send(new DestroyEntityPacketImpl(new int[]{entity.getId()} ));
+				session.send(new DestroyEntityPacket(new int[]{entity.getId()} ));
 				it.remove();
 			}
 		}
@@ -195,7 +195,7 @@ public final class Player extends LivingEntity implements CommandSender {
 		int z = position.getPixelZ();
 		int yaw = rotation.getIntYaw();
 		int pitch = rotation.getIntPitch();
-		return new NamedEntitySpawnPacketImpl(id, name, new Position(x, y, z), (byte)yaw, (byte)pitch, (byte)0, metadata.clone());
+		return new NamedEntitySpawnPacket(id, name, new Position(x, y, z), (byte)yaw, (byte)pitch, (byte)0, metadata.clone());
 	}
 
 	/**
@@ -242,7 +242,7 @@ public final class Player extends LivingEntity implements CommandSender {
 	@SuppressWarnings("deprecation")
 	public void setGamemode(GameMode gamemode) {
 		this.gamemode = gamemode;
-		this.getSession().send(new ChangeGameStatePacketImpl((byte)3, (byte)gamemode.getValue()));
+		this.getSession().send(new ChangeGameStatePacket((byte)3, (byte)gamemode.getValue()));
 	}
 	
 	public boolean isRiding() {
@@ -270,7 +270,7 @@ public final class Player extends LivingEntity implements CommandSender {
 
     // FIXME don´t work, yet
 	public void onSlotSet(Inventory inv, int index, ItemStack item) {
-		getSession().send(new SetWindowItemsPacketImpl(0, index, new ItemStack[] {item}));
+		getSession().send(new SetWindowItemsPacket(0, index, new ItemStack[] {item}));
 	}
 
 	public Server getServer() {

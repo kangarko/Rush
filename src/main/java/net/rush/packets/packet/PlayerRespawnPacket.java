@@ -1,11 +1,55 @@
 package net.rush.packets.packet;
 
 import net.rush.packets.Packet;
+import net.rush.packets.serialization.Serialize;
+import net.rush.packets.serialization.Type;
 
-public interface PlayerRespawnPacket extends Packet {
-    int getDimension();
-    byte getDifficulty();
-    byte getGameMode();
-    short getWorldHeight();
-    String getLevelType();
+public class PlayerRespawnPacket extends Packet {
+	@Serialize(type = Type.INT, order = 0)
+	private final int dimension;
+	@Serialize(type = Type.BYTE, order = 1)
+	private final byte difficulty;
+	@Serialize(type = Type.BYTE, order = 2)
+	private final byte gameMode;
+	@Serialize(type = Type.SHORT, order = 3)
+	private final short worldHeight;
+	@Serialize(type = Type.STRING, order = 4)
+	private final String levelType;
+
+	public PlayerRespawnPacket(int dimension, byte difficulty, byte gameMode, short worldHeight, String levelType) {
+		super();
+		this.dimension = dimension;
+		this.difficulty = difficulty;
+		this.gameMode = gameMode;
+		this.worldHeight = worldHeight;
+		this.levelType = levelType;
+	}
+
+	public int getOpcode() {
+		return 0x09;
+	}
+
+	public int getDimension() {
+		return dimension;
+	}
+
+	public byte getDifficulty() {
+		return difficulty;
+	}
+
+	public byte getGameMode() {
+		return gameMode;
+	}
+
+	public short getWorldHeight() {
+		return worldHeight;
+	}
+
+	public String getLevelType() {
+		return levelType;
+	}
+
+	public String getToStringDescription() {
+		return String.format("dimension=\"%d\",difficulty=\"%d\",gameMode=\"%d\",worldHeight=\"%d\",levelType=\"%s\"", dimension, difficulty, gameMode, worldHeight, levelType);
+	}
 }

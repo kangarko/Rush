@@ -3,7 +3,7 @@ package net.rush.chunk;
 import java.util.zip.Deflater;
 
 import net.rush.packets.Packet;
-import net.rush.packets.packet.impl.MapChunkPacketImpl;
+import net.rush.packets.packet.MapChunkPacket;
 
 /**
  * Represents a chunk of the map.
@@ -188,10 +188,10 @@ public final class Chunk {
 	/**
 	 * Creates a new {@link Packet} which can be sent to a client to stream
 	 * this chunk to them.
-	 * @return The {@link MapChunkPacketImpl}.
+	 * @return The {@link MapChunkPacket}.
 	 */
 	public Packet toMessage() {
-		return new MapChunkPacketImpl(coords.x, coords.z, true, 0xFFFF, 0, serializeTileData());
+		return new MapChunkPacket(coords.x, coords.z, true, 0xFFFF, 0, serializeTileData());
 		//return new MapChunkPacketImpl(x * Chunk.WIDTH, z * Chunk.HEIGHT, 0, WIDTH, HEIGHT, DEPTH, serializeTileData());
 	}
 

@@ -1,13 +1,13 @@
 package net.rush.cmd;
 
-import org.bukkit.Material;
-
 import net.rush.model.CommandSender;
 import net.rush.model.Entity;
 import net.rush.model.ItemStack;
 import net.rush.model.LivingEntity;
 import net.rush.model.Player;
 import net.rush.util.Parameter;
+
+import org.bukkit.Material;
 
 /**
  * A command that allows users to modify metadata

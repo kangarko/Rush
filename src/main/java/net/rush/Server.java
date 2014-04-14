@@ -20,7 +20,6 @@ import net.rush.net.MinecraftPipelineFactory;
 import net.rush.net.Session;
 import net.rush.net.SessionRegistry;
 import net.rush.packets.packet.ChatPacket;
-import net.rush.packets.packet.impl.ChatPacketImpl;
 import net.rush.task.TaskScheduler;
 import net.rush.util.NumberUtils;
 import net.rush.world.ForestWorldGenerator;
@@ -40,7 +39,7 @@ public final class Server {
 
 	private static final ConsoleLogManager logger = new ConsoleLogManager("Minecraft");
 	
-	private final static Notifications gui = new Notifications();
+	private static Notifications gui;
 	
 	private final ConsoleCommandSender consoleSender = new ConsoleCommandSender(this);
 	
@@ -141,6 +140,8 @@ public final class Server {
 		/* start scheduling */
 		scheduler.start();
 		
+		gui = new Notifications();
+		
 		logger.info("Ready for connections. (Took " + NumberUtils.msToSeconds(System.currentTimeMillis() - initialTime) + "s !)");
 	}
 
@@ -198,7 +199,7 @@ public final class Server {
 	 * @param text The message text.
 	 */
 	public void broadcastMessage(String text) {
-		ChatPacket message = new ChatPacketImpl(text);
+		ChatPacket message = new ChatPacket(text);
 		for (Player player : getWorld().getPlayers())
 			player.getSession().send(message);
 	}

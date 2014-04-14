@@ -1,23 +1,85 @@
 package net.rush.packets.packet;
 
+import net.rush.model.Position;
 import net.rush.packets.Packet;
+import net.rush.packets.serialization.Serialize;
+import net.rush.packets.serialization.Type;
+import net.rush.util.Parameter;
 
-public interface NamedEntitySpawnPacket extends Packet {
-    int getEntityId();
+public class NamedEntitySpawnPacket extends Packet {
+	@Serialize(type = Type.INT, order = 0)
+	private final int entityId;
+	@Serialize(type = Type.STRING, order = 1)
+	private final String entityName;
+	@Serialize(type = Type.INT, order = 2)
+	private final int x;
+	@Serialize(type = Type.INT, order = 3)
+	private final int y;
+	@Serialize(type = Type.INT, order = 4)
+	private final int z;
+	@Serialize(type = Type.BYTE, order = 5)
+	private final byte yaw;
+	@Serialize(type = Type.BYTE, order = 6)
+	private final byte pitch;
+	@Serialize(type = Type.SHORT, order = 7)
+	private final short currentItem;
+	@Serialize(type = Type.ENTITY_METADATA, order = 8)
+	private final Parameter<?>[] metadata;
 
-    String getEntityName();
+	public NamedEntitySpawnPacket(int entityId, String playerName, Position pos, byte yaw, byte pitch, short currentItem, Parameter<?>[] metadata) {
+		super();
+		this.entityId = entityId;
+		entityName = playerName;
+		x = (int) pos.getX();
+		y = (int) pos.getY();
+		z = (int) pos.getZ();
+		this.yaw = yaw;
+		this.pitch = pitch;
+		this.currentItem = currentItem;
+		this.metadata = metadata;
+	}
 
-    int getX();
+	public int getOpcode() {
+		return 0x14;
+	}
 
-    int getY();
+	public int getEntityId() {
+		return entityId;
+	}
 
-    int getZ();
+	public String getEntityName() {
+		return entityName;
+	}
 
-    byte getYaw();
+	public int getX() {
+		return x;
+	}
 
-    byte getPitch();
+	public int getY() {
+		return y;
+	}
 
-    short getCurrentItem();
-    
-    net.rush.util.Parameter<?>[] getMetadata();
+	public int getZ() {
+		return z;
+	}
+
+	public byte getYaw() {
+		return yaw;
+	}
+
+	public byte getPitch() {
+		return pitch;
+	}
+
+	public short getCurrentItem() {
+		return currentItem;
+	}
+
+	public Parameter<?>[] getMetadata() {
+		return metadata;
+	}
+
+	public String getToStringDescription() {
+		return String.format("entityId=\"%d\",playerName=\"%s\",x=\"%d\",y=\"%d\",z=\"%d\",yaw=\"%d\",pitch=\"%d\",currentItem=\"%d\"", entityId, entityName, x, y, z, yaw, pitch, currentItem);
+	}
 }

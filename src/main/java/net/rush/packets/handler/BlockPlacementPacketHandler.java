@@ -7,7 +7,6 @@ import net.rush.model.Position;
 import net.rush.net.Session;
 import net.rush.packets.packet.BlockChangePacket;
 import net.rush.packets.packet.PlayerBlockPlacementPacket;
-import net.rush.packets.packet.impl.BlockChangePacketImpl;
 import net.rush.world.World;
 
 import org.bukkit.Material;
@@ -39,7 +38,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		
 		Position pos = parseDirection(x, y, z, message.getDirection());
 		
-		BlockChangePacket bcmsg = new BlockChangePacketImpl((byte)pos.getX(), (byte)pos.getY(), (byte)pos.getZ(), (byte)blockId, (byte)message.getHeldItem().getDamage()); 
+		BlockChangePacket bcmsg = new BlockChangePacket((byte)pos.getX(), (byte)pos.getY(), (byte)pos.getZ(), (byte)blockId, (byte)message.getHeldItem().getDamage()); 
 		for (Player p: world.getPlayers()) {
 			p.getSession().send(bcmsg);
 		}

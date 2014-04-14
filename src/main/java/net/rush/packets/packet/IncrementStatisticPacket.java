@@ -1,8 +1,34 @@
 package net.rush.packets.packet;
 
 import net.rush.packets.Packet;
+import net.rush.packets.serialization.Serialize;
+import net.rush.packets.serialization.Type;
 
-public interface IncrementStatisticPacket extends Packet {
-    int getStatisticId();
-    byte getAmount();
+public class IncrementStatisticPacket extends Packet {
+	@Serialize(type = Type.INT, order = 0)
+	private final int statisticId;
+	@Serialize(type = Type.BYTE, order = 1)
+	private final byte amount;
+
+	public IncrementStatisticPacket(int statisticId, byte amount) {
+		super();
+		this.statisticId = statisticId;
+		this.amount = amount;
+	}
+
+	public int getOpcode() {
+		return 0xC8;
+	}
+
+	public int getStatisticId() {
+		return statisticId;
+	}
+
+	public byte getAmount() {
+		return amount;
+	}
+
+	public String getToStringDescription() {
+		return String.format("statisticId=\"%d\",amount=\"%d\"", statisticId, amount);
+	}
 }

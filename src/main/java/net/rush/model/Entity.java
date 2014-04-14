@@ -3,7 +3,6 @@ package net.rush.model;
 import net.rush.chunk.Chunk;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.EntityMetadataPacket;
-import net.rush.packets.packet.impl.EntityMetadataPacketImpl;
 import net.rush.util.Parameter;
 import net.rush.world.World;
 
@@ -250,7 +249,7 @@ public abstract class Entity {
 	}
 	
 	public void updateMetadata() {
-		EntityMetadataPacket message = new EntityMetadataPacketImpl(id, metadata);
+		EntityMetadataPacket message = new EntityMetadataPacket(id, metadata);
 		for (Player player : world.getPlayers()) {
 			if (player != this) {
 				player.getSession().send(message);

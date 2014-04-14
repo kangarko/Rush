@@ -6,8 +6,8 @@ import java.io.IOException;
 
 
 public final class NetUtils {
-    private NetUtils() {
-    }
+   
+	private NetUtils() {}
     
     public static String readString(DataInput stream, int maxlength) throws IOException {
         short recvlength = stream.readShort();

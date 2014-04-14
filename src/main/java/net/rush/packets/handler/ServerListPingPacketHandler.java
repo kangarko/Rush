@@ -2,8 +2,8 @@ package net.rush.packets.handler;
 
 import net.rush.model.Player;
 import net.rush.net.Session;
+import net.rush.packets.packet.KickPacket;
 import net.rush.packets.packet.ServerListPingPacket;
-import net.rush.packets.packet.impl.KickPacketImpl;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -33,7 +33,7 @@ public final class ServerListPingPacketHandler extends PacketHandler<ServerListP
 		}
 		// hard copy from notchian server stop
 		
-		session.send(new KickPacketImpl(builder.toString()));
+		session.send(new KickPacket(builder.toString()));
 	}
 
 }

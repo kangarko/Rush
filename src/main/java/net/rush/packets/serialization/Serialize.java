@@ -8,11 +8,13 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Serialize {
-    int order();
-    Type type();
-    /**
-     * @return A Serialize that contains more info.
-     * Very ugly, but I'm unable to find a better solution :/
-     */
-    int moreInfo() default -1;
+	int order();
+
+	Type type();
+
+	/**
+	 * @return A Serialize that contains more info.
+	 * Very ugly, but I'm unable to find a better solution :/
+	 */
+	int moreInfo() default -1;
 }

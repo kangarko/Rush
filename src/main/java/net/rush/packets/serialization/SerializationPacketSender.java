@@ -13,27 +13,27 @@ import net.rush.packets.PacketSender;
 import org.jboss.netty.buffer.ChannelBufferOutputStream;
 
 public class SerializationPacketSender<T extends Packet> implements PacketSender<T> {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void send(ChannelBufferOutputStream stream, T packet) {
-        try {
-            Class<? extends Packet> iFace = packet.getPacketType();
-            List<SerializationInfo> serInfos = getSerializationInfos(iFace);
-            /*
-             * dirty: we have to have "getProperty()" to get "property"
-             */
-            ListIterator<SerializationInfo> iterator = serInfos.listIterator();
-            while (iterator.hasNext()) {
-                SerializationInfo now = iterator.next();
-                Method getter = iFace.getMethod(toMethodName(now.getName()));
-                Serializor serializor = now.getSerialize().type().getSerializor();
-                serializor.write(stream, getter.invoke(packet));
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void send(ChannelBufferOutputStream stream, T packet) {
+		try {
+			Class<? extends Packet> iFace = packet.getPacketType();
+			List<SerializationInfo> serInfos = getSerializationInfos(iFace);
+			/*
+			 * dirty: we have to have "getProperty()" to get "property"
+			 */
+			ListIterator<SerializationInfo> iterator = serInfos.listIterator();
+			while (iterator.hasNext()) {
+				SerializationInfo now = iterator.next();
+				Method getter = iFace.getMethod(toMethodName(now.getName()));
+				Serializor serializor = now.getSerialize().type().getSerializor();
+				serializor.write(stream, getter.invoke(packet));
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

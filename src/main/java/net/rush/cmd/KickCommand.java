@@ -2,7 +2,7 @@ package net.rush.cmd;
 
 import net.rush.model.CommandSender;
 import net.rush.model.Player;
-import net.rush.packets.packet.impl.KickPacketImpl;
+import net.rush.packets.packet.KickPacket;
 
 /**
  * A command that kicks a user off the server.
@@ -30,11 +30,11 @@ public final class KickCommand extends Command {
 		for (Player p : player.getServer().getWorld().getPlayers()) {
 			if (p.getName().equalsIgnoreCase(name)) {
 				player.sendMessage("§eKicking " + p.getName());
-				p.getSession().send(new KickPacketImpl("Kicked by " + player.getName()));
+				p.getSession().send(new KickPacket("Kicked by " + player.getName()));
 				return;
 			} else if (p.getName().toLowerCase().contains(name.toLowerCase())) {
 				player.sendMessage("§ePartial match, kicking " + p.getName());
-				p.getSession().send(new KickPacketImpl("Kicked by " + player.getName()));
+				p.getSession().send(new KickPacket("Kicked by " + player.getName()));
 				return;
 			}
 		}
