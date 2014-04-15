@@ -15,12 +15,12 @@ public class ConsoleCommandSender implements CommandSender {
 	}
 	
 	public void sendMessage(String message) {
-		Logger.getLogger("Minecraft").info(message);
+		logger.info(message);
 	}
 
 	public void sendMessage(String[] msgs) {
 		for(String msg : msgs) {
-			Logger.getLogger("Minecraft").info(msg);
+			logger.info(msg);
 		}
 	}
 	
