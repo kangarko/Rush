@@ -10,8 +10,8 @@ import java.util.Set;
 
 import net.rush.model.Coordinate;
 import net.rush.model.ItemStack;
-import net.rush.packets.NetUtils;
 import net.rush.packets.misc.MetadataType;
+import net.rush.util.ChannelBufferUtils;
 import net.rush.util.Parameter;
 
 public enum Type {
@@ -58,12 +58,12 @@ public enum Type {
 	}), STRING(new Serializor<String>() {
 		@Override
 		public String read(DataInput in) throws IOException {
-			return NetUtils.readString(in, 1000);
+			return ChannelBufferUtils.readStringFromDataInput(in, 1000);
 		}
 
 		@Override
 		public void write(DataOutput out, String val) throws IOException {
-			NetUtils.writeString(out, val);
+			ChannelBufferUtils.writeStringToDataOutput(out, val);
 		}
 	}), SHORT(new Serializor<Short>() {
 		@Override
@@ -137,24 +137,19 @@ public enum Type {
 				MetadataType metaType = MetadataType.fromId(type);
 				switch (metaType) {
 					case BYTE:
-						//data.put(index, new GenericMetadata<Byte>(in.readByte(), metaType));
 						parameters[index] = new Parameter<Byte>(type, index, in.readByte());
 						break;
 					case SHORT:
 						parameters[index] = new Parameter<Short>(type, index, in.readShort());
-						//data.put(index, new GenericMetadata<Short>(in.readShort(), metaType));
 						break;
 					case INT:
 						parameters[index] = new Parameter<Integer>(type, index, in.readInt());
-						//data.put(index, new GenericMetadata<Integer>(in.readInt(), metaType));
 						break;
 					case FLOAT:
 						parameters[index] = new Parameter<Float>(type, index, in.readFloat());
-						//data.put(index, new GenericMetadata<Float>(in.readFloat(), metaType));
 						break;
 					case STRING:
 						parameters[index] = new Parameter<String>(type, index, readUtf8String(in));
-						//data.put(index, new GenericMetadata<String>(NetUtils.readString(in, 1000), metaType));
 						break;
 					case ITEM:
 						short id = in.readShort();
@@ -172,7 +167,6 @@ public enum Type {
 							//}
 							parameters[index] = new Parameter<ItemStack>(type, index, new ItemStack(id, stackSize, dataValue));
 						}
-						//data.put(index, new GenericMetadata<Item>(new Item(id, count, damage), metaType));
 						break;
 					default:
 						throw new UnsupportedOperationException("Metadata-type '" + metaType + "' is not implemented!");

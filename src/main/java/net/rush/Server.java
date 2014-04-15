@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -38,13 +39,12 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 public final class Server {
 
 	private static final ConsoleLogManager logger = new ConsoleLogManager("Minecraft");
-	
 	private static Notifications gui;
-	
 	private final ConsoleCommandSender consoleSender = new ConsoleCommandSender(this);
-	
 	private final SocketAddress socketAddress = new InetSocketAddress(25565);
-
+	public final String serverId;
+	public boolean onlineMode = false;
+	
 	/**
 	 * The {@link ServerBootstrap} used to initialize Netty.
 	 */
@@ -115,6 +115,9 @@ public final class Server {
         if (Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L) {
             logger.warning("To start the server with more ram, launch it as \"java -Xmx1024M -Xms1024M -jar project-rush.jar\"");
         }
+        
+        logger.info("Generating server id");
+        serverId = Long.toString(new Random().nextLong(), 16);
         
 		/* initialize channel and pipeline factories */
 		ChannelFactory factory = new NioServerSocketChannelFactory(executor, executor);

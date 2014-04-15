@@ -21,7 +21,7 @@ public class EntityTameable extends EntityAgeable {
 	}
 	
 	public void setOwner(String owner) {
-		setMetadata(new Parameter<String>(Parameter.TYPE_STRING, 17, StringUtils.c(owner)));
+		setMetadata(new Parameter<String>(Parameter.TYPE_STRING, 17, StringUtils.colorize(owner)));
 	}	
 	
 	// METADATA END

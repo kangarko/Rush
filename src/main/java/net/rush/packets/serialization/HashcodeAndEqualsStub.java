@@ -12,7 +12,7 @@ import java.util.ListIterator;
 import net.rush.packets.Packet;
 
 /**
- * <b>Only {@code AbstractPacket} should extend this!</b>
+ * <b>Only {@code Packet} should extend this!</b>
  */
 public abstract class HashcodeAndEqualsStub {
 	private final Class<? extends Packet> packetType = getPacketInterface(this.getClass().asSubclass(Packet.class));
@@ -72,6 +72,9 @@ public abstract class HashcodeAndEqualsStub {
 				
 				field.setAccessible(false);
 
+				for(Field f : packetType.getFields())
+					System.out.println("hashcode filed: " + f);
+				
 				// now use the getter to get their val
 				Method getter = packetType.getMethod(toMethodName(info.getName()));
 				Object theirVal = getter.invoke(obj);

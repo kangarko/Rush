@@ -205,7 +205,7 @@ public final class Chunk {
 	 */
 	public static int coordToIndex(int x, int z, int y) {
 		if (x < 0 || z < 0 || y < 0 || x >= WIDTH || z >= HEIGHT || y >= DEPTH)
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("Coords out of bound! x:" + x + ", z:" + z + ", y:" + y);
 
 		return (y * HEIGHT + z) * WIDTH + x;
 	}

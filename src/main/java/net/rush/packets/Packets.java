@@ -81,9 +81,8 @@ import net.rush.packets.packet.UseEntityPacket;
 
 public final class Packets {
 
-    private static final Map<Integer, Class<? extends Packet>> classMappings =
-            new HashMap<Integer, Class<? extends Packet>>();
-
+    private static final Map<Integer, Class<? extends Packet>> classMappings = new HashMap<Integer, Class<? extends Packet>>();
+    
     static {
         registerPacket(0x00, KeepAlivePacket.class);
         registerPacket(0x01, LoginPacket.class);

@@ -46,6 +46,8 @@ public final class Player extends LivingEntity implements CommandSender {
 	private boolean riding = false;
 	private boolean onGround = true;
 	
+	private float exhaustion = 0F;
+	
 	private final PlayerInventory inventory = new PlayerInventory();
 	
 	/**
@@ -253,6 +255,13 @@ public final class Player extends LivingEntity implements CommandSender {
 		this.riding = riding;
 	}
 	
+	public void addExhaustion(float exhaustion) {
+		this.exhaustion+= exhaustion;
+	}
+	
+	public float getExhaustion() {
+		return exhaustion;
+	}	
 	
 	// Inventory
 	
