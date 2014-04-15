@@ -19,7 +19,7 @@ public final class KickPacketHandler extends PacketHandler<KickPacket> {
 		for(Player pl : session.getServer().getWorld().getPlayers()) {
 			pl.getSession().send(new PlayerListItemPacket(player.getName(), false, (short)100));
 		}
-		Server.getLogger().info(player.getName() + " lost connection: " + message.getReason());
+		Server.logger.info(player.getName() + " lost connection: " + message.getReason());
 	}
 
 }

@@ -11,7 +11,7 @@ import net.rush.packets.packet.ChatPacket;
 
  */
 public final class ChatPacketHandler extends PacketHandler<ChatPacket> {
-
+	
 	@Override
 	public void handle(Session session, Player player, ChatPacket message) {
 		if (player == null)
@@ -19,16 +19,18 @@ public final class ChatPacketHandler extends PacketHandler<ChatPacket> {
 
 		String text = message.getPlainMessage();
 		if (text.length() > 110) {
-			session.disconnect("Chat message too long.");
-		} else if (text.startsWith("/")) {
-			CommandManager manager = session.getServer().getCommandManager();
-			manager.execute(player, text);
-			System.out.println(player.getName() + " issued server command: " + text);
+			session.disconnect("Chat message too long");
 		} else {
-			player.getServer().broadcastMessage("<" + player.getName() + "> " + text);
-			System.out.println(player.getName() + ": " + text);
+			text = text.replaceAll("\\s+", " ").trim();
+			if (text.startsWith("/")) {
+				CommandManager manager = session.getServer().getCommandManager();
+				manager.execute(player, text);
+				System.out.println(player.getName() + " issued server command: " + text);
+			} else {
+				player.getServer().broadcastMessage("<" + player.getName() + "> " + text);
+				System.out.println(player.getName() + ": " + text);
+			}
 		}
-	}
-
+	}	
 }
 

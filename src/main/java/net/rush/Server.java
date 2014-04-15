@@ -38,12 +38,13 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
  */
 public final class Server {
 
-	private static final ConsoleLogManager logger = new ConsoleLogManager("Minecraft");
+	public static final Logger logger = Logger.getLogger("Minecraft");
+	public final String serverId;
+	public boolean onlineMode = false;
+	
 	private static Notifications gui;
 	private final ConsoleCommandSender consoleSender = new ConsoleCommandSender(this);
 	private final SocketAddress socketAddress = new InetSocketAddress(25565);
-	public final String serverId;
-	public boolean onlineMode = false;
 	
 	/**
 	 * The {@link ServerBootstrap} used to initialize Netty.
@@ -107,6 +108,7 @@ public final class Server {
 	 * Creates and initializes a new server.
 	 */
 	public Server() {
+		ConsoleLogManager.register();
 		logger.info("Initializing Rush for Minecraft 1.6.4");
 		long initialTime = System.currentTimeMillis();
 		
@@ -213,10 +215,6 @@ public final class Server {
 	 */
 	public void setSaveEnabled(boolean saveEnabled) {
 		this.saveEnabled = saveEnabled;
-	}
-
-	public static ConsoleLogManager getLogger() {
-		return logger;
 	}
 
 	public static Notifications getGui() {

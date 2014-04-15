@@ -1,7 +1,7 @@
 package net.rush.packets.handler;
 
 import net.rush.chunk.Chunk;
-import net.rush.model.Blocks;
+import net.rush.model.Block;
 import net.rush.model.ItemStack;
 import net.rush.model.Player;
 import net.rush.model.Position;
@@ -52,7 +52,7 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 				}
 			}
 			
-			chunk.setType(localX, localZ, y, Blocks.AIR);
+			chunk.setType(localX, localZ, y, Block.AIR);
 			player.sendMessage("block broken in creative: " + Material.getMaterial(oldType) + " at X: " + x + " Y: " + y + " Z: " + z);
 			return;
 		}
@@ -66,7 +66,7 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 					p.getSession().send(soundMsg);
 				}
 			}
-			chunk.setType(localX, localZ, y, Blocks.AIR);
+			chunk.setType(localX, localZ, y, Block.AIR);
 			
 			ItemEntity item = new ItemEntity(player.getWorld(), new ItemStack(Material.COBBLESTONE.getId(), 1));
 			item.setPosition(new Position(x, y, z));

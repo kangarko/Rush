@@ -158,7 +158,7 @@ public class World {
 		return chunks.getChunk(x, z);
 	}
 	
-	public int getTypeAt(int x, int y, int z) {
+	public int getTypeId(int x, int y, int z) {
 		return chunks.getChunk(x, z).getType(x, z, y);
 	}
 	
@@ -265,6 +265,10 @@ public class World {
 			ex.printStackTrace();
 			return false;
 		}
+	}
+
+	public int getBlockLightValue(int x, int i, int z) {
+		return 0;
 	}
 
 }

@@ -3,6 +3,8 @@ package net.rush.model;
 import java.util.List;
 import java.util.Random;
 
+import net.rush.model.block.BlockGrass;
+import net.rush.model.block.BlockLog;
 import net.rush.model.block.BlockStone;
 import net.rush.model.misc.AxisAlignedBB;
 import net.rush.model.misc.MovingObjectPosition;
@@ -51,14 +53,16 @@ public class Block {
 	 */
 	public static boolean[] useNeighborBrightness = new boolean[4096];
 
+	public static final int AIR = 0;
+	
 	public static final Block STONE = new BlockStone(1).setHardness(1.5F).setResistance(10.0F).setStepSound(soundStoneFootstep).setName("stone").setTextureName("stone");
-	//public static final BlockGrass GRASS = new BlockGrass(2).setHardness(0.6F).setStepSound(soundGrassFootstep).setName("grass").setTextureName("grass");
-	//public static final Block DIRT = (new BlockDirt(3)).setHardness(0.5F).setStepSound(soundGravelFootstep).setName("dirt").setTextureName("dirt");
+	public static final BlockGrass GRASS = (BlockGrass) new BlockGrass(2).setHardness(0.6F).setStepSound(soundGrassFootstep).setName("grass").setTextureName("grass");
+	public static final Block DIRT = new Block(3, Material.DIRT).setHardness(0.5F).setStepSound(soundGravelFootstep).setName("dirt").setTextureName("dirt");
 	public static final Block COBBLESTONE = (new Block(4, Material.STONE)).setHardness(2.0F).setResistance(10.0F).setStepSound(soundStoneFootstep).setName("stonebrick")/*.setCreativeTab(CreativeTabs.tabBlock)*/.setTextureName("cobblestone");
 	/*public static final Block WOOD = (new BlockWood(5)).setHardness(2.0F).setResistance(5.0F).setStepSound(soundWoodFootstep).setName("wood").setTextureName("planks");
 	public static final Block SAPLING = (new BlockSapling(6)).setHardness(0.0F).setStepSound(soundGrassFootstep).setName("sapling").setTextureName("sapling");
-	public static final Block BEDROCK = (new Block(7, Material.rock)).setBlockUnbreakable().setResistance(6000000.0F).setStepSound(soundStoneFootstep).setName("bedrock").disableStats().setCreativeTab(CreativeTabs.tabBlock).setTextureName("bedrock");
-	public static final BlockFluid WATER = (BlockFluid) (new BlockFlowing(8, Material.water)).setHardness(100.0F).setLightOpacity(3).setName("water").disableStats().setTextureName("water_flow");
+	*/public static final Block BEDROCK = new Block(7, Material.STONE).setBlockUnbreakable().setResistance(6000000.0F).setStepSound(soundStoneFootstep).setName("bedrock").setTextureName("bedrock");
+	/*public static final BlockFluid WATER = (BlockFluid) (new BlockFlowing(8, Material.water)).setHardness(100.0F).setLightOpacity(3).setName("water").disableStats().setTextureName("water_flow");
 	public static final Block STATIONARY_WATER = (new BlockStationary(9, Material.water)).setHardness(100.0F).setLightOpacity(3).setName("water").disableStats().setTextureName("water_still");
 	public static final BlockFluid LAVA = (BlockFluid) (new BlockFlowing(10, Material.lava)).setHardness(0.0F).setLightValue(1.0F).setName("lava").disableStats().setTextureName("lava_flow");
 	public static final Block STATIONARY_LAVA = (new BlockStationary(11, Material.lava)).setHardness(100.0F).setLightValue(1.0F).setName("lava").disableStats().setTextureName("lava_still");
@@ -67,9 +71,12 @@ public class Block {
 	public static final Block GOLD_ORE = (new BlockOre(14)).setHardness(3.0F).setResistance(5.0F).setStepSound(soundStoneFootstep).setName("oreGold").setTextureName("gold_ore");
 	public static final Block IRON_ORE = (new BlockOre(15)).setHardness(3.0F).setResistance(5.0F).setStepSound(soundStoneFootstep).setName("oreIron").setTextureName("iron_ore");
 	public static final Block COAL_ORE = (new BlockOre(16)).setHardness(3.0F).setResistance(5.0F).setStepSound(soundStoneFootstep).setName("oreCoal").setTextureName("coal_ore");
-	public static final Block LOG = (new BlockLog(17)).setHardness(2.0F).setStepSound(soundWoodFootstep).setName("log").setTextureName("log");
-	public static final BlockLeaves LEAVES = (BlockLeaves) (new BlockLeaves(18)).setHardness(0.2F).setLightOpacity(1).setStepSound(soundGrassFootstep).setName("leaves").setTextureName("leaves");
-	public static final Block SPONGE = (new BlockSponge(19)).setHardness(0.6F).setStepSound(soundGrassFootstep).setName("sponge").setTextureName("sponge");
+	*/
+	public static final Block LOG = new BlockLog(17).setHardness(2.0F).setStepSound(soundWoodFootstep).setName("log").setTextureName("log");
+	// TODO proper leaves
+	public static final Block LEAVES = new Block(18, Material.LEAVES).setHardness(0.2F).setLightOpacity(1).setStepSound(soundGrassFootstep).setName("leaves").setTextureName("leaves");
+	//public static final BlockLeaves LEAVES = (BlockLeaves) (new BlockLeaves(18)).setHardness(0.2F).setLightOpacity(1).setStepSound(soundGrassFootstep).setName("leaves").setTextureName("leaves");
+	/*public static final Block SPONGE = (new BlockSponge(19)).setHardness(0.6F).setStepSound(soundGrassFootstep).setName("sponge").setTextureName("sponge");
 	public static final Block GLASS = (new BlockGlass(20, Material.glass, false)).setHardness(0.3F).setStepSound(soundGlassFootstep).setName("glass").setTextureName("glass");
 	public static final Block LAPIS_ORE = (new BlockOre(21)).setHardness(3.0F).setResistance(5.0F).setStepSound(soundStoneFootstep).setName("oreLapis").setTextureName("lapis_ore");
 	public static final Block LAPIS_BLOCK = (new Block(22, Material.rock)).setHardness(3.0F).setResistance(5.0F).setStepSound(soundStoneFootstep).setName("blockLapis").setCreativeTab(CreativeTabs.tabBlock)
@@ -281,21 +288,21 @@ public class Block {
 	/** The unlocalized name of this block. */
 	private String name;
 
-	protected Block(int par1, Material mat) {
+	protected Block(int id, Material material) {
 		stepSound = soundPowderFootstep;
 		blockParticleGravity = 1.0F;
 		slipperiness = 0.6F;
 
-		if (byId[par1] != null) {
-			throw new IllegalArgumentException("Slot " + par1 + " is already occupied by " + byId[par1] + " when adding " + this);
+		if (byId[id] != null) {
+			throw new IllegalArgumentException("Slot " + id + " is already occupied by " + byId[id] + " when adding " + this);
 		} else {
-			blockMaterial = mat;
-			byId[par1] = this;
-			blockID = par1;
+			blockMaterial = material;
+			byId[id] = this;
+			blockID = id;
 			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-			opaqueCubeLookup[par1] = isOpaqueCube();
-			lightOpacity[par1] = isOpaqueCube() ? 255 : 0;
-			canBlockGrass[par1] = !mat.getCanBlockGrass();
+			opaqueCubeLookup[id] = isOpaqueCube();
+			lightOpacity[id] = isOpaqueCube() ? 255 : 0;
+			canBlockGrass[id] = !material.getCanBlockGrass();
 		}
 	}
 
@@ -520,6 +527,7 @@ public class Block {
 	/**
 	 * Returns the ID of the items to drop on destruction.
 	 */
+	//public int idDropped(int par1, Random par2Random, int par3) {
 	public int idDropped() {
 		return blockID;
 	}
@@ -741,7 +749,7 @@ public class Block {
 	 * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
 	 */
 	public boolean canPlaceBlockAt(World world, int x, int y, int z) {
-		int id = world.getTypeAt(x, y, z);
+		int id = world.getTypeId(x, y, z);
 		return id == 0 || byId[id].blockMaterial.isReplaceable();
 	}
 
