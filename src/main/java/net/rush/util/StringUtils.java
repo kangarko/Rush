@@ -1,14 +1,9 @@
 package net.rush.util;
 
+import org.bukkit.ChatColor;
+
 
 public final class StringUtils {
-
-	/**
-	 * This is fall back if somehow the character get corrupted
-	 * for example in github so I do not need to check every class
-	 * and fix it.
-	 */
-	public final static String COLOR_CHAR = "§";
 	
 	public static String join(String[] items, String glue) {
 		StringBuilder builder = new StringBuilder();
@@ -22,16 +17,15 @@ public final class StringUtils {
 	}
 	
 	/**
-	 * Colorizes the string. Replaces & with special character.
+	 * Colorizes the string. Replaces & with color character.
 	 * @param str - The string to be colorized.
 	 * @returns colorized string
 	 */
-	public static String c(String str) {
-		return str.replace("&", COLOR_CHAR);
+	public static String colorize(String str) {
+		return ChatColor.translateAlternateColorCodes('&', str);
 	}
 	
-	private StringUtils() {
-	}
+	private StringUtils() {}
 
 }
 

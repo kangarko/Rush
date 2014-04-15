@@ -2,6 +2,8 @@ package net.rush.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -196,7 +198,7 @@ public final class ChannelBufferUtils {
 
 		return new String(bytes, CHARSET_UTF8);
 	}
-
+	
 	/**
 	 * Read a protobuf varint from the buffer.
 	 * @param buf The buffer.
@@ -281,6 +283,26 @@ public final class ChannelBufferUtils {
 
     public static void writeBoolean(ChannelBuffer buf, boolean bool) {
     	buf.writeByte(bool ? 1 : 0);
+    }
+    
+	public static String readStringFromDataInput(DataInput stream, int maxlength) throws IOException {
+        short recvlength = stream.readShort();
+        if (recvlength > maxlength)
+            throw new IOException("String longer than allowed length (" + recvlength + ")!");
+        if (recvlength < 0)
+            throw new IOException("A string shorter than 0??? (" + recvlength + ")");
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < recvlength; i++) {
+            sb.append(stream.readChar());
+        }
+
+        return sb.toString();
+    }
+
+    public static void writeStringToDataOutput(DataOutput stream, String string) throws IOException {
+        stream.writeShort(string.length());
+        stream.writeChars(string);
     }
     
 	/**

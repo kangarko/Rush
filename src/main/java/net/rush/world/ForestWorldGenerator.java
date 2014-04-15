@@ -3,7 +3,7 @@ package net.rush.world;
 import java.util.Random;
 
 import net.rush.chunk.Chunk;
-import net.rush.model.Block;
+import net.rush.model.Blocks;
 
 /**
  * A {@link WorldGenerator} that generates chunks with trees randomly placed.
@@ -63,7 +63,7 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 		int trunkZ = z + center;
 
 		for (int i = 0; i < height - TREE_CANOPY_HEIGHT; i++) {  // Generate the trunk
-			chunk.setType(trunkX, trunkZ, y + i, Block.LOG);
+			chunk.setType(trunkX, trunkZ, y + i, Blocks.LOG);
 			chunk.setMetaData(trunkX, trunkZ, y + i, type);
 		}
 
@@ -86,9 +86,9 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 			for (int cx = startX; cx < endX; cx++) {
 				for (int cz = startZ; cz < endZ; cz++) {
 					if (cx == trunkX && cz == trunkZ && cy < (height - 2)) { // trunk, leave some leaves above it
-						chunk.setTypeAndData(trunkX, trunkZ, y + cy, Block.LOG, type);
+						chunk.setTypeAndData(trunkX, trunkZ, y + cy, Blocks.LOG, type);
 					} else {
-						chunk.setTypeAndData(cx, cz, y + cy, Block.LEAVES, type);
+						chunk.setTypeAndData(cx, cz, y + cy, Blocks.LEAVES, type);
 					}
 				}
 			}

@@ -1,7 +1,7 @@
 package net.rush.model;
 
 
-public class Block {
+public class Blocks {
 
 	public static final int AIR = 0;
 	public static final int STONE = 1;

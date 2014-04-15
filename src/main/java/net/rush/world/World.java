@@ -3,21 +3,23 @@ package net.rush.world;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Random;
 
 import net.rush.chunk.Chunk;
 import net.rush.chunk.ChunkManager;
 import net.rush.io.ChunkIoService;
+import net.rush.model.Block;
 import net.rush.model.Entity;
 import net.rush.model.EntityManager;
 import net.rush.model.LivingEntity;
 import net.rush.model.Player;
 import net.rush.model.Position;
 import net.rush.model.entity.EntityRegistry;
+import net.rush.model.misc.Vec3Pool;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.TimeUpdatePacket;
 
 import org.bukkit.Difficulty;
-import org.bukkit.Material;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
 import org.bukkit.entity.EntityType;
@@ -52,8 +54,12 @@ public class World {
 	 */
 	private long time = 0;
 	
-	public int worldYMax = 256;
+	private int maxHeight = 256;
 
+	public final Vec3Pool vectorPool = new Vec3Pool(300, 2000);
+	
+	public Random rand = new Random();
+	
 	/**
 	 * Creates a new world with the specified chunk I/O service and world
 	 * generator.
@@ -160,38 +166,30 @@ public class World {
 		chunks.getChunk(x, z).setType(x, z, y, type);
 	}
 	
+	public int getBlockDataAt(int x, int y, int z) {
+		return chunks.getChunk(x, z).getMetaData(x, z, y);
+	}
+	
 	public void setTypeAndData(int x, int y, int z, int type, int data) {
 		chunks.getChunk(x, z).setType(x, z, y, type);
 		chunks.getChunk(x, z).setMetaData(x, z, y, data);
 	}
-	
-	@SuppressWarnings("deprecation") 
-	public int getHighestBlockAt(int i, int j) {
-		Chunk chunk = getChunkAt(i, j);
-		int posY = worldYMax - 1;
-		i &= 0xf;
-		j &= 0xf;
+
+	public int getHighestBlockAt(int x, int z) {
+		Chunk chunk = getChunkAt(x, z);
+		int posY = maxHeight - 1;
+		x &= 0xf;
+		z &= 0xf;
 		while (posY > 0) {
-			int l = chunk.getType(i, posY, j);
-			if (l == 0 || !Material.getMaterial(l).isSolid() /*!Block.blocksList[l].blockMaterial.getIsSolid() || Block.blocksList[l].blockMaterial == Material.leaves*/)
+			int l = chunk.getType(x, posY, z);
+			if (l == 0 || !Block.byId[l].blockMaterial.isSolid() || Block.byId[l].blockMaterial == net.rush.model.Material.LEAVES)
 				posY--;
 			else
 				return posY + 1;
 		}
 		return -1;
 	}
-	
-	@SuppressWarnings("deprecation") 
-	public Material getBlockMaterial(int x, int y, int z) {
-		return Material.getMaterial(getTypeAt(x, y, z));
-	}
-	
-	public boolean isAirBlock(int x, int y, int z) {
-		int type = 0;
-		type = getTypeAt(x, y, z);
-		return type == 0;
-	}
-	
+
 	public LivingEntity spawnEntity(Position pos, Class<? extends LivingEntity> clazz) {
 		try {
 			LivingEntity entity = clazz.getDeclaredConstructor(World.class).newInstance(this);
@@ -240,7 +238,7 @@ public class World {
 	}
 
 	public int getMaxHeight() {
-		return 256;
+		return maxHeight;
 	}
 
 	public String getName() {
@@ -249,10 +247,6 @@ public class World {
 
 	public WorldType getWorldType() {
 		return WorldType.NORMAL;
-	}
-	
-	public long getSeed() {
-		return 0; // FIXME
 	}
 
 	public void save() {
