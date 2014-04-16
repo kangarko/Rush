@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AABBPool {
+	
 	/**
 	 * Maximum number of times the pool can be "cleaned" before the list is shrunk
 	 */
@@ -28,9 +29,9 @@ public class AABBPool {
 	/** Number of times this Pool has been cleaned */
 	private int numCleans;
 
-	public AABBPool(int par1, int par2) {
-		this.maxNumCleans = par1;
-		this.numEntriesToRemove = par2;
+	public AABBPool(int maxNumCleans, int numEntriesToRemove) {
+		this.maxNumCleans = maxNumCleans;
+		this.numEntriesToRemove = numEntriesToRemove;
 	}
 
 	/**
@@ -62,10 +63,10 @@ public class AABBPool {
 		}
 
 		if (this.numCleans++ == this.maxNumCleans) {
-			int var1 = Math.max(this.maxPoolIndex, this.listAABB.size() - this.numEntriesToRemove);
+			int entry = Math.max(this.maxPoolIndex, this.listAABB.size() - this.numEntriesToRemove);
 
-			while (this.listAABB.size() > var1) {
-				this.listAABB.remove(var1);
+			while (this.listAABB.size() > entry) {
+				this.listAABB.remove(entry);
 			}
 
 			this.maxPoolIndex = 0;

@@ -1,5 +1,7 @@
 package net.rush.model.misc;
 
+import net.rush.util.MathHelper;
+
 public class Vec3 {
 	
 	/**

@@ -136,7 +136,7 @@ public final class Server {
 			logger.warning("**** FAILED TO BIND TO PORT!");
 			logger.warning("The exception was: " + ex.toString());
 			logger.warning("Perhaps a server is already running on that port?");
-			System.exit(0);
+			throw new RuntimeException(ex);
 		}
 		
 		/* add shutdown hook */
