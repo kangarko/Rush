@@ -7,7 +7,7 @@ public class Vec3 {
 	/**
 	 * A global Vec3Pool that always creates new vectors instead of reusing them and is thread-safe.
 	 */
-	public static final Vec3Pool fakePool = new Vec3Pool(-1, -1);
+	public static final Vec3Pool emptyPool = new Vec3Pool(-1, -1);
 	
 	public final Vec3Pool myVec3LocalPool;
 
@@ -25,10 +25,10 @@ public class Vec3 {
 	 * method which creates and places it in the list.
 	 */
 	public static Vec3 createVectorHelper(double x, double y, double z) {
-		return new Vec3(fakePool, x, y, z);
+		return new Vec3(emptyPool, x, y, z);
 	}
 
-	protected Vec3(Vec3Pool par1Vec3Pool, double x, double y, double z) {
+	protected Vec3(Vec3Pool vector, double x, double y, double z) {
 		if (x == -0.0D) {
 			x = 0.0D;
 		}
@@ -44,7 +44,7 @@ public class Vec3 {
 		this.xCoord = x;
 		this.yCoord = y;
 		this.zCoord = z;
-		this.myVec3LocalPool = par1Vec3Pool;
+		this.myVec3LocalPool = vector;
 	}
 
 	/**
@@ -100,11 +100,11 @@ public class Vec3 {
 	/**
 	 * The square of the Euclidean distance between this and the vector of x,y,z components passed in.
 	 */
-	public double squareDistanceTo(double par1, double par3, double par5) {
-		double var7 = par1 - this.xCoord;
-		double var9 = par3 - this.yCoord;
-		double var11 = par5 - this.zCoord;
-		return var7 * var7 + var9 * var9 + var11 * var11;
+	public double squareDistanceTo(double x, double y, double z) {
+		double newX = x - this.xCoord;
+		double newY = y - this.yCoord;
+		double newZ = z - this.zCoord;
+		return newX * newX + newY * newY + newZ * newZ;
 	}
 
 	/**
@@ -118,16 +118,16 @@ public class Vec3 {
 	 * Returns a new vector with x value equal to the second parameter, along the line between this vector and the
 	 * passed in vector, or null if not possible.
 	 */
-	public Vec3 getIntermediateWithXValue(Vec3 par1Vec3, double par2) {
-		double var4 = par1Vec3.xCoord - this.xCoord;
-		double var6 = par1Vec3.yCoord - this.yCoord;
-		double var8 = par1Vec3.zCoord - this.zCoord;
+	public Vec3 getIntermediateWithXValue(Vec3 vector, double x) {
+		double vecX = vector.xCoord - this.xCoord;
+		double vecY = vector.yCoord - this.yCoord;
+		double vecZ = vector.zCoord - this.zCoord;
 
-		if (var4 * var4 < 1.0000000116860974E-7D) {
+		if (vecX * vecX < 1.0000000116860974E-7D) {
 			return null;
 		} else {
-			double var10 = (par2 - this.xCoord) / var4;
-			return var10 >= 0.0D && var10 <= 1.0D ? this.myVec3LocalPool.getVecFromPool(this.xCoord + var4 * var10, this.yCoord + var6 * var10, this.zCoord + var8 * var10) : null;
+			double finalX = (x - this.xCoord) / vecX;
+			return finalX >= 0.0D && finalX <= 1.0D ? this.myVec3LocalPool.getVecFromPool(this.xCoord + vecX * finalX, this.yCoord + vecY * finalX, this.zCoord + vecZ * finalX) : null;
 		}
 	}
 
@@ -135,16 +135,16 @@ public class Vec3 {
 	 * Returns a new vector with y value equal to the second parameter, along the line between this vector and the
 	 * passed in vector, or null if not possible.
 	 */
-	public Vec3 getIntermediateWithYValue(Vec3 par1Vec3, double par2) {
-		double var4 = par1Vec3.xCoord - this.xCoord;
-		double var6 = par1Vec3.yCoord - this.yCoord;
-		double var8 = par1Vec3.zCoord - this.zCoord;
+	public Vec3 getIntermediateWithYValue(Vec3 vector, double y) {
+		double vecX = vector.xCoord - this.xCoord;
+		double vecY = vector.yCoord - this.yCoord;
+		double vecZ = vector.zCoord - this.zCoord;
 
-		if (var6 * var6 < 1.0000000116860974E-7D) {
+		if (vecY * vecY < 1.0000000116860974E-7D) {
 			return null;
 		} else {
-			double var10 = (par2 - this.yCoord) / var6;
-			return var10 >= 0.0D && var10 <= 1.0D ? this.myVec3LocalPool.getVecFromPool(this.xCoord + var4 * var10, this.yCoord + var6 * var10, this.zCoord + var8 * var10) : null;
+			double finalY = (y - this.yCoord) / vecY;
+			return finalY >= 0.0D && finalY <= 1.0D ? this.myVec3LocalPool.getVecFromPool(this.xCoord + vecX * finalY, this.yCoord + vecY * finalY, this.zCoord + vecZ * finalY) : null;
 		}
 	}
 
@@ -152,16 +152,16 @@ public class Vec3 {
 	 * Returns a new vector with z value equal to the second parameter, along the line between this vector and the
 	 * passed in vector, or null if not possible.
 	 */
-	public Vec3 getIntermediateWithZValue(Vec3 par1Vec3, double par2) {
-		double var4 = par1Vec3.xCoord - this.xCoord;
-		double var6 = par1Vec3.yCoord - this.yCoord;
-		double var8 = par1Vec3.zCoord - this.zCoord;
+	public Vec3 getIntermediateWithZValue(Vec3 vector, double z) {
+		double vecX = vector.xCoord - this.xCoord;
+		double vecY = vector.yCoord - this.yCoord;
+		double vecZ = vector.zCoord - this.zCoord;
 
-		if (var8 * var8 < 1.0000000116860974E-7D) {
+		if (vecZ * vecZ < 1.0000000116860974E-7D) {
 			return null;
 		} else {
-			double var10 = (par2 - this.zCoord) / var8;
-			return var10 >= 0.0D && var10 <= 1.0D ? this.myVec3LocalPool.getVecFromPool(this.xCoord + var4 * var10, this.yCoord + var6 * var10, this.zCoord + var8 * var10) : null;
+			double finalZ = (z - this.zCoord) / vecZ;
+			return finalZ >= 0.0D && finalZ <= 1.0D ? this.myVec3LocalPool.getVecFromPool(this.xCoord + vecX * finalZ, this.yCoord + vecY * finalZ, this.zCoord + vecZ * finalZ) : null;
 		}
 	}
 
@@ -172,28 +172,24 @@ public class Vec3 {
 	/**
 	 * Rotates the vector around the x axis by the specified angle.
 	 */
-	public void rotateAroundX(float par1) {
-		float var2 = MathHelper.cos(par1);
-		float var3 = MathHelper.sin(par1);
-		double var4 = this.xCoord;
-		double var6 = this.yCoord * (double) var2 + this.zCoord * (double) var3;
-		double var8 = this.zCoord * (double) var2 - this.yCoord * (double) var3;
-		this.xCoord = var4;
-		this.yCoord = var6;
-		this.zCoord = var8;
+	public void rotateAroundX(float x) {
+		float cos = MathHelper.cos(x);
+		float sin = MathHelper.sin(x);
+		double newY = this.yCoord * (double) cos + this.zCoord * (double) sin;
+		double newZ = this.zCoord * (double) cos - this.yCoord * (double) sin;
+		this.yCoord = newY;
+		this.zCoord = newZ;
 	}
 
 	/**
 	 * Rotates the vector around the y axis by the specified angle.
 	 */
-	public void rotateAroundY(float par1) {
-		float var2 = MathHelper.cos(par1);
-		float var3 = MathHelper.sin(par1);
-		double var4 = this.xCoord * (double) var2 + this.zCoord * (double) var3;
-		double var6 = this.yCoord;
-		double var8 = this.zCoord * (double) var2 - this.xCoord * (double) var3;
-		this.xCoord = var4;
-		this.yCoord = var6;
-		this.zCoord = var8;
+	public void rotateAroundY(float y) {
+		float cos = MathHelper.cos(y);
+		float sin = MathHelper.sin(y);
+		double newX = this.xCoord * (double) cos + this.zCoord * (double) sin;
+		double newZ = this.zCoord * (double) cos - this.xCoord * (double) sin;
+		this.xCoord = newX;
+		this.zCoord = newZ;
 	}
 }

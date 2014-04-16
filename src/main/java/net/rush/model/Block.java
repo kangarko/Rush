@@ -13,10 +13,6 @@ import net.rush.world.World;
 
 public class Block {
 
-	/**
-	 * used as foreach item, if item.tab = current tab, display it on the screen
-	 */
-	//private CreativeTabs displayOnCreativeTab;
 	protected String textureName;
 
 	public static final StepSound soundPowderFootstep = new StepSound("stone", 1.0F, 1.0F);
@@ -250,7 +246,7 @@ public class Block {
 	 * Flags whether or not this block is of a type that needs random ticking. Ref-counted by ExtendedBlockStorage in
 	 * order to broadly cull a chunk from the random chunk update list for efficiency's sake.
 	 */
-	protected boolean needsRandomTick;
+	protected boolean needsRandomTick = false;
 
 	/** true if the Block contains a Tile Entity */
 	protected boolean isBlockContainer;
@@ -357,6 +353,10 @@ public class Block {
 	public boolean renderAsNormalBlock() {
 		return true;
 	}
+	
+	public int getTypeId() {
+		return blockID;
+	}
 
 	public boolean getBlocksMovement(/*IBlockAccess par1IBlockAccess,*/ int x, int y, int z) {
 		return !blockMaterial.blocksMovement();
@@ -397,8 +397,8 @@ public class Block {
 	/**
 	 * Sets whether this block type will receive random update ticks
 	 */
-	protected Block setTickRandomly(boolean par1) {
-		needsRandomTick = par1;
+	protected Block setTickRandomly(boolean tickrandomly) {
+		needsRandomTick = tickrandomly;
 		return this;
 	}
 
@@ -480,7 +480,7 @@ public class Block {
 	/**
 	 * Ticks the block if it's been scheduled
 	 */
-	public void updateTick(World world, int x, int y, int z, Random rand) {
+	public void tick(World world, int x, int y, int z, Random rand) {
 	}
 
 	/**
@@ -1030,7 +1030,7 @@ public class Block {
 	/**
 	 * Static version of isAssociatedBlockID.
 	 */
-	public static boolean isAssociatedBlockID(int firstId, int secondId) {
+	public static boolean isAssociatedWith(int firstId, int secondId) {
 		return firstId == secondId ? true : (firstId != 0 && secondId != 0 && byId[firstId] != null && byId[secondId] != null ? byId[firstId].isAssociatedBlockID(secondId) : false);
 	}
 

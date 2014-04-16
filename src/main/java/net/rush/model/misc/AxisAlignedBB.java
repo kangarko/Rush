@@ -95,13 +95,13 @@ public class AxisAlignedBB {
 		return getAABBPool().getAABB(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 
-	public AxisAlignedBB func_111270_a(AxisAlignedBB par1AxisAlignedBB) {
-		double newMinX = Math.min(this.minX, par1AxisAlignedBB.minX);
-		double newMinY = Math.min(this.minY, par1AxisAlignedBB.minY);
-		double newMinZ = Math.min(this.minZ, par1AxisAlignedBB.minZ);
-		double newMaxX = Math.max(this.maxX, par1AxisAlignedBB.maxX);
-		double newMaxY = Math.max(this.maxY, par1AxisAlignedBB.maxY);
-		double newMaxZ = Math.max(this.maxZ, par1AxisAlignedBB.maxZ);
+	public AxisAlignedBB func_111270_a(AxisAlignedBB axis) {
+		double newMinX = Math.min(this.minX, axis.minX);
+		double newMinY = Math.min(this.minY, axis.minY);
+		double newMinZ = Math.min(this.minZ, axis.minZ);
+		double newMaxX = Math.max(this.maxX, axis.maxX);
+		double newMaxY = Math.max(this.maxY, axis.maxY);
+		double newMaxZ = Math.max(this.maxZ, axis.maxZ);
 		return getAABBPool().getAABB(newMinX, newMinY, newMinZ, newMaxX, newMaxY, newMaxZ);
 	}
 
@@ -259,13 +259,7 @@ public class AxisAlignedBB {
 	 * Returns a bounding box that is inset by the specified amounts
 	 */
 	public AxisAlignedBB contract(double x, double y, double z) {
-		double var7 = this.minX + x;
-		double var9 = this.minY + y;
-		double var11 = this.minZ + z;
-		double var13 = this.maxX - x;
-		double var15 = this.maxY - y;
-		double var17 = this.maxZ - z;
-		return getAABBPool().getAABB(var7, var9, var11, var13, var15, var17);
+		return getAABBPool().getAABB(minX + x, minY + y, minZ + z, maxX - x, maxY - y, maxZ - z);
 	}
 
 	/**
@@ -276,93 +270,93 @@ public class AxisAlignedBB {
 	}
 
 	public MovingObjectPosition calculateIntercept(Vec3 vec1, Vec3 vec2) {
-		Vec3 var3 = vec1.getIntermediateWithXValue(vec2, this.minX);
-		Vec3 var4 = vec1.getIntermediateWithXValue(vec2, this.maxX);
-		Vec3 var5 = vec1.getIntermediateWithYValue(vec2, this.minY);
-		Vec3 var6 = vec1.getIntermediateWithYValue(vec2, this.maxY);
-		Vec3 var7 = vec1.getIntermediateWithZValue(vec2, this.minZ);
-		Vec3 var8 = vec1.getIntermediateWithZValue(vec2, this.maxZ);
+		Vec3 minX = vec1.getIntermediateWithXValue(vec2, this.minX);
+		Vec3 maxX = vec1.getIntermediateWithXValue(vec2, this.maxX);
+		Vec3 minY = vec1.getIntermediateWithYValue(vec2, this.minY);
+		Vec3 maxY = vec1.getIntermediateWithYValue(vec2, this.maxY);
+		Vec3 minZ = vec1.getIntermediateWithZValue(vec2, this.minZ);
+		Vec3 maxZ = vec1.getIntermediateWithZValue(vec2, this.maxZ);
 
-		if (!this.isVecInYZ(var3)) {
-			var3 = null;
+		if (!this.isVecInYZ(minX)) {
+			minX = null;
 		}
 
-		if (!this.isVecInYZ(var4)) {
-			var4 = null;
+		if (!this.isVecInYZ(maxX)) {
+			maxX = null;
 		}
 
-		if (!this.isVecInXZ(var5)) {
-			var5 = null;
+		if (!this.isVecInXZ(minY)) {
+			minY = null;
 		}
 
-		if (!this.isVecInXZ(var6)) {
-			var6 = null;
+		if (!this.isVecInXZ(maxY)) {
+			maxY = null;
 		}
 
-		if (!this.isVecInXY(var7)) {
-			var7 = null;
+		if (!this.isVecInXY(minZ)) {
+			minZ = null;
 		}
 
-		if (!this.isVecInXY(var8)) {
-			var8 = null;
+		if (!this.isVecInXY(maxZ)) {
+			maxZ = null;
 		}
 
 		Vec3 vector = null;
 
-		if (var3 != null && (vector == null || vec1.squareDistanceTo(var3) < vec1.squareDistanceTo(vector))) {
-			vector = var3;
+		if (minX != null && (vector == null || vec1.squareDistanceTo(minX) < vec1.squareDistanceTo(vector))) {
+			vector = minX;
 		}
 
-		if (var4 != null && (vector == null || vec1.squareDistanceTo(var4) < vec1.squareDistanceTo(vector))) {
-			vector = var4;
+		if (maxX != null && (vector == null || vec1.squareDistanceTo(maxX) < vec1.squareDistanceTo(vector))) {
+			vector = maxX;
 		}
 
-		if (var5 != null && (vector == null || vec1.squareDistanceTo(var5) < vec1.squareDistanceTo(vector))) {
-			vector = var5;
+		if (minY != null && (vector == null || vec1.squareDistanceTo(minY) < vec1.squareDistanceTo(vector))) {
+			vector = minY;
 		}
 
-		if (var6 != null && (vector == null || vec1.squareDistanceTo(var6) < vec1.squareDistanceTo(vector))) {
-			vector = var6;
+		if (maxY != null && (vector == null || vec1.squareDistanceTo(maxY) < vec1.squareDistanceTo(vector))) {
+			vector = maxY;
 		}
 
-		if (var7 != null && (vector == null || vec1.squareDistanceTo(var7) < vec1.squareDistanceTo(vector))) {
-			vector = var7;
+		if (minZ != null && (vector == null || vec1.squareDistanceTo(minZ) < vec1.squareDistanceTo(vector))) {
+			vector = minZ;
 		}
 
-		if (var8 != null && (vector == null || vec1.squareDistanceTo(var8) < vec1.squareDistanceTo(vector))) {
-			vector = var8;
+		if (maxZ != null && (vector == null || vec1.squareDistanceTo(maxZ) < vec1.squareDistanceTo(vector))) {
+			vector = maxZ;
 		}
 
 		if (vector == null) {
 			return null;
 		} else {
-			byte var10 = -1;
+			byte sideHit = -1;
 
-			if (vector == var3) {
-				var10 = 4;
+			if (vector == minX) {
+				sideHit = 4;
 			}
 
-			if (vector == var4) {
-				var10 = 5;
+			if (vector == maxX) {
+				sideHit = 5;
 			}
 
-			if (vector == var5) {
-				var10 = 0;
+			if (vector == minY) {
+				sideHit = 0;
 			}
 
-			if (vector == var6) {
-				var10 = 1;
+			if (vector == maxY) {
+				sideHit = 1;
 			}
 
-			if (vector == var7) {
-				var10 = 2;
+			if (vector == minZ) {
+				sideHit = 2;
 			}
 
-			if (vector == var8) {
-				var10 = 3;
+			if (vector == maxZ) {
+				sideHit = 3;
 			}
 
-			return new MovingObjectPosition(0, 0, 0, var10, vector);
+			return new MovingObjectPosition(0, 0, 0, sideHit, vector);
 		}
 	}
 
@@ -410,7 +404,7 @@ public class AxisAlignedBB {
 		}
 
 		protected Object initialValue() {
-			return this.createNewDefaultPool();
+			return createNewDefaultPool();
 		}
 	}
 

@@ -5,18 +5,18 @@ import java.util.List;
 
 public class Vec3Pool {
 	
-	private final int truncateArrayResetThreshold;
-	private final int minimumSize;
+	private final int truncateResetThreshold;
+	private final int minSize;
 
 	/** items at and above nextFreeSpace are assumed to be available */
 	private final List<Vec3> vec3Cache = new ArrayList<Vec3>();
 	private int nextFreeSpace;
-	private int maximumSizeSinceLastTruncation;
+	private int maxSizeSinceLastTruncation;
 	private int resetCount;
 
-	public Vec3Pool(int truncateArrayResetThreshold, int minimumSize) {
-		this.truncateArrayResetThreshold = truncateArrayResetThreshold;
-		this.minimumSize = minimumSize;
+	public Vec3Pool(int truncateResetThreshold, int minSize) {
+		this.truncateResetThreshold = truncateResetThreshold;
+		this.minSize = minSize;
 	}
 
 	/**
@@ -46,18 +46,18 @@ public class Vec3Pool {
 	 */
 	public void clear() {
 		if (!isEmpty()) {
-			if (nextFreeSpace > maximumSizeSinceLastTruncation) {
-				maximumSizeSinceLastTruncation = nextFreeSpace;
+			if (nextFreeSpace > maxSizeSinceLastTruncation) {
+				maxSizeSinceLastTruncation = nextFreeSpace;
 			}
 
-			if (resetCount++ == truncateArrayResetThreshold) {
-				int var1 = Math.max(maximumSizeSinceLastTruncation, vec3Cache.size() - minimumSize);
+			if (resetCount++ == truncateResetThreshold) {
+				int var1 = Math.max(maxSizeSinceLastTruncation, vec3Cache.size() - minSize);
 
 				while (vec3Cache.size() > var1) {
 					vec3Cache.remove(var1);
 				}
 
-				maximumSizeSinceLastTruncation = 0;
+				maxSizeSinceLastTruncation = 0;
 				resetCount = 0;
 			}
 
@@ -74,6 +74,6 @@ public class Vec3Pool {
 	}
 
 	private boolean isEmpty() {
-		return minimumSize < 0 || truncateArrayResetThreshold < 0;
+		return minSize < 0 || truncateResetThreshold < 0;
 	}
 }

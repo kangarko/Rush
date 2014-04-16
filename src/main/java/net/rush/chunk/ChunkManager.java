@@ -65,6 +65,39 @@ public final class ChunkManager {
 		}
 		return chunk;
 	}
+	
+	public boolean chunkExist(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+		if (maxY >= 0 && minY < 256) {
+			minX >>= 4;
+			minZ >>= 4;
+			maxX >>= 4;
+			maxZ >>= 4;
+
+			for (int x = minX; x <= maxX; ++x) {
+				for (int z = minZ; z <= maxZ; ++z) {
+					if (!chunkExist(x, z))
+					return false;
+				}
+			}
+
+			return true;
+		} else
+			return false;
+	}
+	
+	public boolean chunkExist(int x, int z) {
+		ChunkCoords key = new ChunkCoords(x, z);
+		Chunk chunk = chunks.get(key);
+		if (chunk == null) {
+			try {
+				chunk = service.read(x, z);
+				return true;
+			} catch (IOException e) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * Saves all chunks loaded.

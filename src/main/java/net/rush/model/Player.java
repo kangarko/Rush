@@ -167,6 +167,7 @@ public final class Player extends LivingEntity implements CommandSender {
 				ChunkCoords key = new ChunkCoords(x, z);
 				if (!knownChunks.contains(key)) {
 					knownChunks.add(key);
+					world.activeChunks.add(key);
 					//session.send(new PreChunkPacketImpl(x, z, true));
 					session.send(world.getChunks().getChunk(x, z).toMessage());
 				}
@@ -177,6 +178,7 @@ public final class Player extends LivingEntity implements CommandSender {
 		for (ChunkCoords key : previousChunks) {
 			//session.send(new PreChunkPacketImpl(key.x, key.z, false));
 			knownChunks.remove(key);
+			world.activeChunks.remove(key);
 		}
 
 		previousChunks.clear();

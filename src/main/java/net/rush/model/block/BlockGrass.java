@@ -14,9 +14,10 @@ public class BlockGrass extends Block {
 	}
 
 	@Override
-	public void updateTick(World world, int x, int y, int z, Random rand) {
-		if (world.getBlockLightValue(x, y + 1, z) < 4 && Block.lightOpacity[world.getTypeId(x, y + 1, z)] > 2) {
+	public void tick(World world, int x, int y, int z, Random rand) {
+		/*if (world.getBlockLightValue(x, y + 1, z) < 4 && Block.lightOpacity[world.getTypeId(x, y + 1, z)] > 2) {
 			world.setTypeId(x, y, z, Block.DIRT.blockID);
+			System.out.println("dirt @" + x + ", " + y + ", " + z);
 		} else if (world.getBlockLightValue(x, y + 1, z) >= 9) {
 			for (int i = 0; i < 4; ++i) {
 				
@@ -29,7 +30,8 @@ public class BlockGrass extends Block {
 					world.setTypeId(up1, up2, up3, this.blockID);
 				}
 			}
-		}
+		}*/
+		world.setTypeId(x, y, z, Block.DIRT.blockID);
 	}
 
 	/**
