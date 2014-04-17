@@ -1,9 +1,16 @@
 package net.rush.chunk;
 
+import java.awt.List;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Random;
+import java.util.Set;
 import java.util.zip.Deflater;
 
+import net.rush.model.Block;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.MapChunkPacket;
+import net.rush.util.RushException;
 
 /**
  * Represents a chunk of the map.
@@ -30,7 +37,8 @@ public final class Chunk {
 	/**
 	 * The data in this chunk representing all of the blocks and their state.
 	 */
-	private final byte[] types, metaData, skyLight, blockLight;
+	public final byte[] types;
+	private final byte[] metaData, skyLight, blockLight;
 
 	/**
 	 * Creates a new chunk with a specified X and Z coordinate.
@@ -184,7 +192,7 @@ public final class Chunk {
 		setType(x, z, y, type);
 		setMetaData(x, z, y, data);
 	}
-	
+
 	/**
 	 * Creates a new {@link Packet} which can be sent to a client to stream
 	 * this chunk to them.
@@ -203,11 +211,46 @@ public final class Chunk {
 	 * @param y The Y coordinate.
 	 * @return The index within the arrays.
 	 */
-	public static int coordToIndex(int x, int z, int y) {
+	private int coordToIndex(int x, int z, int y) {
 		if (x < 0 || z < 0 || y < 0 || x >= WIDTH || z >= HEIGHT || y >= DEPTH)
 			throw new IndexOutOfBoundsException("Coords out of bound! x:" + x + ", z:" + z + ", y:" + y);
 
 		return (y * HEIGHT + z) * WIDTH + x;
+	}
+
+	Random rand = new Random();
+
+	public Set<Block> getBlocksInChunk() {
+		Set<Block> blocks = new HashSet<Block>();
+		
+		for(int x = 0; x < WIDTH; x++) {
+			for (int y = 0; y < DEPTH; y++) {
+				for(int z = 0; z < HEIGHT; z++) {
+					int type = getType(x, z, y);
+					
+					if(type == 0)
+						continue;
+
+					//if(rand.nextInt(5000000) == 1)
+					//	System.out.println("Setting @ " + x + ", " + y + ", " + z);
+					if(rand.nextBoolean())
+						setType(x, z, y, Block.LOG.id);
+					else
+						setType(x, z, y, Block.WOOD.id);
+					/*
+					Block block = Block.byId[type];
+					if(block == null)
+						throw new RushException("Unknown block id: " + type);
+					
+					if(!blocks.contains(block)) {
+						blocks.add(block);
+						//System.out.println("Block " + block.getName() + " @ " + x + ", " + y + ", " + z);
+					}*/
+				}
+			}
+		}
+		
+		return blocks;
 	}
 
 	/**

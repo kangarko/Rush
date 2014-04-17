@@ -2,14 +2,12 @@ package net.rush.world;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
-import java.util.TreeSet;
 
 import net.rush.chunk.Chunk;
 import net.rush.chunk.ChunkCoords;
@@ -22,7 +20,7 @@ import net.rush.model.LivingEntity;
 import net.rush.model.Player;
 import net.rush.model.Position;
 import net.rush.model.entity.EntityRegistry;
-import net.rush.model.misc.NextTickListEntry;
+import net.rush.model.misc.NextTickEntry;
 import net.rush.model.misc.Vec3Pool;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.TimeUpdatePacket;
@@ -58,12 +56,15 @@ public class World {
 	private final EntityManager entities = new EntityManager();
 
 
-	private Set<NextTickListEntry> pendingTickListEntriesHashSet = new HashSet<NextTickListEntry>();
-	private List<NextTickListEntry> pendingTickEntries = new ArrayList<NextTickListEntry>();
-	private TreeSet<NextTickListEntry> pendingTickListEntriesTreeSet = new TreeSet<NextTickListEntry>();
+	private Queue<NextTickEntry> tickQueue = new LinkedList<NextTickEntry>();
+
+	//private Set<NextTickEntry> pendingTickEntriesHashSet = new HashSet<NextTickEntry>();
+	//private List<NextTickEntry> pendingTickEntries = new ArrayList<NextTickEntry>();
+	//private TreeSet<NextTickEntry> pendingTickEntriesTreeSet = new TreeSet<NextTickEntry>();
+
 	public Set<ChunkCoords> activeChunks = new HashSet<ChunkCoords>();
-	protected int updateLCG = (new Random()).nextInt();
-	
+	protected int updateLCG = new Random().nextInt();
+
 	private long time = 0;
 	private int maxHeight = 256;
 	public final Vec3Pool vectorPool = new Vec3Pool(300, 2000);
@@ -93,9 +94,30 @@ public class World {
 			entity.reset();
 
 		advanceTime();
-		tickWorld();
-		tickBlocksAndAmbiance();
+		//resetActiveChunks();
+		//tickFromQueue();
+		//tickActiveBlocks();
 	}
+
+	/*protected void resetActiveChunks() {
+		activeChunks.clear();
+
+		int posX;
+		int posZ;
+
+		for (Player pl : getPlayers()) {
+			posX = MathHelper.floor_double(pl.getPosition().getX() / 16.0D);
+			posZ = MathHelper.floor_double(pl.getPosition().getZ() / 16.0D);
+
+			byte viewDistance = 7;
+
+			for (int x = -viewDistance; x <= viewDistance; ++x) {
+				for (int z = -viewDistance; z <= viewDistance; ++z) {
+					activeChunks.add(new ChunkCoords(posX, posZ));
+				}
+			}
+		}
+	}*/
 
 	/**
 	 * Gets the chunk manager.
@@ -165,40 +187,66 @@ public class World {
 		// players to keep things in sync
 	}
 
+	/*public Chunk getChunkAt(int x, int z) {
+		return chunks.getChunk(x, z);
+	}*/
+
 	public Chunk getChunkAt(int x, int z) {
 		return chunks.getChunk(x, z);
 	}
 
-	public int getTypeId(int x, int y, int z) {
-		return chunks.getChunk(x, z).getType(x, z, y);
-	}
-
-	public void setTypeId(int x, int y, int z, int type) {
-		chunks.getChunk(x, z).setType(x, z, y, type);
-	}
-
-	public int getBlockDataAt(int x, int y, int z) {
-		return chunks.getChunk(x, z).getMetaData(x, z, y);
-	}
-
 	public void setTypeAndData(int x, int y, int z, int type, int data) {
-		chunks.getChunk(x, z).setType(x, z, y, type);
-		chunks.getChunk(x, z).setMetaData(x, z, y, data);
+		setTypeId(x, y, z, type);
+		setBlockData(x, y, z, data);
+	}
+	
+	public void setTypeId(int x, int y, int z, int type) {
+		int chunkX = x / Chunk.WIDTH + ((x < 0 && x % Chunk.WIDTH != 0) ? -1 : 0);
+		int chunkZ = z / Chunk.HEIGHT + ((z < 0 && z % Chunk.HEIGHT != 0) ? -1 : 0);
+
+		int localX = (x - chunkX * Chunk.WIDTH) % Chunk.WIDTH;
+		int localZ = (z - chunkZ * Chunk.HEIGHT) % Chunk.HEIGHT;
+
+		Chunk chunk = chunks.getChunk(chunkX, chunkZ);
+		chunk.setType(localX, localZ, y, type);
+	}
+	
+	public void setBlockData(int x, int y, int z, int data) {
+		int chunkX = x / Chunk.WIDTH + ((x < 0 && x % Chunk.WIDTH != 0) ? -1 : 0);
+		int chunkZ = z / Chunk.HEIGHT + ((z < 0 && z % Chunk.HEIGHT != 0) ? -1 : 0);
+
+		int localX = (x - chunkX * Chunk.WIDTH) % Chunk.WIDTH;
+		int localZ = (z - chunkZ * Chunk.HEIGHT) % Chunk.HEIGHT;
+
+		Chunk chunk = chunks.getChunk(chunkX, chunkZ);
+		chunk.setMetaData(localX, localZ, y, data);
 	}
 
-	public int getHighestBlockAt(int x, int z) {
-		Chunk chunk = getChunkAt(x, z);
-		int posY = maxHeight - 1;
-		x &= 0xf;
-		z &= 0xf;
-		while (posY > 0) {
-			int l = chunk.getType(x, posY, z);
-			if (l == 0 || !Block.byId[l].blockMaterial.isSolid() || Block.byId[l].blockMaterial == net.rush.model.Material.LEAVES)
-				posY--;
-			else
-				return posY + 1;
-		}
-		return -1;
+	public int getTypeId(int x, int y, int z) {
+		if (x >= -30000000 && z >= -30000000 && x < 30000000 && z < 30000000) {
+			if (y < 0)
+				return 0;
+			else if (y >= 256)
+				return 0;
+			else {
+				Chunk chunk = null;
+
+				chunk = getChunkAt(x >> 4, z >> 4);
+				return chunk.getType(x & 15, z & 15, y);
+			}
+		} else
+			return 0;
+	}
+
+	public int getBlockData(int x, int y, int z) {
+		int chunkX = x / Chunk.WIDTH + ((x < 0 && x % Chunk.WIDTH != 0) ? -1 : 0);
+		int chunkZ = z / Chunk.HEIGHT + ((z < 0 && z % Chunk.HEIGHT != 0) ? -1 : 0);
+
+		int localX = (x - chunkX * Chunk.WIDTH) % Chunk.WIDTH;
+		int localZ = (z - chunkZ * Chunk.HEIGHT) % Chunk.HEIGHT;
+
+		Chunk chunk = chunks.getChunk(chunkX, chunkZ);
+		return chunk.getMetaData(localX, localZ, y);
 	}
 
 	public LivingEntity spawnEntity(Position pos, Class<? extends LivingEntity> clazz) {
@@ -284,80 +332,28 @@ public class World {
 
 	/**
 	 * Runs through the list of updates to run and ticks them
+	 * @return true if pending tick queue is empty
 	 */
-	public boolean tickWorld() {
-		int pendingEntries = pendingTickListEntriesTreeSet.size();
+	public void tickFromQueue() {
+		if(tickQueue.isEmpty())
+			return;
 
-		if (pendingEntries != pendingTickListEntriesHashSet.size())
-			throw new IllegalStateException("TickNextTick list out of synch");
-		else {
-			if (pendingEntries > 1000) {
-				pendingEntries = 1000;
+		NextTickEntry nextTick = tickQueue.poll();
+
+		if (chunks.chunkExist(nextTick.posX, nextTick.posZ)) {
+			int id = getTypeId(nextTick.posX, nextTick.posY, nextTick.posZ);
+
+			if (id > 0 && Block.isAssociatedWith(id, nextTick.blockId)) {
+				Block.byId[id].tick(this, nextTick.posX, nextTick.posY, nextTick.posZ, rand);
 			}
-
-			// cleaning
-			NextTickListEntry nextTick;
-
-			for (int i = 0; i < pendingEntries; ++i) {
-				nextTick = pendingTickListEntriesTreeSet.first();
-
-				if (nextTick.scheduledTime > getTime()) {
-					break;
-				}
-
-				pendingTickListEntriesTreeSet.remove(nextTick);
-				pendingTickListEntriesHashSet.remove(nextTick);
-				pendingTickEntries.add(nextTick);
-			}
-
-			// ticking
-			Iterator<NextTickListEntry> pendingIterator = pendingTickEntries.iterator();
-
-			while (pendingIterator.hasNext()) {
-				nextTick = (NextTickListEntry) pendingIterator.next();
-				pendingIterator.remove();
-
-				if (chunks.chunkExist(nextTick.xCoord, nextTick.zCoord)) {
-					int id = getTypeId(nextTick.xCoord, nextTick.yCoord, nextTick.zCoord);
-
-					if (id > 0 && Block.isAssociatedWith(id, nextTick.blockID)) {
-						try {
-							Block.byId[id].tick(this, nextTick.xCoord, nextTick.yCoord, nextTick.zCoord, rand);
-						} catch (Throwable ex) {
-							ex.printStackTrace();
-						}
-					}
-				} else {
-					scheduleBlockUpdate(nextTick.xCoord, nextTick.yCoord, nextTick.zCoord, nextTick.blockID, 0);
-				}
-			}
-
-			pendingTickEntries.clear();
-			return !pendingTickListEntriesTreeSet.isEmpty();
+		} else {
+			scheduleBlockUpdate(nextTick.posX, nextTick.posY, nextTick.posZ, nextTick.blockId, 0);
 		}
 	}
 
 	public void scheduleBlockUpdate(int x, int y, int z, int blockID, int priority) {
-		NextTickListEntry tickEntry = new NextTickListEntry(x, y, z, blockID);
+		NextTickEntry tickEntry = new NextTickEntry(x, y, z, blockID);
 		byte osem = 0;
-
-		/*if (scheduledUpdatesAreImmediate && blockID > 0) {
-			if (Block.byId[blockID].func_82506_l()) {
-				osem = 8;
-
-				if (chunks.chunkExist(var7.xCoord - osem, var7.yCoord - osem, var7.zCoord - osem, var7.xCoord + osem, var7.yCoord + osem, var7.zCoord + osem)) {
-					int id = getBlockId(var7.xCoord, var7.yCoord, var7.zCoord);
-
-					if (id == var7.blockID && id > 0) {
-						Block.byId[id].tick(this, var7.xCoord, var7.yCoord, var7.zCoord, rand);
-					}
-				}
-
-				return;
-			}
-
-			par5 = 1;
-		}*/
 
 		if (chunks.chunkExist(x - osem, y - osem, z - osem, x + osem, y + osem, z + osem)) {
 			if (blockID > 0) {
@@ -365,111 +361,57 @@ public class World {
 				tickEntry.setPriority(priority);
 			}
 
-			if (!pendingTickListEntriesHashSet.contains(tickEntry)) {
-				pendingTickListEntriesHashSet.add(tickEntry);
-				pendingTickListEntriesTreeSet.add(tickEntry);
-			}
+			if(!tickQueue.contains(tickEntry))
+				tickQueue.add(tickEntry);
 		}
 	}
-	
-	protected void tickBlocksAndAmbiance() {
-		//super.tickBlocksAndAmbiance();
-		Iterator<ChunkCoords> chunkSetIterator = activeChunks.iterator();
 
-		while (chunkSetIterator.hasNext()) {
-			ChunkCoords chunkCoords = chunkSetIterator.next();
-			//int xPos = chunkCoords.x * 16;
-			//int zPos = chunkCoords.z * 16;
-			// get chunk
-			Chunk chunk = getChunkAt(chunkCoords.x, chunkCoords.z);
-			//moodSoundAndLightCheck(xPos, zPos, chunk);
-			// tick chunk
-			//chunk.updateSkylight();
+	protected void tickActiveBlocks() {
 
-			/*int var8;
-			int var9;
-			int index;
-			int var11;*/
+		for(ChunkCoords coords : activeChunks) {
+			//int xPos = coords.x * 16;
+			//int zPos = coords.z * 16;
+			Chunk chunk = getChunkAt(coords.x, coords.z);
 
-			/*if (rand.nextInt(100000) == 0 && isRaining() && isThundering()) {
-				updateLCG = updateLCG * 3 + 1013904223;
-				var8 = updateLCG >> 2;
-				var9 = xPos + (var8 & 15);
-				var10 = zPos + (var8 >> 8 & 15);
-				var11 = getPrecipitationHeight(var9, var10);
+			/*int blockID;
 
-				if (canLightningStrikeAt(var9, var11, var10)) {
-					addWeatherEffect(new EntityLightningBolt(this, var9, var11, var10));
-				}
-			}*/
-
-			// ice and snow
-			//int blockID;
-
-			/*if (rand.nextInt(16) == 0) {
-				updateLCG = updateLCG * 3 + 1013904223;
-				var8 = updateLCG >> 2;
-				var9 = var8 & 15;
-				var10 = var8 >> 8 & 15;
-				var11 = getPrecipitationHeight(var9 + xPos, var10 + zPos);
-
-				if (isBlockFreezableNaturally(var9 + xPos, var11 - 1, var10 + zPos)) {
-					this.setBlock(var9 + xPos, var11 - 1, var10 + zPos, Block.ice.id);
-				}
-
-				if (isRaining() && canSnowAt(var9 + xPos, var11, var10 + zPos)) {
-					this.setBlock(var9 + xPos, var11, var10 + zPos, Block.snow.id);
-				}
-
-				if (isRaining()) {
-					BiomeGenBase genbase = getBiomeGenForCoords(var9 + xPos, var10 + zPos);
-
-					if (genbase.canSpawnLightningBolt()) {
-						blockID = getBlockId(var9 + xPos, var11 - 1, var10 + zPos);
-
-						if (blockID != 0) {
-							Block.byId[blockID].fillWithRain(this, var9 + xPos, var11 - 1, var10 + zPos);
-						}
-					}
-				}
-			}*/
-
-			// ticking tiles
-			for(int x = 0; x < 16; x++) {
-				for(int y = 0; y < 256; y++) {
-					for(int z = 0; z < 16; z++) {
-						Block block = Block.byId[chunk.getType(x, z, y)];
-						if(block.getTypeId() != Block.GRASS.blockID)
-							return;
-						if (block != null && block.getTickRandomly()) {
-							block.tick(this, x, y, z, rand);
-						}
-					}
-				}
-			}
-			/*ExtendedBlockStorage[] storage = chunk.getBlockStorageArray();
-			var9 = storage.length;
-
-			for (index = 0; index < var9; ++index) {
-				ExtendedBlockStorage blockStorage = storage[index];
-
-				if (blockStorage != null && blockStorage.getNeedsRandomTick()) {
+			for (int index = 0; index < chunk.types.length; ++index) {
 					for (int i = 0; i < 3; ++i) {
 						updateLCG = updateLCG * 3 + 1013904223;
 						blockID = updateLCG >> 2;
 						int x = blockID & 15;
 						int z = blockID >> 8 & 15;
 						int y = blockID >> 16 & 15;
-						int extendedId = blockStorage.getExtBlockID(x, y, z);
+						int extendedId = getTypeId(x, y, z);
+
+						if(extendedId <= 0)
+							continue;
+
 						Block blockId = Block.byId[extendedId];
 
 						if (blockId != null && blockId.getTickRandomly()) {
-							blockId.tick(this, x + xPos, y + blockStorage.getYLocation(), z + zPos, rand);
+							blockId.tick(this, x + xPos, y, z + zPos, rand);
+						}
+					}
+			}*/
+
+			for(int x = 0; x < Chunk.WIDTH; x++) {
+				for(int y = 0; y < Chunk.DEPTH; y++) {
+					for(int z = 0; z < Chunk.HEIGHT; z++) {
+
+						int type = getTypeId(x, y, z);
+
+						if(type > 0) {
+							//if(type == Block.GRASS.id)
+							//	System.out.println("grass @" + x + ", " + y + ", " + z + " is " + org.bukkit.Material.getMaterial(type));
+
+							Block block = Block.byId[type];
+							if (block != null && block.getTickRandomly())
+								block.tick(this, x, y, z, rand);
 						}
 					}
 				}
-			}*/
-
+			}
 		}
 	}
 }

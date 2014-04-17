@@ -3,6 +3,7 @@ package net.rush.packets.packet;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
+import net.rush.world.World;
 
 public class BlockChangePacket extends Packet {
 	@Serialize(type = Type.INT, order = 0)
@@ -16,13 +17,13 @@ public class BlockChangePacket extends Packet {
 	@Serialize(type = Type.BYTE, order = 4)
 	private final byte blockMetadata;
 
-	public BlockChangePacket(int x, byte y, int z, short blockType, byte blockMetadata) {
+	public BlockChangePacket(int x, int y, int z, World world) {
 		super();
 		this.x = x;
-		this.y = y;
+		this.y = (byte)y;
 		this.z = z;
-		this.blockType = blockType;
-		this.blockMetadata = blockMetadata;
+		this.blockType = (short) world.getTypeId(x, y, z);
+		this.blockMetadata = (byte) world.getBlockData(x, y, z);
 	}
 
 	public int getOpcode() {

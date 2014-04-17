@@ -5,34 +5,34 @@ public class ItemStack {
 	public static final ItemStack NULL_ITEM = new ItemStack(-1, -1, -1) {
         @Override
         public int getId() {
-            throw new NullPointerException("You tried to use the NULL-ItemStack!");
+            throw new NullException("You tried to use the legendary NULL-ItemStack!");
         }
 
         @Override
         public int getCount() {
-            throw new NullPointerException("You tried to use the NULL-ItemStack!");
+            throw new NullException("You tried to use the legendary NULL-ItemStack!");
         }
 
         @Override
         public int getDamage() {
-            throw new NullPointerException("You tried to use the NULL-ItemStack!");
+            throw new NullException("You tried to use the legendary NULL-ItemStack!");
         }
         
         @Override
         public int getDataLength() {
-            throw new NullPointerException("You tried to use the NULL-ItemStack!");
+            throw new NullException("You tried to use the legendary NULL-ItemStack!");
         }
 
         @Override
         public byte[] getData() {
-            throw new NullPointerException("You tried to use the NULL-ItemStack!");
+            throw new NullException("You tried to use the legendary NULL-ItemStack!");
         }
     };
 	
 	/**
 	 * The ItemStack's id.
 	 */
-	private final int id;
+	private int id;
 
 	/**
 	 * The number of ItemStacks within the stack.
@@ -42,7 +42,7 @@ public class ItemStack {
 	/**
 	 * The ItemStack's damage.
 	 */
-	private final int damage;
+	private int damage;
 	
 	/**
 	 * The ItemStack's NBT data length. -1 to disable
@@ -145,6 +145,14 @@ public class ItemStack {
 		this.count = count;
 	}
 	
+	public void setDamage(int damage) {
+		this.damage = damage;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -178,5 +186,14 @@ public class ItemStack {
 		return String.format("ItemStack [id=%s,count=%d,damage=%d])", id, count, damage);
 	}
 
+	
+	private class NullException extends NullPointerException {
+
+		private static final long serialVersionUID = 1L;
+
+		public NullException(String str) {
+			super(str);
+		}
+	}
 }
 

@@ -36,10 +36,10 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 			makeTree(chunk, x, z, 61, height, type);
 		}
 		
-		for (int cislo = 0; cislo < 8; cislo++) {
+		/*for (int cislo = 0; cislo < 8; cislo++) {
 			int x = random.nextInt(Chunk.WIDTH);
 			int z = random.nextInt(Chunk.HEIGHT);
-			if (chunk.isBlockAir(x, z, 61) /*&& ((BlockFlower) Block.blocksList[plantBlockId]).canBlockStay(world, i1, j1, k1)*/)
+			if (chunk.isBlockAir(x, z, 61) //&& ((BlockFlower) Block.blocksList[plantBlockId]).canBlockStay(world, i1, j1, k1))
 				if(random.nextBoolean())
 					chunk.setType(x, z, 61, 37 + random.nextInt(2));
 		}
@@ -47,10 +47,10 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 		for (int cislo = 0; cislo < 16; cislo++) {
 			int x = random.nextInt(Chunk.WIDTH);
 			int z = random.nextInt(Chunk.HEIGHT);
-			if (chunk.isBlockAir(x, z, 61) /*&& ((BlockFlower) Block.blocksList[plantBlockId]).canBlockStay(world, i1, j1, k1)*/)
+			if (chunk.isBlockAir(x, z, 61) //&& ((BlockFlower) Block.blocksList[plantBlockId]).canBlockStay(world, i1, j1, k1))
 				chunk.setType(x, z, 61, 31);
 				chunk.setMetaData(x, z, 61, 1);
-		}
+		}*/
 
 		return chunk;
 	}
@@ -63,7 +63,7 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 		int trunkZ = z + center;
 
 		for (int i = 0; i < height - TREE_CANOPY_HEIGHT; i++) {  // Generate the trunk
-			chunk.setType(trunkX, trunkZ, y + i, Block.LOG.blockID);
+			chunk.setType(trunkX, trunkZ, y + i, Block.LOG.id);
 			chunk.setMetaData(trunkX, trunkZ, y + i, type);
 		}
 
@@ -86,9 +86,9 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 			for (int cx = startX; cx < endX; cx++) {
 				for (int cz = startZ; cz < endZ; cz++) {
 					if (cx == trunkX && cz == trunkZ && cy < (height - 2)) { // trunk, leave some leaves above it
-						chunk.setTypeAndData(trunkX, trunkZ, y + cy, Block.LOG.blockID, type);
+						chunk.setTypeAndData(trunkX, trunkZ, y + cy, Block.LOG.id, type);
 					} else {
-						chunk.setTypeAndData(cx, cz, y + cy, Block.LEAVES.blockID, type);
+						chunk.setTypeAndData(cx, cz, y + cy, Block.LEAVES.id, type);
 					}
 				}
 			}

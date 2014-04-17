@@ -42,9 +42,12 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 		Chunk chunk = world.getChunks().getChunk(chunkX, chunkZ);
 		int oldType = chunk.getType(localX, localZ, y);
 		
+		if(player.getGamemode() == GameMode.CREATIVE || message.getStatus() == PlayerDiggingPacket.STATE_DONE_DIGGING)
+			chunk.setType(localX, localZ, y, Block.AIR);
+		
 		if (player.getGamemode() == GameMode.CREATIVE) {
 			SoundOrParticleEffectPacket soundMsg = new SoundOrParticleEffectPacket(SoundOrParticleEffectPacket.DIG_SOUND, x, (byte)y, z, oldType, false);
-			BlockChangePacket blockChangePacket = new BlockChangePacket(x, (byte)y, z, (byte)0, (byte)0);
+			BlockChangePacket blockChangePacket = new BlockChangePacket(x, y, z, world);
 			for (Player p: world.getPlayers()) {
 				p.getSession().send(blockChangePacket);
 				if(p != player && player.isWithinDistance(p)) {
@@ -52,21 +55,19 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 				}
 			}
 			
-			chunk.setType(localX, localZ, y, Block.AIR);
 			player.sendMessage("block broken in creative: " + Material.getMaterial(oldType) + " at X: " + x + " Y: " + y + " Z: " + z);
 			return;
 		}
 		
 		if (message.getStatus() == PlayerDiggingPacket.STATE_DONE_DIGGING) {
 			SoundOrParticleEffectPacket soundMsg = new SoundOrParticleEffectPacket(SoundOrParticleEffectPacket.DIG_SOUND, x, (byte)y, z, oldType, false);
-			BlockChangePacket blockChangePacket = new BlockChangePacket(x, (byte)y, z, (byte)0, (byte)0);
+			BlockChangePacket blockChangePacket = new BlockChangePacket(x, y, z, world);
 			for (Player p: world.getPlayers()) {
 				p.getSession().send(blockChangePacket);
 				if(p != player && player.isWithinDistance(p)) {
 					p.getSession().send(soundMsg);
 				}
 			}
-			chunk.setType(localX, localZ, y, Block.AIR);
 			
 			ItemEntity item = new ItemEntity(player.getWorld(), new ItemStack(Material.COBBLESTONE.getId(), 1));
 			item.setPosition(new Position(x, y, z));

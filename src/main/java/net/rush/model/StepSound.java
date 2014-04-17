@@ -12,20 +12,22 @@ public class StepSound {
 		this.pitch = pitch;
 	}
 
-	/**
-	 * Used when a block breaks, EXA: Player break, Shep eating grass, etc..
-	 */
 	public String getBreakSound() {
 		return "dig." + name;
 	}
 
-	/**
-	 * Used when a entity walks over, or otherwise interacts with the block.
-	 */
 	public String getStepSound() {
 		return "step." + name;
 	}
 
+	public float getVolume() {
+		return volume;
+	}
+
+	public float getPitch() {
+		return pitch;
+	}
+	
 	/**
 	 * Used when a player places a block.
 	 */

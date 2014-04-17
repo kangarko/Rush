@@ -59,6 +59,6 @@ public abstract class RotatableBlock extends Block {
 	 */
 	@Override
 	protected ItemStack createStackedBlock(int type) {
-		return new ItemStack(blockID, 1, func_111050_e(type));
+		return new ItemStack(id, 1, func_111050_e(type));
 	}
 }

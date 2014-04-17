@@ -1,9 +1,7 @@
 package net.rush.console;
 
 import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ConsoleLogManager {
@@ -32,13 +30,14 @@ public class ConsoleLogManager {
 
 		logger.addHandler(handler);
 
-		try {
+		// TODO add back
+		/*try {
 			FileHandler fileHandler = new FileHandler("server.log");
 			fileHandler.setFormatter(formatter);
 			logger.addHandler(fileHandler);
 		} catch (Exception ex) {
 			logger.log(Level.WARNING, "Failed to log to server.log", ex);
-		}
+		}*/
 		
 		global.addHandler(handler);
 	}

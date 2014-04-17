@@ -10,11 +10,12 @@ public class BlockGrass extends Block {
 
 	public BlockGrass(int id) {
 		super(id, Material.GRASS);
-		setTickRandomly(true);
 	}
 
 	@Override
 	public void tick(World world, int x, int y, int z, Random rand) {
+		System.out.println("Ticking @ " + x + ", " + y + ", " + z);
+		world.setTypeId(x, y, z, Block.DIRT.id);
 		/*if (world.getBlockLightValue(x, y + 1, z) < 4 && Block.lightOpacity[world.getTypeId(x, y + 1, z)] > 2) {
 			world.setTypeId(x, y, z, Block.DIRT.blockID);
 			System.out.println("dirt @" + x + ", " + y + ", " + z);
@@ -31,14 +32,11 @@ public class BlockGrass extends Block {
 				}
 			}
 		}*/
-		world.setTypeId(x, y, z, Block.DIRT.blockID);
+		//world.setTypeId(x, y, z, Block.DIRT.id);
 	}
 
-	/**
-	 * Returns the ID of the items to drop on destruction.
-	 */
 	@Override
 	public int idDropped() {
-		return Block.DIRT.blockID;
+		return Block.DIRT.id;
 	}
 }

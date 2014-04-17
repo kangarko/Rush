@@ -1,6 +1,5 @@
 package net.rush.packets.packet;
 
-import net.rush.model.Position;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -19,16 +18,23 @@ public class NamedSoundEffectPacket extends Packet {
 	@Serialize(type = Type.BYTE, order = 5)
 	private final byte pitch;
 
-	public NamedSoundEffectPacket(String soundName, Position pos, float volume, byte pitch) {
-		super();
-		this.soundName = soundName;
-		x = (int) pos.getX();
-		y = (int) pos.getY();
-		z = (int) pos.getZ();
-		this.volume = volume;
-		this.pitch = pitch;
-	}
+	public NamedSoundEffectPacket(String soundName, double x, double y, double z, float volume, float pitch) {
+		super();		
+		
+		if (pitch < 0)
+			pitch = 0;
 
+		if (pitch > 255)
+			pitch = 255;
+		
+		this.soundName = soundName;
+		this.x = (int) (x * 8D);
+		this.y = (int) (y * 8D);
+		this.z = (int) (z * 8D);
+		this.volume = volume;
+		this.pitch = (byte) (pitch * 63.0F);
+	}
+	
 	public int getOpcode() {
 		return 0x3E;
 	}
@@ -58,6 +64,6 @@ public class NamedSoundEffectPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("soundName=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",volume=\"%d\",pitch=\"%d\"", soundName, x, y, z, volume, pitch);
+		return String.format("soundName=\"%s\",x=\"%s\",y=\"%s\",z=\"%s\",volume=\"%s\",pitch=\"%s\"", soundName, x, y, z, volume, pitch);
 	}
 }

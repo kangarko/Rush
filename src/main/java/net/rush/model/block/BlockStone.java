@@ -11,6 +11,6 @@ public class BlockStone extends Block {
 
 	@Override
     public int idDropped() {
-        return Block.COBBLESTONE.blockID;
+        return Block.COBBLESTONE.id;
     }
 }
