@@ -18,12 +18,16 @@ public class BlockChangePacket extends Packet {
 	private final byte blockMetadata;
 
 	public BlockChangePacket(int x, int y, int z, World world) {
+		this(x, y, z, world.getTypeId(x, y, z), world.getBlockData(x, y, z));
+	}
+	
+	public BlockChangePacket(int x, int y, int z, int typeId, int data) {
 		super();
 		this.x = x;
 		this.y = (byte)y;
 		this.z = z;
-		this.blockType = (short) world.getTypeId(x, y, z);
-		this.blockMetadata = (byte) world.getBlockData(x, y, z);
+		this.blockType = (short) typeId;
+		this.blockMetadata = (byte) data;
 	}
 
 	public int getOpcode() {

@@ -2,8 +2,6 @@ package net.rush.gui;
 
 import java.awt.Color;
 
-import net.rush.Server;
-
 public class Notification {
 	public static Color defaultTitleColor = new Color(40, 210, 210);
 
@@ -217,7 +215,7 @@ public class Notification {
 		this.mouseOverBackgroundColor = color;
 	}
 
-	public boolean show() {
-		return Server.getGui().showNotification(this);
+	public boolean show(Notifications not) {
+		return not.showNotification(this);
 	}
 }

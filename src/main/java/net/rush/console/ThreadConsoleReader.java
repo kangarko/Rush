@@ -18,8 +18,8 @@ public class ThreadConsoleReader extends Thread {
 		this.reader.setExpandEvents(false);
 		this.setDaemon(true);
 
-		System.setOut(new PrintStream(new LoggerOutputStream(Server.logger, Level.INFO), true));
-		System.setErr(new PrintStream(new LoggerOutputStream(Server.logger, Level.SEVERE), true));
+		System.setOut(new PrintStream(new LoggerOutputStream(server.getLogger(), Level.INFO), true));
+		System.setErr(new PrintStream(new LoggerOutputStream(server.getLogger(), Level.SEVERE), true));
 	}
 
 	public void run() {

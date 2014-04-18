@@ -55,6 +55,9 @@ public final class TaskScheduler {
 		this.server = server;
 	}
 
+	long time = 0;
+	long lastWarning = 0;
+	
 	/**
 	 * Starts the task scheduler.
 	 */
@@ -62,12 +65,32 @@ public final class TaskScheduler {
 		executor.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
+				int[] lags = {0, 0};
 				try {
-					pulse();
+					time = System.currentTimeMillis();
+					lags = pulse();
 				} catch (Throwable t) {
 					logger.log(Level.SEVERE, "Uncaught exception in task scheduler.", t);
 					// TODO in the future consider shutting down the server at this point?
+				} finally {
+					long localTime = System.currentTimeMillis();
+					long lag = localTime - time;
+
+					// TODO Revert to 2000
+					if (lag > 20L && (time - lastWarning) >= 15000) {
+						// prints the lag from session registry and then from world pulsing.
+						logger.warning("Can\'t keep up! Lag[session=" + lags[0] + "ms,world=" + lags[1] + "ms]");
+						lag = 20L;
+						lastWarning = time;
+					}
+
+					if (lag < 0L) {
+						logger.warning("Time ran backwards! Did the system time change?");
+						lag = 0L;
+					}
+					time = localTime;
 				}
+
 			}
 		}, 0, PULSE_EVERY, TimeUnit.MILLISECONDS);
 	}
@@ -84,16 +107,18 @@ public final class TaskScheduler {
 
 	/**
 	 * Adds new tasks and updates existing tasks, removing them if necessary.
+	 * @return 2 integers. One is lag from session registry pulsing, second from world pulsing.
 	 */
-	private void pulse() {
+	private int[] pulse() {
+		int[] lag = new int[2];
 		// handle incoming messages
-		server.getSessionRegistry().pulse();
+		lag[0] = server.getSessionRegistry().pulse();
 
 		// handle tasks
 		synchronized (newTasks) {
-			for (Task task : newTasks) {
+			for (Task task : newTasks)
 				tasks.add(task);
-			}
+
 			newTasks.clear();
 		}
 
@@ -105,7 +130,9 @@ public final class TaskScheduler {
 		}
 
 		// handle general game logic
-		server.getWorld().pulse();
+		lag[1] = server.getWorld().pulse();
+		
+		return lag;
 	}
 
 }

@@ -38,13 +38,13 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
  */
 public final class Server {
 
-	public static final Logger logger = Logger.getLogger("Minecraft");
 	public final String serverId;
 	public boolean onlineMode = false;
 	
-	private static Notifications gui;
+	private final Logger logger = Logger.getLogger("Minecraft");
 	private final ConsoleCommandSender consoleSender = new ConsoleCommandSender(this);
 	private final SocketAddress socketAddress = new InetSocketAddress(25565);
+	private final Notifications gui;
 	
 	/**
 	 * The {@link ServerBootstrap} used to initialize Netty.
@@ -217,12 +217,16 @@ public final class Server {
 		this.saveEnabled = saveEnabled;
 	}
 
-	public static Notifications getGui() {
+	public Notifications getGui() {
 		return gui;
 	}
 	
 	public ConsoleCommandSender getConsoleSender() {
 		return consoleSender;
+	}
+	
+	public Logger getLogger() {
+		return logger;
 	}
 
 	/**

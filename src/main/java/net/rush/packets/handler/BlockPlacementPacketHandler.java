@@ -134,7 +134,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 			Block block = Block.byId[id];
 			int metadata = Block.byId[id].onBlockPlaced(world, x, y, z, side, xOffset, yOffset, zOffset, item.getDamage());
 
-			world.setTypeAndData(x, y, z, id, metadata);
+			world.setTypeAndData(x, y, z, id, metadata, true);
 			
 				if (world.getTypeId(x, y, z) == id) {
 					Block.byId[id].onBlockPlacedBy(world, x, y, z, player, item);

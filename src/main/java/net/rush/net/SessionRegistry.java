@@ -26,7 +26,8 @@ public final class SessionRegistry {
 	/**
 	 * Pulses all the sessions.
 	 */
-	public void pulse() {
+	public int pulse() {
+		long now = System.currentTimeMillis();
 		synchronized (pending) {
 			Session session;
 			while ((session = pending.poll()) != null) {
@@ -41,6 +42,7 @@ public final class SessionRegistry {
 				session.dispose();
 			}
 		}
+		return (int) (System.currentTimeMillis() - now);
 	}
 
 	/**

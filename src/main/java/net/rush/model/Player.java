@@ -94,7 +94,7 @@ public final class Player extends LivingEntity implements CommandSender {
 		this.session.send(new PlayerPositionAndLookPacket(position.getX(), position.getY(), position.getZ(), position.getY() + NORMAL_EYE_HEIGHT, (float) rotation.getYaw(), (float) rotation.getPitch(), true));
 
 		this.sendMessage("&3Rush // &fWelcome to Rush, " + name);
-		Server.logger.info(getName() + "[" + getSession().getRemoveAddress() + "] logged in with entity id " + getId());
+		getServer().getLogger().info(getName() + "[" + getSession().getRemoveAddress() + "] logged in with entity id " + getId());
 		getServer().broadcastMessage("&e" + name + " has joined the game.");
 	}
 

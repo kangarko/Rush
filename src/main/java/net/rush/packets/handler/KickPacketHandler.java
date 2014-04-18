@@ -1,6 +1,5 @@
 package net.rush.packets.handler;
 
-import net.rush.Server;
 import net.rush.model.Player;
 import net.rush.net.Session;
 import net.rush.packets.packet.KickPacket;
@@ -19,7 +18,7 @@ public final class KickPacketHandler extends PacketHandler<KickPacket> {
 		for(Player pl : session.getServer().getWorld().getPlayers()) {
 			pl.getSession().send(new PlayerListItemPacket(player.getName(), false, (short)100));
 		}
-		Server.logger.info(player.getName() + " lost connection: " + message.getReason());
+		session.getServer().getLogger().info(player.getName() + " lost connection: " + message.getReason());
 	}
 
 }

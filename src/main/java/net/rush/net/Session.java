@@ -28,8 +28,10 @@ public final class Session {
 	/**
 	 * The number of ticks which are elapsed before a client is disconnected due
 	 * to a timeout.
+	 * If client don´t get this value for about 22 seconds it gets disconnected,
+	 * but it is recommended to set this to lower number due to server lag.
 	 */
-	private static final int TIMEOUT_TICKS = 20 * 20;
+	private static final int TIMEOUT_TICKS = 6 * 20;
 
 	/**
 	 * The state this connection is currently in.
@@ -154,15 +156,16 @@ public final class Session {
 			if (handler != null) {
 				handler.handle(this, player, packet);
 				String name = packet.getPacketType().getSimpleName();
-				if(!name.contains("Position") && !name.contains("PlayerOnGround") && !name.contains("Look") && !name.contains("KeepAlive") && !name.contains("ChatPacket")) {
-					Server.logger.info("Handling packet: " + packet.getPacketType().getSimpleName());
+				if(!name.contains("Position") && !name.contains("PlayerOnGround") && !name.contains("Look") && !name.contains("ChatPacket")) {
+					server.getLogger().info("Handling packet: " + packet.getPacketType().getSimpleName());
 				}
 			} else {
-				Server.logger.info("&cMissing handler for packet: " + packet.getPacketType().getSimpleName());
-				Server.getGui().showNotification(new Notification("Unhandled packet", "Missing handler for packet:", packet.getPacketType().getSimpleName(), Color.RED, Color.WHITE, Color.WHITE));
+				server.getLogger().info("&cMissing handler for packet: " + packet.getPacketType().getSimpleName());
+				server.getGui().showNotification(new Notification("Unhandled packet", "Missing handler for packet:", packet.getPacketType().getSimpleName(), Color.RED, Color.WHITE, Color.WHITE));
 			}
 		}
 
+		//System.out.println("timeoutCounter: " + timeoutCounter);
 		if (timeoutCounter >= TIMEOUT_TICKS) {
 			if (pingMessageId == 0) {
 				pingMessageId = new Random().nextInt();
@@ -178,16 +181,16 @@ public final class Session {
 	}
 
 	/**
-	 * Sends a message to the client.
-	 * @param message The message.
+	 * Sends a packet to the client.
+	 * @param packet The message.
 	 */
-	public void send(Packet message) {
-		channel.write(message);
+	public void send(Packet packet) {
+		channel.write(packet);
 	}
 
 	/**
 	 * Disconnects the session with the specified reason. This causes a
-	 * {@link KickMessage} to be sent. When it has been delivered, the channel
+	 * {@link KickPacket} to be sent. When it has been delivered, the channel
 	 * is closed.
 	 * @param reason The reason for disconnection.
 	 */

@@ -23,6 +23,7 @@ import net.rush.model.entity.EntityRegistry;
 import net.rush.model.misc.NextTickEntry;
 import net.rush.model.misc.Vec3Pool;
 import net.rush.packets.Packet;
+import net.rush.packets.packet.BlockChangePacket;
 import net.rush.packets.packet.TimeUpdatePacket;
 
 import org.bukkit.Difficulty;
@@ -58,17 +59,14 @@ public class World {
 
 	private Queue<NextTickEntry> tickQueue = new LinkedList<NextTickEntry>();
 
-	//private Set<NextTickEntry> pendingTickEntriesHashSet = new HashSet<NextTickEntry>();
-	//private List<NextTickEntry> pendingTickEntries = new ArrayList<NextTickEntry>();
-	//private TreeSet<NextTickEntry> pendingTickEntriesTreeSet = new TreeSet<NextTickEntry>();
-
 	public Set<ChunkCoords> activeChunks = new HashSet<ChunkCoords>();
-	protected int updateLCG = new Random().nextInt();
 
 	private long time = 0;
 	private int maxHeight = 256;
 	public final Vec3Pool vectorPool = new Vec3Pool(300, 2000);
 	public Random rand = new Random();
+	
+	protected int updateLCG = rand.nextInt();
 
 	/**
 	 * Creates a new world with the specified chunk I/O service and world
@@ -86,7 +84,8 @@ public class World {
 	/**
 	 * Updates all the entities within this world.
 	 */
-	public void pulse() {
+	public int pulse() {
+		long now = System.currentTimeMillis();
 		for (Entity entity : entities)
 			entity.pulse();
 
@@ -97,15 +96,16 @@ public class World {
 		resetActiveChunks();
 		tickFromQueue();
 		tickActiveChunks();
+		return (int) (System.currentTimeMillis() - now);
 	}
 
 	protected void resetActiveChunks() {
 		activeChunks.clear();
 
 		int chunkX, chunkZ;
-		
+
 		// how many chunks from player should be ticked (redstone activated, grass grown etc)
-		// is 8 in notchian server
+		// is 7 in notchian server
 		int radius = 6;
 
 		for (Player pl : getPlayers()) {
@@ -190,16 +190,21 @@ public class World {
 		// players to keep things in sync
 	}
 
-	public Chunk getChunkAt(int x, int z) {
+	public Chunk getChunkFromBlockCoords(int i, int j) {
+		return getChunkFromChunkCoords(i >> 4, j >> 4);
+	}
+
+	public Chunk getChunkFromChunkCoords(int x, int z) {
 		return chunks.getChunk(x, z);
 	}
 
-	public void setTypeAndData(int x, int y, int z, int type, int data) {
-		setTypeId(x, y, z, type);
-		setBlockData(x, y, z, data);
+	public void setTypeAndData(int x, int y, int z, int type, int data, boolean notifyPlayers) {
+		setTypeId(x, y, z, type, notifyPlayers);
+		setBlockData(x, y, z, data, notifyPlayers);
 	}
 
-	public void setTypeId(int x, int y, int z, int type) {
+	/** @param notifyPlayers - should we send BlockChangePacket to all players in the world? */
+	public void setTypeId(int x, int y, int z, int type, boolean notifyPlayers) {
 		int chunkX = x / Chunk.WIDTH + ((x < 0 && x % Chunk.WIDTH != 0) ? -1 : 0);
 		int chunkZ = z / Chunk.HEIGHT + ((z < 0 && z % Chunk.HEIGHT != 0) ? -1 : 0);
 
@@ -208,9 +213,12 @@ public class World {
 
 		Chunk chunk = chunks.getChunk(chunkX, chunkZ);
 		chunk.setType(localX, localZ, y, type);
-	}
 
-	public void setBlockData(int x, int y, int z, int data) {
+		if(notifyPlayers) 
+			sendBlockChangePacket(x, y, z);
+	}	
+
+	public void setBlockData(int x, int y, int z, int data, boolean notifyPlayers) {
 		int chunkX = x / Chunk.WIDTH + ((x < 0 && x % Chunk.WIDTH != 0) ? -1 : 0);
 		int chunkZ = z / Chunk.HEIGHT + ((z < 0 && z % Chunk.HEIGHT != 0) ? -1 : 0);
 
@@ -219,6 +227,15 @@ public class World {
 
 		Chunk chunk = chunks.getChunk(chunkX, chunkZ);
 		chunk.setMetaData(localX, localZ, y, data);
+
+		if(notifyPlayers) 
+			sendBlockChangePacket(x, y, z);
+	}
+
+	public void sendBlockChangePacket(int x, int y, int z) {
+		BlockChangePacket packet = new BlockChangePacket(x, y, z, this);
+		for(Player pl : getPlayers())
+			pl.getSession().send(packet);
 	}
 
 	public int getTypeId(int x, int y, int z) {
@@ -230,7 +247,7 @@ public class World {
 			else {
 				Chunk chunk = null;
 
-				chunk = getChunkAt(x >> 4, z >> 4);
+				chunk = getChunkFromBlockCoords(x, z);
 				return chunk.getType(x & 15, z & 15, y);
 			}
 		} else
@@ -366,63 +383,30 @@ public class World {
 	}
 
 	protected void tickActiveChunks() {
-
 		for(ChunkCoords coords : activeChunks) {
-			//int xPos = coords.x * 16;
-			//int zPos = coords.z * 16;
-			Chunk chunk = getChunkAt(coords.x, coords.z);
+			//Chunk chunk = getChunkFromChunkCoords(coords.x, coords.z);
 
-			chunk.tickBlocks(this, rand);
-			/*for(BlockPosition blockPos : chunk.getBlocks()) {
-				if(blockPos.getBlock().getTickRandomly()) {
-					int x = (int) blockPos.getPositon().getX();
-					int y = (int) blockPos.getPositon().getY();
-					int z = (int) blockPos.getPositon().getZ();
-					if(rand.nextInt(1000) == 1)
-						System.out.println("Tick @ " + x + ", " +y +", "+ z);
-					blockPos.getBlock().tick(this, x, y, z, rand);
-				}
-			}*/
+			int posX = coords.x * Chunk.WIDTH;//chunk.getX()<<4;
+			int posZ = coords.z * Chunk.HEIGHT;//chunk.getZ()<<4;
 
-			/*int blockID;
+			for(int xx = posX; xx < posX + Chunk.WIDTH; xx++)
+				for(int zz = posZ; zz < posZ + Chunk.HEIGHT; zz++)			    	
+					for(int yy = 0; yy < Chunk.DEPTH; yy++) {
 
-			for (int index = 0; index < chunk.types.length; ++index) {
-					for (int i = 0; i < 3; ++i) {
-						updateLCG = updateLCG * 3 + 1013904223;
-						blockID = updateLCG >> 2;
-						int x = blockID & 15;
-						int z = blockID >> 8 & 15;
-						int y = blockID >> 16 & 15;
-						int extendedId = getTypeId(x, y, z);
+						int type = getTypeId(xx, yy, zz);
 
-						if(extendedId <= 0)
+						if(type == 0)
 							continue;
 
-						Block blockId = Block.byId[extendedId];
+						Block block = Block.byId[type];
 
-						if (blockId != null && blockId.getTickRandomly()) {
-							blockId.tick(this, x + xPos, y, z + zPos, rand);
-						}
+						if(block != null && block.getTickRandomly())
+							block.tick(this, xx, yy, zz, rand);
+
+						/*BlockChangePacket packet = new BlockChangePacket(xx, yy, zz, this);
+						for(Player pl : getPlayers())
+							pl.getSession().send(packet);*/
 					}
-			}*/
-
-			/*for(int x = 0; x < Chunk.WIDTH; x++) {
-				for(int y = 0; y < Chunk.DEPTH; y++) {
-					for(int z = 0; z < Chunk.HEIGHT; z++) {
-
-						int type = getTypeId(x, y, z);
-
-						if(type > 0) {
-							//if(type == Block.GRASS.id)
-							//	System.out.println("grass @" + x + ", " + y + ", " + z + " is " + org.bukkit.Material.getMaterial(type));
-
-							Block block = Block.byId[type];
-							if (block != null && block.getTickRandomly())
-								block.tick(this, x, y, z, rand);
-						}
-					}
-				}
-			}*/
 		}
 	}
 }
