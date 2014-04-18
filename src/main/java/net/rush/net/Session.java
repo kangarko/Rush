@@ -84,7 +84,7 @@ public final class Session {
 	 * The player associated with this session (if there is one).
 	 */
 	private Player player;
-
+	
 	boolean pendingRemoval = false;
 	private int pingMessageId;
 
@@ -148,18 +148,18 @@ public final class Session {
 		if(pendingRemoval)
 			return false;
 
-		Packet message;
-		while ((message = messageQueue.poll()) != null) {
-			PacketHandler<Packet> handler = (PacketHandler<Packet>) HandlerLookupService.find(message.getPacketType());
+		Packet packet;
+		while ((packet = messageQueue.poll()) != null) {
+			PacketHandler<Packet> handler = (PacketHandler<Packet>) HandlerLookupService.find(packet.getPacketType());
 			if (handler != null) {
-				handler.handle(this, player, message);
-				String name = message.getPacketType().getSimpleName();
+				handler.handle(this, player, packet);
+				String name = packet.getPacketType().getSimpleName();
 				if(!name.contains("Position") && !name.contains("PlayerOnGround") && !name.contains("Look") && !name.contains("KeepAlive") && !name.contains("ChatPacket")) {
-					Server.logger.info("Handling packet: " + message.getPacketType().getSimpleName());
+					Server.logger.info("Handling packet: " + packet.getPacketType().getSimpleName());
 				}
 			} else {
-				Server.logger.info("&cMissing handler for packet: " + message.getPacketType().getSimpleName());
-				Server.getGui().showNotification(new Notification("Unhandled packet", "Missing handler for packet:", message.getPacketType().getSimpleName(), Color.RED, Color.WHITE, Color.WHITE));
+				Server.logger.info("&cMissing handler for packet: " + packet.getPacketType().getSimpleName());
+				Server.getGui().showNotification(new Notification("Unhandled packet", "Missing handler for packet:", packet.getPacketType().getSimpleName(), Color.RED, Color.WHITE, Color.WHITE));
 			}
 		}
 

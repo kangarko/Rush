@@ -1,16 +1,15 @@
 package net.rush.chunk;
 
-import java.awt.List;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.Set;
 import java.util.zip.Deflater;
 
 import net.rush.model.Block;
+import net.rush.model.Position;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.MapChunkPacket;
-import net.rush.util.RushException;
+import net.rush.world.World;
 
 /**
  * Represents a chunk of the map.
@@ -218,39 +217,30 @@ public final class Chunk {
 		return (y * HEIGHT + z) * WIDTH + x;
 	}
 
-	Random rand = new Random();
+	Set<Position> tickedBlocks = new HashSet<Position>();
+	
+	public void tickBlocks(World world, Random rand) {
+		tickedBlocks.clear();
 
-	public Set<Block> getBlocksInChunk() {
-		Set<Block> blocks = new HashSet<Block>();
-		
 		for(int x = 0; x < WIDTH; x++) {
 			for (int y = 0; y < DEPTH; y++) {
 				for(int z = 0; z < HEIGHT; z++) {
 					int type = getType(x, z, y);
-					
+
 					if(type == 0)
 						continue;
-
-					//if(rand.nextInt(5000000) == 1)
-					//	System.out.println("Setting @ " + x + ", " + y + ", " + z);
-					if(rand.nextBoolean())
-						setType(x, z, y, Block.LOG.id);
-					else
-						setType(x, z, y, Block.WOOD.id);
-					/*
-					Block block = Block.byId[type];
-					if(block == null)
-						throw new RushException("Unknown block id: " + type);
 					
-					if(!blocks.contains(block)) {
-						blocks.add(block);
-						//System.out.println("Block " + block.getName() + " @ " + x + ", " + y + ", " + z);
-					}*/
+					Block block = Block.byId[type];
+
+					if(block != null)
+						if(!tickedBlocks.contains(block)) {
+							tickedBlocks.add(new Position(x, y, z));
+							if(block.getTickRandomly())
+								block.tick(world, x * 16, y, z * 16, rand);
+						}
 				}
 			}
 		}
-		
-		return blocks;
 	}
 
 	/**

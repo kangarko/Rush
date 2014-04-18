@@ -14,9 +14,6 @@ import net.rush.packets.PacketHandler;
 
 import org.jboss.netty.buffer.ChannelBufferInputStream;
 
-/*
- * This is magic. AWESOME magic!
- */
 public class SerializationPacketHandler<T extends Packet> implements PacketHandler<T> {
 
 	@Override

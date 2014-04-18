@@ -94,30 +94,33 @@ public class World {
 			entity.reset();
 
 		advanceTime();
-		//resetActiveChunks();
-		//tickFromQueue();
-		//tickActiveBlocks();
+		resetActiveChunks();
+		tickFromQueue();
+		tickActiveChunks();
 	}
 
-	/*protected void resetActiveChunks() {
+	protected void resetActiveChunks() {
 		activeChunks.clear();
 
-		int posX;
-		int posZ;
+		int chunkX, chunkZ;
+		
+		// how many chunks from player should be ticked (redstone activated, grass grown etc)
+		// is 8 in notchian server
+		int radius = 6;
 
 		for (Player pl : getPlayers()) {
-			posX = MathHelper.floor_double(pl.getPosition().getX() / 16.0D);
-			posZ = MathHelper.floor_double(pl.getPosition().getZ() / 16.0D);
+			chunkX = ((int) pl.getPosition().getX()) / Chunk.WIDTH;
+			chunkZ = ((int) pl.getPosition().getZ()) / Chunk.HEIGHT;
 
-			byte viewDistance = 7;
-
-			for (int x = -viewDistance; x <= viewDistance; ++x) {
-				for (int z = -viewDistance; z <= viewDistance; ++z) {
-					activeChunks.add(new ChunkCoords(posX, posZ));
+			for (int x = (chunkX - radius); x <= (chunkX + radius); x++) {
+				for (int z = (chunkZ - radius); z <= (chunkZ + radius); z++) {
+					ChunkCoords key = new ChunkCoords(x, z);
+					if (!activeChunks.contains(key))
+						activeChunks.add(key);
 				}
 			}
 		}
-	}*/
+	}
 
 	/**
 	 * Gets the chunk manager.
@@ -187,10 +190,6 @@ public class World {
 		// players to keep things in sync
 	}
 
-	/*public Chunk getChunkAt(int x, int z) {
-		return chunks.getChunk(x, z);
-	}*/
-
 	public Chunk getChunkAt(int x, int z) {
 		return chunks.getChunk(x, z);
 	}
@@ -199,7 +198,7 @@ public class World {
 		setTypeId(x, y, z, type);
 		setBlockData(x, y, z, data);
 	}
-	
+
 	public void setTypeId(int x, int y, int z, int type) {
 		int chunkX = x / Chunk.WIDTH + ((x < 0 && x % Chunk.WIDTH != 0) ? -1 : 0);
 		int chunkZ = z / Chunk.HEIGHT + ((z < 0 && z % Chunk.HEIGHT != 0) ? -1 : 0);
@@ -210,7 +209,7 @@ public class World {
 		Chunk chunk = chunks.getChunk(chunkX, chunkZ);
 		chunk.setType(localX, localZ, y, type);
 	}
-	
+
 	public void setBlockData(int x, int y, int z, int data) {
 		int chunkX = x / Chunk.WIDTH + ((x < 0 && x % Chunk.WIDTH != 0) ? -1 : 0);
 		int chunkZ = z / Chunk.HEIGHT + ((z < 0 && z % Chunk.HEIGHT != 0) ? -1 : 0);
@@ -366,12 +365,24 @@ public class World {
 		}
 	}
 
-	protected void tickActiveBlocks() {
+	protected void tickActiveChunks() {
 
 		for(ChunkCoords coords : activeChunks) {
 			//int xPos = coords.x * 16;
 			//int zPos = coords.z * 16;
 			Chunk chunk = getChunkAt(coords.x, coords.z);
+
+			chunk.tickBlocks(this, rand);
+			/*for(BlockPosition blockPos : chunk.getBlocks()) {
+				if(blockPos.getBlock().getTickRandomly()) {
+					int x = (int) blockPos.getPositon().getX();
+					int y = (int) blockPos.getPositon().getY();
+					int z = (int) blockPos.getPositon().getZ();
+					if(rand.nextInt(1000) == 1)
+						System.out.println("Tick @ " + x + ", " +y +", "+ z);
+					blockPos.getBlock().tick(this, x, y, z, rand);
+				}
+			}*/
 
 			/*int blockID;
 
@@ -395,7 +406,7 @@ public class World {
 					}
 			}*/
 
-			for(int x = 0; x < Chunk.WIDTH; x++) {
+			/*for(int x = 0; x < Chunk.WIDTH; x++) {
 				for(int y = 0; y < Chunk.DEPTH; y++) {
 					for(int z = 0; z < Chunk.HEIGHT; z++) {
 
@@ -411,7 +422,7 @@ public class World {
 						}
 					}
 				}
-			}
+			}*/
 		}
 	}
 }

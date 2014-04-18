@@ -14,12 +14,10 @@ public class BlockGrass extends Block {
 
 	@Override
 	public void tick(World world, int x, int y, int z, Random rand) {
-		System.out.println("Ticking @ " + x + ", " + y + ", " + z);
-		world.setTypeId(x, y, z, Block.DIRT.id);
-		/*if (world.getBlockLightValue(x, y + 1, z) < 4 && Block.lightOpacity[world.getTypeId(x, y + 1, z)] > 2) {
-			world.setTypeId(x, y, z, Block.DIRT.blockID);
-			System.out.println("dirt @" + x + ", " + y + ", " + z);
-		} else if (world.getBlockLightValue(x, y + 1, z) >= 9) {
+		if (world.getBlockLightValue(x, y + 1, z) < 4 /*&& Block.lightOpacity[world.getTypeId(x, y + 1, z)] > 2*/) {
+			world.setTypeId(x, y, z, Block.DIRT.id);
+			//System.out.println("dirt @" + x + ", " + y + ", " + z);
+		} /*else if (world.getBlockLightValue(x, y + 1, z) >= 9) {
 			for (int i = 0; i < 4; ++i) {
 				
 				int up1 = x + rand.nextInt(3) - 1;

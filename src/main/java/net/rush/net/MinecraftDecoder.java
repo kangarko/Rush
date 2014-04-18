@@ -22,7 +22,7 @@ import org.jboss.netty.handler.codec.replay.VoidEnum;
 public class MinecraftDecoder extends ReplayingDecoder<VoidEnum> {
 
 	private int previousOpcode = -1;
-	private static PacketHandler handler = new SerializationPacketHandler<Packet>();
+	private PacketHandler handler = new SerializationPacketHandler<Packet>();
 
 
 	@Override
