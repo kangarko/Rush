@@ -16,7 +16,7 @@ public class BlockGrass extends Block {
 	public void tick(World world, int x, int y, int z, Random rand) {
 		if (world.getBlockLightValue(x, y + 1, z) < 4 /*&& Block.lightOpacity[world.getTypeId(x, y + 1, z)] > 2*/) {
 			world.setTypeId(x, y, z, Block.DIRT.id, true);
-			//System.out.println("dirt @" + x + ", " + y + ", " + z);
+			//System.out.println("dirt @ " + x + ", " + y + ", " + z);
 		} /*else if (world.getBlockLightValue(x, y + 1, z) >= 9) {
 			for (int i = 0; i < 4; ++i) {
 				

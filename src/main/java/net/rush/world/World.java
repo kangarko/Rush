@@ -106,14 +106,14 @@ public class World {
 
 		// how many chunks from player should be ticked (redstone activated, grass grown etc)
 		// is 7 in notchian server
-		int radius = 6;
+		int activationRadius = 6;
 
 		for (Player pl : getPlayers()) {
 			chunkX = ((int) pl.getPosition().getX()) / Chunk.WIDTH;
 			chunkZ = ((int) pl.getPosition().getZ()) / Chunk.HEIGHT;
 
-			for (int x = (chunkX - radius); x <= (chunkX + radius); x++) {
-				for (int z = (chunkZ - radius); z <= (chunkZ + radius); z++) {
+			for (int x = (chunkX - activationRadius); x <= (chunkX + activationRadius); x++) {
+				for (int z = (chunkZ - activationRadius); z <= (chunkZ + activationRadius); z++) {
 					ChunkCoords key = new ChunkCoords(x, z);
 					if (!activeChunks.contains(key))
 						activeChunks.add(key);
@@ -369,7 +369,7 @@ public class World {
 
 	public void scheduleBlockUpdate(int x, int y, int z, int blockID, int priority) {
 		NextTickEntry tickEntry = new NextTickEntry(x, y, z, blockID);
-		byte osem = 0;
+		byte osem = 0; // FIXME eight or zero?
 
 		if (chunks.chunkExist(x - osem, y - osem, z - osem, x + osem, y + osem, z + osem)) {
 			if (blockID > 0) {
@@ -384,13 +384,28 @@ public class World {
 
 	protected void tickActiveChunks() {		
 		for(ChunkCoords coords : activeChunks) {
-			//Chunk chunk = getChunkFromChunkCoords(coords.x, coords.z);
+			Chunk chunk = getChunkFromChunkCoords(coords.x, coords.z);
 
-			int posX = coords.x * Chunk.WIDTH;
-			int posZ = coords.z * Chunk.HEIGHT;
-
-			for(int xx = posX; xx < posX + Chunk.WIDTH; xx++) {
-				for(int zz = posZ; zz < posZ + Chunk.HEIGHT; zz++)	{		    	
+			int chunkX = coords.x * Chunk.WIDTH;
+			int chunkZ = coords.z * Chunk.HEIGHT;
+			
+			// In 3 rounds, picks up random block in a chunk and tick it,
+			// x y z is converted to world x y z
+			for(int count = 0; count < 3; count++) {
+				int x = rand.nextInt(16);
+				int y = rand.nextInt(256);
+				int z = rand.nextInt(16);
+				
+				int type = chunk.getType(x, z, y);
+				
+				if(type != 0)
+					if(Block.byId[type].getTickRandomly())
+						Block.byId[type].tick(this, x + chunkX + Chunk.WIDTH, y, z + chunkZ + Chunk.HEIGHT, rand);
+			}
+			
+			// Ticks every block, laggy
+			/*for(int xx = chunkX; xx < chunkX + Chunk.WIDTH; xx++) {
+				for(int zz = chunkZ; zz < chunkZ + Chunk.HEIGHT; zz++)	{		    	
 					for(int yy = 0; yy < Chunk.DEPTH; yy++) {
 						
 						int type = getTypeId(xx, yy, zz);
@@ -405,7 +420,7 @@ public class World {
 						
 					}
 				}
-			}
+			}*/
 		}
 	}
 }
