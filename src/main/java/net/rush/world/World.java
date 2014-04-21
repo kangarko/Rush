@@ -66,7 +66,7 @@ public class World {
 	public final Vec3Pool vectorPool = new Vec3Pool(300, 2000);
 	public Random rand = new Random();
 	
-	protected int updateLCG = rand.nextInt();
+	protected int randomBlockChooser = rand.nextInt();
 
 	/**
 	 * Creates a new world with the specified chunk I/O service and world
@@ -382,31 +382,30 @@ public class World {
 		}
 	}
 
-	protected void tickActiveChunks() {
+	protected void tickActiveChunks() {		
 		for(ChunkCoords coords : activeChunks) {
 			//Chunk chunk = getChunkFromChunkCoords(coords.x, coords.z);
 
-			int posX = coords.x * Chunk.WIDTH;//chunk.getX()<<4;
-			int posZ = coords.z * Chunk.HEIGHT;//chunk.getZ()<<4;
+			int posX = coords.x * Chunk.WIDTH;
+			int posZ = coords.z * Chunk.HEIGHT;
 
-			for(int xx = posX; xx < posX + Chunk.WIDTH; xx++)
-				for(int zz = posZ; zz < posZ + Chunk.HEIGHT; zz++)			    	
+			for(int xx = posX; xx < posX + Chunk.WIDTH; xx++) {
+				for(int zz = posZ; zz < posZ + Chunk.HEIGHT; zz++)	{		    	
 					for(int yy = 0; yy < Chunk.DEPTH; yy++) {
-
+						
 						int type = getTypeId(xx, yy, zz);
 
-						if(type == 0)
+						if(type == 0) 
 							continue;
 
 						Block block = Block.byId[type];
 
 						if(block != null && block.getTickRandomly())
 							block.tick(this, xx, yy, zz, rand);
-
-						/*BlockChangePacket packet = new BlockChangePacket(xx, yy, zz, this);
-						for(Player pl : getPlayers())
-							pl.getSession().send(packet);*/
+						
 					}
+				}
+			}
 		}
 	}
 }
