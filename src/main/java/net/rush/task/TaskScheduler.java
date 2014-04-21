@@ -3,6 +3,7 @@ package net.rush.task;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +36,9 @@ public final class TaskScheduler {
 	/**
 	 * The scheduled executor service which backs this scheduler.
 	 */
-	private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+	private final ScheduledExecutorService scheduleExecutor = Executors.newSingleThreadScheduledExecutor();
+	
+	private final ExecutorService executor = Executors.newWorkStealingPool();
 
 	/**
 	 * A list of new tasks to be added.
@@ -62,7 +65,7 @@ public final class TaskScheduler {
 	 * Starts the task scheduler.
 	 */
 	public void start() {
-		executor.scheduleAtFixedRate(new Runnable() {
+		scheduleExecutor.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
 				int[] lags = {0, 0};
@@ -103,6 +106,10 @@ public final class TaskScheduler {
 		synchronized (newTasks) {
 			newTasks.add(task);
 		}
+	}
+	
+	public void runOnce(Runnable task) {
+		executor.submit(task);
 	}
 
 	/**
