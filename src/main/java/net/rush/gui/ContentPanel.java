@@ -5,22 +5,18 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
-import com.google.common.collect.Maps;
 
 class ContentPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
 	private int titleY = 27;
-
 	private int additionY1 = 25;
-
 	private int additionY2 = 15;
+
 	private String title;
 	private String firstLine;
 	private String secondLine;
@@ -34,12 +30,12 @@ class ContentPanel extends JPanel {
 		this.title = title;
 		this.firstLine = firstLine;
 		this.secondLine = secondLine;
-		this.titleColor = Notification.defaultTitleColor;
-		this.firstLineColor = Notification.defaultFirstLineColor;
-		this.secondLineColor = Notification.defaultSecondLineColor;
-		this.backgroundColor = Notification.defaultBackgroundColor;
-		this.mouseOverBackgroundColor = Notification.defaultMouseOverBackgroundColor;
-		setBackground(this.backgroundColor);
+		titleColor = GuiPane.defaultTitleColor;
+		firstLineColor = GuiPane.defaultFirstLineColor;
+		secondLineColor = GuiPane.defaultSecondLineColor;
+		backgroundColor = GuiPane.defaultBackgroundColor;
+		mouseOverBackgroundColor = GuiPane.defaultMouseOverBackgroundColor;
+		setBackground(backgroundColor);
 	}
 
 	ContentPanel(String title, String firstLine, String secondLine, Color titleColor, Color firstLineColor, Color secondLineColor) {
@@ -49,9 +45,9 @@ class ContentPanel extends JPanel {
 		this.titleColor = titleColor;
 		this.firstLineColor = firstLineColor;
 		this.secondLineColor = secondLineColor;
-		this.backgroundColor = Notification.defaultBackgroundColor;
-		this.mouseOverBackgroundColor = Notification.defaultMouseOverBackgroundColor;
-		setBackground(this.backgroundColor);
+		backgroundColor = GuiPane.defaultBackgroundColor;
+		mouseOverBackgroundColor = GuiPane.defaultMouseOverBackgroundColor;
+		setBackground(backgroundColor);
 	}
 
 	ContentPanel(String title, String firstLine, String secondLine, Color titleColor, Color firstLineColor, Color secondLineColor, Color backgroundColor, Color mouseOverBackgroundColor) {
@@ -66,39 +62,42 @@ class ContentPanel extends JPanel {
 		setBackground(backgroundColor);
 	}
 
-	ContentPanel(Notification notification) {
-		this.title = notification.getTitle();
-		this.firstLine = notification.getFirstLine();
-		this.secondLine = notification.getSecondLine();
-		this.titleColor = notification.getTitleColor();
-		this.firstLineColor = notification.getFirstLineColor();
-		this.secondLineColor = notification.getSecondLineColor();
-		this.backgroundColor = notification.getBackgroundColor();
-		this.mouseOverBackgroundColor = notification.getMouseOverBackgroundColor();
-		setBackground(this.backgroundColor);
+	ContentPanel(GuiPane pane) {
+		title = pane.title;
+		firstLine = pane.firstLine;
+		secondLine = pane.secondLine;
+		titleColor = pane.titleColor;
+		firstLineColor = pane.firstLineColor;
+		secondLineColor = pane.secondLineColor;
+		backgroundColor = pane.backgroundColor;
+		mouseOverBackgroundColor = pane.mouseOverBackgroundColor;
+		setBackground(backgroundColor);
 	}
 
 	void setBackgroundColor() {
-		setBackground(this.backgroundColor);
+		setBackground(backgroundColor);
 	}
 
 	void setMouseOverBackgroundColor() {
-		setBackground(this.mouseOverBackgroundColor);
+		setBackground(mouseOverBackgroundColor);
 	}
 
-	public void paint(Graphics g) {
-		super.paintComponent(g);
-		g.setFont(new Font("Verdana", 1, 16));
-		g.setColor(this.titleColor);
-		g.drawString(this.title, 17, this.titleY);
-		g.setFont(new Font("Verdana", 0, 12));
-		g.setColor(this.firstLineColor);
-		g.drawString(this.firstLine, 17, this.titleY + this.additionY1);
-		g.setColor(this.secondLineColor);
-		g.drawString(this.secondLine, 17, this.titleY + this.additionY1 + this.additionY2);
+	@Override
+	public void paint(Graphics graphics) {
+		super.paintComponent(graphics);
+		graphics.setFont(new Font("Verdana", 1, 16));
+		graphics.setColor(titleColor);
+
+		graphics.drawString(title, 17, titleY);
+		graphics.setFont(new Font("Verdana", 0, 12));
+
+		graphics.setColor(firstLineColor);
+		graphics.drawString(firstLine, 17, titleY + additionY1);
+
+		graphics.setColor(secondLineColor);
+		graphics.drawString(secondLine, 17, titleY + additionY1 + additionY2);
 	}
-	
-	
+
 	public static class ContentFrame extends JFrame implements WindowListener {
 
 		private static final long serialVersionUID = 1L;
@@ -107,52 +106,33 @@ class ContentPanel extends JPanel {
 			super(title);
 		}
 
+		@Override
 		public void windowActivated(WindowEvent event) {
 		}
 
+		@Override
 		public void windowClosed(WindowEvent event) {
 		}
 
+		@Override
 		public void windowClosing(WindowEvent event) {
 		}
 
+		@Override
 		public void windowDeactivated(WindowEvent event) {
 			toFront();
 		}
 
+		@Override
 		public void windowDeiconified(WindowEvent event) {
 		}
 
+		@Override
 		public void windowIconified(WindowEvent event) {
 		}
 
+		@Override
 		public void windowOpened(WindowEvent event) {
-		}
-	}
-	
-	public static enum NotificationCorner {
-
-		TOP_LEFT(0), 
-		TOP_RIGHT(1), 
-		BOTTOM_LEFT(2), 
-		BOTTOM_RIGHT(3);
-
-		private final byte data;
-		private static final Map<Byte, NotificationCorner> BY_DATA;
-
-		static {
-			BY_DATA = Maps.newHashMap();
-
-			for (NotificationCorner corner : values())
-				BY_DATA.put(Byte.valueOf(corner.data), corner);
-		}
-
-		private NotificationCorner(int data) {
-			this.data = ((byte) data);
-		}
-
-		byte getData() {
-			return this.data;
 		}
 	}
 }

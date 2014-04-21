@@ -5,39 +5,49 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-class NotificationsListener implements ActionListener, MouseListener {
-	private Notifications plugin;
+class GuiListener implements ActionListener, MouseListener {
 
-	NotificationsListener(Notifications plugin) {
+	private RushGui plugin;
+
+	GuiListener(RushGui plugin) {
 		this.plugin = plugin;
 	}
 
+	@Override
 	public void mouseClicked(MouseEvent event) {
-		if (this.plugin.getFadeInTimer().isRunning()) {
-			this.plugin.getFadeInTimer().stop();
+		if (plugin.getFadeInTimer().isRunning()) {
+			plugin.getFadeInTimer().stop();
 		}
-		if (this.plugin.getOpaqueTimer().isRunning()) {
-			this.plugin.getOpaqueTimer().stop();
+
+		if (plugin.getOpaqueTimer().isRunning()) {
+			plugin.getOpaqueTimer().stop();
 		}
-		if (!this.plugin.getFadeOutTimer().isRunning())
-			this.plugin.getFadeOutTimer().start();
+
+		if (!plugin.getFadeOutTimer().isRunning()) {
+			plugin.getFadeOutTimer().start();
+		}
 	}
 
+	@Override
 	public void mouseEntered(MouseEvent event) {
-		this.plugin.getContentPanel().setMouseOverBackgroundColor();
+		plugin.getContentPanel().setMouseOverBackgroundColor();
 	}
 
+	@Override
 	public void mouseExited(MouseEvent event) {
-		this.plugin.getContentPanel().setBackgroundColor();
+		plugin.getContentPanel().setBackgroundColor();
 	}
 
+	@Override
 	public void mousePressed(MouseEvent event) {
 	}
 
+	@Override
 	public void mouseReleased(MouseEvent event) {
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent event) {
-		this.plugin.actionPerformed(event);
+		plugin.actionPerformed(event);
 	}
 }

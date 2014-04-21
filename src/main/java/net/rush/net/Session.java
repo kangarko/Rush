@@ -7,7 +7,7 @@ import java.util.Queue;
 import java.util.Random;
 
 import net.rush.Server;
-import net.rush.gui.Notification;
+import net.rush.gui.GuiPane;
 import net.rush.model.Player;
 import net.rush.packets.Packet;
 import net.rush.packets.handler.HandlerLookupService;
@@ -161,7 +161,7 @@ public final class Session {
 				}
 			} else {
 				server.getLogger().info("&cMissing handler for packet: " + packet.getPacketType().getSimpleName());
-				server.getGui().showNotification(new Notification("Unhandled packet", "Missing handler for packet:", packet.getPacketType().getSimpleName(), Color.RED, Color.WHITE, Color.WHITE));
+				server.getGui().showPane(new GuiPane("Unhandled packet", "Missing handler for packet:", packet.getPacketType().getSimpleName(), Color.RED, Color.WHITE, Color.WHITE));
 			}
 		}
 

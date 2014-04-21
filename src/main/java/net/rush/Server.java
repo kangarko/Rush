@@ -14,7 +14,7 @@ import net.rush.cmd.CommandManager;
 import net.rush.console.ConsoleCommandSender;
 import net.rush.console.ConsoleLogManager;
 import net.rush.console.ThreadConsoleReader;
-import net.rush.gui.Notifications;
+import net.rush.gui.RushGui;
 import net.rush.io.McRegionChunkIoService;
 import net.rush.model.Player;
 import net.rush.net.MinecraftPipelineFactory;
@@ -44,7 +44,7 @@ public final class Server {
 	private final Logger logger = Logger.getLogger("Minecraft");
 	private final ConsoleCommandSender consoleSender = new ConsoleCommandSender(this);
 	private final SocketAddress socketAddress = new InetSocketAddress(25565);
-	private final Notifications gui;
+	private final RushGui gui;
 	
 	/**
 	 * The {@link ServerBootstrap} used to initialize Netty.
@@ -145,7 +145,7 @@ public final class Server {
 		/* start scheduling */
 		scheduler.start();
 		
-		gui = new Notifications();
+		gui = new RushGui();
 		
 		logger.info("Ready for connections. (Took " + NumberUtils.msToSeconds(System.currentTimeMillis() - initialTime) + "s !)");
 	}
@@ -217,7 +217,7 @@ public final class Server {
 		this.saveEnabled = saveEnabled;
 	}
 
-	public Notifications getGui() {
+	public RushGui getGui() {
 		return gui;
 	}
 	
