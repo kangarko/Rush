@@ -75,11 +75,12 @@ public final class Player extends LivingEntity implements CommandSender {
 	 * @param session The player's session.
 	 * @param name The player's name.
 	 */
-	public Player(Session session, String name, GameMode gamemode) {
+	@SuppressWarnings("deprecation")
+	public Player(Session session, String name) {
 		super(session.getServer().getWorld(), EntityType.PLAYER);
 		this.name = name;
 		this.session = session;
-		this.gamemode = gamemode;
+		this.gamemode = GameMode.getByValue(session.getServer().getGameMode());
 		this.position = world.getSpawnPosition();
 
 		this.inventory.addViewer(this);
@@ -162,8 +163,10 @@ public final class Player extends LivingEntity implements CommandSender {
 		int centralX = ((int) position.getX()) / Chunk.WIDTH;
 		int centralZ = ((int) position.getZ()) / Chunk.HEIGHT;
 
-		for (int x = (centralX - Chunk.VISIBLE_RADIUS); x <= (centralX + Chunk.VISIBLE_RADIUS); x++) {
-			for (int z = (centralZ - Chunk.VISIBLE_RADIUS); z <= (centralZ + Chunk.VISIBLE_RADIUS); z++) {
+		int viewDistance = Server.getServer().getViewDistance();
+		
+		for (int x = (centralX - viewDistance); x <= (centralX + viewDistance); x++) {
+			for (int z = (centralZ - viewDistance); z <= (centralZ + viewDistance); z++) {
 				ChunkCoords key = new ChunkCoords(x, z);
 				if (!knownChunks.contains(key)) {
 					knownChunks.add(key);

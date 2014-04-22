@@ -5,10 +5,6 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 import net.rush.util.enums.Dimension;
 
-import org.bukkit.Difficulty;
-import org.bukkit.GameMode;
-import org.bukkit.WorldType;
-
 public class LoginPacket extends Packet {
 	@Serialize(type = Type.INT, order = 0)
 	private final int entityId;
@@ -25,12 +21,11 @@ public class LoginPacket extends Packet {
 	@Serialize(type = Type.UNSIGNED_BYTE, order = 6)
 	private final int maxPlayers;
 
-	@SuppressWarnings("deprecation")
-	public LoginPacket(int entityId, WorldType worldType, GameMode mode, Dimension dimension, Difficulty difficulty, int worldHeight, int maxPlayers) {
-		this(entityId, worldType.getName(), (byte) mode.getValue(), dimension.getValue(), (byte) difficulty.getValue(), worldHeight, maxPlayers);
+	public LoginPacket(int entityId, String worldType, int gamemode, Dimension dimension, int difficulty, int worldHeight, int maxPlayers) {
+		this(entityId, worldType, (byte) gamemode, dimension.getValue(), (byte) difficulty, worldHeight, maxPlayers);
 	}
 
-	public LoginPacket(int entityId, String emptyString, byte mode, byte dimension, byte difficulty, int worldHeight, int maxPlayers) {
+	protected LoginPacket(int entityId, String emptyString, byte mode, byte dimension, byte difficulty, int worldHeight, int maxPlayers) {
 		super();
 		this.entityId = entityId;
 		worldType = emptyString;

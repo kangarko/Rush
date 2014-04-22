@@ -14,10 +14,10 @@ public class BlockGrass extends Block {
 
 	@Override
 	public void tick(World world, int x, int y, int z, Random rand) {
-		if (world.getBlockLightValue(x, y + 1, z) < 4 /*&& Block.lightOpacity[world.getTypeId(x, y + 1, z)] > 2*/) {
+		//if (world.getBlockLightValue(x, y + 1, z) < 4 /*&& Block.lightOpacity[world.getTypeId(x, y + 1, z)] > 2*/) {
 			world.setTypeId(x, y, z, Block.DIRT.id, true);
 			//System.out.println("dirt @ " + x + ", " + y + ", " + z);
-		} /*else if (world.getBlockLightValue(x, y + 1, z) >= 9) {
+		/*} else if (world.getBlockLightValue(x, y + 1, z) >= 9) {
 			for (int i = 0; i < 4; ++i) {
 				
 				int up1 = x + rand.nextInt(3) - 1;
@@ -25,12 +25,11 @@ public class BlockGrass extends Block {
 				int up3 = z + rand.nextInt(3) - 1;
 				int up = world.getTypeId(up1, up2 + 1, up3);
 
-				if (world.getTypeId(up1, up2, up3) == Block.DIRT.blockID && world.getBlockLightValue(up1, up2 + 1, up3) >= 4 && Block.lightOpacity[up] <= 2) {
-					world.setTypeId(up1, up2, up3, this.blockID);
+				if (world.getTypeId(up1, up2, up3) == Block.DIRT.id && world.getBlockLightValue(up1, up2 + 1, up3) >= 4 && Block.lightOpacity[up] <= 2) {
+					world.setTypeId(up1, up2, up3, id, true);
 				}
 			}
 		}*/
-		//world.setTypeId(x, y, z, Block.DIRT.id);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package net.rush.model;
 
+import net.rush.Server;
 import net.rush.chunk.Chunk;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.EntityMetadataPacket;
@@ -79,7 +80,7 @@ public abstract class Entity {
 			
 		double dx = Math.abs(position.getX() - other.position.getX());
 		double dz = Math.abs(position.getZ() - other.position.getZ());
-		return dx <= (Chunk.VISIBLE_RADIUS * Chunk.WIDTH) && dz <= (Chunk.VISIBLE_RADIUS * Chunk.HEIGHT);
+		return dx <= (Server.getServer().getViewDistance() * Chunk.WIDTH) && dz <= (Server.getServer().getViewDistance() * Chunk.HEIGHT);
 	}
 
 	/**

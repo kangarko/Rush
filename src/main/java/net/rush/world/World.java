@@ -392,8 +392,10 @@ public class World {
 			// In 3 rounds, picks up random block in a chunk and tick it,
 			// x y z is converted to world x y z
 			for(int count = 0; count < 3; count++) {
+				
+				// the rand.nextInt can be 0 and is always one number lower than the argument
 				int x = rand.nextInt(16);
-				int y = rand.nextInt(256);
+				int y = rand.nextInt(maxHeight);
 				int z = rand.nextInt(16);
 				
 				int type = chunk.getType(x, z, y);
@@ -404,6 +406,7 @@ public class World {
 			}
 			
 			// Ticks every block, laggy
+			// code commented for later purposes
 			/*for(int xx = chunkX; xx < chunkX + Chunk.WIDTH; xx++) {
 				for(int zz = chunkZ; zz < chunkZ + Chunk.HEIGHT; zz++)	{		    	
 					for(int yy = 0; yy < Chunk.DEPTH; yy++) {

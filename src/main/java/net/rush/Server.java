@@ -3,7 +3,6 @@ package net.rush;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,12 +19,14 @@ import net.rush.model.Player;
 import net.rush.net.MinecraftPipelineFactory;
 import net.rush.net.Session;
 import net.rush.net.SessionRegistry;
+import net.rush.packets.misc.ServerProperties;
 import net.rush.packets.packet.ChatPacket;
 import net.rush.task.TaskScheduler;
 import net.rush.util.NumberUtils;
 import net.rush.world.ForestWorldGenerator;
 import net.rush.world.World;
 
+import org.bukkit.ChatColor;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.ChannelPipelineFactory;
@@ -39,52 +40,40 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 public final class Server {
 
 	public final String serverId;
-	public boolean onlineMode = false;
+	private static Server server;
+	
+	/** Properties */
+	private final String ip;
+	private final int port;	
+	private final boolean onlineMode;
+	private final int maxPlayers;
+	private final int maxBuildHeight;
+	private final String motd;
+	private final int viewDistance;
+	private final int difficulty;
+	private final int gamemode;
+	private final String worldtype;
 	
 	private final Logger logger = Logger.getLogger("Minecraft");
 	private final ConsoleCommandSender consoleSender = new ConsoleCommandSender(this);
-	private final SocketAddress socketAddress = new InetSocketAddress(25565);
 	private final RushGui gui;
-	
-	/**
-	 * The {@link ServerBootstrap} used to initialize Netty.
-	 */
-	private final ServerBootstrap bootstrap = new ServerBootstrap();
-
-	/**
-	 * A group containing all of the channels.
-	 */
-	private final ChannelGroup group = new DefaultChannelGroup();
-
-	/**
-	 * The network executor service - Netty dispatches events to this thread
-	 * pool.
-	 */
-	private final ExecutorService executor = Executors.newCachedThreadPool();
-
-	/**
-	 * A list of all the active {@link Session}s.
-	 */
-	private final SessionRegistry sessions = new SessionRegistry();
-
-	/**
-	 * The task scheduler used by this server.
-	 */
+	private final ServerProperties properties;
 	private final TaskScheduler scheduler = new TaskScheduler(this);
-
-	/**
-	 * The command manager.
-	 */
 	private final CommandManager commandManager = new CommandManager(this);
-
-	/**
-	 * The world this server is managing.
-	 */
 	private final World world;
 
-	/**
-	 * Whether the server should automatically save chunks, e.g. at shutdown.
-	 */
+	/** The {@link ServerBootstrap} used to initialize Netty. */
+	private final ServerBootstrap bootstrap = new ServerBootstrap();
+	
+	/** A group containing all of the channels. */
+	private final ChannelGroup group = new DefaultChannelGroup();
+	
+	/** The network executor service - Netty dispatches events to this thread pool. */
+	private final ExecutorService executor = Executors.newCachedThreadPool();
+	
+	/** A list of all the active {@link Session}s. */
+	private final SessionRegistry sessions = new SessionRegistry();
+	
 	private boolean saveEnabled = true;	// TODO: Does this belong in a different class e.g. the chunk IO service or the chunk manager?
 
 	/**
@@ -94,6 +83,7 @@ public final class Server {
 	 */
 	public static void main(String[] args) {
 		try {
+			ConsoleLogManager.register();
 			Server server = new Server();
 
 			Thread threadConsoleReader = new ThreadConsoleReader(server);
@@ -108,15 +98,35 @@ public final class Server {
 	 * Creates and initializes a new server.
 	 */
 	public Server() {
-		ConsoleLogManager.register();
 		logger.info("Initializing Rush for Minecraft 1.6.4");
 		long initialTime = System.currentTimeMillis();
+
+		server = this;
+		
+		if (Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L)
+			logger.warning("To start the server with more ram, launch it as \"java -Xmx1024M -Xms1024M -jar project-rush.jar\"");
+		
+		logger.info("Loading properties");		
+		properties = new ServerProperties("server.properties");
+		ip = properties.getString("server-ip", "");
+		port = properties.getInt("server-port", 25565);
+		onlineMode = properties.getBoolean("online-mode", false);
+		maxPlayers = properties.getInt("max-players", 20);
+		maxBuildHeight = properties.getInt("max-build-height", 256);
+		motd = ChatColor.translateAlternateColorCodes('&', properties.getString("motd", "A Rush server"));
+		viewDistance = properties.getInt("view-distance", 10);
+		
+		int diff = properties.getInt("difficulty", 1);
+		if (diff < 1)
+			properties.set("difficulty", 1);
+		else if (diff > 3)
+			properties.set("difficulty", 3);
+		
+		difficulty = properties.getInt("difficulty", 1);
+		gamemode = properties.getInt("gamemode", 0);
+		worldtype = properties.getString("level-type", "DEFAULT");
 		
 		world = new World(new McRegionChunkIoService(new File("world")), new ForestWorldGenerator());
-
-        if (Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L) {
-            logger.warning("To start the server with more ram, launch it as \"java -Xmx1024M -Xms1024M -jar project-rush.jar\"");
-        }
         
         logger.info("Generating server id");
         serverId = Long.toString(new Random().nextLong(), 16);
@@ -128,13 +138,12 @@ public final class Server {
 		ChannelPipelineFactory pipelineFactory = new MinecraftPipelineFactory(this);
 		bootstrap.setPipelineFactory(pipelineFactory);
 
-        /* try to bind to a port (TODO: Configurable in the future) */
-		logger.info("Binding to address: " + socketAddress);
+		logger.info("Starting Minecraft server on " + (ip.length() == 0 ? "*" : ip) + ":" + port);		
 		try {
-			group.add(bootstrap.bind(socketAddress));
+			group.add(bootstrap.bind(ip.length() == 0 ? new InetSocketAddress(port) : new InetSocketAddress(ip, port)));
 		} catch (Throwable ex) {
 			logger.warning("**** FAILED TO BIND TO PORT!");
-			logger.warning("The exception was: " + ex.toString());
+			logger.warning("The exception was: " + ex.getCause().toString());
 			logger.warning("Perhaps a server is already running on that port?");
 			throw new RuntimeException(ex);
 		}
@@ -229,6 +238,50 @@ public final class Server {
 		return logger;
 	}
 
+	public String getIp() {
+		return ip;
+	}
+	
+	public int getPort() {
+		return port;
+	}
+	
+	public boolean isInOnlineMode() {
+		return onlineMode;
+	}
+	
+	public int getMaxPlayers() {
+		return maxPlayers;
+	}
+	
+	public int getMaxBuildHeight() {
+		return maxBuildHeight;
+	}
+	
+	public String getMotd() {
+		return motd;
+	}
+	
+	public int getViewDistance() {
+		return viewDistance;
+	}
+	
+	public int getDifficulty() {
+		return difficulty;
+	}
+	
+	public int getGameMode() {
+		return gamemode;
+	}
+	
+	public String getWorldType() {
+		return worldtype;
+	}
+	
+	public static Server getServer() {
+		return server;
+	}
+	
 	/**
 	 * A {@link Runnable} which saves chunks on shutdown.
 	 */

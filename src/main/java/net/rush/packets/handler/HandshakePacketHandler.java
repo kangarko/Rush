@@ -8,10 +8,6 @@ import net.rush.packets.packet.LoginPacket;
 import net.rush.util.ThreadLoginVerifier;
 import net.rush.util.enums.Dimension;
 
-import org.bukkit.Difficulty;
-import org.bukkit.GameMode;
-import org.bukkit.WorldType;
-
 /**
  * A {@link PacketHandler} which performs the initial handshake with clients.
  */
@@ -24,11 +20,18 @@ public final class HandshakePacketHandler extends PacketHandler<HandshakePacket>
 		if (state == Session.State.EXCHANGE_HANDSHAKE) {
 			session.setState(State.EXCHANGE_IDENTIFICATION);
 
-			if(session.getServer().onlineMode) {
+			if(session.getServer().isInOnlineMode()) {
 				new ThreadLoginVerifier(session, message).start();
 			} else {
-				session.send(new LoginPacket(0, WorldType.NORMAL, GameMode.CREATIVE, Dimension.NORMAL, Difficulty.NORMAL, session.getServer().getWorld().getMaxHeight(), 30));
-				session.setPlayer(new Player(session, message.getUsername(), GameMode.CREATIVE));
+				session.send(new LoginPacket(
+						0, 
+						session.getServer().getWorldType(),
+						session.getServer().getGameMode(), 
+						Dimension.NORMAL, 
+						session.getServer().getDifficulty(), 
+						session.getServer().getWorld().getMaxHeight(), 
+						session.getServer().getMaxPlayers()));
+				session.setPlayer(new Player(session, message.getUsername()));
 			}
 
 		} else {

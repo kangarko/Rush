@@ -5,22 +5,18 @@ import net.rush.net.Session;
 import net.rush.packets.packet.KickPacket;
 import net.rush.packets.packet.ServerListPingPacket;
 
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
-
 /**
  * A {@link PacketHandler} which disconnects clients when they send a
  * {@link KickMessage} to the server.
-
  */
 public final class ServerListPingPacketHandler extends PacketHandler<ServerListPingPacket> {
 
 	@Override
 	public void handle(Session session, Player player, ServerListPingPacket message) {
-		// pre 1.6 -> session.send(new KickPacketImpl("[1.6.4] Rush server" + "\u00A7" + session.getServer().getWorld().getPlayers().size() + "\u00A7" + "20"));
+		// 1.3 and older -> session.send(new KickPacketImpl("[1.6.4] Rush server" + "\u00A7" + session.getServer().getWorld().getPlayers().size() + "\u00A7" + "20"));
+		// 1.4 - 1.5 -> String old = 1+"\00"+78+"\00"+"1.4.7"+"\00"+ChatColor.translateAlternateColorCodes('&', "&bRush server &6(Working MOTD!)")+"\00"+session.getServer().getWorld().getPlayers().size()+"\00"+20;
 		
-		// hard copy from notchian server start
-		Object[] infos = new Object[] { 1, 78, "1.6.4", ChatColor.GREEN + "Rush server "  + ChatColor.YELLOW + "(Working MOTD!)", session.getServer().getWorld().getPlayers().size(), 20 };
+		Object[] infos = { 1, 78, "1.6.4", session.getServer().getMotd(), session.getServer().getWorld().getPlayers().size(), session.getServer().getMaxPlayers() };
 		StringBuilder builder = new StringBuilder();
 		
 		for (Object info : infos) {
@@ -28,11 +24,10 @@ public final class ServerListPingPacketHandler extends PacketHandler<ServerListP
 				builder.append('\u00A7');
 			else
 				builder.append('\0');
-
-			builder.append(StringUtils.replace(info.toString(), "\0", ""));
+				
+			builder.append(info.toString().replace("\0", ""));
 		}
-		// hard copy from notchian server stop
-		
+
 		session.send(new KickPacket(builder.toString()));
 	}
 

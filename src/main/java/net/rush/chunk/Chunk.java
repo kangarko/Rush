@@ -17,12 +17,6 @@ import net.rush.world.World;
 public final class Chunk {
 
 	/**
-	 * The radius (not including the current chunk) of the chunks that the
-	 * player can see.
-	 */
-	public static final int VISIBLE_RADIUS = 10;
-
-	/**
 	 * The dimensions of a chunk.
 	 */
 	public static final int WIDTH = 16, HEIGHT = 16, DEPTH = 256;
