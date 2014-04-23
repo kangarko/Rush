@@ -3,6 +3,7 @@ package net.rush.inventory;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.rush.inventory.PlayerInventory.PlayerInventorySlotConverter;
 import net.rush.model.ItemStack;
 import net.rush.model.Player;
 
@@ -30,7 +31,7 @@ public abstract class Inventory {
         viewers.remove(viewer);
     }
 
-    public abstract SlotConverter getSlotConverter();
+    public abstract PlayerInventorySlotConverter getSlotConverter();
 
     public int getId() {
         return id;

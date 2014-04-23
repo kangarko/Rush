@@ -2,7 +2,7 @@ package net.rush.inventory;
 
 import net.rush.model.ItemStack;
 
-public class PlayerInventory extends Inventory {
+public class PlayerInventory extends Inventory{
 
     // 36 = 4 rows of 9
     // ... + 4 = armor, completed inventory
@@ -12,7 +12,7 @@ public class PlayerInventory extends Inventory {
     public static final int LEGGINGS_SLOT = 38;
     public static final int BOOTS_SLOT = 39;
 
-    public static final SlotConverter slotConverter = new PlayerInventorySlotConverter();
+    public static final PlayerInventorySlotConverter slotConverter = new PlayerInventorySlotConverter();
 
     private int heldItemSlot = 0;
 
@@ -90,7 +90,7 @@ public class PlayerInventory extends Inventory {
     	this.heldItemSlot = heldItemSlot;
     }
 
-    public SlotConverter getSlotConverter() {
+    public PlayerInventorySlotConverter getSlotConverter() {
         return slotConverter;
     }
 
@@ -102,7 +102,7 @@ public class PlayerInventory extends Inventory {
 		return 64;
 	}
 	
-	public static class PlayerInventorySlotConverter implements SlotConverter {
+	public static class PlayerInventorySlotConverter {
 
 	    private int mappings[] = { 36, 37, 38, 39, 40, 41, 42, 43,
 	            44, // quickbar
