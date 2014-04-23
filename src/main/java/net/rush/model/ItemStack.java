@@ -32,17 +32,17 @@ public class ItemStack {
 	/**
 	 * The ItemStack's id.
 	 */
-	private int id;
+	public int id;
 
 	/**
 	 * The number of ItemStacks within the stack.
 	 */
-	private int count;
+	public int count;
 
 	/**
 	 * The ItemStack's damage.
 	 */
-	private int damage;
+	public int damage;
 	
 	/**
 	 * The ItemStack's NBT data length. -1 to disable
@@ -137,20 +137,12 @@ public class ItemStack {
 		return data;
 	}
 	
-	
-	/**
-	 * Sets the amount of the ItemStack.
-	 */
-	public void setCount(int count) {
-		this.count = count;
-	}
-	
-	public void setDamage(int damage) {
-		this.damage = damage;
-	}
-	
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public void setCount(int count) {
+		this.count = count;	
 	}
 	
 	@Override

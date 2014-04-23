@@ -19,14 +19,12 @@ import net.rush.model.Player;
 import net.rush.net.MinecraftPipelineFactory;
 import net.rush.net.Session;
 import net.rush.net.SessionRegistry;
-import net.rush.packets.misc.ServerProperties;
 import net.rush.packets.packet.ChatPacket;
 import net.rush.task.TaskScheduler;
 import net.rush.util.NumberUtils;
 import net.rush.world.ForestWorldGenerator;
 import net.rush.world.World;
 
-import org.bukkit.ChatColor;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.ChannelPipelineFactory;
@@ -41,18 +39,6 @@ public final class Server {
 
 	public final String serverId;
 	private static Server server;
-	
-	/** Properties */
-	private final String ip;
-	private final int port;	
-	private final boolean onlineMode;
-	private final int maxPlayers;
-	private final int maxBuildHeight;
-	private final String motd;
-	private final int viewDistance;
-	private final int difficulty;
-	private final int gamemode;
-	private final String worldtype;
 	
 	private final Logger logger = Logger.getLogger("Minecraft");
 	private final ConsoleCommandSender consoleSender = new ConsoleCommandSender(this);
@@ -108,23 +94,7 @@ public final class Server {
 		
 		logger.info("Loading properties");		
 		properties = new ServerProperties("server.properties");
-		ip = properties.getString("server-ip", "");
-		port = properties.getInt("server-port", 25565);
-		onlineMode = properties.getBoolean("online-mode", false);
-		maxPlayers = properties.getInt("max-players", 20);
-		maxBuildHeight = properties.getInt("max-build-height", 256);
-		motd = ChatColor.translateAlternateColorCodes('&', properties.getString("motd", "A Rush server"));
-		viewDistance = properties.getInt("view-distance", 10);
-		
-		int diff = properties.getInt("difficulty", 1);
-		if (diff < 1)
-			properties.set("difficulty", 1);
-		else if (diff > 3)
-			properties.set("difficulty", 3);
-		
-		difficulty = properties.getInt("difficulty", 1);
-		gamemode = properties.getInt("gamemode", 0);
-		worldtype = properties.getString("level-type", "DEFAULT");
+		properties.load();
 		
 		world = new World(new McRegionChunkIoService(new File("world")), new ForestWorldGenerator());
         
@@ -138,14 +108,14 @@ public final class Server {
 		ChannelPipelineFactory pipelineFactory = new MinecraftPipelineFactory(this);
 		bootstrap.setPipelineFactory(pipelineFactory);
 
-		logger.info("Starting Minecraft server on " + (ip.length() == 0 ? "*" : ip) + ":" + port);		
+		logger.info("Starting Minecraft server on " + (properties.serverIp.length() == 0 ? "*" : properties.serverIp) + ":" + properties.port);		
 		try {
-			group.add(bootstrap.bind(ip.length() == 0 ? new InetSocketAddress(port) : new InetSocketAddress(ip, port)));
+			group.add(bootstrap.bind(properties.serverIp.length() == 0 ? new InetSocketAddress(properties.port) : new InetSocketAddress(properties.serverIp, properties.port)));
 		} catch (Throwable ex) {
 			logger.warning("**** FAILED TO BIND TO PORT!");
 			logger.warning("The exception was: " + ex.getCause().toString());
 			logger.warning("Perhaps a server is already running on that port?");
-			throw new RuntimeException(ex);
+			System.exit(0);
 		}
 		
 		/* add shutdown hook */
@@ -238,44 +208,8 @@ public final class Server {
 		return logger;
 	}
 
-	public String getIp() {
-		return ip;
-	}
-	
-	public int getPort() {
-		return port;
-	}
-	
-	public boolean isInOnlineMode() {
-		return onlineMode;
-	}
-	
-	public int getMaxPlayers() {
-		return maxPlayers;
-	}
-	
-	public int getMaxBuildHeight() {
-		return maxBuildHeight;
-	}
-	
-	public String getMotd() {
-		return motd;
-	}
-	
-	public int getViewDistance() {
-		return viewDistance;
-	}
-	
-	public int getDifficulty() {
-		return difficulty;
-	}
-	
-	public int getGameMode() {
-		return gamemode;
-	}
-	
-	public String getWorldType() {
-		return worldtype;
+	public ServerProperties getProperties() {
+		return properties;
 	}
 	
 	public static Server getServer() {

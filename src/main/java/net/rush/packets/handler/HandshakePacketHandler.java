@@ -1,5 +1,6 @@
 package net.rush.packets.handler;
 
+import net.rush.ServerProperties;
 import net.rush.model.Player;
 import net.rush.net.Session;
 import net.rush.net.Session.State;
@@ -20,17 +21,11 @@ public final class HandshakePacketHandler extends PacketHandler<HandshakePacket>
 		if (state == Session.State.EXCHANGE_HANDSHAKE) {
 			session.setState(State.EXCHANGE_IDENTIFICATION);
 
-			if(session.getServer().isInOnlineMode()) {
+			if(session.getServer().getProperties().onlineMode) {
 				new ThreadLoginVerifier(session, message).start();
 			} else {
-				session.send(new LoginPacket(
-						0, 
-						session.getServer().getWorldType(),
-						session.getServer().getGameMode(), 
-						Dimension.NORMAL, 
-						session.getServer().getDifficulty(), 
-						session.getServer().getWorld().getMaxHeight(), 
-						session.getServer().getMaxPlayers()));
+				ServerProperties prop = session.getServer().getProperties();
+				session.send(new LoginPacket(0, prop.levelType, prop.gamemode, Dimension.NORMAL, prop.difficulty, prop.maxBuildHeight, prop.maxPlayers));
 				session.setPlayer(new Player(session, message.getUsername()));
 			}
 

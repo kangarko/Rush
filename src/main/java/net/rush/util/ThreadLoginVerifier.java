@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import net.rush.ServerProperties;
 import net.rush.model.Player;
 import net.rush.net.Session;
 import net.rush.packets.packet.HandshakePacket;
@@ -33,14 +34,8 @@ public class ThreadLoginVerifier extends Thread {
 			System.out.println("(Login verifier) Got response: " + response);
 			
 			if (response.equals("YES")) {
-				session.send(new LoginPacket(
-						0, 
-						session.getServer().getWorldType(),
-						session.getServer().getGameMode(), 
-						Dimension.NORMAL, 
-						session.getServer().getDifficulty(), 
-						session.getServer().getWorld().getMaxHeight(), 
-						session.getServer().getMaxPlayers()));
+				ServerProperties prop = session.getServer().getProperties();
+				session.send(new LoginPacket(0, prop.levelType, prop.gamemode, Dimension.NORMAL, prop.difficulty, prop.maxBuildHeight, prop.maxPlayers));
 				session.setPlayer(new Player(session, loginPacket.getUsername()));
 			} else
 				session.disconnect("Failed to verify username!");

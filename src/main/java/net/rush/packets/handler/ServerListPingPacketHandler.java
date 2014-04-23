@@ -16,7 +16,7 @@ public final class ServerListPingPacketHandler extends PacketHandler<ServerListP
 		// 1.3 and older -> session.send(new KickPacketImpl("[1.6.4] Rush server" + "\u00A7" + session.getServer().getWorld().getPlayers().size() + "\u00A7" + "20"));
 		// 1.4 - 1.5 -> String old = 1+"\00"+78+"\00"+"1.4.7"+"\00"+ChatColor.translateAlternateColorCodes('&', "&bRush server &6(Working MOTD!)")+"\00"+session.getServer().getWorld().getPlayers().size()+"\00"+20;
 		
-		Object[] infos = { 1, 78, "1.6.4", session.getServer().getMotd(), session.getServer().getWorld().getPlayers().size(), session.getServer().getMaxPlayers() };
+		Object[] infos = { 1, 78, "1.6.4", session.getServer().getProperties().motd, session.getServer().getWorld().getPlayers().size(), session.getServer().getProperties().maxPlayers };
 		StringBuilder builder = new StringBuilder();
 		
 		for (Object info : infos) {

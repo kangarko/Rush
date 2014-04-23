@@ -15,6 +15,7 @@ import net.rush.packets.packet.ChangeGameStatePacket;
 import net.rush.packets.packet.ChatPacket;
 import net.rush.packets.packet.DestroyEntityPacket;
 import net.rush.packets.packet.NamedEntitySpawnPacket;
+import net.rush.packets.packet.NamedSoundEffectPacket;
 import net.rush.packets.packet.PlayerListItemPacket;
 import net.rush.packets.packet.PlayerPositionAndLookPacket;
 import net.rush.packets.packet.SetWindowItemsPacket;
@@ -80,7 +81,7 @@ public final class Player extends LivingEntity implements CommandSender {
 		super(session.getServer().getWorld(), EntityType.PLAYER);
 		this.name = name;
 		this.session = session;
-		this.gamemode = GameMode.getByValue(session.getServer().getGameMode());
+		this.gamemode = GameMode.getByValue(session.getServer().getProperties().gamemode);
 		this.position = world.getSpawnPosition();
 
 		this.inventory.addViewer(this);
@@ -94,9 +95,9 @@ public final class Player extends LivingEntity implements CommandSender {
 		this.session.send(new SpawnPositionPacket(position));
 		this.session.send(new PlayerPositionAndLookPacket(position.getX(), position.getY(), position.getZ(), position.getY() + NORMAL_EYE_HEIGHT, (float) rotation.getYaw(), (float) rotation.getPitch(), true));
 
-		this.sendMessage("&3Rush // &fWelcome to Rush, " + name);
-		getServer().getLogger().info(getName() + "[" + getSession().getRemoveAddress() + "] logged in with entity id " + getId());
+		getServer().getLogger().info(name + " [" + session.getIp() + "] logged in with entity id " + id + " at ([" + world.getName() + "] " + (int)position.getX() + ", " + (int)position.getY() + ", " + (int)position.getZ() + ")");
 		getServer().broadcastMessage("&e" + name + " has joined the game.");
+		this.sendMessage("&3Rush // &fWelcome to Rush, " + name);
 	}
 
 	/**
@@ -115,6 +116,10 @@ public final class Player extends LivingEntity implements CommandSender {
 		session.send(new ChatPacket(ChatColor.translateAlternateColorCodes("&".charAt(0), message)));
 	}
 
+	public void playSound(String soundName, double x, double y, double z, float volume, float pitch) {
+		session.send(new NamedSoundEffectPacket(soundName, x, y, z, volume, pitch));
+	}
+	
 	public void updateTabList() {
 		for(Player pl : session.getServer().getWorld().getPlayers()) {
 			pl.getSession().send(new PlayerListItemPacket(name, true, (short)100));
@@ -163,7 +168,7 @@ public final class Player extends LivingEntity implements CommandSender {
 		int centralX = ((int) position.getX()) / Chunk.WIDTH;
 		int centralZ = ((int) position.getZ()) / Chunk.HEIGHT;
 
-		int viewDistance = Server.getServer().getViewDistance();
+		int viewDistance = Server.getServer().getProperties().viewDistance;
 		
 		for (int x = (centralX - viewDistance); x <= (centralX + viewDistance); x++) {
 			for (int z = (centralZ - viewDistance); z <= (centralZ + viewDistance); z++) {

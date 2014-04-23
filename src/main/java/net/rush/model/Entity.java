@@ -80,7 +80,7 @@ public abstract class Entity {
 			
 		double dx = Math.abs(position.getX() - other.position.getX());
 		double dz = Math.abs(position.getZ() - other.position.getZ());
-		return dx <= (Server.getServer().getViewDistance() * Chunk.WIDTH) && dz <= (Server.getServer().getViewDistance() * Chunk.HEIGHT);
+		return dx <= (Server.getServer().getProperties().viewDistance * Chunk.WIDTH) && dz <= (Server.getServer().getProperties().viewDistance * Chunk.HEIGHT);
 	}
 
 	/**
