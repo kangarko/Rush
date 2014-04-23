@@ -1,7 +1,6 @@
 package net.rush.net;
 
 import java.awt.Color;
-import java.net.SocketAddress;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Random;
@@ -156,7 +155,7 @@ public final class Session {
 			if (handler != null) {
 				handler.handle(this, player, packet);
 				String name = packet.getPacketType().getSimpleName();
-				if(!name.contains("Position") && !name.contains("PlayerOnGround") && !name.contains("Look") && !name.contains("ChatPacket")) {
+				if(!name.contains("Position") && !name.contains("PlayerOnGround") && !name.contains("Look") && !name.contains("ChatPacket") && !name.contains("KeepAlive")  && !name.contains("Animation")) {
 					server.getLogger().info("Handling packet: " + packet.getPacketType().getSimpleName());
 				}
 			} else {
@@ -235,8 +234,8 @@ public final class Session {
 		return pingMessageId;
 	}
 
-	public SocketAddress getRemoveAddress() {
-		return channel.getRemoteAddress();
+	public String getIp() {
+		return channel.getRemoteAddress().toString().replace("/", "");
 	}
 	
 	public void pong() {
