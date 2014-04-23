@@ -198,9 +198,10 @@ public class World {
 		return chunks.getChunk(x, z);
 	}
 
-	public void setTypeAndData(int x, int y, int z, int type, int data, boolean notifyPlayers) {
+	public boolean setTypeAndData(int x, int y, int z, int type, int data, boolean notifyPlayers) {
 		setTypeId(x, y, z, type, notifyPlayers);
 		setBlockData(x, y, z, data, notifyPlayers);
+		return true;
 	}
 
 	/** @param notifyPlayers - should we send BlockChangePacket to all players in the world? */
@@ -344,6 +345,14 @@ public class World {
 
 	public int getBlockLightValue(int x, int y, int z) {
 		return 0;
+	}
+	
+	public void playSound(double x, double y, double z, String soundName, float volume, float pitch) {
+		if (soundName != null) {
+			for (Player pl : getPlayers()) {
+				pl.playSound(soundName, x, y, z, volume, pitch);
+			}
+		}
 	}
 
 	/**

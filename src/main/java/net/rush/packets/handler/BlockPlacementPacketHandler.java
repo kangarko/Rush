@@ -1,16 +1,15 @@
 package net.rush.packets.handler;
 
-import org.bukkit.GameMode;
-
 import net.rush.model.Block;
 import net.rush.model.ItemStack;
 import net.rush.model.Player;
 import net.rush.net.Session;
 import net.rush.packets.packet.BlockChangePacket;
-import net.rush.packets.packet.NamedSoundEffectPacket;
 import net.rush.packets.packet.PlayerBlockPlacementPacket;
 import net.rush.util.StringUtils;
 import net.rush.world.World;
+
+import org.bukkit.GameMode;
 
 public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlockPlacementPacket> {
 
@@ -18,7 +17,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 	public void handle(Session session, Player player, PlayerBlockPlacementPacket packet) {
 		World world = player.getWorld();
 		
-		if(packet.getHeldItem() == ItemStack.NULL_ITEM || !Block.byId[packet.getHeldItem().getId()].material.isSolid())
+		if(packet.getHeldItem() == ItemStack.NULL_ITEM || Block.byId[packet.getHeldItem().getId()] == null || !Block.byId[packet.getHeldItem().getId()].material.isSolid())
 			return;
 
 		if(packet.getDirection() == -1)
@@ -87,8 +86,8 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 			
 			boolean placedSuccessfully = tryPlace(item, player, world, x, y, z, direction, cursorX, cursorY, cursorZ);
 			
-			item.setDamage(blockId);
-			item.setCount(stackSize);
+			item.damage = blockId;
+			item.count = stackSize;
 			
 			return placedSuccessfully;
 		} else
@@ -141,11 +140,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 					Block.byId[id].onPostBlockPlaced(world, x, y, z, metadata);
 				}
 
-				NamedSoundEffectPacket packet = new NamedSoundEffectPacket(block.sound.getPlaceSound(), x + 0.5D, y + 0.5D, z + 0.5D, (block.sound.getVolume() + 1.0F) / 2.0F, block.sound.getPitch() * 0.8F);
-				
-				for(Player pl : world.getPlayers()) {
-					pl.getSession().send(packet);
-				}
+				world.playSound(x + 0.5D, y + 0.5D, z + 0.5D, block.sound.getPlaceSound(), (block.sound.getVolume() + 1.0F) / 2.0F, block.sound.getPitch() * 0.8F);
 				item.setCount(item.getCount() - 1);
 
 			return true;
