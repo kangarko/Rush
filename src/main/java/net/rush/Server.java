@@ -71,8 +71,15 @@ public final class Server {
 		try {
 			ConsoleLogManager.register();
 			Server server = new Server();
-
-			Thread threadConsoleReader = new ThreadConsoleReader(server);
+			
+			boolean jline = true;
+			
+			for(String arg : args) {
+				if("nojline".equalsIgnoreCase(arg))
+					jline = false;
+			}
+			
+			Thread threadConsoleReader = new ThreadConsoleReader(server, jline);
 			threadConsoleReader.start();
 
 		} catch (Throwable t) {

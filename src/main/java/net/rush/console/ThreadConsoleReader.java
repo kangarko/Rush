@@ -10,10 +10,12 @@ import net.rush.Server;
 public class ThreadConsoleReader extends Thread {
 
 	private final Server server;
+	private final boolean jline;
 	private final ConsoleReader reader;
 
-	public ThreadConsoleReader(Server server) throws IOException {
+	public ThreadConsoleReader(Server server, boolean jline) throws IOException {
 		this.server = server;
+		this.jline = jline;
 		this.reader = new ConsoleReader(System.in, System.out);
 		this.reader.setExpandEvents(false);
 		this.setDaemon(true);
@@ -24,10 +26,14 @@ public class ThreadConsoleReader extends Thread {
 
 	public void run() {
 		String msg;
-
+		
 		try {
 			while (true) {
-				msg = reader.readLine(">", null);
+				if(jline)
+					msg = reader.readLine(">", null);
+				else
+					msg = reader.readLine();
+				
 				if (msg != null && msg.length() > 0) {
 					server.getCommandManager().execute(server.getConsoleSender(), "/" + msg);
 				}
