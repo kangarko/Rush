@@ -3,7 +3,6 @@ package net.rush.net;
 import java.io.IOException;
 
 import net.rush.packets.Packet;
-import net.rush.packets.PacketHandler;
 import net.rush.packets.Packets;
 import net.rush.packets.serialization.SerializationPacketHandler;
 
@@ -22,7 +21,7 @@ import org.jboss.netty.handler.codec.replay.VoidEnum;
 public class MinecraftDecoder extends ReplayingDecoder<VoidEnum> {
 
 	private int previousOpcode = -1;
-	private PacketHandler handler = new SerializationPacketHandler<Packet>();
+	private SerializationPacketHandler handler = new SerializationPacketHandler<Packet>();
 
 
 	@Override

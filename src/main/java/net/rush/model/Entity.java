@@ -56,7 +56,7 @@ public abstract class Entity {
 	protected Rotation previousRotation = Rotation.ZERO;
 
 	protected EntityType entityType;
-	
+
 	/**
 	 * Creates an entity and adds it to the specified world.
 	 * @param world The world.

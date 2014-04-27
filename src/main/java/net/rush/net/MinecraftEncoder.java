@@ -3,7 +3,6 @@ package net.rush.net;
 import java.io.IOException;
 
 import net.rush.packets.Packet;
-import net.rush.packets.PacketSender;
 import net.rush.packets.Packets;
 import net.rush.packets.serialization.SerializationPacketSender;
 
@@ -20,7 +19,7 @@ import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
  */
 public class MinecraftEncoder extends OneToOneEncoder {
 
-	private static PacketSender<Packet> sender = new SerializationPacketSender<Packet>();
+	private static SerializationPacketSender<Packet> sender = new SerializationPacketSender<Packet>();
 	
 	// TODO ? this.getClass().getMethod("encode", message.getPacketType().getClass()).invoke(this, message.getPacketType())
 	

@@ -8,15 +8,11 @@ import java.util.List;
 import java.util.ListIterator;
 
 import net.rush.packets.Packet;
-import net.rush.packets.PacketSender;
 
 import org.jboss.netty.buffer.ChannelBufferOutputStream;
 
-public class SerializationPacketSender<T extends Packet> implements PacketSender<T> {
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+public class SerializationPacketSender<T extends Packet> {
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void send(ChannelBufferOutputStream stream, T packet) {
 		try {

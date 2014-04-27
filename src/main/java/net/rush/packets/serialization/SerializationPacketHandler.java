@@ -10,13 +10,11 @@ import java.util.Map;
 import java.util.Set;
 
 import net.rush.packets.Packet;
-import net.rush.packets.PacketHandler;
 
 import org.jboss.netty.buffer.ChannelBufferInputStream;
 
-public class SerializationPacketHandler<T extends Packet> implements PacketHandler<T> {
+public class SerializationPacketHandler<T extends Packet> {
 
-	@Override
 	public T handle(ChannelBufferInputStream in, Class<T> type) {
 		try {
 			// get the implementation-class
