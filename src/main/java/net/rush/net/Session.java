@@ -184,7 +184,7 @@ public final class Session {
 	 * @param packet The message.
 	 */
 	public void send(Packet packet) {
-		channel.write(packet);
+		channel.writeAndFlush(packet);
 	}
 
 	/**
@@ -194,7 +194,7 @@ public final class Session {
 	 * @param reason The reason for disconnection.
 	 */
 	public void disconnect(String reason) {
-		channel.write(new KickPacket(reason)).addListener(ChannelFutureListener.CLOSE);
+		channel.writeAndFlush(new KickPacket(reason)).addListener(ChannelFutureListener.CLOSE);
 	}
 
 	/**
