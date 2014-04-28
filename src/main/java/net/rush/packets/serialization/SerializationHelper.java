@@ -28,7 +28,7 @@ final class SerializationHelper {
 					if (!clazz.getPackage().equals(HandshakePacket.class.getPackage()))
 						throw new IllegalArgumentException("Not in our package!");
 
-					clazz = getImplClass(clazz);
+					//clazz = getImplClass(clazz); // TODO make sure it work without this
 					// *sigh* now let's get the attributes
 					List<SerializationInfo> serInfos = new LinkedList<SerializationInfo>();
 					Field[] fields = clazz.getDeclaredFields();
@@ -47,10 +47,6 @@ final class SerializationHelper {
 					return Collections.unmodifiableList(serInfos);
 				}
 			});
-
-	static <T> Class<? extends T> getImplClass(Class<T> iFace) throws ClassNotFoundException {
-		return Class.forName(iFace.getPackage().getName() + "." + iFace.getSimpleName()).asSubclass(iFace);
-	}
 
 	static Class<? extends Packet> getPacketInterface(Class<? extends Packet> clazz) {
 		// we just go up the inheritance tree and see if anything matches

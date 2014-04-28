@@ -1,7 +1,6 @@
 package net.rush.packets.serialization;
 
 import static net.rush.packets.serialization.SerializationHelper.fixupClasses;
-import static net.rush.packets.serialization.SerializationHelper.getImplClass;
 import static net.rush.packets.serialization.SerializationHelper.getSerializationInfos;
 import io.netty.buffer.ByteBufInputStream;
 
@@ -16,8 +15,7 @@ public class SerializationPacketHandler<T extends Packet> {
 
 	public T handle(ByteBufInputStream in, Class<T> type) {
 		try {
-			// get the implementation-class
-			Class<? extends T> implClazz = getImplClass(type);
+			// type = getImplVersion TODO make sure it works without it
 			List<SerializationInfo> serInfos = getSerializationInfos(type);
 			Object[] params = new Object[serInfos.size()];
 			Class<?>[] paramTypes = new Class<?>[serInfos.size()];
@@ -37,7 +35,7 @@ public class SerializationPacketHandler<T extends Packet> {
 					paramClazz = Set.class;
 				paramTypes[i] = paramClazz;
 			}
-			Constructor<? extends T> ctor = implClazz.getConstructor(fixupClasses(paramTypes));
+			Constructor<? extends T> ctor = type.getConstructor(fixupClasses(paramTypes));
 			return ctor.newInstance(params);
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);

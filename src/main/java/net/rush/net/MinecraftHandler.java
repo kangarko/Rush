@@ -63,7 +63,7 @@ public class MinecraftHandler extends SimpleChannelInboundHandler<Packet> {
 	}
 	
 	@Override
-	public void messageReceived(ChannelHandlerContext ctx, Packet packet) {
+	public void channelRead0(ChannelHandlerContext ctx, Packet packet) {
 		//Session session = (Session) ctx.getAttachment();
 		session.messageReceived(packet);
 	}
