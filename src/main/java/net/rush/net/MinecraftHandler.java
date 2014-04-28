@@ -61,9 +61,9 @@ public class MinecraftHandler extends SimpleChannelInboundHandler<Packet> {
 
 		logger.info("Channel disconnected: " + c + ".");
 	}
-	
+		
 	@Override
-	public void channelRead0(ChannelHandlerContext ctx, Packet packet) {
+	public void channelRead0(ChannelHandlerContext ctx, Packet packet) throws Exception {
 		//Session session = (Session) ctx.getAttachment();
 		session.messageReceived(packet);
 	}
