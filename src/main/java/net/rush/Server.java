@@ -275,8 +275,8 @@ public final class Server {
 					System.exit(0);
 				}
 			} finally {
-				//bossGroup.shutdown(); // gracefully on newer netty
-				//workerGroup.shutdown();
+				bossGroup.shutdownGracefully();
+				workerGroup.shutdownGracefully();
 			}
 		}
 	}
