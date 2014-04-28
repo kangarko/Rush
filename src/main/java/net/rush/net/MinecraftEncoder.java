@@ -1,50 +1,38 @@
 package net.rush.net;
 
-import java.io.IOException;
-
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufOutputStream;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.MessageToByteEncoder;
 import net.rush.packets.Packet;
-import net.rush.packets.Packets;
 import net.rush.packets.serialization.SerializationPacketSender;
 
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBufferOutputStream;
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
-
 /**
- * A {@link OneToOneEncoder} which encodes Minecraft {@link Packet}s into
- * {@link ChannelBuffer}s.
+ * This class encodes (write) incoming connection (in this case - packets).
+ * @author kangarko
  */
-public class MinecraftEncoder extends OneToOneEncoder {
+public class MinecraftEncoder extends MessageToByteEncoder<Packet> {
 
-	private static SerializationPacketSender<Packet> sender = new SerializationPacketSender<Packet>();
-	
-	// TODO ? this.getClass().getMethod("encode", message.getPacketType().getClass()).invoke(this, message.getPacketType())
-	
+	private SerializationPacketSender<Packet> sender = new SerializationPacketSender<Packet>();
+
+
 	@Override
-	protected Object encode(ChannelHandlerContext ctx, Channel c, Object msg) throws Exception {
-		if (msg instanceof Packet) {
-			Packet message = (Packet) msg;
+	protected void encode(ChannelHandlerContext ctx, Packet packet, ByteBuf buf) throws Exception {
+		//System.out.println("encoding packet! type: " + packet.getClass().getSimpleName());
 
-			Class<? extends Packet> clazz = message.getPacketType();
-			Class<? extends Packet> codec = Packets.lookupPacket(message.getOpcode());
+		/*Class<? extends Packet> clazz = packet.getPacketType();
+		Class<? extends Packet> codec = Packets.lookupPacket(packet.getOpcode());
 
-			if (codec == null)
-				throw new IOException("Unknown packet type: " + clazz.getSimpleName() + ".");
+		if (codec == null)
+			throw new IOException("Unknown packet type: " + clazz.getSimpleName() + ".");*/
 
-			ChannelBuffer opcodeBuf = ChannelBuffers.dynamicBuffer();
-			opcodeBuf.writeByte(message.getOpcode());
+		//ByteBuf opcodeBuf = Unpooled.buffer();
+		buf.writeByte(packet.getOpcode());
 
-			ChannelBufferOutputStream output = new ChannelBufferOutputStream(opcodeBuf);
-			
-			sender.send(output, message);
-			
-			return ChannelBuffers.wrappedBuffer(opcodeBuf);
-		}
-		return msg;
+		ByteBufOutputStream output = new ByteBufOutputStream(buf);
+		
+		sender.send(output, packet);
+
+		//ctx.write(Unpooled.wrappedBuffer(opcodeBuf));
 	}
-
 }
-

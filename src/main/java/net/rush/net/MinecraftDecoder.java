@@ -1,44 +1,45 @@
 package net.rush.net;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.MessageList;
+import io.netty.handler.codec.ReplayingDecoder;
+
 import java.io.IOException;
 
 import net.rush.packets.Packet;
 import net.rush.packets.Packets;
 import net.rush.packets.serialization.SerializationPacketHandler;
 
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBufferInputStream;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.handler.codec.replay.ReplayingDecoder;
-import org.jboss.netty.handler.codec.replay.VoidEnum;
-
 /**
- * A {@link ReplayingDecoder} which decodes {@link ChannelBuffer}s into
- * Minecraft {@link Packet}s.
+ * This class decodes (read) incoming connection (in this case - packets).
+ * @author kangarko
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
-public class MinecraftDecoder extends ReplayingDecoder<VoidEnum> {
+@SuppressWarnings("unchecked")
+public class MinecraftDecoder extends ReplayingDecoder<Packet> {
 
 	private int previousOpcode = -1;
-	private SerializationPacketHandler handler = new SerializationPacketHandler<Packet>();
-
-
+	
+	private SerializationPacketHandler<Packet> handler = new SerializationPacketHandler<Packet>();
+	
 	@Override
-	protected Object decode(ChannelHandlerContext ctx, Channel c, ChannelBuffer buf, VoidEnum state) throws Exception {
+	protected void decode(ChannelHandlerContext ctx, ByteBuf buf, MessageList<Object> out) throws Exception {
+		if(buf.readableBytes() == 0)
+			return;
+		
 		int opcode = buf.readUnsignedByte();
-		ChannelBufferInputStream input = new ChannelBufferInputStream(buf);
 		
 		Class<? extends Packet> packet = Packets.lookupPacket(opcode);
+		
 		if (packet == null) {
-			input.close();
 			throw new IOException("Unknown operation code: " + opcode + " (previous opcode: " + previousOpcode + ").");	
 		}
 		
 		previousOpcode = opcode;
+		
+		ByteBufInputStream input = new ByteBufInputStream(buf);
 
-		return handler.handle(input, packet);
+		out.add(handler.handle(input, (Class<Packet>) packet));
 	}
-
 }
-

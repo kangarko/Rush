@@ -1,5 +1,7 @@
 package net.rush.util;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInput;
@@ -15,13 +17,11 @@ import net.rush.util.nbt.NBTInputStream;
 import net.rush.util.nbt.NBTOutputStream;
 import net.rush.util.nbt.Tag;
 
-import org.jboss.netty.buffer.ChannelBuffer;
-
 /**
- * Contains several {@link ChannelBuffer}-related utility methods.
+ * Contains several {@link ByteBuf}-related utility methods.
 
  */
-public final class ChannelBufferUtils {
+public final class ByteBufUtils {
 
 	/**
 	 * The UTF-8 character set.
@@ -39,7 +39,7 @@ public final class ChannelBufferUtils {
 	 * @param parameters The parameters.
 	 */
 	@SuppressWarnings("unchecked")
-	public static void writeParameters(ChannelBuffer buf, Parameter<?>[] parameters) {
+	public static void writeParameters(ByteBuf buf, Parameter<?>[] parameters) {
 		for (Parameter<?> parameter : parameters) {
 			if (parameter == null)
 				continue;
@@ -88,7 +88,7 @@ public final class ChannelBufferUtils {
 	 * @param buf The buffer.
 	 * @return The parameters.
 	 */
-	public static Parameter<?>[] readParameters(ChannelBuffer buf) {
+	public static Parameter<?>[] readParameters(ByteBuf buf) {
 		Parameter<?>[] parameters = new Parameter<?>[Parameter.METADATA_SIZE];
 
 		int b;
@@ -139,7 +139,7 @@ public final class ChannelBufferUtils {
 	 * @throws IllegalArgumentException if the string is too long
 	 * <em>after</em> it is encoded.
 	 */
-	public static void writeString(ChannelBuffer buf, String str) {
+	public static void writeString(ByteBuf buf, String str) {
 		int len = str.length();
 		if (len >= 65536) {
 			throw new IllegalArgumentException("String too long.");
@@ -158,7 +158,7 @@ public final class ChannelBufferUtils {
 	 * @throws IllegalArgumentException if the string is too long
 	 * <em>after</em> it is encoded.
 	 */
-	public static void writeUtf8String(ChannelBuffer buf, String str) {
+	public static void writeUtf8String(ByteBuf buf, String str) {
 		byte[] bytes = str.getBytes(CHARSET_UTF8);
 		if (bytes.length >= 65536) {
 			throw new IllegalArgumentException("Encoded UTF-8 string too long.");
@@ -173,7 +173,7 @@ public final class ChannelBufferUtils {
 	 * @param buf The buffer.
 	 * @return The string.
 	 */
-	public static String readString(ChannelBuffer buf) {
+	public static String readString(ByteBuf buf) {
 		int len = buf.readUnsignedShort();
 
 		char[] characters = new char[len];
@@ -190,7 +190,7 @@ public final class ChannelBufferUtils {
 	 * @param buf The buffer.
 	 * @return The string.
 	 */
-	public static String readUtf8String(ChannelBuffer buf) {
+	public static String readUtf8String(ByteBuf buf) {
 		int len = buf.readUnsignedShort();
 
 		byte[] bytes = new byte[len];
@@ -204,7 +204,7 @@ public final class ChannelBufferUtils {
 	 * @param buf The buffer.
 	 * @return The value read.
 	 */
-	public static int readVarInt(ChannelBuffer buf) {
+	public static int readVarInt(ByteBuf buf) {
 		int ret = 0;
 		short read;
 		byte offset = 0;
@@ -221,7 +221,7 @@ public final class ChannelBufferUtils {
 	 * @param buf The buffer.
 	 * @param num The value to write.
 	 */
-	public static void writeVarInt(ChannelBuffer buf, int num) {
+	public static void writeVarInt(ByteBuf buf, int num) {
 		do {
 			short write = (short) (num & ~VARINT_MORE_FLAG);
 			num >>= 7;
@@ -232,7 +232,7 @@ public final class ChannelBufferUtils {
 		} while (num != 0);
 	}
 	
-    public static Map<String, Tag> readCompound(ChannelBuffer buf) {
+    public static Map<String, Tag> readCompound(ByteBuf buf) {
         int len = buf.readShort();
         if (len >= 0) {
             byte[] bytes = new byte[len];
@@ -256,7 +256,7 @@ public final class ChannelBufferUtils {
         return null;
     }
 
-    public static void writeCompound(ChannelBuffer buf, Map<String, Tag> data) {
+    public static void writeCompound(ByteBuf buf, Map<String, Tag> data) {
         if (data == null) {
             buf.writeShort(-1);
             return;
@@ -281,7 +281,7 @@ public final class ChannelBufferUtils {
 
     }
 
-    public static void writeBoolean(ChannelBuffer buf, boolean bool) {
+    public static void writeBoolean(ByteBuf buf, boolean bool) {
     	buf.writeByte(bool ? 1 : 0);
     }
     
@@ -308,7 +308,7 @@ public final class ChannelBufferUtils {
 	/**
 	 * Default private constructor to prevent instantiation.
 	 */
-	private ChannelBufferUtils() {}
+	private ByteBufUtils() {}
 
 }
 

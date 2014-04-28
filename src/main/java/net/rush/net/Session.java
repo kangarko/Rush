@@ -1,5 +1,8 @@
 package net.rush.net;
 
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
+
 import java.awt.Color;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -13,9 +16,6 @@ import net.rush.packets.handler.HandlerLookupService;
 import net.rush.packets.handler.PacketHandler;
 import net.rush.packets.packet.KeepAlivePacket;
 import net.rush.packets.packet.KickPacket;
-
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFutureListener;
 
 /**
  * A single connection to the server, which may or may not be associated with a
@@ -207,7 +207,7 @@ public final class Session {
 
 	@Override
 	public String toString() {
-		return Session.class.getName() + " [address=" + channel.getRemoteAddress() + "]";
+		return Session.class.getName() + " [address=" + getIp() + "]";
 	}
 
 	/**
@@ -235,7 +235,7 @@ public final class Session {
 	}
 
 	public String getIp() {
-		return channel.getRemoteAddress().toString().replace("/", "");
+		return channel.remoteAddress().toString().replace("/", "");
 	}
 	
 	public void pong() {

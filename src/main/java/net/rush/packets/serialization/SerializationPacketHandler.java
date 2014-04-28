@@ -3,6 +3,7 @@ package net.rush.packets.serialization;
 import static net.rush.packets.serialization.SerializationHelper.fixupClasses;
 import static net.rush.packets.serialization.SerializationHelper.getImplClass;
 import static net.rush.packets.serialization.SerializationHelper.getSerializationInfos;
+import io.netty.buffer.ByteBufInputStream;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -11,11 +12,9 @@ import java.util.Set;
 
 import net.rush.packets.Packet;
 
-import org.jboss.netty.buffer.ChannelBufferInputStream;
-
 public class SerializationPacketHandler<T extends Packet> {
 
-	public T handle(ChannelBufferInputStream in, Class<T> type) {
+	public T handle(ByteBufInputStream in, Class<T> type) {
 		try {
 			// get the implementation-class
 			Class<? extends T> implClazz = getImplClass(type);

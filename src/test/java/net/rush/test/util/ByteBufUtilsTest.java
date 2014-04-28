@@ -1,27 +1,27 @@
 package net.rush.test.util;
 
 import static org.junit.Assert.assertEquals;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.util.List;
 
 import net.rush.model.Coordinate;
 import net.rush.model.ItemStack;
-import net.rush.util.ChannelBufferUtils;
+import net.rush.util.ByteBufUtils;
 import net.rush.util.Parameter;
 
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
 import org.junit.Test;
 
 /**
- * A unit test for the {@link ChannelBufferUtils} class.
+ * A unit test for the {@link ByteBufUtils} class.
 
  */
-public final class ChannelBufferUtilsTest {
+public final class ByteBufUtilsTest {
 
 	/**
 	 * Tests the
-	 * {@link ChannelBufferUtils#writeParameters(ChannelBuffer, List)}
+	 * {@link ByteBufUtils#writeParameters(ByteBuf, List)}
 	 * method.
 	 */
 	@Test
@@ -35,8 +35,8 @@ public final class ChannelBufferUtilsTest {
 		params[5] = new Parameter<ItemStack>(Parameter.TYPE_ITEM, 5, new ItemStack(1, 64, 0));
 		params[6] = new Parameter<Coordinate>(Parameter.TYPE_COORDINATE, 6, new Coordinate(10, 11, 12));
 
-		ChannelBuffer buffer = ChannelBuffers.buffer(46);
-		ChannelBufferUtils.writeParameters(buffer, params);
+		ByteBuf buffer = Unpooled.buffer(46);
+		ByteBufUtils.writeParameters(buffer, params);
 
 		assertEquals(0x00, buffer.readUnsignedByte());
 		assertEquals(0x12, buffer.readUnsignedByte());
@@ -51,7 +51,7 @@ public final class ChannelBufferUtilsTest {
 		assertEquals(1234.5678F, buffer.readFloat(), 0);
 
 		assertEquals(0x84, buffer.readUnsignedByte());
-		assertEquals("test", ChannelBufferUtils.readString(buffer));
+		assertEquals("test", ByteBufUtils.readString(buffer));
 
 		assertEquals(0xA5, buffer.readUnsignedByte());
 		assertEquals(1, buffer.readUnsignedShort());
@@ -67,12 +67,12 @@ public final class ChannelBufferUtilsTest {
 	}
 
 	/**
-	 * Tests the {@link ChannelBufferUtils#readParameters(ChannelBuffer)}
+	 * Tests the {@link ByteBufUtils#readParameters(ByteBuf)}
 	 * method.
 	 */
 	@Test
 	public void testReadParameters() {
-		ChannelBuffer buffer = ChannelBuffers.buffer(46);
+		ByteBuf buffer = Unpooled.buffer(46);
 		buffer.writeByte(0x00); // type 0 index 0
 		buffer.writeByte(0x12);
 
@@ -86,7 +86,7 @@ public final class ChannelBufferUtilsTest {
 		buffer.writeFloat(1234.5678F);
 
 		buffer.writeByte(0x84); // type 4 index 4
-		ChannelBufferUtils.writeString(buffer, "test");
+		ByteBufUtils.writeString(buffer, "test");
 
 		buffer.writeByte(0xA5); // type 5 index 5
 		buffer.writeShort(1);
@@ -100,7 +100,7 @@ public final class ChannelBufferUtilsTest {
 
 		buffer.writeByte(0x7F); // end of list
 
-		Parameter<?>[] params = ChannelBufferUtils.readParameters(buffer);
+		Parameter<?>[] params = ByteBufUtils.readParameters(buffer);
 		int size = 0;
 		for (Parameter<?> param : params)
 			if (param != null)
@@ -142,12 +142,12 @@ public final class ChannelBufferUtilsTest {
 
 	/**
 	 * Tests the
-	 * {@link ChannelBufferUtils#writeString(ChannelBuffer, String)} method.
+	 * {@link ByteBufUtils#writeString(ByteBuf, String)} method.
 	 */
 	@Test
 	public void testWriteString() {
-		ChannelBuffer buffer = ChannelBuffers.buffer(12);
-		ChannelBufferUtils.writeString(buffer, "hello");
+		ByteBuf buffer = Unpooled.buffer(12);
+		ByteBufUtils.writeString(buffer, "hello");
 
 		assertEquals(5, buffer.readUnsignedShort());
 		assertEquals('h', buffer.readChar());
@@ -158,12 +158,12 @@ public final class ChannelBufferUtilsTest {
 	}
 
 	/**
-	 * Tests the {@link ChannelBufferUtils#readString(ChannelBuffer)}
+	 * Tests the {@link ByteBufUtils#readString(ByteBuf)}
 	 * method.
 	 */
 	@Test
 	public void testReadString() {
-		ChannelBuffer buffer = ChannelBuffers.buffer(12);
+		ByteBuf buffer = Unpooled.buffer(12);
 		buffer.writeShort(5);
 		buffer.writeChar('h');
 		buffer.writeChar('e');
@@ -171,18 +171,18 @@ public final class ChannelBufferUtilsTest {
 		buffer.writeChar('l');
 		buffer.writeChar('o');
 
-		assertEquals("hello", ChannelBufferUtils.readString(buffer));
+		assertEquals("hello", ByteBufUtils.readString(buffer));
 	}
 
 	/**
 	 * Tests the
-	 * {@link ChannelBufferUtils#writeUtf8String(ChannelBuffer, String)}
+	 * {@link ByteBufUtils#writeUtf8String(ByteBuf, String)}
 	 * method.
 	 */
 	@Test
 	public void testWriteUtf8String() {
-		ChannelBuffer buffer = ChannelBuffers.buffer(7);
-		ChannelBufferUtils.writeUtf8String(buffer, "hello");
+		ByteBuf buffer = Unpooled.buffer(7);
+		ByteBufUtils.writeUtf8String(buffer, "hello");
 
 		assertEquals(5, buffer.readUnsignedShort());
 		assertEquals('h', buffer.readUnsignedByte());
@@ -193,16 +193,16 @@ public final class ChannelBufferUtilsTest {
 	}
 
 	/**
-	 * Tests the {@link ChannelBufferUtils#readUtf8String(ChannelBuffer)}
+	 * Tests the {@link ByteBufUtils#readUtf8String(ByteBuf)}
 	 * method.
 	 */
 	@Test
 	public void testReadUtf8String() {
-		ChannelBuffer buffer = ChannelBuffers.buffer(7);
+		ByteBuf buffer = Unpooled.buffer(7);
 		buffer.writeShort(5);
 		buffer.writeBytes("hello".getBytes());
 
-		assertEquals("hello", ChannelBufferUtils.readUtf8String(buffer));
+		assertEquals("hello", ByteBufUtils.readUtf8String(buffer));
 	}
 
 }

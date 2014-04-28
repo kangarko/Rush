@@ -11,7 +11,7 @@ import java.util.Set;
 import net.rush.model.Coordinate;
 import net.rush.model.ItemStack;
 import net.rush.packets.misc.MetadataType;
-import net.rush.util.ChannelBufferUtils;
+import net.rush.util.ByteBufUtils;
 import net.rush.util.Parameter;
 
 public enum Type {
@@ -58,12 +58,12 @@ public enum Type {
 	}), STRING(new Serializor<String>() {
 		@Override
 		public String read(DataInput in) throws IOException {
-			return ChannelBufferUtils.readStringFromDataInput(in, 1000);
+			return ByteBufUtils.readStringFromDataInput(in, 1000);
 		}
 
 		@Override
 		public void write(DataOutput out, String val) throws IOException {
-			ChannelBufferUtils.writeStringToDataOutput(out, val);
+			ByteBufUtils.writeStringToDataOutput(out, val);
 		}
 	}), SHORT(new Serializor<Short>() {
 		@Override
