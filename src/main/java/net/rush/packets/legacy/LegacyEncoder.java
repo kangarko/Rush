@@ -1,4 +1,4 @@
-package net.rush.net;
+package net.rush.packets.legacy;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
@@ -11,7 +11,7 @@ import net.rush.packets.serialization.SerializationPacketSender;
  * This class encodes (write) incoming connection (in this case - packets).
  * @author kangarko
  */
-public class MinecraftEncoder extends MessageToByteEncoder<Packet> {
+public class LegacyEncoder extends MessageToByteEncoder<Packet> {
 
 	private SerializationPacketSender<Packet> sender = new SerializationPacketSender<Packet>();
 

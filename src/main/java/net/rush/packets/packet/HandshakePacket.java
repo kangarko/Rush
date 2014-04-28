@@ -13,7 +13,7 @@ public class HandshakePacket extends Packet {
 	private final String host;
 	@Serialize(type = Type.INT, order = 3)
 	private final int port;
-
+	
 	public HandshakePacket(byte protocolVer, String username, String host, int port) {
 		super();
 		this.protocolVer = protocolVer;

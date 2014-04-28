@@ -10,6 +10,7 @@ import java.util.Set;
 
 import net.rush.model.Coordinate;
 import net.rush.model.ItemStack;
+import net.rush.packets.Packet;
 import net.rush.packets.misc.MetadataType;
 import net.rush.util.ByteBufUtils;
 import net.rush.util.Parameter;
@@ -319,6 +320,21 @@ public enum Type {
 		public void write(DataOutput out, Short val) throws IOException {
 			if (val != Short.MIN_VALUE)
 				out.writeShort(val);
+		}
+	}), 
+		/**
+		 * @deprecated Unsure whenever it works
+		 */
+		@Deprecated 
+		VAR_INT(new ObjectUsingSerializor<Integer>() {
+		@Override
+		public Integer read(DataInput in, Object moreInfo) throws IOException {
+			return Packet.readVarInt(in);
+		}
+
+		@Override
+		public void write(DataOutput out, Integer val) throws IOException {
+			Packet.writeVarInt(val, out);
 		}
 	}), BLOCKCOORD_COLLECTION(new Serializor<Collection<Coordinate>>() {
 		@Override

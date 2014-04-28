@@ -6,8 +6,10 @@ import net.rush.packets.serialization.Type;
 
 public class KickPacket extends Packet {
 	@Serialize(type = Type.STRING, order = 0)
-	private final String reason;
+	private String reason;
 
+	public KickPacket() {}
+	
 	public KickPacket(String reason) {
 		super();
 		this.reason = reason;

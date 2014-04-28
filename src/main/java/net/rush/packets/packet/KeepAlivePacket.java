@@ -6,8 +6,10 @@ import net.rush.packets.serialization.Type;
 
 public class KeepAlivePacket extends Packet {
 	@Serialize(type = Type.INT, order = 0)
-	private final int token;
+	private int token;
 
+	public KeepAlivePacket() {}
+	
 	public KeepAlivePacket(int id) {
 		super();
 		token = id;

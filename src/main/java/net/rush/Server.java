@@ -27,11 +27,19 @@ import net.rush.console.ThreadConsoleReader;
 import net.rush.gui.RushGui;
 import net.rush.io.McRegionChunkIoService;
 import net.rush.model.Player;
-import net.rush.net.MinecraftDecoder;
-import net.rush.net.MinecraftEncoder;
 import net.rush.net.MinecraftHandler;
+import net.rush.net.PacketDecoder;
+import net.rush.net.PacketEncoder;
 import net.rush.net.Session;
 import net.rush.net.SessionRegistry;
+import net.rush.packets.KickStringWriter;
+import net.rush.packets.Varint21FrameDecoder;
+import net.rush.packets.Varint21LengthFieldPrepender;
+import net.rush.packets.legacy.LegacyCompatDecoder;
+import net.rush.packets.legacy.LegacyCompatProvider;
+import net.rush.packets.legacy.LegacyDecoder;
+import net.rush.packets.legacy.LegacyEncoder;
+import net.rush.packets.misc.Protocol;
 import net.rush.packets.packet.ChatPacket;
 import net.rush.task.TaskScheduler;
 import net.rush.util.NumberUtils;
@@ -219,7 +227,7 @@ public final class Server {
 	 * A {@link Runnable} which saves chunks on shutdown.
 	 */
 	private class ServerShutdownHandler extends Thread {
-				
+
 		@Override
 		public void run() {
 			logger.info("Server is shutting down.");
@@ -247,25 +255,46 @@ public final class Server {
 				.childHandler(new ChannelInitializer<SocketChannel>() {
 					@Override
 					protected void initChannel(SocketChannel ch) throws Exception {
-						
+
 						ch.config().setOption(ChannelOption.IP_TOS, 0x18);
 						ch.config().setOption(ChannelOption.TCP_NODELAY, false);
 						
-						ch.pipeline()
+						ch.pipeline().addLast("timer", new ReadTimeoutHandler(30));
+						
+						if(LegacyCompatProvider.isProvidingCompat(ch.remoteAddress())) {
+							ch.pipeline()
+							.addLast("decoder", new LegacyDecoder())
+							.addLast("encoder", new LegacyEncoder()) // own
+							.addLast("manager", new MinecraftHandler(server, true));
+						} else {
+							ch.pipeline()
+							.addLast("old", new KickStringWriter())
+							.addLast("legacy", new LegacyCompatDecoder())
+							
+							.addLast("lengthdecoder", new Varint21FrameDecoder())
+							.addLast("decoder", new PacketDecoder(Protocol.HANDSHAKE))
+							
+							.addLast("lengthencoder", new Varint21LengthFieldPrepender())
+							.addLast("packetencoder", new PacketEncoder(Protocol.HANDSHAKE))
+							
+							.addLast("manager", new MinecraftHandler(server, false));
+						}
 
-						.addLast("timer", new ReadTimeoutHandler(30))
+						//ch.pipeline()
+
+						//.addLast("timer", new ReadTimeoutHandler(30))
 						//.addLast("frameDecoder", new ProtobufVarint32FrameDecoder())
-						.addLast("decoder", new MinecraftDecoder())
+						//.addLast("decoder", new MinecraftDecoder())
 
 						//.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender())
-						.addLast("encoder", new MinecraftEncoder())
-						
-						.addLast("handler", new MinecraftHandler(server));
+						//.addLast("encoder", new MinecraftEncoder())
+
+						//.addLast("handler", new MinecraftHandler(server));
 					}				
 				});
 
 				SocketAddress address = properties.serverIp.length() == 0 ? new InetSocketAddress(properties.port) : new InetSocketAddress(properties.serverIp, properties.port);
-				
+
 				try {
 					bootstrap.bind(address).sync().channel().closeFuture().sync();
 				} catch (Throwable ex) {

@@ -27,15 +27,17 @@ public class MinecraftHandler extends SimpleChannelInboundHandler<Packet> {
 	 * The server.
 	 */
 	private final Server server;
-
-	Session session;
+	public final boolean compact;
+	
+	private Session session;
 	
 	/**
 	 * Creates a new network event handler.
 	 * @param server The server.
 	 */
-	public MinecraftHandler(Server server) {
+	public MinecraftHandler(Server server, boolean compact) {
 		this.server = server;
+		this.compact = compact;
 	}
 
 	@Override

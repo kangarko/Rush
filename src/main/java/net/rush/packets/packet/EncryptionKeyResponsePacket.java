@@ -1,9 +1,11 @@
 package net.rush.packets.packet;
 
+import lombok.AllArgsConstructor;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
+@AllArgsConstructor
 public class EncryptionKeyResponsePacket extends Packet {
 	@Serialize(type = Type.SHORT, order = 0)
 	private final short secretLength;
