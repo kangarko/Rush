@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
@@ -14,14 +16,13 @@ public class PacketPingTime extends Packet {
 	public PacketPingTime() {
 	}
 
-	public PacketPingTime(long l) {
-		time = l;
+	public PacketPingTime(long time) {
+		this.time = time;
 	}
 
 	@Override
 	public String getToStringDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return "time=" + time;
 	}
 
 	@Override
@@ -30,15 +31,13 @@ public class PacketPingTime extends Packet {
 	}
 
 	@Override
-	public void read18(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
+	public void read17(ByteBufInputStream input) throws IOException {
+		time = input.readLong();
 	}
 
 	@Override
-	public void write18(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeLong(time);
 	}
 
 }

@@ -27,7 +27,7 @@ public class MinecraftHandler extends SimpleChannelInboundHandler<Packet> {
 	 * The server.
 	 */
 	private final Server server;
-	public final boolean compact;
+	private final boolean compact;
 	
 	private Session session;
 	
@@ -45,7 +45,7 @@ public class MinecraftHandler extends SimpleChannelInboundHandler<Packet> {
 		Channel c = ctx.channel();
 		server.getChannelGroup().add(c);
 
-		Session session = new Session(server, c);
+		Session session = new Session(server, c, compact);
 		server.getSessionRegistry().add(session);
 		//ctx.setAttachment(session);
 		this.session = session;

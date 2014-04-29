@@ -86,7 +86,14 @@ public final class Session {
 	 */
 	private Player player;
 	
-	boolean pendingRemoval = false;
+	/**
+	 * True means that this is a 1.6 client.
+	 */
+	private final boolean compat;
+	
+	private ClientVersion clientVersion;
+	
+	private boolean pendingRemoval = false;
 	private int pingMessageId;
 
 	/**
@@ -94,9 +101,10 @@ public final class Session {
 	 * @param server The server this session belongs to.
 	 * @param channel The channel associated with this session.
 	 */
-	public Session(Server server, Channel channel) {
+	public Session(Server server, Channel channel, boolean compat) {
 		this.server = server;
 		this.channel = channel;
+		this.compat = compat;
 	}
 
 	/**
@@ -245,6 +253,42 @@ public final class Session {
 
 	void flagForRemoval() {
 		pendingRemoval = true;
+	}
+	
+	public boolean isCompat() {
+		return compat;
+	}
+	
+	public void setClientVersion(String version, int protocol) {
+		this.clientVersion = new ClientVersion(version, protocol);
+	}
+	
+	public ClientVersion getClientVersion() {
+		return clientVersion;
+	}
+	
+	public class ClientVersion {
+		private final String version;
+		private final int protocol;
+		
+		public ClientVersion(String version, int protocol) {
+			super();
+			this.version = version;
+			this.protocol = protocol;
+		}
+		
+		public String getVersion() {
+			return version;
+		}
+		
+		public int getProtocol() {
+			return protocol;
+		}
+		
+		@Override
+		public String toString() {
+			return "ver=" + version + ",protocol=" + protocol;
+		}
 	}
 }
 

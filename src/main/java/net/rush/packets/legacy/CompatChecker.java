@@ -25,7 +25,7 @@ public class CompatChecker extends ByteToMessageDecoder {
 		short b2 = in.getUnsignedByte(index++);
 		short b3 = in.getUnsignedByte(index++);
 
-		/*if (b1 == 254 && b2 == 1 && b3 == 250) {
+		if (b1 == 254 && b2 == 1 && b3 == 250) {
 			LegacyCompatProvider.provideCompatFor(ctx.channel().remoteAddress());
 			ctx.pipeline().remove(PacketDecoder.class);
 			String kickMessage = ChatColor.DARK_BLUE 
@@ -43,7 +43,7 @@ public class CompatChecker extends ByteToMessageDecoder {
 			String kickstr = ChatColor.GREEN + "Please Login Again";
 			ctx.writeAndFlush(kickstr);
 			ctx.close();
-		} else*/
+		} else
 			LegacyCompatProvider.stopProvidingCompatFor(ctx.channel().remoteAddress());
 
 		ctx.pipeline().remove(this);

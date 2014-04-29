@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
@@ -22,6 +24,8 @@ public class LoginPacket extends Packet {
 	private int worldHeight;
 	@Serialize(type = Type.UNSIGNED_BYTE, order = 6)
 	private int maxPlayers;
+
+	private boolean hardcore = false;
 
 	public LoginPacket() {
 	}
@@ -77,22 +81,27 @@ public class LoginPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String
-				.format("entityId=\"%d\",username=\"%s\",levelType=\"%s\"mode=\"%d\","
-						+ "dimension=\"%d\",difficulty=\"%d\",worldHeight=\"%d\",maxPlayers=\"%d\"",
-						entityId, worldType, mode, dimension, difficulty,
-						worldHeight, maxPlayers);
+		return String.format("entityId=\"%d\",username=\"%s\",levelType=\"%s\"mode=\"%d\",dimension=\"%d\",difficulty=\"%d\",worldHeight=\"%d\",maxPlayers=\"%d\"", 
+				entityId, worldType, mode, dimension, difficulty, worldHeight, maxPlayers);
 	}
 
 	@Override
-	public void read18(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
+	public void read17(ByteBufInputStream input) {
 	}
 
 	@Override
-	public void write18(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(entityId);
+		int gamemode = mode;
 
+		if (hardcore)
+			gamemode |= 8;
+
+		output.writeByte(gamemode);
+
+		output.writeByte(dimension);
+		output.writeByte(difficulty);
+		output.writeByte(maxPlayers);
+		writeString(worldType == null ? "" : worldType, output, false);
 	}
 }

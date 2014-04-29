@@ -3,15 +3,20 @@ package net.rush;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Reader;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.bukkit.ChatColor;
 
+import com.google.common.io.Files;
+
 public class ServerProperties {
-	
+
 	public String genSettings;
 	public int opPermLevel;
 	public boolean allowNether;
@@ -43,11 +48,13 @@ public class ServerProperties {
 	public boolean generateStructures;
 	public int viewDistance;
 	public String motd;
-	
+
+	public String favicon;
+
 	private final Properties prop = new Properties();
 	private final Logger logger = Logger.getLogger("Minecraft");
 	private final File file;
-	
+
 	protected ServerProperties(String fileName) {
 		this.file = new File(fileName);
 
@@ -66,7 +73,7 @@ public class ServerProperties {
 		} else
 			generateNew();
 	}	
-	
+
 	public void load() {
 		genSettings = getString("generator-settings", "");
 		opPermLevel = getInt("op-permission-level", 4);
@@ -99,8 +106,23 @@ public class ServerProperties {
 		generateStructures = getBoolean("generate-structures", true);
 		viewDistance = getInt("view-distance", 10);
 		motd = ChatColor.translateAlternateColorCodes('&', getString("motd", "A Rush server"));
+
+		favicon = loadFavicon();
 	}
-	
+
+	String loadFavicon() {
+		File fav = new File( "server-icon.png" );
+		if (fav.exists()) {
+			try {
+				return "data:image/png;base64," + DatatypeConverter.printBase64Binary(Files.toByteArray(fav));
+			} catch (IOException e) {
+				logger.warning("Malformed server-icon.png");
+			}
+		}
+
+		return "";
+	}
+
 	boolean getOnlineMode() {
 		boolean online = getBoolean("online-mode", true);
 		if(online) {
@@ -111,7 +133,7 @@ public class ServerProperties {
 		}
 		return online;
 	}
-	
+
 	int getDifficulty() {
 		int diff = getInt("difficulty", 1);
 		if(diff < 1)
@@ -120,7 +142,7 @@ public class ServerProperties {
 			diff = 3;
 		return diff;
 	}
-	
+
 	int getGamemode() {
 		int gm = getInt("gamemode", 0);
 		if(gm > 2) // FIXME Spectator mode in MC 1.8.
@@ -146,7 +168,7 @@ public class ServerProperties {
 
 		}
 	}
-	
+
 	void set(String path, Object def) {
 		prop.setProperty(path, "" + String.valueOf(def));
 	}

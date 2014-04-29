@@ -26,10 +26,6 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 		this.protocol = prot;
 	}
 
-	public void setProtocol(Protocol protocol) {
-		this.protocol = protocol;
-	}
-
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
 		if(in.readableBytes() == 0)
@@ -45,7 +41,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 		ByteBufInputStream input = new ByteBufInputStream(in);
 		Packet packet = packetClazz.newInstance();
 		
-		packet.read18(input);
+		packet.read17(input);
 		out.add(packet);
 		 
 		if (packet instanceof HandshakePacket) {
@@ -65,5 +61,9 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 	public void setProtocol(ChannelHandlerContext channel, Protocol prot) {
 		channel.pipeline().get(PacketDecoder.class).setProtocol(prot);
 		channel.pipeline().get(PacketEncoder.class).setProtocol(prot);
+	}
+	
+	public void setProtocol(Protocol protocol) {
+		this.protocol = protocol;
 	}
 }

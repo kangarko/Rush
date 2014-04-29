@@ -74,7 +74,7 @@ public final class Server {
 	/** A list of all the active {@link Session}s. */
 	private final SessionRegistry sessions = new SessionRegistry();
 
-	private boolean saveEnabled = true;	// TODO: Does this belong in a different class e.g. the chunk IO service or the chunk manager?
+	private boolean saveEnabled = true; // TODO: Does this belong in a different class e.g. the chunk IO service or the chunk manager?
 
 	/**
 	 * Creates a new server on TCP port 25565 and starts listening for
@@ -88,8 +88,8 @@ public final class Server {
 
 			boolean jline = true;
 
-			for(String arg : args) {
-				if("nojline".equalsIgnoreCase(arg))
+			for (String arg : args) {
+				if ("nojline".equalsIgnoreCase(arg))
 					jline = false;
 			}
 
@@ -113,7 +113,7 @@ public final class Server {
 		if (Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L)
 			logger.warning("To start the server with more ram, launch it as \"java -Xmx1024M -Xms1024M -jar project-rush.jar\"");
 
-		logger.info("Loading properties");		
+		logger.info("Loading properties");
 		properties = new ServerProperties("server.properties");
 		properties.load();
 
@@ -122,7 +122,7 @@ public final class Server {
 		logger.info("Generating server id");
 		serverId = Long.toString(new Random().nextLong(), 16);
 
-		logger.info("Starting Minecraft server on " + (properties.serverIp.length() == 0 ? "*" : properties.serverIp) + ":" + properties.port);		
+		logger.info("Starting Minecraft server on " + (properties.serverIp.length() == 0 ? "*" : properties.serverIp) + ":" + properties.port);
 		new NettyNetworkThread().start();
 
 		/* add shutdown hook */
@@ -250,9 +250,7 @@ public final class Server {
 		public void run() {
 
 			try {
-				bootstrap.group(bossGroup, workerGroup)
-				.channel(NioServerSocketChannel.class)
-				.childHandler(new ChannelInitializer<SocketChannel>() {
+				bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<SocketChannel>() {
 					@Override
 					protected void initChannel(SocketChannel ch) throws Exception {
 
@@ -261,13 +259,14 @@ public final class Server {
 
 						ch.pipeline().addLast("timer", new ReadTimeoutHandler(30));
 
-						/*if(LegacyCompatProvider.isProvidingCompat(ch.remoteAddress())) {
+						if (LegacyCompatProvider.isProvidingCompat(ch.remoteAddress())) {
 							ch.pipeline()
-							.addLast("decoder", new LegacyDecoder())
-							.addLast("encoder", new LegacyEncoder()) // own
-							.addLast("manager", new MinecraftHandler(server, true));
-						} else {*/
+							.addLast("decoder", new LegacyDecoder()) // 1.6 decoder - reader
+							.addLast("encoder", new LegacyEncoder()) // 1.6 encoder - writer
+							.addLast("handler", new MinecraftHandler(server, true));
+						} else {
 							ch.pipeline()
+							
 							.addLast("old", new KickPacketWriter())
 							.addLast("legacy", new CompatChecker())
 
@@ -275,22 +274,11 @@ public final class Server {
 							.addLast("decoder", new PacketDecoder(Protocol.HANDSHAKE))
 
 							.addLast("lengthencoder", new Varint21LengthFieldPrepender())
-							.addLast("packetencoder", new PacketEncoder(Protocol.HANDSHAKE))
+							.addLast("encoder", new PacketEncoder(Protocol.HANDSHAKE))
 
-							.addLast("manager", new MinecraftHandler(server, false));
-						//}
-
-						//ch.pipeline()
-
-						//.addLast("timer", new ReadTimeoutHandler(30))
-						//.addLast("frameDecoder", new ProtobufVarint32FrameDecoder())
-						//.addLast("decoder", new MinecraftDecoder())
-
-						//.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender())
-						//.addLast("encoder", new MinecraftEncoder())
-
-						//.addLast("handler", new MinecraftHandler(server));
-					}				
+							.addLast("handler", new MinecraftHandler(server, false));
+						}
+					}
 				});
 
 				SocketAddress address = properties.serverIp.length() == 0 ? new InetSocketAddress(properties.port) : new InetSocketAddress(properties.serverIp, properties.port);
@@ -310,4 +298,3 @@ public final class Server {
 		}
 	}
 }
-

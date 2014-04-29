@@ -9,7 +9,6 @@ import net.rush.packets.Packet;
 public class PacketLoginRequest extends Packet {
 
 	public PacketLoginRequest() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public String name;
@@ -25,13 +24,13 @@ public class PacketLoginRequest extends Packet {
 	}
 
 	@Override
-	public void read18(ByteBufInputStream input) throws IOException {
-		name = readString18(input, 256, false);
+	public void read17(ByteBufInputStream input) throws IOException {
+		name = readString18(input, 16, false);
 	}
 
 	@Override
-	public void write18(ByteBufOutputStream output) throws IOException {
-		writeString(name, output, false);
+	public void write17(ByteBufOutputStream output) throws IOException {
+		throw new IOException("cannot write " + this);
 	}
 
 }

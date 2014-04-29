@@ -85,14 +85,12 @@ public enum Protocol {
 
 	// Undef
 	HANDSHAKE {
-
 		{
 			TO_SERVER.registerPacket(0x00, HandshakePacket.class);
 		}
 	},
 	// 0
 	GAME {
-
 		{
 			TO_CLIENT.registerPacket(0x00, KeepAlivePacket.class);
 			TO_CLIENT.registerPacket(0x01, LoginPacket.class);
@@ -189,7 +187,6 @@ public enum Protocol {
 	},
 	// 1
 	STATUS {
-
 		{
 			TO_CLIENT.registerPacket(0x00, KickPacket.class);
 			TO_CLIENT.registerPacket(0x01, PacketPingTime.class);
@@ -200,7 +197,6 @@ public enum Protocol {
 	},
 	//2
 	LOGIN {
-
 		{
 			TO_CLIENT.registerPacket(0x00, KickPacket.class);
 			//TO_CLIENT.registerPacket(0x01, EncryptionKeyRequestPacket.class);
@@ -211,10 +207,7 @@ public enum Protocol {
 		}
 	};
 	/*========================================================================*/
-	public static final int MAX_PACKET_ID = 0xFF;
-	public static final int PROTOCOL_VERSION = 0x04;
-	public static final String MINECRAFT_VERSION = "1.7.5";
-	/*========================================================================*/
+	public final int MAX_PACKET_ID = 0xFF;
 	public final ProtocolDirection TO_SERVER = new ProtocolDirection("TO_SERVER");
 	public final ProtocolDirection TO_CLIENT = new ProtocolDirection("TO_CLIENT");
 

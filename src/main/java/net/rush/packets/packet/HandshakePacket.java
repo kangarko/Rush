@@ -63,7 +63,7 @@ public class HandshakePacket extends Packet {
 	}
 
 	@Override
-	public void read18(ByteBufInputStream input) throws IOException {
+	public void read17(ByteBufInputStream input) throws IOException {
 		protocolVersion = readVarInt( input );
         serverAddress = readString18(input, 0, false);
         serverPort = input.readUnsignedShort();
@@ -71,6 +71,6 @@ public class HandshakePacket extends Packet {
 	}
 
 	@Override
-	public void write18(ByteBufOutputStream output) throws IOException {
+	public void write17(ByteBufOutputStream output) throws IOException {
 	}
 }

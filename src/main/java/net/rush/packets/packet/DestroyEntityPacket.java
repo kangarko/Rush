@@ -40,13 +40,13 @@ public class DestroyEntityPacket extends Packet {
 	}
 
 	@Override
-	public void read18(ByteBufInputStream input) {
+	public void read17(ByteBufInputStream input) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void write18(ByteBufOutputStream output) {
+	public void write17(ByteBufOutputStream output) {
 		// TODO Auto-generated method stub
 
 	}

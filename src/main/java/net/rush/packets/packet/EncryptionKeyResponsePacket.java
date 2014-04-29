@@ -2,12 +2,10 @@ package net.rush.packets.packet;
 
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
-import lombok.AllArgsConstructor;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
-@AllArgsConstructor
 public class EncryptionKeyResponsePacket extends Packet {
 	@Serialize(type = Type.SHORT, order = 0)
 	private short secretLength;
@@ -64,13 +62,13 @@ public class EncryptionKeyResponsePacket extends Packet {
 	}
 
 	@Override
-	public void read18(ByteBufInputStream input) {
+	public void read17(ByteBufInputStream input) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void write18(ByteBufOutputStream output) {
+	public void write17(ByteBufOutputStream output) {
 		// TODO Auto-generated method stub
 
 	}

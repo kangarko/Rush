@@ -1,25 +1,26 @@
 package net.rush.packets.packet;
 
-import java.io.IOException;
-
-import org.json.simple.JSONObject;
-
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
+import com.google.gson.Gson;
+
 public class KickPacket extends Packet {
 	@Serialize(type = Type.STRING, order = 0)
 	private String reason;
-
+	
 	public KickPacket() {
 	}
 
 	public KickPacket(String reason) {
 		super();
-		this.reason = reason;
+		this.reason = new Gson().toJson(reason);
 	}
 
 	public int getOpcode() {
@@ -35,14 +36,12 @@ public class KickPacket extends Packet {
 	}
 
 	@Override
-	public void read18(ByteBufInputStream input) throws IOException {
+	public void read17(ByteBufInputStream input) throws IOException {
 		readString18(input, 256, false);
 	}
 
 	@Override
-	public void write18(ByteBufOutputStream output) throws IOException {
-		JSONObject json = new JSONObject();
-		json.put("text", reason);
-		writeString(json.toJSONString(), output, false);
+	public void write17(ByteBufOutputStream output) throws IOException {
+		writeString(reason, output, false);
 	}
 }

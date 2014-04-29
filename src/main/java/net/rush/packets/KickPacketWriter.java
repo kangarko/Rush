@@ -11,10 +11,5 @@ public class KickPacketWriter extends MessageToByteEncoder<String> {
 	protected void encode(ChannelHandlerContext ctx, String msg, ByteBuf out) throws Exception {
 		out.writeByte(255); // packet ID - 0xFF = KickPacket
 		ByteBufUtils.writeString(out, msg);
-		/*
-		out.writeShort(msg.length());
-		for (char c : msg.toCharArray())
-			out.writeChar(c);
-		*/
 	}
 }

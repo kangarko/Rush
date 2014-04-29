@@ -7,13 +7,12 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import net.rush.packets.Packet;
 import net.rush.packets.misc.Protocol;
 import net.rush.packets.packet.PacketLoginSuccess;
-import net.rush.packets.serialization.SerializationPacketSender;
 
 public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
 	private Protocol protocol;
 
-	private SerializationPacketSender<Packet> sender = new SerializationPacketSender<Packet>();
+	//private SerializationPacketSender<Packet> sender = new SerializationPacketSender<Packet>();
 	
 	public PacketEncoder(Protocol prot) {
 		this.protocol = prot;
@@ -30,8 +29,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
 		ByteBufOutputStream outS = new ByteBufOutputStream(out);
 
-		packet.write18(outS);
-		System.out.println("writing packet: " + packet);
+		packet.write17(outS);
 		
 		//sender.send(outS, packet);
 

@@ -58,6 +58,10 @@
       <id>mvn-repo</id>
       <url>http://mvnrepository.com/artifact</url>
     </repository>
+    <repository>
+      <id>netty-repo</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
