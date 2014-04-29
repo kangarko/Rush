@@ -1,14 +1,12 @@
 package net.rush.packets.handler;
 
-import org.bukkit.ChatColor;
-
 import net.rush.model.Player;
 import net.rush.net.Session;
 import net.rush.packets.misc.ServerPing;
 import net.rush.packets.packet.KickPacket;
 import net.rush.packets.packet.PacketStatusRequest;
 
-import com.google.gson.Gson;
+import org.bukkit.ChatColor;
 
 /**
  * A {@link PacketHandler} which disconnects clients when they send a
@@ -25,8 +23,7 @@ public final class PacketStatusRequestHandler extends PacketHandler<PacketStatus
 				session.getServer().getProperties().motd + "\n" + ChatColor.GREEN + "You are displaying Rush on " + session.getClientVersion().toString(), 
 				session.getServer().getProperties().favicon);
 
-		session.send(new KickPacket(new Gson().toJson(response)));
+		session.send(new KickPacket(response));
 	}
 
 }
-

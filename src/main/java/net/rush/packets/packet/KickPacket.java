@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBufOutputStream;
 import java.io.IOException;
 
 import net.rush.packets.Packet;
+import net.rush.packets.misc.ServerPing;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
@@ -15,12 +16,19 @@ public class KickPacket extends Packet {
 	@Serialize(type = Type.STRING, order = 0)
 	private String reason;
 	
+	private Gson gson = new Gson();
+	private boolean jsonize = true;
+	
 	public KickPacket() {
 	}
 
 	public KickPacket(String reason) {
-		super();
-		this.reason = new Gson().toJson(reason);
+		this.reason = reason;
+	}
+	
+	public KickPacket(ServerPing ping) {
+		this.reason = gson.toJson(ping);
+		jsonize = false;
 	}
 
 	public int getOpcode() {
@@ -42,6 +50,6 @@ public class KickPacket extends Packet {
 
 	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {
-		writeString(reason, output, false);
+		writeString(jsonize ? gson.toJson(reason) : reason, output, false);
 	}
 }
