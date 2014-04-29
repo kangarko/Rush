@@ -1,24 +1,30 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class BlockActionPacket extends Packet {
-	@Serialize(type = Type.INT, order = 0)
-	private final int x;
-	@Serialize(type = Type.SHORT, order = 1)
-	private final short y;
-	@Serialize(type = Type.INT, order = 2)
-	private final int z;
-	@Serialize(type = Type.BYTE, order = 3)
-	private final byte byte1;
-	@Serialize(type = Type.BYTE, order = 4)
-	private final byte byte2;
-	@Serialize(type = Type.SHORT, order = 5)
-	private final short blockId;
+	public BlockActionPacket() {
+	}
 
-	public BlockActionPacket(int x, short y, int z, byte byte1, byte byte2, short blockId) {
+	@Serialize(type = Type.INT, order = 0)
+	private int x;
+	@Serialize(type = Type.SHORT, order = 1)
+	private short y;
+	@Serialize(type = Type.INT, order = 2)
+	private int z;
+	@Serialize(type = Type.BYTE, order = 3)
+	private byte byte1;
+	@Serialize(type = Type.BYTE, order = 4)
+	private byte byte2;
+	@Serialize(type = Type.SHORT, order = 5)
+	private short blockId;
+
+	public BlockActionPacket(int x, short y, int z, byte byte1, byte byte2,
+			short blockId) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -57,6 +63,20 @@ public class BlockActionPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("x=\"%d\",y=\"%d\",z=\"%d\",byte1=\"%d\",byte2=\"%d\", blockId=\"%d\"", x, y, z, byte1, byte2, blockId);
+		return String
+				.format("x=\"%d\",y=\"%d\",z=\"%d\",byte1=\"%d\",byte2=\"%d\", blockId=\"%d\"",
+						x, y, z, byte1, byte2, blockId);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

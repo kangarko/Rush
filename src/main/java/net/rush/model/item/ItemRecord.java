@@ -20,10 +20,6 @@ public class ItemRecord extends Item {
 		records.put(recordName, this);
 	}
 
-	/**
-	 * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
-	 * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
-	 */
 	@Override
 	public boolean onItemUse(ItemStack item, Player player, World world, int x, int y, int z, int side, float par8, float par9, float par10) {
 		/*if (world.getTypeId(x, y, z) == Block.JUKEBOX.id && world.getBlockData(x, y, z) == 0) {

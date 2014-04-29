@@ -1,20 +1,27 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class ItemDataPacket extends Packet {
-	@Serialize(type = Type.SHORT, order = 0)
-	private final short itemType;
-	@Serialize(type = Type.SHORT, order = 1)
-	private final short itemId;
-	@Serialize(type = Type.SHORT, order = 2)
-	private final byte dataLength;
-	@Serialize(type = Type.BYTE_ARRAY, order = 3, moreInfo = 2)
-	private final byte[] data;
+	public ItemDataPacket() {
+		// TODO Auto-generated constructor stub
+	}
 
-	public ItemDataPacket(short itemType, short itemId, byte dataLength, byte[] data) {
+	@Serialize(type = Type.SHORT, order = 0)
+	private short itemType;
+	@Serialize(type = Type.SHORT, order = 1)
+	private short itemId;
+	@Serialize(type = Type.SHORT, order = 2)
+	private byte dataLength;
+	@Serialize(type = Type.BYTE_ARRAY, order = 3, moreInfo = 2)
+	private byte[] data;
+
+	public ItemDataPacket(short itemType, short itemId, byte dataLength,
+			byte[] data) {
 		super();
 		this.itemType = itemType;
 		this.itemId = itemId;
@@ -43,6 +50,20 @@ public class ItemDataPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("itemType=\"%d\",itemId=\"%d\",dataLength=\"%d\",data=byte[%d]", itemType, itemId, dataLength, data.length);
+		return String
+				.format("itemType=\"%d\",itemId=\"%d\",dataLength=\"%d\",data=byte[%d]",
+						itemType, itemId, dataLength, data.length);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

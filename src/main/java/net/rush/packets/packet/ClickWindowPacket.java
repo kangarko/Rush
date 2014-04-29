@@ -1,25 +1,32 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.model.ItemStack;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class ClickWindowPacket extends Packet {
-	@Serialize(type = Type.BYTE, order = 0)
-	private final byte windowId;
-	@Serialize(type = Type.SHORT, order = 1)
-	private final short slot;
-	@Serialize(type = Type.BYTE, order = 2)
-	private final byte rightClick;
-	@Serialize(type = Type.SHORT, order = 3)
-	private final short action;
-	@Serialize(type = Type.BOOL, order = 4)
-	private final boolean shiftHold;
-	@Serialize(type = Type.ITEM, order = 5)
-	private final ItemStack clickedItem;
+	public ClickWindowPacket() {
+		// TODO Auto-generated constructor stub
+	}
 
-	public ClickWindowPacket(byte windowId, short slot, byte rightClick, short action, boolean shiftHold, ItemStack clickedItem) {
+	@Serialize(type = Type.BYTE, order = 0)
+	private byte windowId;
+	@Serialize(type = Type.SHORT, order = 1)
+	private short slot;
+	@Serialize(type = Type.BYTE, order = 2)
+	private byte rightClick;
+	@Serialize(type = Type.SHORT, order = 3)
+	private short action;
+	@Serialize(type = Type.BOOL, order = 4)
+	private boolean shiftHold;
+	@Serialize(type = Type.ITEM, order = 5)
+	private ItemStack clickedItem;
+
+	public ClickWindowPacket(byte windowId, short slot, byte rightClick,
+			short action, boolean shiftHold, ItemStack clickedItem) {
 		super();
 		this.windowId = windowId;
 		this.slot = slot;
@@ -58,6 +65,21 @@ public class ClickWindowPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("windowId=\"%d\",slot=\"%d\",rightClick=\"%d\",action=\"%d\"," + "shiftHold=\"%b\",clickedItem=\"%s\"", windowId, slot, rightClick, action, shiftHold, clickedItem);
+		return String.format(
+				"windowId=\"%d\",slot=\"%d\",rightClick=\"%d\",action=\"%d\","
+						+ "shiftHold=\"%b\",clickedItem=\"%s\"", windowId,
+				slot, rightClick, action, shiftHold, clickedItem);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

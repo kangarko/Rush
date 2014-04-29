@@ -15,7 +15,6 @@ public class SerializationPacketHandler<T extends Packet> {
 
 	public T handle(ByteBufInputStream in, Class<T> type) {
 		try {
-			// type = getImplVersion TODO make sure it works without it
 			List<SerializationInfo> serInfos = getSerializationInfos(type);
 			Object[] params = new Object[serInfos.size()];
 			Class<?>[] paramTypes = new Class<?>[serInfos.size()];

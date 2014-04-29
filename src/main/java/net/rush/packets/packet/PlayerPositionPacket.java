@@ -1,22 +1,29 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class PlayerPositionPacket extends Packet {
-	@Serialize(type = Type.DOUBLE, order = 0)
-	private final double x;
-	@Serialize(type = Type.DOUBLE, order = 1)
-	private final double y;
-	@Serialize(type = Type.DOUBLE, order = 2)
-	private final double stance;
-	@Serialize(type = Type.DOUBLE, order = 3)
-	private final double z;
-	@Serialize(type = Type.BOOL, order = 4)
-	private final boolean onGround;
+	public PlayerPositionPacket() {
+		// TODO Auto-generated constructor stub
+	}
 
-	public PlayerPositionPacket(double x, double y, double stance, double z, boolean onGround) {
+	@Serialize(type = Type.DOUBLE, order = 0)
+	private double x;
+	@Serialize(type = Type.DOUBLE, order = 1)
+	private double y;
+	@Serialize(type = Type.DOUBLE, order = 2)
+	private double stance;
+	@Serialize(type = Type.DOUBLE, order = 3)
+	private double z;
+	@Serialize(type = Type.BOOL, order = 4)
+	private boolean onGround;
+
+	public PlayerPositionPacket(double x, double y, double stance, double z,
+			boolean onGround) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -50,6 +57,20 @@ public class PlayerPositionPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("x=\"%f\",y=\"%f\",stance=\"%f\",z=\"%f\",onGround=\"%b\"", x, y, stance, z, onGround);
+		return String.format(
+				"x=\"%f\",y=\"%f\",stance=\"%f\",z=\"%f\",onGround=\"%b\"", x,
+				y, stance, z, onGround);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

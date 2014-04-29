@@ -1,38 +1,50 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.model.Position;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SpawnObjectPacket extends Packet {
+	public SpawnObjectPacket() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Serialize(type = Type.INT, order = 0)
-	private final int entityId;
+	private int entityId;
 	@Serialize(type = Type.BYTE, order = 1)
-	private final byte type;
+	private byte type;
 	@Serialize(type = Type.INT, order = 2)
-	private final int x;
+	private int x;
 	@Serialize(type = Type.INT, order = 3)
-	private final int y;
+	private int y;
 	@Serialize(type = Type.INT, order = 4)
-	private final int z;
+	private int z;
 	@Serialize(type = Type.BYTE, order = 5)
-	private final byte pitch;
+	private byte pitch;
 	@Serialize(type = Type.BYTE, order = 6)
-	private final byte yaw;
+	private byte yaw;
 	@Serialize(type = Type.INT, order = 7)
-	private final int integer;
+	private int integer;
 
-	/* Unused yet. If the number of "integer" isn´t 0 than following will also be send:
-	@Serialize(type = Type.SHORT, order = 8) // FIXME is it SHORT or CONDITIONAL SHORT? In notchian server the datainput read it as a short so I dunno.
-	private final short speedZ;
-	@Serialize(type = Type.SHORT, order = 9)
-	private final short speedY;
-	@Serialize(type = Type.SHORT, order = 10)
-	private final short shortspeedZ;
-	*/
+	/*
+	 * Unused yet. If the number of "integer" isn´t 0 than following will also
+	 * be send:
+	 * 
+	 * @Serialize(type = Type.SHORT, order = 8) // FIXME is it SHORT or
+	 * CONDITIONAL SHORT? In notchian server the datainput read it as a short so
+	 * I dunno. private short speedZ;
+	 * 
+	 * @Serialize(type = Type.SHORT, order = 9) private short speedY;
+	 * 
+	 * @Serialize(type = Type.SHORT, order = 10) private short
+	 * shortspeedZ;
+	 */
 
-	public SpawnObjectPacket(int entityId, byte type, Position pos, byte pitch, byte yaw) {
+	public SpawnObjectPacket(int entityId, byte type, Position pos, byte pitch,
+			byte yaw) {
 		super();
 		this.entityId = entityId;
 		this.type = type;
@@ -81,6 +93,21 @@ public class SpawnObjectPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",type=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",fireballThrower=\"%d\"," + "fireballSpeedX=\"%d\",fireballSpeedY=\"%d\",fireballSpeedZ=\"%d\"", entityId, type, x, y, z);
+		return String
+				.format("entityId=\"%d\",type=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",fireballThrower=\"%d\","
+						+ "fireballSpeedX=\"%d\",fireballSpeedY=\"%d\",fireballSpeedZ=\"%d\"",
+						entityId, type, x, y, z);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -11,6 +11,8 @@ import net.rush.packets.packet.HandshakePacket;
 import net.rush.packets.packet.HeldItemChangePacket;
 import net.rush.packets.packet.KeepAlivePacket;
 import net.rush.packets.packet.KickPacket;
+import net.rush.packets.packet.PacketLoginRequest;
+import net.rush.packets.packet.PacketStatusRequest;
 import net.rush.packets.packet.PlayerBlockPlacementPacket;
 import net.rush.packets.packet.PlayerDiggingPacket;
 import net.rush.packets.packet.PlayerLookPacket;
@@ -51,6 +53,9 @@ public final class HandlerLookupService {
 			bind(PluginMessagePacket.class, PluginMessagePacketHandler.class);
 			bind(HeldItemChangePacket.class, HeldItemChangePacketHandler.class);
 			bind(ServerListPingPacket.class, ServerListPingPacketHandler.class);
+			// 1.7
+			bind(PacketStatusRequest.class, PacketStatusRequestHandler.class);
+			bind(PacketLoginRequest.class, LoginRequestPacketHandler.class);
 		} catch (Exception ex) {
 			throw new ExceptionInInitializerError(ex);
 		}

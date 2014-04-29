@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.model.Position;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
@@ -7,32 +9,38 @@ import net.rush.packets.serialization.Type;
 import net.rush.util.Parameter;
 
 public class SpawnMobPacket extends Packet {
-	@Serialize(type = Type.INT, order = 0)
-	private final int entityId;
-	@Serialize(type = Type.BYTE, order = 1)
-	private final byte entityType;
-	@Serialize(type = Type.INT, order = 2)
-	private final int x;
-	@Serialize(type = Type.INT, order = 3)
-	private final int y;
-	@Serialize(type = Type.INT, order = 4)
-	private final int z;
-	@Serialize(type = Type.BYTE, order = 5)
-	private final byte yaw;
-	@Serialize(type = Type.BYTE, order = 6)
-	private final byte pitch;
-	@Serialize(type = Type.BYTE, order = 7)
-	private final byte headYaw;
-	@Serialize(type = Type.SHORT, order = 8)
-	private final short velocityX;
-	@Serialize(type = Type.SHORT, order = 9)
-	private final short velocityY;
-	@Serialize(type = Type.SHORT, order = 10)
-	private final short velocityZ;
-	@Serialize(type = Type.ENTITY_METADATA, order = 11)
-	private final Parameter<?>[] metadata;
+	public SpawnMobPacket() {
+		// TODO Auto-generated constructor stub
+	}
 
-	public SpawnMobPacket(int entityId, byte entityType, Position pos, byte yaw, byte pitch, byte headYaw, Position velocity, Parameter<?>[] metadata) {
+	@Serialize(type = Type.INT, order = 0)
+	private int entityId;
+	@Serialize(type = Type.BYTE, order = 1)
+	private byte entityType;
+	@Serialize(type = Type.INT, order = 2)
+	private int x;
+	@Serialize(type = Type.INT, order = 3)
+	private int y;
+	@Serialize(type = Type.INT, order = 4)
+	private int z;
+	@Serialize(type = Type.BYTE, order = 5)
+	private byte yaw;
+	@Serialize(type = Type.BYTE, order = 6)
+	private byte pitch;
+	@Serialize(type = Type.BYTE, order = 7)
+	private byte headYaw;
+	@Serialize(type = Type.SHORT, order = 8)
+	private short velocityX;
+	@Serialize(type = Type.SHORT, order = 9)
+	private short velocityY;
+	@Serialize(type = Type.SHORT, order = 10)
+	private short velocityZ;
+	@Serialize(type = Type.ENTITY_METADATA, order = 11)
+	private Parameter<?>[] metadata;
+
+	public SpawnMobPacket(int entityId, byte entityType, Position pos,
+			byte yaw, byte pitch, byte headYaw, Position velocity,
+			Parameter<?>[] metadata) {
 		super();
 		this.entityId = entityId;
 		this.entityType = entityType;
@@ -101,6 +109,22 @@ public class SpawnMobPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",entityType=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\"," + "yaw=\"%d\",pitch=\"%d\",headYaw=\"%d\",metadata=\"%s\"", entityId, entityType, x, y, z, yaw, pitch, headYaw, metadata);
+		return String
+				.format("entityId=\"%d\",entityType=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\","
+						+ "yaw=\"%d\",pitch=\"%d\",headYaw=\"%d\",metadata=\"%s\"",
+						entityId, entityType, x, y, z, yaw, pitch, headYaw,
+						metadata);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

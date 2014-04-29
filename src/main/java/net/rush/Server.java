@@ -32,10 +32,10 @@ import net.rush.net.PacketDecoder;
 import net.rush.net.PacketEncoder;
 import net.rush.net.Session;
 import net.rush.net.SessionRegistry;
-import net.rush.packets.KickStringWriter;
+import net.rush.packets.KickPacketWriter;
 import net.rush.packets.Varint21FrameDecoder;
 import net.rush.packets.Varint21LengthFieldPrepender;
-import net.rush.packets.legacy.LegacyCompatDecoder;
+import net.rush.packets.legacy.CompatChecker;
 import net.rush.packets.legacy.LegacyCompatProvider;
 import net.rush.packets.legacy.LegacyDecoder;
 import net.rush.packets.legacy.LegacyEncoder;
@@ -258,27 +258,27 @@ public final class Server {
 
 						ch.config().setOption(ChannelOption.IP_TOS, 0x18);
 						ch.config().setOption(ChannelOption.TCP_NODELAY, false);
-						
+
 						ch.pipeline().addLast("timer", new ReadTimeoutHandler(30));
-						
-						if(LegacyCompatProvider.isProvidingCompat(ch.remoteAddress())) {
+
+						/*if(LegacyCompatProvider.isProvidingCompat(ch.remoteAddress())) {
 							ch.pipeline()
 							.addLast("decoder", new LegacyDecoder())
 							.addLast("encoder", new LegacyEncoder()) // own
 							.addLast("manager", new MinecraftHandler(server, true));
-						} else {
+						} else {*/
 							ch.pipeline()
-							.addLast("old", new KickStringWriter())
-							.addLast("legacy", new LegacyCompatDecoder())
-							
+							.addLast("old", new KickPacketWriter())
+							.addLast("legacy", new CompatChecker())
+
 							.addLast("lengthdecoder", new Varint21FrameDecoder())
 							.addLast("decoder", new PacketDecoder(Protocol.HANDSHAKE))
-							
+
 							.addLast("lengthencoder", new Varint21LengthFieldPrepender())
 							.addLast("packetencoder", new PacketEncoder(Protocol.HANDSHAKE))
-							
+
 							.addLast("manager", new MinecraftHandler(server, false));
-						}
+						//}
 
 						//ch.pipeline()
 

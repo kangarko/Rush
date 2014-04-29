@@ -106,8 +106,8 @@ public class ServerProperties {
 		if(online) {
 			logger.warning("* ! * ! * ! * ! * ! * ! * ! * ! * ! * !");
 			logger.warning("Online mode is currently unavailable!");
-			logger.warning("* ! * ! * ! * ! * ! * ! * ! * ! * ! * !");
 			set("online-mode", false);
+			online = false;
 		}
 		return online;
 	}

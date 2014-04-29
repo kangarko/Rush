@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -16,9 +18,11 @@ public class EncryptionKeyRequestPacket extends Packet {
 	@Serialize(type = Type.BYTE_ARRAY, order = 4)
 	private byte[] verifyToken;
 
-	public EncryptionKeyRequestPacket() {}
-	
-	public EncryptionKeyRequestPacket(String serverId, short publicKeyLength, byte[] publicKey, short verifyTokenLength, byte[] verifyToken) {
+	public EncryptionKeyRequestPacket() {
+	}
+
+	public EncryptionKeyRequestPacket(String serverId, short publicKeyLength,
+			byte[] publicKey, short verifyTokenLength, byte[] verifyToken) {
 		super();
 		this.serverId = serverId;
 		this.publicKeyLength = publicKeyLength;
@@ -53,5 +57,17 @@ public class EncryptionKeyRequestPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("reason=\"%s\"", serverId);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

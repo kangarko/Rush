@@ -3,14 +3,81 @@ package net.rush.packets.misc;
 import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
 import net.rush.packets.Packet;
+import net.rush.packets.packet.AnimationPacket;
+import net.rush.packets.packet.AttachEntityPacket;
+import net.rush.packets.packet.BlockActionPacket;
+import net.rush.packets.packet.BlockBreakAnimationPacket;
+import net.rush.packets.packet.BlockChangePacket;
+import net.rush.packets.packet.ChangeGameStatePacket;
+import net.rush.packets.packet.ChatPacket;
+import net.rush.packets.packet.ClickWindowPacket;
+import net.rush.packets.packet.ClientSettingsPacket;
+import net.rush.packets.packet.ClientStatusPacket;
+import net.rush.packets.packet.CloseWindowPacket;
+import net.rush.packets.packet.ConfirmTransactionPacket;
+import net.rush.packets.packet.CreativeInventoryActionPacket;
+import net.rush.packets.packet.DestroyEntityPacket;
+import net.rush.packets.packet.EnchantItemPacket;
+import net.rush.packets.packet.EntityActionPacket;
+import net.rush.packets.packet.EntityEffectPacket;
+import net.rush.packets.packet.EntityEquipmentPacket;
+import net.rush.packets.packet.EntityExistsPacket;
+import net.rush.packets.packet.EntityHeadLookPacket;
+import net.rush.packets.packet.EntityLookAndRelMovePacket;
+import net.rush.packets.packet.EntityLookPacket;
+import net.rush.packets.packet.EntityMetadataPacket;
+import net.rush.packets.packet.EntityRelMovePacket;
+import net.rush.packets.packet.EntityStatusPacket;
+import net.rush.packets.packet.EntityTeleportPacket;
+import net.rush.packets.packet.EntityVelocityPacket;
+import net.rush.packets.packet.ExplosionPacket;
 import net.rush.packets.packet.HandshakePacket;
+import net.rush.packets.packet.HeldItemChangePacket;
+import net.rush.packets.packet.ItemCollectPacket;
+import net.rush.packets.packet.ItemDataPacket;
 import net.rush.packets.packet.KeepAlivePacket;
 import net.rush.packets.packet.KickPacket;
 import net.rush.packets.packet.LoginPacket;
+import net.rush.packets.packet.MapChunkPacket;
+import net.rush.packets.packet.MultiBlockChangePacket;
+import net.rush.packets.packet.NamedEntitySpawnPacket;
+import net.rush.packets.packet.NamedSoundEffectPacket;
+import net.rush.packets.packet.OpenWindowPacket;
 import net.rush.packets.packet.PacketLoginRequest;
 import net.rush.packets.packet.PacketLoginSuccess;
 import net.rush.packets.packet.PacketPingTime;
 import net.rush.packets.packet.PacketStatusRequest;
+import net.rush.packets.packet.PlayerAbilitiesPacket;
+import net.rush.packets.packet.PlayerBlockPlacementPacket;
+import net.rush.packets.packet.PlayerDiggingPacket;
+import net.rush.packets.packet.PlayerListItemPacket;
+import net.rush.packets.packet.PlayerLookPacket;
+import net.rush.packets.packet.PlayerOnGroundPacket;
+import net.rush.packets.packet.PlayerPositionAndLookPacket;
+import net.rush.packets.packet.PlayerPositionPacket;
+import net.rush.packets.packet.PlayerRespawnPacket;
+import net.rush.packets.packet.PluginMessagePacket;
+import net.rush.packets.packet.PreChunkPacket;
+import net.rush.packets.packet.RemoveEntityEffectPacket;
+import net.rush.packets.packet.SetExperiencePacket;
+import net.rush.packets.packet.SetSlotPacket;
+import net.rush.packets.packet.SetWindowItemsPacket;
+import net.rush.packets.packet.SoundOrParticleEffectPacket;
+import net.rush.packets.packet.SpawnExperienceOrbPacket;
+import net.rush.packets.packet.SpawnMobPacket;
+import net.rush.packets.packet.SpawnObjectPacket;
+import net.rush.packets.packet.SpawnPaintingPacket;
+import net.rush.packets.packet.SpawnPositionPacket;
+import net.rush.packets.packet.SteerVehiclePacket;
+import net.rush.packets.packet.TabCompletePacket;
+import net.rush.packets.packet.ThunderboltPacket;
+import net.rush.packets.packet.TimeUpdatePacket;
+import net.rush.packets.packet.UpdateHealthPacket;
+import net.rush.packets.packet.UpdateSignPacket;
+import net.rush.packets.packet.UpdateTileEntityPacket;
+import net.rush.packets.packet.UpdateWindowPropertyPacket;
+import net.rush.packets.packet.UseBedPacket;
+import net.rush.packets.packet.UseEntityPacket;
 
 import com.google.common.base.Preconditions;
 
@@ -29,7 +96,7 @@ public enum Protocol {
 		{
 			TO_CLIENT.registerPacket(0x00, KeepAlivePacket.class);
 			TO_CLIENT.registerPacket(0x01, LoginPacket.class);
-			/*TO_CLIENT.registerPacket(0x02, ChatPacket.class);
+			TO_CLIENT.registerPacket(0x02, ChatPacket.class);
 			TO_CLIENT.registerPacket(0x03, TimeUpdatePacket.class);
 			TO_CLIENT.registerPacket(0x04, EntityEquipmentPacket.class);
 			TO_CLIENT.registerPacket(0x05, SpawnPositionPacket.class);
@@ -90,11 +157,11 @@ public enum Protocol {
 			//TO_CLIENT.registerPacket(0x3C, Packet207SetScoreboardScore.class);
 			//TO_CLIENT.registerPacket(0x3D, Packet208SetScoreboardDisplayObjective.class);
 			//TO_CLIENT.registerPacket(0x3E, Packet209SetScoreboardTeam.class);
-			TO_CLIENT.registerPacket(0x3F, PluginMessagePacket.class);*/
+			TO_CLIENT.registerPacket(0x3F, PluginMessagePacket.class);
 			TO_CLIENT.registerPacket(0x40, KickPacket.class);
 
 			TO_SERVER.registerPacket(0x00, KeepAlivePacket.class);
-			/*TO_SERVER.registerPacket(0x01, ChatPacket.class);
+			TO_SERVER.registerPacket(0x01, ChatPacket.class);
 			TO_SERVER.registerPacket(0x02, UseEntityPacket.class);
 			TO_SERVER.registerPacket(0x03, PlayerOnGroundPacket.class);
 			TO_SERVER.registerPacket(0x04, PlayerPositionPacket.class);
@@ -116,7 +183,7 @@ public enum Protocol {
 			TO_SERVER.registerPacket(0x14, TabCompletePacket.class);
 			TO_SERVER.registerPacket(0x15, ClientSettingsPacket.class);
 			TO_SERVER.registerPacket(0x16, ClientStatusPacket.class);
-			TO_SERVER.registerPacket(0x17, PluginMessagePacket.class)*/;
+			TO_SERVER.registerPacket(0x17, PluginMessagePacket.class);
 
 		}
 	},

@@ -1,26 +1,33 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class PlayerPositionAndLookPacket extends Packet {
-	@Serialize(type = Type.DOUBLE, order = 0)
-	private final double x;
-	@Serialize(type = Type.DOUBLE, order = 1)
-	private final double yOrStance;
-	@Serialize(type = Type.DOUBLE, order = 2)
-	private final double stanceOrY;
-	@Serialize(type = Type.DOUBLE, order = 3)
-	private final double z;
-	@Serialize(type = Type.FLOAT, order = 4)
-	private final float yaw;
-	@Serialize(type = Type.FLOAT, order = 5)
-	private final float pitch;
-	@Serialize(type = Type.BOOL, order = 6)
-	private final boolean onGround;
+	public PlayerPositionAndLookPacket() {
+		// TODO Auto-generated constructor stub
+	}
 
-	public PlayerPositionAndLookPacket(double x, double yOrStance, double stanceOrY, double z, float yaw, float pitch, boolean onGround) {
+	@Serialize(type = Type.DOUBLE, order = 0)
+	private double x;
+	@Serialize(type = Type.DOUBLE, order = 1)
+	private double yOrStance;
+	@Serialize(type = Type.DOUBLE, order = 2)
+	private double stanceOrY;
+	@Serialize(type = Type.DOUBLE, order = 3)
+	private double z;
+	@Serialize(type = Type.FLOAT, order = 4)
+	private float yaw;
+	@Serialize(type = Type.FLOAT, order = 5)
+	private float pitch;
+	@Serialize(type = Type.BOOL, order = 6)
+	private boolean onGround;
+
+	public PlayerPositionAndLookPacket(double x, double yOrStance,
+			double stanceOrY, double z, float yaw, float pitch, boolean onGround) {
 		super();
 		this.x = x;
 		this.yOrStance = yOrStance;
@@ -64,6 +71,21 @@ public class PlayerPositionAndLookPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("x=\"%f\",yOrStance=\"%f\",stanceOrY=\"%f\",z=\"%f\"," + "yaw=\"%f\",pitch=\"%f\",onGround=\"%b\"", x, yOrStance, stanceOrY, z, yaw, pitch, onGround);
+		return String.format(
+				"x=\"%f\",yOrStance=\"%f\",stanceOrY=\"%f\",z=\"%f\","
+						+ "yaw=\"%f\",pitch=\"%f\",onGround=\"%b\"", x,
+				yOrStance, stanceOrY, z, yaw, pitch, onGround);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

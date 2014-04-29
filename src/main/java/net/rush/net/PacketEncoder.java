@@ -30,9 +30,10 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
 		ByteBufOutputStream outS = new ByteBufOutputStream(out);
 
-		//msg.a(outS);
-
-		sender.send(outS, packet);
+		packet.write18(outS);
+		System.out.println("writing packet: " + packet);
+		
+		//sender.send(outS, packet);
 
 		if (packet instanceof PacketLoginSuccess)
 			setProtocol(ctx, Protocol.GAME);

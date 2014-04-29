@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import lombok.AllArgsConstructor;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
@@ -8,13 +10,13 @@ import net.rush.packets.serialization.Type;
 @AllArgsConstructor
 public class EncryptionKeyResponsePacket extends Packet {
 	@Serialize(type = Type.SHORT, order = 0)
-	private final short secretLength;
+	private short secretLength;
 	@Serialize(type = Type.BYTE_ARRAY, order = 1)
-	private final byte[] secret;
+	private byte[] secret;
 	@Serialize(type = Type.SHORT, order = 2)
-	private final short verifyTokenLength;
+	private short verifyTokenLength;
 	@Serialize(type = Type.BYTE_ARRAY, order = 3)
-	private final byte[] verifyTokenResponse;
+	private byte[] verifyTokenResponse;
 
 	/**
 	 * Empty payload.
@@ -27,7 +29,8 @@ public class EncryptionKeyResponsePacket extends Packet {
 		verifyTokenResponse = new byte[] {};
 	}
 
-	public EncryptionKeyResponsePacket(short secretLength, byte[] secret, short verifyTokenLength, byte[] verifyTokenResponse) {
+	public EncryptionKeyResponsePacket(short secretLength, byte[] secret,
+			short verifyTokenLength, byte[] verifyTokenResponse) {
 		super();
 		this.secretLength = secretLength;
 		this.secret = secret;
@@ -56,6 +59,19 @@ public class EncryptionKeyResponsePacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("reason=\"%a,%b,%c,%d\"", secretLength, secret, verifyTokenLength, verifyTokenResponse);
+		return String.format("reason=\"%a,%b,%c,%d\"", secretLength, secret,
+				verifyTokenLength, verifyTokenResponse);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -1,32 +1,41 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class NamedSoundEffectPacket extends Packet {
+	public NamedSoundEffectPacket() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Serialize(type = Type.STRING, order = 0)
-	private final String soundName;
+	private String soundName;
 	@Serialize(type = Type.INT, order = 1)
-	private final int x;
+	private int x;
 	@Serialize(type = Type.INT, order = 2)
-	private final int y;
+	private int y;
 	@Serialize(type = Type.INT, order = 3)
-	private final int z;
+	private int z;
 	@Serialize(type = Type.FLOAT, order = 4)
-	private final float volume;
+	private float volume;
 	@Serialize(type = Type.BYTE, order = 5)
-	private final byte pitch;
+	private byte pitch;
 
-	public NamedSoundEffectPacket(String soundName, double x, double y, double z, float volume, float pitch) {
-		super();		
-		
-		if (pitch < 0)
+	public NamedSoundEffectPacket(String soundName, double x, double y,
+			double z, float volume, float pitch) {
+		super();
+
+		if (pitch < 0) {
 			pitch = 0;
+		}
 
-		if (pitch > 255)
+		if (pitch > 255) {
 			pitch = 255;
-		
+		}
+
 		this.soundName = soundName;
 		this.x = (int) (x * 8D);
 		this.y = (int) (y * 8D);
@@ -34,7 +43,7 @@ public class NamedSoundEffectPacket extends Packet {
 		this.volume = volume;
 		this.pitch = (byte) (pitch * 63.0F);
 	}
-	
+
 	public int getOpcode() {
 		return 0x3E;
 	}
@@ -64,6 +73,20 @@ public class NamedSoundEffectPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("soundName=\"%s\",x=\"%s\",y=\"%s\",z=\"%s\",volume=\"%s\",pitch=\"%s\"", soundName, x, y, z, volume, pitch);
+		return String
+				.format("soundName=\"%s\",x=\"%s\",y=\"%s\",z=\"%s\",volume=\"%s\",pitch=\"%s\"",
+						soundName, x, y, z, volume, pitch);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

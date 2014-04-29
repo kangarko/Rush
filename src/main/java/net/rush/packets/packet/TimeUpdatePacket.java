@@ -1,14 +1,20 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class TimeUpdatePacket extends Packet {
+	public TimeUpdatePacket() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Serialize(type = Type.LONG, order = 0)
-	private final long worldAge;
+	private long worldAge;
 	@Serialize(type = Type.LONG, order = 1)
-	private final long time;
+	private long time;
 
 	public TimeUpdatePacket(long worldAge, long time) {
 		super();
@@ -30,5 +36,17 @@ public class TimeUpdatePacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("time=\"%d\"", time);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

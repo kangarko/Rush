@@ -1,14 +1,20 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class EntityHeadLookPacket extends Packet {
+	public EntityHeadLookPacket() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Serialize(type = Type.INT, order = 0)
-	private final int entityId;
+	private int entityId;
 	@Serialize(type = Type.BYTE, order = 1)
-	private final byte headYaw;
+	private byte headYaw;
 
 	public EntityHeadLookPacket(int entityId, byte headYaw) {
 		super();
@@ -29,6 +35,19 @@ public class EntityHeadLookPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",headYaw=\"%d\"", entityId, headYaw);
+		return String.format("entityId=\"%d\",headYaw=\"%d\"", entityId,
+				headYaw);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

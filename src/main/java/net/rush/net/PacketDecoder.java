@@ -11,7 +11,7 @@ import java.util.List;
 
 import net.rush.packets.Packet;
 import net.rush.packets.misc.Protocol;
-import net.rush.packets.serialization.SerializationPacketHandler;
+import net.rush.packets.packet.HandshakePacket;
 
 /**
  * Packet decoding class backed by a reusable {@link DataInputStream} which
@@ -30,39 +30,23 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 		this.protocol = protocol;
 	}
 
-	private SerializationPacketHandler<Packet> handler = new SerializationPacketHandler<Packet>();
-	
-	/*@Override
-	protected void decodeLast(ChannelHandlerContext ctx, Object in, List out) throws Exception {
-	}*/
-
-	//@SuppressWarnings("unchecked")
 	@Override
-	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List out) throws Exception {
+	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
 		if(in.readableBytes() == 0)
 			return;
-		
-		Protocol.ProtocolDirection dir = protocol.TO_SERVER;
-		
+
+		Protocol.ProtocolDirection dir = protocol.TO_SERVER;		
 		int packetId = Packet.readVarInt(in);
-		
-		//Class<? extends Packet> packetClazz = Packets.lookupPacket(packetId);
-		
 		Class<? extends Packet> packetClazz = dir.createPacket(packetId);
 		
 		if (packetClazz == null)
 			throw new IOException("Unknown operation code: " + packetId + ").");	
 		
 		ByteBufInputStream input = new ByteBufInputStream(in);
+		Packet packet = packetClazz.newInstance();
 		
-		//Packet packet = handler.handle(input, (Class<Packet>) packetClazz);
-		
-		/*out.add(packet);
-		*/
-		System.out.println("decoding packet: " + packetClazz);
-		/*
-		//Packet packet = dir.createPacket(packetId);		
-		//packet.a(inputStream);
+		packet.read18(input);
+		out.add(packet);
 		 
 		if (packet instanceof HandshakePacket) {
 			HandshakePacket handshake = (HandshakePacket) packet;
@@ -75,7 +59,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 					setProtocol(ctx, Protocol.LOGIN);
 					break;
 			}
-		}*/
+		}
 	}
 
 	public void setProtocol(ChannelHandlerContext channel, Protocol prot) {

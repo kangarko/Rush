@@ -1,20 +1,26 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class UseBedPacket extends Packet {
+	public UseBedPacket() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Serialize(type = Type.INT, order = 0)
-	private final int entityId;
+	private int entityId;
 	@Serialize(type = Type.BYTE, order = 1)
-	private final byte unknown_byte_0;
+	private byte unknown_byte_0;
 	@Serialize(type = Type.INT, order = 2)
-	private final int x;
+	private int x;
 	@Serialize(type = Type.BYTE, order = 3)
-	private final byte y;
+	private byte y;
 	@Serialize(type = Type.INT, order = 4)
-	private final int z;
+	private int z;
 
 	public UseBedPacket(int entityId, byte unknown_byte_0, int x, byte y, int z) {
 		super();
@@ -50,6 +56,20 @@ public class UseBedPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",unknown_byte_0=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\"", entityId, unknown_byte_0, x, y, z);
+		return String
+				.format("entityId=\"%d\",unknown_byte_0=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\"",
+						entityId, unknown_byte_0, x, y, z);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

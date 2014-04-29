@@ -1,20 +1,27 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SteerVehiclePacket extends Packet {
-	@Serialize(type = Type.FLOAT, order = 0)
-	private final float sideways;
-	@Serialize(type = Type.FLOAT, order = 1)
-	private final float forward;
-	@Serialize(type = Type.BOOL, order = 2)
-	private final boolean jump;
-	@Serialize(type = Type.BOOL, order = 3)
-	private final boolean unmount;
+	public SteerVehiclePacket() {
+		// TODO Auto-generated constructor stub
+	}
 
-	public SteerVehiclePacket(float sideways, float forward, boolean jump, boolean unmount) {
+	@Serialize(type = Type.FLOAT, order = 0)
+	private float sideways;
+	@Serialize(type = Type.FLOAT, order = 1)
+	private float forward;
+	@Serialize(type = Type.BOOL, order = 2)
+	private boolean jump;
+	@Serialize(type = Type.BOOL, order = 3)
+	private boolean unmount;
+
+	public SteerVehiclePacket(float sideways, float forward, boolean jump,
+			boolean unmount) {
 		super();
 		this.sideways = sideways;
 		this.forward = forward;
@@ -43,6 +50,19 @@ public class SteerVehiclePacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("sideways=%d,forward=%d,jump=%b,unmount=%b", sideways, forward, jump, unmount);
+		return String.format("sideways=%d,forward=%d,jump=%b,unmount=%b",
+				sideways, forward, jump, unmount);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

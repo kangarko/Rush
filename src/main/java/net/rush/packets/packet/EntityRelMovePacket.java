@@ -1,18 +1,20 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class EntityRelMovePacket extends Packet {
 	@Serialize(type = Type.INT, order = 0)
-	private final int entityId;
+	private int entityId;
 	@Serialize(type = Type.BYTE, order = 1)
-	private final byte diffX;
+	private byte diffX;
 	@Serialize(type = Type.BYTE, order = 2)
-	private final byte diffY;
+	private byte diffY;
 	@Serialize(type = Type.BYTE, order = 3)
-	private final byte diffZ;
+	private byte diffZ;
 
 	public EntityRelMovePacket(int entityId, byte diffX, byte diffY, byte diffZ) {
 		super();
@@ -43,6 +45,20 @@ public class EntityRelMovePacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",diffX=\"%d\",diffY=\"%d\",diffZ=\"%d\"", entityId, diffX, diffY, diffZ);
+		return String.format(
+				"entityId=\"%d\",diffX=\"%d\",diffY=\"%d\",diffZ=\"%d\"",
+				entityId, diffX, diffY, diffZ);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -1,16 +1,22 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class UpdateWindowPropertyPacket extends Packet {
+	public UpdateWindowPropertyPacket() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Serialize(type = Type.BYTE, order = 0)
-	private final byte windowId;
+	private byte windowId;
 	@Serialize(type = Type.SHORT, order = 1)
-	private final short property;
+	private short property;
 	@Serialize(type = Type.SHORT, order = 2)
-	private final short value;
+	private short value;
 
 	public UpdateWindowPropertyPacket(byte windowId, short property, short value) {
 		super();
@@ -36,6 +42,19 @@ public class UpdateWindowPropertyPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("windowId=\"%d\",property=\"%d\",value=\"%d\"", windowId, property, value);
+		return String.format("windowId=\"%d\",property=\"%d\",value=\"%d\"",
+				windowId, property, value);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

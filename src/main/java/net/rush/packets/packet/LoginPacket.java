@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -21,13 +23,17 @@ public class LoginPacket extends Packet {
 	@Serialize(type = Type.UNSIGNED_BYTE, order = 6)
 	private int maxPlayers;
 
-	public LoginPacket() {}
-	
-	public LoginPacket(int entityId, String worldType, int gamemode, Dimension dimension, int difficulty, int worldHeight, int maxPlayers) {
-		this(entityId, worldType, (byte) gamemode, dimension.getValue(), (byte) difficulty, worldHeight, maxPlayers);
+	public LoginPacket() {
 	}
 
-	protected LoginPacket(int entityId, String emptyString, byte mode, byte dimension, byte difficulty, int worldHeight, int maxPlayers) {
+	public LoginPacket(int entityId, String worldType, int gamemode,
+			Dimension dimension, int difficulty, int worldHeight, int maxPlayers) {
+		this(entityId, worldType, (byte) gamemode, dimension.getValue(),
+				(byte) difficulty, worldHeight, maxPlayers);
+	}
+
+	protected LoginPacket(int entityId, String emptyString, byte mode,
+			byte dimension, byte difficulty, int worldHeight, int maxPlayers) {
 		super();
 		this.entityId = entityId;
 		worldType = emptyString;
@@ -71,7 +77,22 @@ public class LoginPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",username=\"%s\",levelType=\"%s\"mode=\"%d\"," + "dimension=\"%d\",difficulty=\"%d\",worldHeight=\"%d\",maxPlayers=\"%d\"", 
-				entityId, worldType, mode, dimension, difficulty, worldHeight, maxPlayers);
+		return String
+				.format("entityId=\"%d\",username=\"%s\",levelType=\"%s\"mode=\"%d\","
+						+ "dimension=\"%d\",difficulty=\"%d\",worldHeight=\"%d\",maxPlayers=\"%d\"",
+						entityId, worldType, mode, dimension, difficulty,
+						worldHeight, maxPlayers);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

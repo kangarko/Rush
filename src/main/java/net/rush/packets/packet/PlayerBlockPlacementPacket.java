@@ -1,29 +1,36 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.model.ItemStack;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class PlayerBlockPlacementPacket extends Packet {
-	@Serialize(type = Type.INT, order = 0)
-	private final int x;
-	@Serialize(type = Type.BYTE, order = 1)
-	private final byte y;
-	@Serialize(type = Type.INT, order = 2)
-	private final int z;
-	@Serialize(type = Type.BYTE, order = 3)
-	private final byte direction;
-	@Serialize(type = Type.ITEM, order = 4)
-	private final ItemStack heldItem;
-	@Serialize(type = Type.BYTE, order = 5)
-	private final byte cursorX;
-	@Serialize(type = Type.BYTE, order = 6)
-	private final byte cursorY;
-	@Serialize(type = Type.BYTE, order = 7)
-	private final byte cursorZ;
+	public PlayerBlockPlacementPacket() {
+		// TODO Auto-generated constructor stub
+	}
 
-	public PlayerBlockPlacementPacket(int x, byte y, int z, byte action, ItemStack heldItem, byte cursorX, byte cursorY, byte cursorZ) {
+	@Serialize(type = Type.INT, order = 0)
+	private int x;
+	@Serialize(type = Type.BYTE, order = 1)
+	private byte y;
+	@Serialize(type = Type.INT, order = 2)
+	private int z;
+	@Serialize(type = Type.BYTE, order = 3)
+	private byte direction;
+	@Serialize(type = Type.ITEM, order = 4)
+	private ItemStack heldItem;
+	@Serialize(type = Type.BYTE, order = 5)
+	private byte cursorX;
+	@Serialize(type = Type.BYTE, order = 6)
+	private byte cursorY;
+	@Serialize(type = Type.BYTE, order = 7)
+	private byte cursorZ;
+
+	public PlayerBlockPlacementPacket(int x, byte y, int z, byte action,
+			ItemStack heldItem, byte cursorX, byte cursorY, byte cursorZ) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -72,6 +79,20 @@ public class PlayerBlockPlacementPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("x=\"%d\",y=\"%d\",z=\"%d\",direction=\"%d\",heldItem=\"%s\"", x, y, z, direction, heldItem);
+		return String.format(
+				"x=\"%d\",y=\"%d\",z=\"%d\",direction=\"%d\",heldItem=\"%s\"",
+				x, y, z, direction, heldItem);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

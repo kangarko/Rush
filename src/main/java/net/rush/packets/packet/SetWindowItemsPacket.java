@@ -1,17 +1,23 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.model.ItemStack;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SetWindowItemsPacket extends Packet {
+	public SetWindowItemsPacket() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Serialize(type = Type.BYTE, order = 0)
-	private final byte windowId;
+	private byte windowId;
 	@Serialize(type = Type.SHORT, order = 1)
-	private final short size;
+	private short size;
 	@Serialize(type = Type.ITEM_ARRAY, order = 2, moreInfo = 1)
-	private final ItemStack[] items;
+	private ItemStack[] items;
 
 	public SetWindowItemsPacket(int windowId, int size, ItemStack[] items) {
 		this((byte) windowId, (short) size, items);
@@ -41,6 +47,19 @@ public class SetWindowItemsPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("windowId=\"%d\",size=\"%d\",items=ItemStack[%d]", windowId, size, items.length);
+		return String.format("windowId=\"%d\",size=\"%d\",items=ItemStack[%d]",
+				windowId, size, items.length);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

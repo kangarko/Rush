@@ -1,18 +1,25 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class UseEntityPacket extends Packet {
-	@Serialize(type = Type.INT, order = 0)
-	private final int playerEntityId;
-	@Serialize(type = Type.INT, order = 1)
-	private final int targetEntityId;
-	@Serialize(type = Type.BOOL, order = 2)
-	private final boolean isLeftClick;
+	public UseEntityPacket() {
+		// TODO Auto-generated constructor stub
+	}
 
-	public UseEntityPacket(int playerEntityId, int targetEntityId, boolean isLeftClick) {
+	@Serialize(type = Type.INT, order = 0)
+	private int playerEntityId;
+	@Serialize(type = Type.INT, order = 1)
+	private int targetEntityId;
+	@Serialize(type = Type.BOOL, order = 2)
+	private boolean isLeftClick;
+
+	public UseEntityPacket(int playerEntityId, int targetEntityId,
+			boolean isLeftClick) {
 		super();
 		this.playerEntityId = playerEntityId;
 		this.targetEntityId = targetEntityId;
@@ -36,6 +43,20 @@ public class UseEntityPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("playerEntityId=\"%d\",targetEntityId=\"%d\",isLeftClick=\"%b\"", playerEntityId, targetEntityId, isLeftClick);
+		return String
+				.format("playerEntityId=\"%d\",targetEntityId=\"%d\",isLeftClick=\"%b\"",
+						playerEntityId, targetEntityId, isLeftClick);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

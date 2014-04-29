@@ -1,21 +1,27 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.model.Position;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class BlockBreakAnimationPacket extends Packet {
+	public BlockBreakAnimationPacket() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Serialize(type = Type.INT, order = 0)
-	private final int entityId;
+	private int entityId;
 	@Serialize(type = Type.INT, order = 1)
-	private final int x;
+	private int x;
 	@Serialize(type = Type.INT, order = 2)
-	private final int y;
+	private int y;
 	@Serialize(type = Type.INT, order = 3)
-	private final int z;
+	private int z;
 	@Serialize(type = Type.BYTE, order = 4)
-	private final byte stage;
+	private byte stage;
 
 	public BlockBreakAnimationPacket(int entityId, Position pos, byte stage) {
 		super();
@@ -51,6 +57,19 @@ public class BlockBreakAnimationPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",x=\"%d\",y=%d,z=%d,stage=%d", entityId, x, y, z, stage);
+		return String.format("entityId=\"%d\",x=\"%d\",y=%d,z=%d,stage=%d",
+				entityId, x, y, z, stage);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

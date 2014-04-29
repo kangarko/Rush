@@ -1,25 +1,31 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class PlayerDiggingPacket extends Packet {
 
+	public PlayerDiggingPacket() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public static final int STATE_START_DIGGING = 0;
 	public static final int STATE_DONE_DIGGING = 2;
 	public static final int STATE_DROP_ITEM = 4;
 
 	@Serialize(type = Type.BYTE, order = 0)
-	private final byte status;
+	private byte status;
 	@Serialize(type = Type.INT, order = 1)
-	private final int x;
+	private int x;
 	@Serialize(type = Type.BYTE, order = 2)
-	private final int y;
+	private int y;
 	@Serialize(type = Type.INT, order = 3)
-	private final int z;
+	private int z;
 	@Serialize(type = Type.BYTE, order = 4)
-	private final byte face;
+	private byte face;
 
 	public PlayerDiggingPacket(byte status, int x, byte y, int z, byte face) {
 		super();
@@ -55,6 +61,20 @@ public class PlayerDiggingPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("status=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",face=\"%d\"", status, x, y, z, face);
+		return String.format(
+				"status=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",face=\"%d\"", status,
+				x, y, z, face);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

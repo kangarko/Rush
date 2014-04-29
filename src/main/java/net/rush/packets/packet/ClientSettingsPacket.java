@@ -1,22 +1,29 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class ClientSettingsPacket extends Packet {
-	@Serialize(type = Type.STRING, order = 0)
-	private final String locale;
-	@Serialize(type = Type.BYTE, order = 1)
-	private final byte viewDistance;
-	@Serialize(type = Type.BYTE, order = 2)
-	private final byte chatFlags;
-	@Serialize(type = Type.BYTE, order = 3)
-	private final byte difficulty;
-	@Serialize(type = Type.BOOL, order = 4)
-	private final boolean showCape;
+	public ClientSettingsPacket() {
+		// TODO Auto-generated constructor stub
+	}
 
-	public ClientSettingsPacket(String locale, byte viewDistance, byte chatFlags, byte difficulty, boolean showCape) {
+	@Serialize(type = Type.STRING, order = 0)
+	private String locale;
+	@Serialize(type = Type.BYTE, order = 1)
+	private byte viewDistance;
+	@Serialize(type = Type.BYTE, order = 2)
+	private byte chatFlags;
+	@Serialize(type = Type.BYTE, order = 3)
+	private byte difficulty;
+	@Serialize(type = Type.BOOL, order = 4)
+	private boolean showCape;
+
+	public ClientSettingsPacket(String locale, byte viewDistance,
+			byte chatFlags, byte difficulty, boolean showCape) {
 		super();
 		this.locale = locale;
 		this.viewDistance = viewDistance;
@@ -50,6 +57,20 @@ public class ClientSettingsPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("locale=%s,viewDistance=%d,chatFlags=%d,difficulty=%d", locale, viewDistance, chatFlags, difficulty);
+		return String.format(
+				"locale=%s,viewDistance=%d,chatFlags=%d,difficulty=%d", locale,
+				viewDistance, chatFlags, difficulty);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

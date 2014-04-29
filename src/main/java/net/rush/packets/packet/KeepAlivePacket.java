@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -8,8 +10,9 @@ public class KeepAlivePacket extends Packet {
 	@Serialize(type = Type.INT, order = 0)
 	private int token;
 
-	public KeepAlivePacket() {}
-	
+	public KeepAlivePacket() {
+	}
+
 	public KeepAlivePacket(int id) {
 		super();
 		token = id;
@@ -25,5 +28,17 @@ public class KeepAlivePacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("id=\"%d\"", token);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -1,29 +1,38 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.RotationUtils;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class EntityTeleportPacket extends Packet {
-	@Serialize(type = Type.INT, order = 0)
-	private final int entityId;
-	@Serialize(type = Type.INT, order = 1)
-	private final int x;
-	@Serialize(type = Type.INT, order = 2)
-	private final int y;
-	@Serialize(type = Type.INT, order = 3)
-	private final int z;
-	@Serialize(type = Type.BYTE, order = 4)
-	private final byte yaw;
-	@Serialize(type = Type.BYTE, order = 5)
-	private final byte pitch;
-
-	public EntityTeleportPacket(int entityId, int x, int y, int z, float yaw, float pitch) {
-		this(entityId, x, y, z, RotationUtils.floatToByte(yaw), RotationUtils.floatToByte(pitch));
+	public EntityTeleportPacket() {
+		// TODO Auto-generated constructor stub
 	}
 
-	public EntityTeleportPacket(int entityId, int x, int y, int z, byte yaw, byte pitch) {
+	@Serialize(type = Type.INT, order = 0)
+	private int entityId;
+	@Serialize(type = Type.INT, order = 1)
+	private int x;
+	@Serialize(type = Type.INT, order = 2)
+	private int y;
+	@Serialize(type = Type.INT, order = 3)
+	private int z;
+	@Serialize(type = Type.BYTE, order = 4)
+	private byte yaw;
+	@Serialize(type = Type.BYTE, order = 5)
+	private byte pitch;
+
+	public EntityTeleportPacket(int entityId, int x, int y, int z, float yaw,
+			float pitch) {
+		this(entityId, x, y, z, RotationUtils.floatToByte(yaw), RotationUtils
+				.floatToByte(pitch));
+	}
+
+	public EntityTeleportPacket(int entityId, int x, int y, int z, byte yaw,
+			byte pitch) {
 		super();
 		this.entityId = entityId;
 		this.x = x;
@@ -62,6 +71,20 @@ public class EntityTeleportPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",yaw=\"%d\",pitch=\"%d\"", entityId, x, y, z, yaw, pitch);
+		return String
+				.format("entityId=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",yaw=\"%d\",pitch=\"%d\"",
+						entityId, x, y, z, yaw, pitch);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

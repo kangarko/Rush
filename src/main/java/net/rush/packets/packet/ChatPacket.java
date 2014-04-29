@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -8,10 +10,14 @@ import org.bukkit.ChatColor;
 import org.json.simple.JSONObject;
 
 public class ChatPacket extends Packet {
-	@Serialize(type = Type.STRING, order = 0)
-	private final String message;
+	public ChatPacket() {
+		// TODO Auto-generated constructor stub
+	}
 
-	private final String plainText;
+	@Serialize(type = Type.STRING, order = 0)
+	private String message;
+
+	private String plainText;
 
 	@SuppressWarnings("unchecked")
 	public ChatPacket(String message) {
@@ -36,5 +42,17 @@ public class ChatPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("message=\"%s\"", message);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

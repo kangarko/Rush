@@ -1,24 +1,32 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class OpenWindowPacket extends Packet {
-	@Serialize(type = Type.BYTE, order = 0)
-	private final byte windowId;
-	@Serialize(type = Type.BYTE, order = 1)
-	private final byte inventoryType;
-	@Serialize(type = Type.STRING, order = 2)
-	private final String windowTitle;
-	@Serialize(type = Type.BYTE, order = 3)
-	private final byte numberOfSlots;
-	@Serialize(type = Type.BOOL, order = 4)
-	private final boolean useProvidedWindowTitle;
-	@Serialize(type = Type.INT, order = 5)
-	private final int horseId;
+	public OpenWindowPacket() {
+		// TODO Auto-generated constructor stub
+	}
 
-	public OpenWindowPacket(byte windowId, byte inventoryType, String windowTitle, byte numberOfSlots, boolean useProvidedWindowTitle, int horseId) {
+	@Serialize(type = Type.BYTE, order = 0)
+	private byte windowId;
+	@Serialize(type = Type.BYTE, order = 1)
+	private byte inventoryType;
+	@Serialize(type = Type.STRING, order = 2)
+	private String windowTitle;
+	@Serialize(type = Type.BYTE, order = 3)
+	private byte numberOfSlots;
+	@Serialize(type = Type.BOOL, order = 4)
+	private boolean useProvidedWindowTitle;
+	@Serialize(type = Type.INT, order = 5)
+	private int horseId;
+
+	public OpenWindowPacket(byte windowId, byte inventoryType,
+			String windowTitle, byte numberOfSlots,
+			boolean useProvidedWindowTitle, int horseId) {
 		super();
 		this.windowId = windowId;
 		this.inventoryType = inventoryType;
@@ -57,6 +65,21 @@ public class OpenWindowPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("windowId=\"%d\",inventoryType=\"%d\",windowTitle=\"%s\",numberOfSlots=\"%d\",useProvidedTitle=\"%b\",horseIdé\"%d\"", windowId, inventoryType, windowTitle, numberOfSlots, useProvidedWindowTitle, horseId);
+		return String
+				.format("windowId=\"%d\",inventoryType=\"%d\",windowTitle=\"%s\",numberOfSlots=\"%d\",useProvidedTitle=\"%b\",horseIdé\"%d\"",
+						windowId, inventoryType, windowTitle, numberOfSlots,
+						useProvidedWindowTitle, horseId);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -1,22 +1,29 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SpawnExperienceOrbPacket extends Packet {
-	@Serialize(type = Type.INT, order = 0)
-	private final int entityId;
-	@Serialize(type = Type.INT, order = 1)
-	private final int x;
-	@Serialize(type = Type.INT, order = 2)
-	private final int y;
-	@Serialize(type = Type.INT, order = 3)
-	private final int z;
-	@Serialize(type = Type.SHORT, order = 4)
-	private final short count;
+	public SpawnExperienceOrbPacket() {
+		// TODO Auto-generated constructor stub
+	}
 
-	public SpawnExperienceOrbPacket(int entityId, int x, int y, int z, short count) {
+	@Serialize(type = Type.INT, order = 0)
+	private int entityId;
+	@Serialize(type = Type.INT, order = 1)
+	private int x;
+	@Serialize(type = Type.INT, order = 2)
+	private int y;
+	@Serialize(type = Type.INT, order = 3)
+	private int z;
+	@Serialize(type = Type.SHORT, order = 4)
+	private short count;
+
+	public SpawnExperienceOrbPacket(int entityId, int x, int y, int z,
+			short count) {
 		super();
 		this.entityId = entityId;
 		this.x = x;
@@ -50,6 +57,20 @@ public class SpawnExperienceOrbPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",count=\"%d\"", entityId, x, y, z, count);
+		return String.format(
+				"entityId=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",count=\"%d\"",
+				entityId, x, y, z, count);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

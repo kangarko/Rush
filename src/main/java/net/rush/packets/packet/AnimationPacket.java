@@ -1,15 +1,19 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class AnimationPacket extends Packet {
 	@Serialize(type = Type.INT, order = 0)
-	private final int entityId;
+	private int entityId;
 	@Serialize(type = Type.BYTE, order = 1)
-	private final byte animation;
+	private byte animation;
 
+	public AnimationPacket() {};
+	
 	public AnimationPacket(int entityId, byte animation) {
 		super();
 		this.entityId = entityId;
@@ -29,6 +33,19 @@ public class AnimationPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",animation=\"%d\"", entityId, animation);
+		return String.format("entityId=\"%d\",animation=\"%d\"", entityId,
+				animation);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }

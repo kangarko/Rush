@@ -1,17 +1,23 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import net.rush.model.ItemStack;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SetSlotPacket extends Packet {
+	public SetSlotPacket() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Serialize(type = Type.BYTE, order = 0)
-	private final byte windowId;
+	private byte windowId;
 	@Serialize(type = Type.SHORT, order = 1)
-	private final short slot;
+	private short slot;
 	@Serialize(type = Type.ITEM, order = 2)
-	private final ItemStack item;
+	private ItemStack item;
 
 	public SetSlotPacket(byte windowId, short slot, ItemStack item) {
 		super();
@@ -37,6 +43,19 @@ public class SetSlotPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("windowId=\"%d\",slot=\"%d\",item=\"%s\"", windowId, slot, item);
+		return String.format("windowId=\"%d\",slot=\"%d\",item=\"%s\"",
+				windowId, slot, item);
+	}
+
+	@Override
+	public void read18(ByteBufInputStream input) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void write18(ByteBufOutputStream output) {
+		// TODO Auto-generated method stub
+
 	}
 }
