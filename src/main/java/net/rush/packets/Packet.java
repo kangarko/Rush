@@ -144,7 +144,19 @@ public abstract class Packet extends HashcodeAndEqualsStub {
 
 	public abstract int getOpcode();
 
-	public abstract void read17(ByteBufInputStream input) throws IOException;
+	public void read17(ByteBufInputStream input) throws IOException {
+		throw new UnsupportedOperationException("Cannot read " + this);
+	}
 
-	public abstract void write17(ByteBufOutputStream output) throws IOException;
+	public void write17(ByteBufOutputStream output) throws IOException {
+		throw new UnsupportedOperationException("Cannot write " + this);
+	}
+	
+	public void read18(ByteBufInputStream input) throws IOException {
+		read17(input);
+	}
+
+	public void write18(ByteBufOutputStream output) throws IOException {
+		write17(output);
+	}
 }

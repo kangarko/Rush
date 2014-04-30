@@ -6,32 +6,19 @@ import net.rush.packets.Packet;
 
 public class PacketStatusRequest extends Packet {
 
-	public PacketStatusRequest() {
-		// TODO Auto-generated constructor stub
-	}
-
 	@Override
 	public String getToStringDescription() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public int getOpcode() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
+	public void read17(ByteBufInputStream input) {}
 
 	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
+	public void write17(ByteBufOutputStream output) {}
 
 }

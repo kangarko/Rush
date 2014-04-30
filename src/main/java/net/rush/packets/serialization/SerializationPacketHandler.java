@@ -37,6 +37,7 @@ public class SerializationPacketHandler<T extends Packet> {
 			Constructor<? extends T> ctor = type.getConstructor(fixupClasses(paramTypes));
 			return ctor.newInstance(params);
 		} catch (Exception ex) {
+			System.out.println("Error while reading packet " + type.getSimpleName());
 			throw new RuntimeException(ex);
 		}
 	}

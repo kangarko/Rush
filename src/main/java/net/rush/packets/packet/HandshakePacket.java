@@ -1,7 +1,6 @@
 package net.rush.packets.packet;
 
 import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 
 import java.io.IOException;
 
@@ -10,9 +9,8 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class HandshakePacket extends Packet {
-	public HandshakePacket() {
-		// TODO Auto-generated constructor stub
-	}
+	
+	public HandshakePacket() {}
 
 	@Serialize(type = Type.BYTE, order = 0)
 	private byte protocolVer;
@@ -58,8 +56,7 @@ public class HandshakePacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return "message=\"protocol:" + protocolVer + ",nick:" + username
-				+ ",host:" + host + ",port:" + port + "\"";
+		return "message=\"protocol:" + protocolVer + ",nick:" + username + ",host:" + host + ",port:" + port + "\"";
 	}
 
 	@Override
@@ -68,9 +65,5 @@ public class HandshakePacket extends Packet {
         serverAddress = readString(input, 0, false);
         serverPort = input.readUnsignedShort();
         state = readVarInt( input );
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) throws IOException {
 	}
 }

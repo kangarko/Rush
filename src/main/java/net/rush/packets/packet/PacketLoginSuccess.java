@@ -25,7 +25,6 @@ public class PacketLoginSuccess extends Packet {
 		return "uuid=" + uuid + ",name=" + name;
 	}
 
-	@Override
 	public int getOpcode() {
 		return 2;
 	}

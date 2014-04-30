@@ -11,28 +11,18 @@ import net.rush.packets.packet.PacketLoginSuccess;
 public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
 	private Protocol protocol;
-
-	//private SerializationPacketSender<Packet> sender = new SerializationPacketSender<Packet>();
 	
-	public PacketEncoder(Protocol prot) {
-		this.protocol = prot;
-	}
-
-	public void setProtocol(Protocol protocol) {
+	public PacketEncoder(Protocol protocol) {
 		this.protocol = protocol;
 	}
 
 	@Override
 	protected void encode(ChannelHandlerContext ctx, Packet packet, ByteBuf out) throws Exception {
 		Protocol.ProtocolDirection dir = protocol.TO_CLIENT;
-		Packet.writeVarInt(dir.getId(packet.getClass()), out);
-
-		ByteBufOutputStream outS = new ByteBufOutputStream(out);
-
-		//System.out.println("WRITIN\' PACKET: " + packet);
-		packet.write17(outS);
 		
-		//sender.send(outS, packet);
+		Packet.writeVarInt(dir.getId(packet.getClass()), out);
+		packet.write17(new ByteBufOutputStream(out));
+		
 
 		if (packet instanceof PacketLoginSuccess)
 			setProtocol(ctx, Protocol.GAME);
@@ -42,5 +32,9 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 	public void setProtocol(ChannelHandlerContext channel, Protocol prot) {
 		channel.pipeline().get(PacketDecoder.class).setProtocol(prot);
 		channel.pipeline().get(PacketEncoder.class).setProtocol(prot);
+	}
+	
+	public void setProtocol(Protocol protocol) {
+		this.protocol = protocol;
 	}
 }

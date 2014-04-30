@@ -25,7 +25,6 @@ public class PacketPingTime extends Packet {
 		return "time=" + time;
 	}
 
-	@Override
 	public int getOpcode() {
 		return 1;
 	}

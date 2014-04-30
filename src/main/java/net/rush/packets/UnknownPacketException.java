@@ -13,7 +13,16 @@ public class UnknownPacketException extends IOException {
         super(createMessage(code), cause);
     }
 
+    public UnknownPacketException(Class<? extends Packet> clazz) {
+        super(createMessage(clazz));
+    }
+
+    
     private static String createMessage(int code) {
         return String.format("Couldn't find packet %1$d (0x0%1$X)", code);
+    }
+    
+    private static String createMessage(Class<? extends Packet> clazz) {
+        return "Couldn't find packet " + clazz.getSimpleName();
     }
 }

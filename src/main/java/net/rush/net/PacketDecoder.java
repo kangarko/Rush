@@ -38,10 +38,10 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 		if (packetClazz == null)
 			throw new IOException("Unknown operation code: " + packetId + ").");	
 		
-		ByteBufInputStream input = new ByteBufInputStream(in);
 		Packet packet = packetClazz.newInstance();
 		
-		packet.read17(input);
+		packet.read17(new ByteBufInputStream(in));
+		
 		out.add(packet);
 		 
 		if (packet instanceof HandshakePacket) {

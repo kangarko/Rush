@@ -18,7 +18,6 @@ public class PacketLoginRequest extends Packet {
 		return name == null ? null : "name=" + name;
 	}
 
-	@Override
 	public int getOpcode() {
 		return 0;
 	}
