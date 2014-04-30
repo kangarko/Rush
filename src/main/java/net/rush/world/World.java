@@ -95,7 +95,7 @@ public class World {
 		advanceTime();
 		resetActiveChunks();
 		tickFromQueue();
-		//tickActiveChunks();
+		tickActiveChunks();
 		return (int) (System.currentTimeMillis() - now);
 	}
 
@@ -400,6 +400,7 @@ public class World {
 			
 			// In 3 rounds, picks up random block in a chunk and tick it,
 			// x y z is converted to world x y z
+			// Since Minecraft 1.8 this is customizable in attribute "randomTick" (or similar)
 			for(int count = 0; count < 3; count++) {
 				
 				// the rand.nextInt can be 0 and is always one number lower than the argument

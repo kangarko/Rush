@@ -26,8 +26,6 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
 		if (packet instanceof PacketLoginSuccess)
 			setProtocol(ctx, Protocol.GAME);
-		
-		//System.out.println("WRITING " + packet);
 	}
 
 	public void setProtocol(ChannelHandlerContext channel, Protocol prot) {

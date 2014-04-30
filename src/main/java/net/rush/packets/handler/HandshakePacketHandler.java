@@ -31,7 +31,7 @@ public final class HandshakePacketHandler extends PacketHandler<HandshakePacket>
 				new ThreadLoginVerifier(session, message).start();
 			} else {
 				ServerProperties prop = session.getServer().getProperties();
-				session.send(new LoginPacket(0, prop.levelType, prop.gamemode, Dimension.NORMAL, prop.difficulty, prop.maxBuildHeight, prop.maxPlayers));
+				session.send(new LoginPacket(0, prop.levelType, prop.gamemode, Dimension.NORMAL, prop.difficulty, prop.maxBuildHeight, prop.maxPlayers, prop.hardcore));
 				session.setPlayer(new Player(session, message.getUsername()));
 			}
 

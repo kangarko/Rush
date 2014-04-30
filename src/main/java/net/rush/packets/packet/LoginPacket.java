@@ -30,11 +30,11 @@ public class LoginPacket extends Packet {
 	public LoginPacket() {
 	}
 
-	public LoginPacket(int entityId, String worldType, int gamemode, Dimension dimension, int difficulty, int worldHeight, int maxPlayers) {
-		this(entityId, worldType, (byte) gamemode, dimension.getValue(), (byte) difficulty, worldHeight, maxPlayers);
+	public LoginPacket(int entityId, String worldType, int gamemode, Dimension dimension, int difficulty, int worldHeight, int maxPlayers, boolean hardcore) {
+		this(entityId, worldType, (byte) gamemode, dimension.getValue(), (byte) difficulty, worldHeight, maxPlayers, hardcore);
 	}
 
-	protected LoginPacket(int entityId, String emptyString, byte mode, byte dimension, byte difficulty, int worldHeight, int maxPlayers) {
+	protected LoginPacket(int entityId, String emptyString, byte mode, byte dimension, byte difficulty, int worldHeight, int maxPlayers, boolean hardcore) {
 		super();
 		this.entityId = entityId;
 		worldType = emptyString;
@@ -43,6 +43,7 @@ public class LoginPacket extends Packet {
 		this.difficulty = difficulty;
 		this.worldHeight = worldHeight;
 		this.maxPlayers = maxPlayers;
+		this.hardcore = hardcore;
 	}
 
 	public int getEntityId() {

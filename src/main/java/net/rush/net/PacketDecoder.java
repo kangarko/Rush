@@ -56,7 +56,6 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 					break;
 			}
 		}
-		//System.out.println("READING " + packet);
 	}
 
 	public void setProtocol(ChannelHandlerContext channel, Protocol prot) {

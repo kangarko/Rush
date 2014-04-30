@@ -22,7 +22,7 @@ public final class PacketLoginRequestHandler extends PacketHandler<PacketLoginRe
 		session.send(new PacketLoginSuccess("0-0-0-0-0", message.name));
 		
 		ServerProperties prop = session.getServer().getProperties();
-		session.send(new LoginPacket(0, prop.levelType, prop.gamemode, Dimension.NORMAL, prop.difficulty, prop.maxBuildHeight, prop.maxPlayers));
+		session.send(new LoginPacket(0, prop.levelType, prop.gamemode, Dimension.NORMAL, prop.difficulty, prop.maxBuildHeight, prop.maxPlayers, prop.hardcore));
 		session.setPlayer(new Player(session, message.name));
 	}
 

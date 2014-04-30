@@ -163,7 +163,7 @@ public final class Session {
 			if (handler != null) {
 				handler.handle(this, player, packet);
 				String name = packet.getPacketType().getSimpleName();
-				if(/*!name.contains("Position") &&*/ !name.contains("PlayerOnGround")/* && !name.contains("Look") && !name.contains("ChatPacket") && !name.contains("KeepAlive")  && !name.contains("Animation")*/) {
+				if(!name.contains("Position") && !name.contains("PlayerOnGround") && !name.contains("Look") && !name.contains("ChatPacket") && !name.contains("KeepAlive")  && !name.contains("Animation")) {
 					server.getLogger().info("Handling packet: " + packet.getPacketType().getSimpleName());
 				}
 			} else {
@@ -172,7 +172,6 @@ public final class Session {
 			}
 		}
 
-		//System.out.println("timeoutCounter: " + timeoutCounter);
 		if (timeoutCounter >= TIMEOUT_TICKS) {
 			if (pingMessageId == 0) {
 				pingMessageId = new Random().nextInt();
