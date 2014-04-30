@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
@@ -14,8 +16,6 @@ public class AttachEntityPacket extends Packet {
 	@Serialize(type = Type.UNSIGNED_BYTE, order = 2)
 	private byte leash;
 	
-	
-
 	public AttachEntityPacket() {}
 
 	public AttachEntityPacket(int entityId, int vehicleId, boolean leashed) {
@@ -47,14 +47,16 @@ public class AttachEntityPacket extends Packet {
 	}
 
 	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
+	public void read17(ByteBufInputStream input) throws IOException {
+		entityId = input.readInt();
+		vehicleId = input.readInt();
+		leash = (byte) (input.readBoolean() ? 1 : 0);
 	}
 
 	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(entityId);
+		output.writeInt(vehicleId);
+		output.writeBoolean(leash == 1 ? true : false);
 	}
 }

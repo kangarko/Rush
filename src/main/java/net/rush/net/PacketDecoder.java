@@ -36,7 +36,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 		Class<? extends Packet> packetClazz = dir.createPacket(packetId);
 		
 		if (packetClazz == null)
-			throw new IOException("Unknown operation code: " + packetId + ").");	
+			throw new IOException("Unknown operation code: " + packetId + ").");
 		
 		Packet packet = packetClazz.newInstance();
 		
@@ -56,6 +56,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 					break;
 			}
 		}
+		//System.out.println("READING " + packet);
 	}
 
 	public void setProtocol(ChannelHandlerContext channel, Protocol prot) {

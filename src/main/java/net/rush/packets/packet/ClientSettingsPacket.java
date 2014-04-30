@@ -1,13 +1,12 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+
 import java.io.IOException;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
-import net.rush.util.RushException;
 
 public class ClientSettingsPacket extends Packet {
 	
@@ -73,10 +72,5 @@ public class ClientSettingsPacket extends Packet {
 		chatColours = input.readBoolean();
 		difficulty = input.readByte();
 		showCape = input.readBoolean();
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		throw new RushException("cannot write packet: " + this);
 	}
 }

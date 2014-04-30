@@ -95,7 +95,7 @@ public class World {
 		advanceTime();
 		resetActiveChunks();
 		tickFromQueue();
-		tickActiveChunks();
+		//tickActiveChunks();
 		return (int) (System.currentTimeMillis() - now);
 	}
 

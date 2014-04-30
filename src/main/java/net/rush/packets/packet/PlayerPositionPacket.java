@@ -1,7 +1,9 @@
 package net.rush.packets.packet;
 
 import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -57,20 +59,24 @@ public class PlayerPositionPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format(
-				"x=\"%f\",y=\"%f\",stance=\"%f\",z=\"%f\",onGround=\"%b\"", x,
-				y, stance, z, onGround);
+		return String.format("x=\"%f\",y=\"%f\",stance=\"%f\",z=\"%f\",onGround=\"%b\"", x, y, stance, z, onGround);
 	}
 
 	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
+	public void read17(ByteBufInputStream input) throws IOException {
+		x = input.readDouble();
+		y = input.readDouble();
+		stance = input.readDouble();
+		z = input.readDouble();
+		onGround = input.readBoolean();
 	}
 
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
+	/*@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeDouble(x);
+		output.writeDouble(y);
+		output.writeDouble(stance);
+		output.writeDouble(z);
+		output.writeBoolean(onGround);
+	}*/
 }

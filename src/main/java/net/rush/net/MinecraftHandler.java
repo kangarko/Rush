@@ -4,7 +4,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,9 +71,9 @@ public class MinecraftHandler extends SimpleChannelInboundHandler<Packet> {
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-		if (cause instanceof IOException)
+		/*if (cause instanceof IOException)
 			logger.info("End of stream");
-		else
+		else*/
 			logger.log(Level.WARNING, "Exception caught, closing channel: " + ctx.channel() + "...", cause);
 		ctx.close();
 	}

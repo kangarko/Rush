@@ -168,7 +168,7 @@ public final class Player extends LivingEntity implements CommandSender {
 		int centralX = ((int) position.getX()) / Chunk.WIDTH;
 		int centralZ = ((int) position.getZ()) / Chunk.HEIGHT;
 
-		int viewDistance = Server.getServer().getProperties().viewDistance;
+		int viewDistance = 0;
 		
 		for (int x = (centralX - viewDistance); x <= (centralX + viewDistance); x++) {
 			for (int z = (centralZ - viewDistance); z <= (centralZ + viewDistance); z++) {

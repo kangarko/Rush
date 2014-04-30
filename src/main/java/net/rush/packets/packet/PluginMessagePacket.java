@@ -9,9 +9,8 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class PluginMessagePacket extends Packet {
-	public PluginMessagePacket() {
-		// TODO Auto-generated constructor stub
-	}
+
+	public PluginMessagePacket() {}
 
 	@Serialize(type = Type.STRING, order = 0)
 	private String channel;

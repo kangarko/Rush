@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
@@ -7,9 +9,8 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class PlayerLookPacket extends Packet {
-	public PlayerLookPacket() {
-		// TODO Auto-generated constructor stub
-	}
+	
+	public PlayerLookPacket() {}
 
 	@Serialize(type = Type.FLOAT, order = 0)
 	private float yaw;
@@ -47,9 +48,10 @@ public class PlayerLookPacket extends Packet {
 	}
 
 	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
+	public void read17(ByteBufInputStream input) throws IOException {
+		yaw = input.readFloat();
+		pitch = input.readFloat();
+		onGround = input.readBoolean();
 	}
 
 	@Override
