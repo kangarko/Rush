@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
@@ -31,14 +33,12 @@ public class KeepAlivePacket extends Packet {
 	}
 
 	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
+	public void read17(ByteBufInputStream input) throws IOException {
+		token = input.readInt();
 	}
 
 	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(token);
 	}
 }
