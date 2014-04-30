@@ -294,5 +294,10 @@ public final class Player extends LivingEntity implements CommandSender {
 	public Server getServer() {
 		return session.getServer();
 	}
+	
+	/** @return fake UUID (five times zero divided by -) */
+	public String getUuid() {
+		return "0-0-0-0-0";
+	}
 }
 

@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
@@ -67,14 +69,20 @@ public class BlockChangePacket extends Packet {
 	}
 
 	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
+	public void read17(ByteBufInputStream input) throws IOException {
+		x = input.readInt();
+        y = (byte) input.readUnsignedByte();
+        z = input.readInt();
+        blockType = input.readShort();
+        blockMetadata = (byte) input.readUnsignedByte();
 	}
 
 	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(x);
+        output.write(y);
+        output.writeInt(z);
+        writeVarInt(blockType, output);
+        output.write(blockMetadata);
 	}
 }

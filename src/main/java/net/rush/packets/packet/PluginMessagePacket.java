@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
@@ -47,14 +49,18 @@ public class PluginMessagePacket extends Packet {
 	}
 
 	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
+	public void read17(ByteBufInputStream input) throws IOException {
+		channel = readString(input, 999999999, false);
+		length = input.readShort();
+		byte[] bytes = new byte[1];
+		input.readFully(bytes);
+		data = bytes;
 	}
 
 	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
+	public void write17(ByteBufOutputStream output) throws IOException {
+		writeString(channel, output, false);
+		output.writeShort(length);
+		output.write(data);
 	}
 }

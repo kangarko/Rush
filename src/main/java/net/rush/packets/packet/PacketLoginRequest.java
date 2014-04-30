@@ -25,7 +25,7 @@ public class PacketLoginRequest extends Packet {
 
 	@Override
 	public void read17(ByteBufInputStream input) throws IOException {
-		name = readString18(input, 16, false);
+		name = readString(input, 16, false);
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
@@ -7,9 +9,8 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class PlayerPositionAndLookPacket extends Packet {
-	public PlayerPositionAndLookPacket() {
-		// TODO Auto-generated constructor stub
-	}
+	
+	public PlayerPositionAndLookPacket() {}
 
 	@Serialize(type = Type.DOUBLE, order = 0)
 	private double x;
@@ -26,8 +27,7 @@ public class PlayerPositionAndLookPacket extends Packet {
 	@Serialize(type = Type.BOOL, order = 6)
 	private boolean onGround;
 
-	public PlayerPositionAndLookPacket(double x, double yOrStance,
-			double stanceOrY, double z, float yaw, float pitch, boolean onGround) {
+	public PlayerPositionAndLookPacket(double x, double yOrStance, double stanceOrY, double z, float yaw, float pitch, boolean onGround) {
 		super();
 		this.x = x;
 		this.yOrStance = yOrStance;
@@ -71,21 +71,29 @@ public class PlayerPositionAndLookPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format(
-				"x=\"%f\",yOrStance=\"%f\",stanceOrY=\"%f\",z=\"%f\","
-						+ "yaw=\"%f\",pitch=\"%f\",onGround=\"%b\"", x,
-				yOrStance, stanceOrY, z, yaw, pitch, onGround);
+		return String.format("x=\"%f\",yOrStance=\"%f\",stanceOrY=\"%f\",z=\"%f\",yaw=\"%f\",pitch=\"%f\",onGround=\"%b\"", 
+				x, yOrStance, stanceOrY, z, yaw, pitch, onGround);
 	}
 
 	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
+	public void read17(ByteBufInputStream input) throws IOException {
+		x = input.readDouble();
+        yOrStance = input.readDouble();
+        stanceOrY = input.readDouble();
+        z = input.readDouble();
+        yaw = input.readFloat();
+        pitch = input.readFloat();
+        onGround = input.readBoolean();
 	}
 
 	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
+	public void write17(ByteBufOutputStream output) throws IOException {
+        output.writeDouble(this.x);
+        output.writeDouble(this.yOrStance); //feet height ??
+        //output.writeDouble(1.62D); // head height ??
+        output.writeDouble(this.z);
+        output.writeFloat(this.yaw);
+        output.writeFloat(this.pitch);
+        output.writeBoolean(this.onGround);
 	}
 }

@@ -102,7 +102,7 @@ public abstract class Packet extends HashcodeAndEqualsStub {
 		}
 	}
 
-    public String readString18(DataInput datainput, int maxLength , boolean compatmode) throws IOException {
+    public String readString(DataInput datainput, int maxLength , boolean compatmode) throws IOException {
         if(compatmode){
             short short1 = datainput.readShort();
             if (short1 > maxLength) {

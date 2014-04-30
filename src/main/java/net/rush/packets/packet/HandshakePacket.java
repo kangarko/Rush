@@ -65,7 +65,7 @@ public class HandshakePacket extends Packet {
 	@Override
 	public void read17(ByteBufInputStream input) throws IOException {
 		protocolVersion = readVarInt( input );
-        serverAddress = readString18(input, 0, false);
+        serverAddress = readString(input, 0, false);
         serverPort = input.readUnsignedShort();
         state = readVarInt( input );
 	}

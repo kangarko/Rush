@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
@@ -7,9 +9,8 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class PlayerOnGroundPacket extends Packet {
-	public PlayerOnGroundPacket() {
-		// TODO Auto-generated constructor stub
-	}
+	
+	public PlayerOnGroundPacket() {}
 
 	@Serialize(type = Type.BOOL, order = 0)
 	private boolean onGround;
@@ -32,14 +33,12 @@ public class PlayerOnGroundPacket extends Packet {
 	}
 
 	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
+	public void read17(ByteBufInputStream input) throws IOException {
+		onGround = input.readBoolean();
 	}
 
 	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeBoolean(onGround);
 	}
 }

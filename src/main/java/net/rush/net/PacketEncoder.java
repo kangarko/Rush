@@ -29,6 +29,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
 		ByteBufOutputStream outS = new ByteBufOutputStream(out);
 
+		//System.out.println("WRITIN\' PACKET: " + packet);
 		packet.write17(outS);
 		
 		//sender.send(outS, packet);

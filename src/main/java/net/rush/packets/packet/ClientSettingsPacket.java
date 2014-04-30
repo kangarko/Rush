@@ -1,15 +1,17 @@
 package net.rush.packets.packet;
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
+import net.rush.util.RushException;
 
 public class ClientSettingsPacket extends Packet {
-	public ClientSettingsPacket() {
-		// TODO Auto-generated constructor stub
-	}
+	
+	public ClientSettingsPacket() {}
 
 	@Serialize(type = Type.STRING, order = 0)
 	private String locale;
@@ -22,8 +24,9 @@ public class ClientSettingsPacket extends Packet {
 	@Serialize(type = Type.BOOL, order = 4)
 	private boolean showCape;
 
-	public ClientSettingsPacket(String locale, byte viewDistance,
-			byte chatFlags, byte difficulty, boolean showCape) {
+	public boolean chatColours;
+	
+	public ClientSettingsPacket(String locale, byte viewDistance, byte chatFlags, byte difficulty, boolean showCape) {
 		super();
 		this.locale = locale;
 		this.viewDistance = viewDistance;
@@ -63,14 +66,17 @@ public class ClientSettingsPacket extends Packet {
 	}
 
 	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
+	public void read17(ByteBufInputStream input) throws IOException {
+		locale = readString(input, 7, false);
+		viewDistance = input.readByte();
+		chatFlags = input.readByte();
+		chatColours = input.readBoolean();
+		difficulty = input.readByte();
+		showCape = input.readBoolean();
 	}
 
 	@Override
 	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
+		throw new RushException("cannot write packet: " + this);
 	}
 }

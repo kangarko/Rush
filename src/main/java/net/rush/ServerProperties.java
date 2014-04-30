@@ -110,7 +110,7 @@ public class ServerProperties {
 		favicon = loadFavicon();
 	}
 
-	String loadFavicon() {
+	private String loadFavicon() {
 		File fav = new File( "server-icon.png" );
 		if (fav.exists()) {
 			try {
@@ -123,7 +123,7 @@ public class ServerProperties {
 		return "";
 	}
 
-	boolean getOnlineMode() {
+	private boolean getOnlineMode() {
 		boolean online = getBoolean("online-mode", true);
 		if(online) {
 			logger.warning("* ! * ! * ! * ! * ! * ! * ! * ! * ! * !");
@@ -134,7 +134,7 @@ public class ServerProperties {
 		return online;
 	}
 
-	int getDifficulty() {
+	private int getDifficulty() {
 		int diff = getInt("difficulty", 1);
 		if(diff < 1)
 			diff = 1;
@@ -143,19 +143,19 @@ public class ServerProperties {
 		return diff;
 	}
 
-	int getGamemode() {
+	private int getGamemode() {
 		int gm = getInt("gamemode", 0);
 		if(gm > 2) // FIXME Spectator mode in MC 1.8.
 			gm = 2;
 		return gm;
 	}
 
-	void generateNew() {
+	private void generateNew() {
 		logger.info("Generating new properties file");
 		save();
 	}
 
-	void save() {
+	private void save() {
 		FileWriter writer = null;
 
 		try {
@@ -169,11 +169,11 @@ public class ServerProperties {
 		}
 	}
 
-	void set(String path, Object def) {
+	private void set(String path, Object def) {
 		prop.setProperty(path, "" + String.valueOf(def));
 	}
 
-	String getString(String path, String def) {
+	private String getString(String path, String def) {
 		if (!prop.containsKey(path)) {
 			prop.setProperty(path, def);
 			save();
@@ -182,7 +182,7 @@ public class ServerProperties {
 		return prop.getProperty(path, def);
 	}
 
-	int getInt(String path, int def) {
+	private int getInt(String path, int def) {
 		try {
 			return Integer.valueOf(getString(path, "" + def));
 		} catch (NumberFormatException ex) {
@@ -191,7 +191,7 @@ public class ServerProperties {
 		}
 	}
 
-	boolean getBoolean(String path, boolean def) {
+	private boolean getBoolean(String path, boolean def) {
 		try {
 			return Boolean.valueOf(getString(path, "" + def));
 		} catch (Exception ex) {

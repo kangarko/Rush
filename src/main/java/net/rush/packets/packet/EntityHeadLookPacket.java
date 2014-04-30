@@ -42,12 +42,12 @@ public class EntityHeadLookPacket extends Packet {
 	@Override
 	public void read17(ByteBufInputStream input) {
 		// TODO Auto-generated method stub
-
+		System.out.println("reading entityheadlook");
 	}
 
 	@Override
 	public void write17(ByteBufOutputStream output) {
 		// TODO Auto-generated method stub
-
+		System.out.println("writing entityheadlook");
 	}
 }

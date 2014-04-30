@@ -45,7 +45,7 @@ public class KickPacket extends Packet {
 
 	@Override
 	public void read17(ByteBufInputStream input) throws IOException {
-		readString18(input, 256, false);
+		readString(input, 256, false);
 	}
 
 	@Override

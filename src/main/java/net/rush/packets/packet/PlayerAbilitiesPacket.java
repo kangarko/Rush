@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
@@ -7,9 +9,8 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class PlayerAbilitiesPacket extends Packet {
-	public PlayerAbilitiesPacket() {
-		// TODO Auto-generated constructor stub
-	}
+	
+	public PlayerAbilitiesPacket() {}
 
 	@Serialize(type = Type.BYTE, order = 0)
 	private byte flags;
@@ -47,14 +48,16 @@ public class PlayerAbilitiesPacket extends Packet {
 	}
 
 	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
+	public void read17(ByteBufInputStream input) throws IOException {
+		flags = input.readByte();
+		flySpeed = input.readFloat();
+		walkSpeed = input.readFloat();
 	}
 
 	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeByte(flags);
+		output.writeFloat(flySpeed);
+		output.writeFloat(walkSpeed);
 	}
 }

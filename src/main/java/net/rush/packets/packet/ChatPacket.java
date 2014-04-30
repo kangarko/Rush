@@ -1,5 +1,7 @@
 package net.rush.packets.packet;
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
@@ -10,9 +12,8 @@ import org.bukkit.ChatColor;
 import org.json.simple.JSONObject;
 
 public class ChatPacket extends Packet {
-	public ChatPacket() {
-		// TODO Auto-generated constructor stub
-	}
+	
+	public ChatPacket() {}
 
 	@Serialize(type = Type.STRING, order = 0)
 	private String message;
@@ -45,14 +46,13 @@ public class ChatPacket extends Packet {
 	}
 
 	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
+	public void read17(ByteBufInputStream input) throws IOException {
+		message = readString(input, 65000, false);
+		plainText = message;
 	}
 
 	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
+	public void write17(ByteBufOutputStream output) throws IOException {
+		writeString(message, output, false);
 	}
 }
