@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -24,8 +22,7 @@ public class NamedSoundEffectPacket extends Packet {
 	@Serialize(type = Type.BYTE, order = 5)
 	private byte pitch;
 
-	public NamedSoundEffectPacket(String soundName, double x, double y,
-			double z, float volume, float pitch) {
+	public NamedSoundEffectPacket(String soundName, double x, double y, double z, float volume, float pitch) {
 		super();
 
 		if (pitch < 0) {
@@ -73,20 +70,7 @@ public class NamedSoundEffectPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String
-				.format("soundName=\"%s\",x=\"%s\",y=\"%s\",z=\"%s\",volume=\"%s\",pitch=\"%s\"",
-						soundName, x, y, z, volume, pitch);
+		return String.format("soundName=\"%s\",x=\"%s\",y=\"%s\",z=\"%s\",volume=\"%s\",pitch=\"%s\"", soundName, x, y, z, volume, pitch);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

@@ -24,8 +24,7 @@ public class PlayerPositionPacket extends Packet {
 	@Serialize(type = Type.BOOL, order = 4)
 	private boolean onGround;
 
-	public PlayerPositionPacket(double x, double y, double stance, double z,
-			boolean onGround) {
+	public PlayerPositionPacket(double x, double y, double stance, double z, boolean onGround) {
 		super();
 		this.x = x;
 		this.y = y;

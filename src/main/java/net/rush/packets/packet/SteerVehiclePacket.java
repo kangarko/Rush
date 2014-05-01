@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -20,8 +18,7 @@ public class SteerVehiclePacket extends Packet {
 	@Serialize(type = Type.BOOL, order = 3)
 	private boolean unmount;
 
-	public SteerVehiclePacket(float sideways, float forward, boolean jump,
-			boolean unmount) {
+	public SteerVehiclePacket(float sideways, float forward, boolean jump, boolean unmount) {
 		super();
 		this.sideways = sideways;
 		this.forward = forward;
@@ -50,19 +47,7 @@ public class SteerVehiclePacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("sideways=%d,forward=%d,jump=%b,unmount=%b",
-				sideways, forward, jump, unmount);
+		return String.format("sideways=%d,forward=%d,jump=%b,unmount=%b", sideways, forward, jump, unmount);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

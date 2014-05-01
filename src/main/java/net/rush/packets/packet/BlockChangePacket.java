@@ -1,17 +1,18 @@
 package net.rush.packets.packet;
 
-import java.io.IOException;
-
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 import net.rush.world.World;
 
 public class BlockChangePacket extends Packet {
+
 	public BlockChangePacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.INT, order = 0)
@@ -63,26 +64,24 @@ public class BlockChangePacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String
-				.format("x=\"%d\",y=\"%d\",z=\"%d\",blockType=\"%d\",blockMetadata=\"%d\"",
-						x, y, z, blockType, blockMetadata);
+		return String.format("x=\"%d\",y=\"%d\",z=\"%d\",blockType=\"%d\",blockMetadata=\"%d\"", x, y, z, blockType, blockMetadata);
 	}
 
 	@Override
 	public void read17(ByteBufInputStream input) throws IOException {
 		x = input.readInt();
-        y = (byte) input.readUnsignedByte();
-        z = input.readInt();
-        blockType = input.readShort();
-        blockMetadata = (byte) input.readUnsignedByte();
+		y = (byte) input.readUnsignedByte();
+		z = input.readInt();
+		blockType = input.readShort();
+		blockMetadata = (byte) input.readUnsignedByte();
 	}
 
 	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {
 		output.writeInt(x);
-        output.write(y);
-        output.writeInt(z);
-        writeVarInt(blockType, output);
-        output.write(blockMetadata);
+		output.writeByte(y);
+		output.writeInt(z);
+		writeVarInt(blockType, output);
+		output.writeByte(blockMetadata);
 	}
 }

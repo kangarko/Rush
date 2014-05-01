@@ -35,8 +35,8 @@ public class PacketLoginSuccess extends Packet {
 
 	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {
-		writeString(uuid, output , false);
-		writeString(name, output , false);
+		writeString(uuid, output, false);
+		writeString(name, output, false);
 	}
 
 }

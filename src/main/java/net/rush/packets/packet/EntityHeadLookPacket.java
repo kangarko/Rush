@@ -2,13 +2,16 @@ package net.rush.packets.packet;
 
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class EntityHeadLookPacket extends Packet {
+
 	public EntityHeadLookPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.INT, order = 0)
@@ -35,19 +38,18 @@ public class EntityHeadLookPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",headYaw=\"%d\"", entityId,
-				headYaw);
+		return String.format("entityId=\"%d\",headYaw=\"%d\"", entityId, headYaw);
 	}
 
 	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-		System.out.println("reading entityheadlook");
+	public void read17(ByteBufInputStream input) throws IOException {
+		entityId = input.readInt();
+		headYaw = input.readByte();
 	}
 
 	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-		System.out.println("writing entityheadlook");
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(entityId);
+		output.writeByte(headYaw);
 	}
 }

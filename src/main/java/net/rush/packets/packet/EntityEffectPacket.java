@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -20,8 +18,7 @@ public class EntityEffectPacket extends Packet {
 	@Serialize(type = Type.SHORT, order = 3)
 	private short duration;
 
-	public EntityEffectPacket(int entityId, byte effectId, byte amplifier,
-			short duration) {
+	public EntityEffectPacket(int entityId, byte effectId, byte amplifier, short duration) {
 		super();
 		this.entityId = entityId;
 		this.effectId = effectId;
@@ -50,20 +47,7 @@ public class EntityEffectPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String
-				.format("entityId=\"%d\",effectId=\"%d\",amplifier=\"%d\",duration=\"%d\"",
-						entityId, effectId, amplifier, duration);
+		return String.format("entityId=\"%d\",effectId=\"%d\",amplifier=\"%d\",duration=\"%d\"", entityId, effectId, amplifier, duration);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

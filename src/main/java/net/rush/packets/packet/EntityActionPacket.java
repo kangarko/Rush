@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -49,19 +47,7 @@ public class EntityActionPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",actionId=\"%d\"", entityId,
-				actionId);
+		return String.format("entityId=\"%d\",actionId=\"%d\"", entityId, actionId);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

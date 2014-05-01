@@ -9,8 +9,9 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class ClientSettingsPacket extends Packet {
-	
-	public ClientSettingsPacket() {}
+
+	public ClientSettingsPacket() {
+	}
 
 	@Serialize(type = Type.STRING, order = 0)
 	private String locale;
@@ -24,7 +25,7 @@ public class ClientSettingsPacket extends Packet {
 	private boolean showCape;
 
 	public boolean chatColours;
-	
+
 	public ClientSettingsPacket(String locale, byte viewDistance, byte chatFlags, byte difficulty, boolean showCape) {
 		super();
 		this.locale = locale;
@@ -59,9 +60,7 @@ public class ClientSettingsPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format(
-				"locale=%s,viewDistance=%d,chatFlags=%d,difficulty=%d", locale,
-				viewDistance, chatFlags, difficulty);
+		return String.format("locale=%s,viewDistance=%d,chatFlags=%d,difficulty=%d", locale, viewDistance, chatFlags, difficulty);
 	}
 
 	@Override

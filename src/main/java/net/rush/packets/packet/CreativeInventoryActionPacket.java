@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.model.ItemStack;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
@@ -39,15 +37,4 @@ public class CreativeInventoryActionPacket extends Packet {
 		return String.format("slot=\"%d\",item=\"%s\"", slot, item);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -24,8 +22,7 @@ public class SpawnPaintingPacket extends Packet {
 	@Serialize(type = Type.INT, order = 5)
 	private int direction;
 
-	public SpawnPaintingPacket(int entityId, String title, int x, int y, int z,
-			int direction) {
+	public SpawnPaintingPacket(int entityId, String title, int x, int y, int z, int direction) {
 		super();
 		this.entityId = entityId;
 		this.title = title;
@@ -64,20 +61,7 @@ public class SpawnPaintingPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String
-				.format("entityId=\"%d\",title=\"%s\",x=\"%d\",y=\"%d\",z=\"%d\",direction=\"%d\"",
-						entityId, title, x, y, z, direction);
+		return String.format("entityId=\"%d\",title=\"%s\",x=\"%d\",y=\"%d\",z=\"%d\",direction=\"%d\"", entityId, title, x, y, z, direction);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

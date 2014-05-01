@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.model.ItemStack;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
@@ -29,8 +27,7 @@ public class PlayerBlockPlacementPacket extends Packet {
 	@Serialize(type = Type.BYTE, order = 7)
 	private byte cursorZ;
 
-	public PlayerBlockPlacementPacket(int x, byte y, int z, byte action,
-			ItemStack heldItem, byte cursorX, byte cursorY, byte cursorZ) {
+	public PlayerBlockPlacementPacket(int x, byte y, int z, byte action, ItemStack heldItem, byte cursorX, byte cursorY, byte cursorZ) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -79,20 +76,7 @@ public class PlayerBlockPlacementPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format(
-				"x=\"%d\",y=\"%d\",z=\"%d\",direction=\"%d\",heldItem=\"%s\"",
-				x, y, z, direction, heldItem);
+		return String.format("x=\"%d\",y=\"%d\",z=\"%d\",direction=\"%d\",heldItem=\"%s\"", x, y, z, direction, heldItem);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

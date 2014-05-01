@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.RotationUtils;
 import net.rush.packets.serialization.Serialize;
@@ -25,14 +23,11 @@ public class EntityTeleportPacket extends Packet {
 	@Serialize(type = Type.BYTE, order = 5)
 	private byte pitch;
 
-	public EntityTeleportPacket(int entityId, int x, int y, int z, float yaw,
-			float pitch) {
-		this(entityId, x, y, z, RotationUtils.floatToByte(yaw), RotationUtils
-				.floatToByte(pitch));
+	public EntityTeleportPacket(int entityId, int x, int y, int z, float yaw, float pitch) {
+		this(entityId, x, y, z, RotationUtils.floatToByte(yaw), RotationUtils.floatToByte(pitch));
 	}
 
-	public EntityTeleportPacket(int entityId, int x, int y, int z, byte yaw,
-			byte pitch) {
+	public EntityTeleportPacket(int entityId, int x, int y, int z, byte yaw, byte pitch) {
 		super();
 		this.entityId = entityId;
 		this.x = x;
@@ -71,20 +66,7 @@ public class EntityTeleportPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String
-				.format("entityId=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",yaw=\"%d\",pitch=\"%d\"",
-						entityId, x, y, z, yaw, pitch);
+		return String.format("entityId=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",yaw=\"%d\",pitch=\"%d\"", entityId, x, y, z, yaw, pitch);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

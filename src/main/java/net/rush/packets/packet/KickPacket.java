@@ -15,17 +15,17 @@ import com.google.gson.Gson;
 public class KickPacket extends Packet {
 	@Serialize(type = Type.STRING, order = 0)
 	private String reason;
-	
+
 	private Gson gson = new Gson();
 	private boolean jsonize = true;
-	
+
 	public KickPacket() {
 	}
 
 	public KickPacket(String reason) {
 		this.reason = reason;
 	}
-	
+
 	public KickPacket(ServerPing ping) {
 		this.reason = gson.toJson(ping);
 		jsonize = false;

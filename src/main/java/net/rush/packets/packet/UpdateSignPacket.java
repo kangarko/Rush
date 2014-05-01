@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -26,8 +24,7 @@ public class UpdateSignPacket extends Packet {
 	@Serialize(type = Type.STRING, order = 6)
 	private String line4;
 
-	public UpdateSignPacket(int x, short y, int z, String line1, String line2,
-			String line3, String line4) {
+	public UpdateSignPacket(int x, short y, int z, String line1, String line2, String line3, String line4) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -71,20 +68,7 @@ public class UpdateSignPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String
-				.format("x=\"%d\",y=\"%d\",z=\"%d\",line1=\"%s\",line2=\"%s\",line3=\"%s\",line4=\"%s\"",
-						x, y, z, line1, line2, line3, line4);
+		return String.format("x=\"%d\",y=\"%d\",z=\"%d\",line1=\"%s\",line2=\"%s\",line3=\"%s\",line4=\"%s\"", x, y, z, line1, line2, line3, line4);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

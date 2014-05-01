@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -18,8 +16,7 @@ public class UseEntityPacket extends Packet {
 	@Serialize(type = Type.BOOL, order = 2)
 	private boolean isLeftClick;
 
-	public UseEntityPacket(int playerEntityId, int targetEntityId,
-			boolean isLeftClick) {
+	public UseEntityPacket(int playerEntityId, int targetEntityId, boolean isLeftClick) {
 		super();
 		this.playerEntityId = playerEntityId;
 		this.targetEntityId = targetEntityId;
@@ -43,20 +40,7 @@ public class UseEntityPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String
-				.format("playerEntityId=\"%d\",targetEntityId=\"%d\",isLeftClick=\"%b\"",
-						playerEntityId, targetEntityId, isLeftClick);
+		return String.format("playerEntityId=\"%d\",targetEntityId=\"%d\",isLeftClick=\"%b\"", playerEntityId, targetEntityId, isLeftClick);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

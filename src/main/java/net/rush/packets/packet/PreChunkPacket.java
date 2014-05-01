@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -29,8 +27,7 @@ public class PreChunkPacket extends Packet {
 	@Serialize(type = Type.UNSIGNED_SHORT, order = 7)
 	private int addBitMap;
 
-	public PreChunkPacket(short chunkCount, int dataLength, boolean skyLight,
-			byte[] data, int x, int z, int primaryBitMap, int addBitMap) {
+	public PreChunkPacket(short chunkCount, int dataLength, boolean skyLight, byte[] data, int x, int z, int primaryBitMap, int addBitMap) {
 		super();
 		this.chunkCount = chunkCount;
 		this.dataLength = dataLength;
@@ -79,19 +76,7 @@ public class PreChunkPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("x=\"%a,%b,%c,x=%d,z=%e,%f,%g", chunkCount,
-				dataLength, data, x, z, primaryBitMap, addBitMap);
+		return String.format("x=\"%a,%b,%c,x=%d,z=%e,%f,%g", chunkCount, dataLength, data, x, z, primaryBitMap, addBitMap);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

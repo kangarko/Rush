@@ -1,9 +1,10 @@
 package net.rush.packets.packet;
 
-import java.io.IOException;
-
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -20,8 +21,7 @@ public class PlayerListItemPacket extends Packet {
 	@Serialize(type = Type.SHORT, order = 2)
 	private short ping;
 
-	public PlayerListItemPacket(String playerName, boolean onlineStatus,
-			short ping) {
+	public PlayerListItemPacket(String playerName, boolean onlineStatus, short ping) {
 		super();
 		this.playerName = playerName;
 		this.onlineStatus = onlineStatus;
@@ -45,9 +45,7 @@ public class PlayerListItemPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format(
-				"playerName=\"%s\",onlineStatus=\"%b\",ping=\"%d\"",
-				playerName, onlineStatus, ping);
+		return String.format("playerName=\"%s\",onlineStatus=\"%b\",ping=\"%d\"", playerName, onlineStatus, ping);
 	}
 
 	@Override

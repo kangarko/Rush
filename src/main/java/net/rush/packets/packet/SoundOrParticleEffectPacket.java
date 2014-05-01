@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -35,8 +33,7 @@ public class SoundOrParticleEffectPacket extends Packet {
 	@Serialize(type = Type.BOOL, order = 5)
 	private boolean relativeVolume;
 
-	public SoundOrParticleEffectPacket(int effectId, int x, byte y, int z,
-			int data, boolean relativeVolume) {
+	public SoundOrParticleEffectPacket(int effectId, int x, byte y, int z, int data, boolean relativeVolume) {
 		super();
 		this.effectId = effectId;
 		this.x = x;
@@ -75,20 +72,7 @@ public class SoundOrParticleEffectPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format(
-				"effectId=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",data=\"%d\"",
-				effectId, x, y, z, data);
+		return String.format("effectId=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",data=\"%d\"", effectId, x, y, z, data);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

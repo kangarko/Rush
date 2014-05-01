@@ -1,15 +1,17 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.model.Position;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class BlockBreakAnimationPacket extends Packet {
+
 	public BlockBreakAnimationPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.INT, order = 0)
@@ -57,19 +59,15 @@ public class BlockBreakAnimationPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",x=\"%d\",y=%d,z=%d,stage=%d",
-				entityId, x, y, z, stage);
+		return String.format("entityId=\"%d\",x=\"%d\",y=%d,z=%d,stage=%d", entityId, x, y, z, stage);
 	}
 
 	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
+	public void write17(ByteBufOutputStream output) throws IOException {
+		writeVarInt(entityId, output);
+		output.writeInt(x);
+		output.writeInt(y);
+		output.writeInt(z);
+		output.writeByte(stage);
 	}
 }

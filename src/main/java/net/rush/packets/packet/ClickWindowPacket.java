@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.model.ItemStack;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
@@ -25,8 +23,7 @@ public class ClickWindowPacket extends Packet {
 	@Serialize(type = Type.ITEM, order = 5)
 	private ItemStack clickedItem;
 
-	public ClickWindowPacket(byte windowId, short slot, byte rightClick,
-			short action, boolean shiftHold, ItemStack clickedItem) {
+	public ClickWindowPacket(byte windowId, short slot, byte rightClick, short action, boolean shiftHold, ItemStack clickedItem) {
 		super();
 		this.windowId = windowId;
 		this.slot = slot;
@@ -65,21 +62,7 @@ public class ClickWindowPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format(
-				"windowId=\"%d\",slot=\"%d\",rightClick=\"%d\",action=\"%d\","
-						+ "shiftHold=\"%b\",clickedItem=\"%s\"", windowId,
-				slot, rightClick, action, shiftHold, clickedItem);
+		return String.format("windowId=\"%d\",slot=\"%d\",rightClick=\"%d\",action=\"%d\"," + "shiftHold=\"%b\",clickedItem=\"%s\"", windowId, slot, rightClick, action, shiftHold, clickedItem);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

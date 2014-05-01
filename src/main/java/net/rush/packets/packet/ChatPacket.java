@@ -1,9 +1,10 @@
 package net.rush.packets.packet;
 
-import java.io.IOException;
-
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -12,8 +13,9 @@ import org.bukkit.ChatColor;
 import org.json.simple.JSONObject;
 
 public class ChatPacket extends Packet {
-	
-	public ChatPacket() {}
+
+	public ChatPacket() {
+	}
 
 	@Serialize(type = Type.STRING, order = 0)
 	private String message;

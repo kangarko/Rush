@@ -9,8 +9,9 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class HandshakePacket extends Packet {
-	
-	public HandshakePacket() {}
+
+	public HandshakePacket() {
+	}
 
 	@Serialize(type = Type.BYTE, order = 0)
 	private byte protocolVer;
@@ -21,13 +22,12 @@ public class HandshakePacket extends Packet {
 	@Serialize(type = Type.INT, order = 3)
 	private int port;
 
-    public int protocolVersion;
-    public String serverAddress;
-    public int serverPort;
-    public int state;
-	
-	public HandshakePacket(byte protocolVer, String username, String host,
-			int port) {
+	public int protocolVersion;
+	public String serverAddress;
+	public int serverPort;
+	public int state;
+
+	public HandshakePacket(byte protocolVer, String username, String host, int port) {
 		super();
 		this.protocolVer = protocolVer;
 		this.username = username;
@@ -61,9 +61,9 @@ public class HandshakePacket extends Packet {
 
 	@Override
 	public void read17(ByteBufInputStream input) throws IOException {
-		protocolVersion = readVarInt( input );
-        serverAddress = readString(input, 0, false);
-        serverPort = input.readUnsignedShort();
-        state = readVarInt( input );
+		protocolVersion = readVarInt(input);
+		serverAddress = readString(input, 0, false);
+		serverPort = input.readUnsignedShort();
+		state = readVarInt(input);
 	}
 }

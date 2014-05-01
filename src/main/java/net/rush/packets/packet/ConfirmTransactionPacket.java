@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -18,8 +16,7 @@ public class ConfirmTransactionPacket extends Packet {
 	@Serialize(type = Type.BOOL, order = 2)
 	private boolean accepted;
 
-	public ConfirmTransactionPacket(byte windowId, short action,
-			boolean accepted) {
+	public ConfirmTransactionPacket(byte windowId, short action, boolean accepted) {
 		super();
 		this.windowId = windowId;
 		this.action = action;
@@ -43,19 +40,7 @@ public class ConfirmTransactionPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("windowId=\"%d\",action=\"%d\",accepted=\"%b\"",
-				windowId, action, accepted);
+		return String.format("windowId=\"%d\",action=\"%d\",accepted=\"%b\"", windowId, action, accepted);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

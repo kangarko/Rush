@@ -145,11 +145,11 @@ public abstract class Packet extends HashcodeAndEqualsStub {
 	public abstract int getOpcode();
 
 	public void read17(ByteBufInputStream input) throws IOException {
-		throw new UnsupportedOperationException("Cannot read " + this);
+		throw new UnsupportedOperationException("PacketErr: Reading of " + this + " is not possible or was not implemented");
 	}
 
 	public void write17(ByteBufOutputStream output) throws IOException {
-		throw new UnsupportedOperationException("Cannot write " + this);
+		throw new UnsupportedOperationException("PacketErr: Writing " + this + " is not possible or was not implemented");
 	}
 	
 	public void read18(ByteBufInputStream input) throws IOException {

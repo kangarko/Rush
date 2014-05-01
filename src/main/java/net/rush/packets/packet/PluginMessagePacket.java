@@ -1,16 +1,18 @@
 package net.rush.packets.packet;
 
-import java.io.IOException;
-
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class PluginMessagePacket extends Packet {
 
-	public PluginMessagePacket() {}
+	public PluginMessagePacket() {
+	}
 
 	@Serialize(type = Type.STRING, order = 0)
 	private String channel;
@@ -43,8 +45,7 @@ public class PluginMessagePacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("channel=\"%s\",length=\"%d\",data=byte[%d]",
-				channel, length, data.length);
+		return String.format("channel=\"%s\",length=\"%d\",data=byte[%d]", channel, length, data.length);
 	}
 
 	@Override

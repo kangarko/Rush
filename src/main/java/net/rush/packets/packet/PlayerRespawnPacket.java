@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -22,8 +20,7 @@ public class PlayerRespawnPacket extends Packet {
 	@Serialize(type = Type.STRING, order = 4)
 	private String levelType;
 
-	public PlayerRespawnPacket(int dimension, byte difficulty, byte gameMode,
-			short worldHeight, String levelType) {
+	public PlayerRespawnPacket(int dimension, byte difficulty, byte gameMode, short worldHeight, String levelType) {
 		super();
 		this.dimension = dimension;
 		this.difficulty = difficulty;
@@ -57,20 +54,7 @@ public class PlayerRespawnPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String
-				.format("dimension=\"%d\",difficulty=\"%d\",gameMode=\"%d\",worldHeight=\"%d\",levelType=\"%s\"",
-						dimension, difficulty, gameMode, worldHeight, levelType);
+		return String.format("dimension=\"%d\",difficulty=\"%d\",gameMode=\"%d\",worldHeight=\"%d\",levelType=\"%s\"", dimension, difficulty, gameMode, worldHeight, levelType);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

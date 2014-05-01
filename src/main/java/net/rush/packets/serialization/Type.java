@@ -129,35 +129,35 @@ public enum Type {
 		}
 	}), ENTITY_METADATA(new Serializor<Parameter<?>[]>() {
 		@Override
-		public Parameter<?>[] read(DataInput in) throws IOException {
+		public Parameter<?>[] read(DataInput input) throws IOException {
 			Parameter<?>[] parameters = new Parameter<?>[Parameter.METADATA_SIZE];
-			for (int x = in.readUnsignedByte(); x != 127; x = in.readUnsignedByte()) {
+			for (int x = input.readUnsignedByte(); x != 127; x = input.readUnsignedByte()) {
 				int index = x & 0x1F;
 				int type = x >> 5;
 				MetadataType metaType = MetadataType.fromId(type);
 				switch (metaType) {
 					case BYTE:
-						parameters[index] = new Parameter<Byte>(type, index, in.readByte());
+						parameters[index] = new Parameter<Byte>(type, index, input.readByte());
 						break;
 					case SHORT:
-						parameters[index] = new Parameter<Short>(type, index, in.readShort());
+						parameters[index] = new Parameter<Short>(type, index, input.readShort());
 						break;
 					case INT:
-						parameters[index] = new Parameter<Integer>(type, index, in.readInt());
+						parameters[index] = new Parameter<Integer>(type, index, input.readInt());
 						break;
 					case FLOAT:
-						parameters[index] = new Parameter<Float>(type, index, in.readFloat());
+						parameters[index] = new Parameter<Float>(type, index, input.readFloat());
 						break;
 					case STRING:
-						parameters[index] = new Parameter<String>(type, index, readUtf8String(in));
+						parameters[index] = new Parameter<String>(type, index, readUtf8String(input));
 						break;
 					case ITEM:
-						short id = in.readShort();
+						short id = input.readShort();
 						if (id <= 0) {
 							parameters[index] = new Parameter<ItemStack>(type, index, ItemStack.NULL_ITEM);
 						} else {
-							byte stackSize = in.readByte();
-							short dataValue = in.readShort();
+							byte stackSize = input.readByte();
+							short dataValue = input.readShort();
 							//short dataLenght = in.readShort();
 							//byte[] metadata = new byte[0];
 							//if(dataLenght > 0) {
@@ -177,7 +177,7 @@ public enum Type {
 
 		@SuppressWarnings("unchecked")
 		@Override
-		public void write(DataOutput out, Parameter<?>[] val) throws IOException {
+		public void write(DataOutput output, Parameter<?>[] val) throws IOException {
 			for (Parameter<?> parameter : val) {
 
 				if (parameter == null)
@@ -186,34 +186,34 @@ public enum Type {
 				int type = parameter.getType();
 				int index = parameter.getIndex();
 
-				out.writeByte(((type & 0x07) << 5) | (index & 0x1F));
+				output.writeByte(((type & 0x07) << 5) | (index & 0x1F));
 
 				switch (type) {
 					case Parameter.TYPE_BYTE:
-						out.writeByte(((Parameter<Byte>) parameter).getValue());
+						output.writeByte(((Parameter<Byte>) parameter).getValue());
 						break;
 					case Parameter.TYPE_SHORT:
-						out.writeShort(((Parameter<Short>) parameter).getValue());
+						output.writeShort(((Parameter<Short>) parameter).getValue());
 						break;
 					case Parameter.TYPE_INT:
-						out.writeInt(((Parameter<Integer>) parameter).getValue());
+						output.writeInt(((Parameter<Integer>) parameter).getValue());
 						break;
 					case Parameter.TYPE_FLOAT:
-						out.writeFloat(((Parameter<Float>) parameter).getValue());
+						output.writeFloat(((Parameter<Float>) parameter).getValue());
 						break;
 					case Parameter.TYPE_STRING:
-						writeUtf8String(out, ((Parameter<String>) parameter).getValue());
+						writeUtf8String(output, ((Parameter<String>) parameter).getValue());
 						break;
 					case Parameter.TYPE_ITEM:
 						ItemStack item = ((Parameter<ItemStack>) parameter).getValue();
 
 						if (item.getId() <= 0) { // FIXME less then zero check
-							out.writeShort(-1);
+							output.writeShort(-1);
 						} else {
-							out.writeShort(item.getId());
-							out.writeByte(item.getCount());
-							out.writeShort(item.getDamage());
-							out.writeShort(-1);
+							output.writeShort(item.getId());
+							output.writeByte(item.getCount());
+							output.writeShort(item.getDamage());
+							output.writeShort(-1);
 							//if (item.getDataLength() >= 0) { // FIXME previous check if its enchantable
 							//	out.write(item.getMetadata());
 							//}
@@ -221,13 +221,13 @@ public enum Type {
 						break;
 					case Parameter.TYPE_COORDINATE:
 						Coordinate coord = ((Parameter<Coordinate>) parameter).getValue();
-						out.writeInt(coord.getX());
-						out.writeInt(coord.getY());
-						out.writeInt(coord.getZ());
+						output.writeInt(coord.getX());
+						output.writeInt(coord.getY());
+						output.writeInt(coord.getZ());
 						break;
 				}
 			}
-			out.writeByte(127);
+			output.writeByte(127);
 		}
 	}), ITEM(new Serializor<ItemStack>() {
 		@Override

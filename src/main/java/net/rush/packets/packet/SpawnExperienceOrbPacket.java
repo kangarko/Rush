@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -22,8 +20,7 @@ public class SpawnExperienceOrbPacket extends Packet {
 	@Serialize(type = Type.SHORT, order = 4)
 	private short count;
 
-	public SpawnExperienceOrbPacket(int entityId, int x, int y, int z,
-			short count) {
+	public SpawnExperienceOrbPacket(int entityId, int x, int y, int z, short count) {
 		super();
 		this.entityId = entityId;
 		this.x = x;
@@ -57,20 +54,7 @@ public class SpawnExperienceOrbPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format(
-				"entityId=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",count=\"%d\"",
-				entityId, x, y, z, count);
+		return String.format("entityId=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",count=\"%d\"", entityId, x, y, z, count);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

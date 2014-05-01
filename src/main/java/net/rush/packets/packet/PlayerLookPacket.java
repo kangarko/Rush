@@ -1,16 +1,17 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+
 import java.io.IOException;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class PlayerLookPacket extends Packet {
-	
-	public PlayerLookPacket() {}
+
+	public PlayerLookPacket() {
+	}
 
 	@Serialize(type = Type.FLOAT, order = 0)
 	private float yaw;
@@ -43,8 +44,7 @@ public class PlayerLookPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("yaw=\"%f\",pitch=\"%f\",onGround=\"%b\"", yaw,
-				pitch, onGround);
+		return String.format("yaw=\"%f\",pitch=\"%f\",onGround=\"%b\"", yaw, pitch, onGround);
 	}
 
 	@Override
@@ -54,9 +54,4 @@ public class PlayerLookPacket extends Packet {
 		onGround = input.readBoolean();
 	}
 
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

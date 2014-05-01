@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -24,8 +22,7 @@ public class EntityLookAndRelMovePacket extends Packet {
 	@Serialize(type = Type.BYTE, order = 5)
 	private byte pitch;
 
-	public EntityLookAndRelMovePacket(int entityId, byte diffX, byte diffY,
-			byte diffZ, byte yaw, byte pitch) {
+	public EntityLookAndRelMovePacket(int entityId, byte diffX, byte diffY, byte diffZ, byte yaw, byte pitch) {
 		super();
 		this.entityId = entityId;
 		this.diffX = diffX;
@@ -64,20 +61,7 @@ public class EntityLookAndRelMovePacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String
-				.format("entityId=\"%d\",diffX=\"%d\",diffY=\"%d\",diffZ=\"%d\",yaw=\"%d\",pitch=\"%d\"",
-						entityId, diffX, diffY, diffZ, yaw, pitch);
+		return String.format("entityId=\"%d\",diffX=\"%d\",diffY=\"%d\",diffZ=\"%d\",yaw=\"%d\",pitch=\"%d\"", entityId, diffX, diffY, diffZ, yaw, pitch);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

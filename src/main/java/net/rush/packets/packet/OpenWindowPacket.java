@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -24,9 +22,7 @@ public class OpenWindowPacket extends Packet {
 	@Serialize(type = Type.INT, order = 5)
 	private int horseId;
 
-	public OpenWindowPacket(byte windowId, byte inventoryType,
-			String windowTitle, byte numberOfSlots,
-			boolean useProvidedWindowTitle, int horseId) {
+	public OpenWindowPacket(byte windowId, byte inventoryType, String windowTitle, byte numberOfSlots, boolean useProvidedWindowTitle, int horseId) {
 		super();
 		this.windowId = windowId;
 		this.inventoryType = inventoryType;
@@ -65,21 +61,7 @@ public class OpenWindowPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String
-				.format("windowId=\"%d\",inventoryType=\"%d\",windowTitle=\"%s\",numberOfSlots=\"%d\",useProvidedTitle=\"%b\",horseIdé\"%d\"",
-						windowId, inventoryType, windowTitle, numberOfSlots,
-						useProvidedWindowTitle, horseId);
+		return String.format("windowId=\"%d\",inventoryType=\"%d\",windowTitle=\"%s\",numberOfSlots=\"%d\",useProvidedTitle=\"%b\",horseIdé\"%d\"", windowId, inventoryType, windowTitle, numberOfSlots, useProvidedWindowTitle, horseId);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

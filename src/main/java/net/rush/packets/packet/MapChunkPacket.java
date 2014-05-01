@@ -10,8 +10,9 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class MapChunkPacket extends Packet {
-	
-	public MapChunkPacket() {}
+
+	public MapChunkPacket() {
+	}
 
 	@Serialize(type = Type.INT, order = 0)
 	private int x;
@@ -27,9 +28,9 @@ public class MapChunkPacket extends Packet {
 	private int compressedSize;
 	@Serialize(type = Type.BYTE_ARRAY, order = 6, moreInfo = 5)
 	private byte[] compressedChunkData;
-	
+
 	//private static byte[] buildBuffer = new byte[196864];
-	
+
 	public MapChunkPacket(int x, int z, boolean groundUpContinuous, int primaryBitMap, int addBitMap, byte[] chunkData) {
 		this(x, z, groundUpContinuous, primaryBitMap, addBitMap, chunkData.length, chunkData);
 	}
@@ -78,67 +79,67 @@ public class MapChunkPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("x=\"%d\",z=\"%d\",groundUpContinuous=\"%b\",primaryBitMap=\"%d\",addBitMap=\"%d\",compressedSize=\"%d\",chunkData=byte[%d]",
-						x, z, groundUpContinuous, primaryBitMap, addBitMap, compressedSize, compressedChunkData.length);
+		return String.format("x=\"%d\",z=\"%d\",groundUpContinuous=\"%b\",primaryBitMap=\"%d\",addBitMap=\"%d\",compressedSize=\"%d\",chunkData=byte[%d]", x, z, groundUpContinuous, primaryBitMap, addBitMap, compressedSize,
+				compressedChunkData.length);
 	}
-	
+
 	@Override
 	public void read17(ByteBufInputStream input) throws IOException {
-        x = input.readInt();
-        z = input.readInt();
-        groundUpContinuous = input.readBoolean();
-        primaryBitMap = input.readUnsignedShort();
-        addBitMap = input.readUnsignedShort();
-        compressedSize = input.readInt();
-        
-        byte[] bytes = new byte[5];
+		x = input.readInt();
+		z = input.readInt();
+		groundUpContinuous = input.readBoolean();
+		primaryBitMap = input.readUnsignedShort();
+		addBitMap = input.readUnsignedShort();
+		compressedSize = input.readInt();
+
+		byte[] bytes = new byte[5];
 		input.readFully(bytes);
-        
-        compressedChunkData = bytes;
-        
-        /*if (buildBuffer.length < compressedSize) {
-            buildBuffer = new byte[compressedSize];
-        }
 
-        input.readFully(buildBuffer, 0, compressedSize);
-        int i = 0;
+		compressedChunkData = bytes;
 
-        int j;
+		/*if (buildBuffer.length < compressedSize) {
+		    buildBuffer = new byte[compressedSize];
+		}
 
-        for (j = 0; j < 16; ++j) {
-            i += this.primaryBitMap >> j & 1;
-        }
+		input.readFully(buildBuffer, 0, compressedSize);
+		int i = 0;
 
-        j = 12288 * i;
-        if (this.groundUpContinuous) {
-            j += 256;
-        }
+		int j;
 
-        this.compressedChunkData = new byte[j];
-        Inflater inflater = new Inflater();
+		for (j = 0; j < 16; ++j) {
+		    i += this.primaryBitMap >> j & 1;
+		}
 
-        inflater.setInput(buildBuffer, 0, compressedSize);
+		j = 12288 * i;
+		if (this.groundUpContinuous) {
+		    j += 256;
+		}
 
-        try {
-            inflater.inflate(this.compressedChunkData);
-        } catch (DataFormatException dataformatexception) {
-            throw new IOException("Bad compressed data format");
-        } finally {
-            inflater.end();
-        }*/
+		this.compressedChunkData = new byte[j];
+		Inflater inflater = new Inflater();
+
+		inflater.setInput(buildBuffer, 0, compressedSize);
+
+		try {
+		    inflater.inflate(this.compressedChunkData);
+		} catch (DataFormatException dataformatexception) {
+		    throw new IOException("Bad compressed data format");
+		} finally {
+		    inflater.end();
+		}*/
 	}
 
 	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {
 		output.writeInt(x);
-        output.writeInt(z);
-        output.writeBoolean(groundUpContinuous);
-        output.writeShort(primaryBitMap);
-        output.writeShort(addBitMap);
-        //output.writeShort((short) (this.primaryBitMap & '\uffff'));
-        //output.writeShort((short) (this.addBitMap & '\uffff'));
-        output.writeInt(compressedSize);
-        output.write(compressedChunkData);
-        //output.write(compressedChunkData, 0, compressedSize);
+		output.writeInt(z);
+		output.writeBoolean(groundUpContinuous);
+		output.writeShort(primaryBitMap);
+		output.writeShort(addBitMap);
+		//output.writeShort((short) (this.primaryBitMap & '\uffff'));
+		//output.writeShort((short) (this.addBitMap & '\uffff'));
+		output.writeInt(compressedSize);
+		output.write(compressedChunkData);
+		//output.write(compressedChunkData, 0, compressedSize);
 	}
 }

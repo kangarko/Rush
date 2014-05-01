@@ -1,7 +1,9 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -23,8 +25,7 @@ public class BlockActionPacket extends Packet {
 	@Serialize(type = Type.SHORT, order = 5)
 	private short blockId;
 
-	public BlockActionPacket(int x, short y, int z, byte byte1, byte byte2,
-			short blockId) {
+	public BlockActionPacket(int x, short y, int z, byte byte1, byte byte2, short blockId) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -63,20 +64,16 @@ public class BlockActionPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String
-				.format("x=\"%d\",y=\"%d\",z=\"%d\",byte1=\"%d\",byte2=\"%d\", blockId=\"%d\"",
-						x, y, z, byte1, byte2, blockId);
+		return String.format("x=\"%d\",y=\"%d\",z=\"%d\",byte1=\"%d\",byte2=\"%d\", blockId=\"%d\"", x, y, z, byte1, byte2, blockId);
 	}
 
 	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(x);
+		output.writeShort(y);
+		output.writeInt(z);
+		output.writeByte(byte1);
+		output.writeByte(byte2);
+		writeVarInt(blockId, output);
 	}
 }

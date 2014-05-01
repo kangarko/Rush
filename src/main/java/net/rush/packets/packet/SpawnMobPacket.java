@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.model.Position;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
@@ -38,9 +36,7 @@ public class SpawnMobPacket extends Packet {
 	@Serialize(type = Type.ENTITY_METADATA, order = 11)
 	private Parameter<?>[] metadata;
 
-	public SpawnMobPacket(int entityId, byte entityType, Position pos,
-			byte yaw, byte pitch, byte headYaw, Position velocity,
-			Parameter<?>[] metadata) {
+	public SpawnMobPacket(int entityId, byte entityType, Position pos, byte yaw, byte pitch, byte headYaw, Position velocity, Parameter<?>[] metadata) {
 		super();
 		this.entityId = entityId;
 		this.entityType = entityType;
@@ -109,22 +105,7 @@ public class SpawnMobPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String
-				.format("entityId=\"%d\",entityType=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\","
-						+ "yaw=\"%d\",pitch=\"%d\",headYaw=\"%d\",metadata=\"%s\"",
-						entityId, entityType, x, y, z, yaw, pitch, headYaw,
-						metadata);
+		return String.format("entityId=\"%d\",entityType=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\"," + "yaw=\"%d\",pitch=\"%d\",headYaw=\"%d\",metadata=\"%s\"", entityId, entityType, x, y, z, yaw, pitch, headYaw, metadata);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

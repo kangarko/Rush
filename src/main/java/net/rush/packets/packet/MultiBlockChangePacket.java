@@ -1,7 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -22,8 +20,7 @@ public class MultiBlockChangePacket extends Packet {
 	@Serialize(type = Type.BYTE_ARRAY, order = 4, moreInfo = 3)
 	private byte[] data;
 
-	public MultiBlockChangePacket(int chunkX, int chunkZ, short recordCount,
-			int dataSize, byte[] data) {
+	public MultiBlockChangePacket(int chunkX, int chunkZ, short recordCount, int dataSize, byte[] data) {
 		super();
 		this.chunkX = chunkX;
 		this.chunkZ = chunkZ;
@@ -57,20 +54,7 @@ public class MultiBlockChangePacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String
-				.format("chunkX=\"%d\",chunkZ=\"%d\",recordCount=\"%d\",dataSize=\"%d\",data=byte[%d]",
-						chunkX, chunkZ, recordCount, dataSize, data.length);
+		return String.format("chunkX=\"%d\",chunkZ=\"%d\",recordCount=\"%d\",dataSize=\"%d\",data=byte[%d]", chunkX, chunkZ, recordCount, dataSize, data.length);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }

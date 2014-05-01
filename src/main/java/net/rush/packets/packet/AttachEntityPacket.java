@@ -1,9 +1,10 @@
 package net.rush.packets.packet;
 
-import java.io.IOException;
-
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -15,8 +16,9 @@ public class AttachEntityPacket extends Packet {
 	private int vehicleId;
 	@Serialize(type = Type.UNSIGNED_BYTE, order = 2)
 	private byte leash;
-	
-	public AttachEntityPacket() {}
+
+	public AttachEntityPacket() {
+	}
 
 	public AttachEntityPacket(int entityId, int vehicleId, boolean leashed) {
 		super();
@@ -42,8 +44,7 @@ public class AttachEntityPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",vehicleId=\"%d\"", entityId,
-				vehicleId);
+		return String.format("entityId=\"%d\",vehicleId=\"%d\"", entityId, vehicleId);
 	}
 
 	@Override

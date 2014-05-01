@@ -1,8 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-
 import java.util.Set;
 
 import net.rush.model.Coordinate;
@@ -26,8 +23,7 @@ public class ExplosionPacket extends Packet {
 	@Serialize(type = Type.BLOCKCOORD_COLLECTION, order = 4)
 	private Set<Coordinate> destroyedBlocks;
 
-	public ExplosionPacket(double x, double y, double z, float size,
-			Set<Coordinate> destroyedBlocks) {
+	public ExplosionPacket(double x, double y, double z, float size, Set<Coordinate> destroyedBlocks) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -61,20 +57,7 @@ public class ExplosionPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String
-				.format("x=\"%d\",y=\"%d\",z=\"%d\",size=\"%d\",destroyedBlocks=\"%s\"",
-						x, y, z, size, destroyedBlocks);
+		return String.format("x=\"%d\",y=\"%d\",z=\"%d\",size=\"%d\",destroyedBlocks=\"%s\"", x, y, z, size, destroyedBlocks);
 	}
 
-	@Override
-	public void read17(ByteBufInputStream input) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) {
-		// TODO Auto-generated method stub
-
-	}
 }
