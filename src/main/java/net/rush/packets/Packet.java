@@ -301,6 +301,14 @@ public abstract class Packet extends HashcodeAndEqualsStub {
 		throw new UnsupportedOperationException("PacketErr: Writing " + this + " not possible or not implemented");
 	}
 	
+	public void read176(ByteBufInputStream input) throws IOException {
+		read17(input);
+	}
+
+	public void write176(ByteBufOutputStream output) throws IOException {
+		write17(output);
+	}
+	
 	public void read18(ByteBufInputStream input) throws IOException {
 		read17(input);
 	}

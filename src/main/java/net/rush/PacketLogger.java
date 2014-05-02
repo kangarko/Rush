@@ -18,12 +18,12 @@ public class PacketLogger {
 	private static ExecutorService executor = Executors.newWorkStealingPool();
 	private static List<String> ignored = Arrays.asList("MapChunkPacket", "BlockChangePacket");
 
-	public static void submitWrite(final Packet packet, final boolean read) {
+	public static void submitWrite(final Packet packet, final int protocol, final boolean read) {
 		executor.submit(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					write(packet, read);
+					write(packet, protocol, read);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -31,7 +31,7 @@ public class PacketLogger {
 		});
 	}
 
-	private static void write(Packet packet, boolean read) throws IOException {
+	private static void write(Packet packet, int protocol, boolean read) throws IOException {
 		if(ignored.contains(packet.getPacketType().getSimpleName()))
 			return;
 		
@@ -42,7 +42,7 @@ public class PacketLogger {
 		
 		try {
 			bw = new BufferedWriter(new FileWriter(file, true));
-			bw.write(getTime() + (read ? "Reading " : "Writing ") + ": " + packet);
+			bw.write(getTime() + (read ? "Reading " : "Writing ") + " (prot=" + protocol + "): " + packet);
 			bw.newLine();
 		} finally {
 			if (bw != null) {

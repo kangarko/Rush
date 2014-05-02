@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBufOutputStream;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import net.rush.PacketLogger;
+import net.rush.net.Session.ClientVersion;
 import net.rush.packets.Packet;
 import net.rush.packets.misc.Protocol;
 import net.rush.packets.packet.PacketLoginSuccess;
@@ -12,30 +13,36 @@ import net.rush.packets.packet.PacketLoginSuccess;
 public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
 	private Protocol protocol;
-	
+
 	public PacketEncoder(Protocol protocol) {
 		this.protocol = protocol;
 	}
 
 	@Override
 	protected void encode(ChannelHandlerContext ctx, Packet packet, ByteBuf out) throws Exception {
-		Protocol.ProtocolDirection dir = protocol.TO_CLIENT;
-		
-		Packet.writeVarInt(dir.getId(packet.getClass()), out);
-		packet.write17(new ByteBufOutputStream(out));
-		
+		ClientVersion version = ctx.pipeline().get(MinecraftHandler.class) == null ? null : ctx.pipeline().get(MinecraftHandler.class).session.getClientVersion();
+		ByteBufOutputStream output = new ByteBufOutputStream(out);
+
+		Packet.writeVarInt(protocol.TO_CLIENT.getId(packet.getClass()), out);
+
+		if (version.getProtocol() == 12)
+			packet.write18(output);
+		else if (version.getProtocol() == 5)
+			packet.write176(output);
+		else
+			packet.write17(output);
 
 		if (packet instanceof PacketLoginSuccess)
 			setProtocol(ctx, Protocol.GAME);
-		
-		PacketLogger.submitWrite(packet, false);	
+
+		PacketLogger.submitWrite(packet, version.getProtocol(), false);
 	}
 
 	public void setProtocol(ChannelHandlerContext channel, Protocol prot) {
 		channel.pipeline().get(PacketDecoder.class).setProtocol(prot);
 		channel.pipeline().get(PacketEncoder.class).setProtocol(prot);
 	}
-	
+
 	public void setProtocol(Protocol protocol) {
 		this.protocol = protocol;
 	}

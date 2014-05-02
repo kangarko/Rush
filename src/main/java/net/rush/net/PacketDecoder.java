@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 import net.rush.PacketLogger;
+import net.rush.net.Session.ClientVersion;
 import net.rush.packets.Packet;
 import net.rush.packets.misc.Protocol;
 import net.rush.packets.packet.HandshakePacket;
@@ -32,16 +33,24 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 		if(in.readableBytes() == 0)
 			return;
 
-		Protocol.ProtocolDirection dir = protocol.TO_SERVER;		
+		ClientVersion version = ctx.pipeline().get(MinecraftHandler.class) == null ? null : ctx.pipeline().get(MinecraftHandler.class).session.getClientVersion();
+
 		int packetId = Packet.readVarInt(in);
-		Class<? extends Packet> packetClazz = dir.createPacket(packetId);
+		Class<? extends Packet> packetClazz = protocol.TO_SERVER.createPacket(packetId);
 		
 		if (packetClazz == null)
 			throw new IOException("Unknown operation code: " + packetId + ").");
 		
 		Packet packet = packetClazz.newInstance();
 		
-		packet.read17(new ByteBufInputStream(in));
+		ByteBufInputStream is = new ByteBufInputStream(in);
+		
+		if (version.getProtocol() == 12)
+			packet.read18(is);
+		else if (version.getProtocol() == 5)
+			packet.read176(is);
+		else
+			packet.read17(is);
 		
 		out.add(packet);
 		 
@@ -57,7 +66,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 					break;
 			}
 		}
-		PacketLogger.submitWrite(packet, true);
+		PacketLogger.submitWrite(packet, version.getProtocol(), true);
 	}
 
 	public void setProtocol(ChannelHandlerContext channel, Protocol prot) {
