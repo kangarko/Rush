@@ -69,8 +69,8 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 				}
 			}
 			
-			ItemEntity item = new ItemEntity(player.getWorld(), new ItemStack(Material.COBBLESTONE.getId(), 1));
-			item.setPosition(new Position(localX * 16, y + 1, localZ * 16));
+			ItemEntity item = new ItemEntity(player.getWorld(), new ItemStack(oldType));
+			item.setPosition(new Position(x, y + 0.1, z));
 			//item.setRotation(new Rotation(player.getRotation().getYaw(), player.getRotation().getPitch(), player.getRotation().getIntRoll()));
 			player.getSession().send(item.createSpawnMessage());
 			item.handleMetadata();

@@ -27,29 +27,15 @@ public class SpawnObjectPacket extends Packet {
 	@Serialize(type = Type.INT, order = 7)
 	private int integer;
 
-	/*
-	 * Unused yet. If the number of "integer" isn´t 0 than following will also
-	 * be send:
-	 * 
-	 * @Serialize(type = Type.SHORT, order = 8) // FIXME is it SHORT or
-	 * CONDITIONAL SHORT? In notchian server the datainput read it as a short so
-	 * I dunno. private short speedZ;
-	 * 
-	 * @Serialize(type = Type.SHORT, order = 9) private short speedY;
-	 * 
-	 * @Serialize(type = Type.SHORT, order = 10) private short
-	 * shortspeedZ;
-	 */
-
-	public SpawnObjectPacket(int entityId, byte type, Position pos, byte pitch, byte yaw) {
+	public SpawnObjectPacket(int entityId, int type, Position pos, int pitch, int yaw) {
 		super();
 		this.entityId = entityId;
-		this.type = type;
-		x = (int) pos.getX();
-		y = (int) pos.getY();
-		z = (int) pos.getZ();
-		this.pitch = pitch;
-		this.yaw = yaw;
+		this.type = (byte) type;
+		x = (int) pos.getPixelX();
+		y = (int) pos.getPixelY();
+		z = (int) pos.getPixelZ();
+		this.pitch = (byte)pitch;
+		this.yaw = (byte)yaw;
 		integer = 0; // TODO
 	}
 

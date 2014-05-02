@@ -2,7 +2,6 @@ package net.rush.model.entity;
 
 import net.rush.model.Entity;
 import net.rush.model.ItemStack;
-import net.rush.model.Rotation;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.SpawnObjectPacket;
 import net.rush.util.Parameter;
@@ -29,7 +28,6 @@ public final class ItemEntity extends Entity {
 	public ItemEntity(World world, ItemStack item) {
 		super(world, EntityType.DROPPED_ITEM);
 		this.item = item;
-		this.rotation = new Rotation((float) (Math.random() * 360D), 0);
 	}
 
 	/**
@@ -44,11 +42,11 @@ public final class ItemEntity extends Entity {
 		int yaw = rotation.getIntYaw();
 		int pitch = rotation.getIntPitch();
 		
-		return new SpawnObjectPacket(id, (byte)2, position, (byte)yaw, (byte)pitch);
+		return new SpawnObjectPacket(id, 2, position, yaw, pitch);
 	}
 	
 	public void handleMetadata() {
-		setMetadata(new Parameter<ItemStack>(Parameter.TYPE_ITEM, 5, item));
+		setMetadata(new Parameter<ItemStack>(Parameter.TYPE_ITEM, 10, item));
 	}
 
 	public Packet createUpdateMessage() {

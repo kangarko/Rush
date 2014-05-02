@@ -246,15 +246,15 @@ public abstract class Entity {
 
 	public void setMetadata(Parameter<?> data) {
 		metadata[data.getIndex()] = data;
-		updateMetadata();
+		createMetadataMessage();
 	}
 	
-	public void updateMetadata() {
-		EntityMetadataPacket message = new EntityMetadataPacket(id, metadata);
+	public void createMetadataMessage() {
+		EntityMetadataPacket message = new EntityMetadataPacket(id, metadata.clone());
 		for (Player player : world.getPlayers()) {
 			if (player != this) {
 				player.getSession().send(message);
-				player.sendMessage("You have recieved metadata of " + entityType.toString() + " , id " + id);
+				player.sendMessage("&cRecieved metadata of " + entityType.toString() + " (id " + id + ") @ " + position.getX() + ", " + position.getY() + ", " + position.getZ());
 			}
 		}
 	}
