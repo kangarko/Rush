@@ -20,7 +20,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
 	@Override
 	protected void encode(ChannelHandlerContext ctx, Packet packet, ByteBuf out) throws Exception {
-		ClientVersion version = ctx.pipeline().get(MinecraftHandler.class) == null ? null : ctx.pipeline().get(MinecraftHandler.class).session.getClientVersion();
+		ClientVersion version = ctx.pipeline().get(MinecraftHandler.class).session.getClientVersion();
 		ByteBufOutputStream output = new ByteBufOutputStream(out);
 
 		Packet.writeVarInt(protocol.TO_CLIENT.getId(packet.getClass()), out);

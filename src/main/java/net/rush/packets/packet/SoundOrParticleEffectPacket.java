@@ -33,11 +33,11 @@ public class SoundOrParticleEffectPacket extends Packet {
 	@Serialize(type = Type.BOOL, order = 5)
 	private boolean relativeVolume;
 
-	public SoundOrParticleEffectPacket(int effectId, int x, byte y, int z, int data, boolean relativeVolume) {
+	public SoundOrParticleEffectPacket(int effectId, int x, int y, int z, int data, boolean relativeVolume) {
 		super();
 		this.effectId = effectId;
 		this.x = x;
-		this.y = y;
+		this.y = (byte)y;
 		this.z = z;
 		this.data = data;
 		this.relativeVolume = relativeVolume;

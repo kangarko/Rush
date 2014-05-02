@@ -91,7 +91,7 @@ public final class Session {
 	 */
 	private final boolean compat;
 	
-	private ClientVersion clientVersion;
+	private ClientVersion clientVersion = new ClientVersion("1.7.2", 4); // default to prevent NPE
 	
 	private boolean pendingRemoval = false;
 	private int pingMessageId;
@@ -266,7 +266,7 @@ public final class Session {
 		return clientVersion;
 	}
 	
-	public class ClientVersion {
+	public static class ClientVersion {
 		private final String version;
 		private final int protocol;
 		

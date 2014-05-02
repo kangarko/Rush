@@ -32,7 +32,7 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 		if (player.getGamemode() == GameMode.CREATIVE || message.getStatus() == PlayerDiggingPacket.DONE_DIGGING) {			
 			world.setAir(x, y, z);
 			
-			SoundOrParticleEffectPacket soundMsg = new SoundOrParticleEffectPacket(SoundOrParticleEffectPacket.DIG_SOUND, x, (byte)y, z, oldType, false);
+			SoundOrParticleEffectPacket soundMsg = new SoundOrParticleEffectPacket(SoundOrParticleEffectPacket.DIG_SOUND, x, y, z, oldType, false);
 			
 			for (Player p: world.getPlayers()) {
 				if(p != player && player.isWithinDistance(p))

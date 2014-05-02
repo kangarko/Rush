@@ -33,7 +33,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 		if(in.readableBytes() == 0)
 			return;
 
-		ClientVersion version = ctx.pipeline().get(MinecraftHandler.class) == null ? null : ctx.pipeline().get(MinecraftHandler.class).session.getClientVersion();
+		ClientVersion version = ctx.pipeline().get(MinecraftHandler.class).session.getClientVersion();
 
 		int packetId = Packet.readVarInt(in);
 		Class<? extends Packet> packetClazz = protocol.TO_SERVER.createPacket(packetId);
