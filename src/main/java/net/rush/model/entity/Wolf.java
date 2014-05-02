@@ -21,9 +21,9 @@ public class Wolf extends EntityAgeable {
 	 * Also means it he is angry, aggressive, attacking, etc.
 	 * I choosed pissed xD
 	 */
-	public void setPissed(boolean pissed) {
-		this.pissed = pissed;
-		setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 16, (byte) (pissed ? 0x02: 0)));
+	public void setPissed(boolean pissedOff) {
+		this.pissed = pissedOff;
+		setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 16, (byte) (pissedOff ? 0x02: 0)));
 		// TODO Do this wipe the other parameters in index 16 ?
 	}
 	

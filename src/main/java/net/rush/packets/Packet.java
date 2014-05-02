@@ -8,8 +8,11 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import net.rush.model.Coordinate;
 import net.rush.model.ItemStack;
+import net.rush.packets.misc.MetadataType;
 import net.rush.packets.serialization.HashcodeAndEqualsStub;
+import net.rush.util.Parameter;
 
 import com.google.common.base.Charsets;
 
@@ -169,6 +172,120 @@ public abstract class Packet extends HashcodeAndEqualsStub {
 			}
 			return new ItemStack(id, stackSize, dataValue);
 		}
+    }
+    
+    @SuppressWarnings("unchecked")
+	public void writeMetadata(DataOutput output, Parameter<?>[] parameters) throws IOException {
+    	for (Parameter<?> parameter : parameters) {
+
+			if (parameter == null)
+				continue;
+
+			int type = (parameter.getType() << 5 | parameter.getIndex() & 31) & 255;
+			output.writeByte(type);
+			
+			//output.writeByte(((type & 0x07) << 5) | (parameter.getIndex() & 0x1F));
+			
+			switch (parameter.getType()) {
+				case Parameter.TYPE_BYTE:
+					output.writeByte(((Parameter<Byte>) parameter).getValue());
+					break;
+					
+				case Parameter.TYPE_SHORT:
+					output.writeShort(((Parameter<Short>) parameter).getValue());
+					break;
+					
+				case Parameter.TYPE_INT:
+					output.writeInt(((Parameter<Integer>) parameter).getValue());
+					break;
+					
+				case Parameter.TYPE_FLOAT:
+					output.writeFloat(((Parameter<Float>) parameter).getValue());
+					break;
+					
+				case Parameter.TYPE_STRING:
+					writeString(((Parameter<String>) parameter).getValue(), output, false);
+					break;
+					
+				case Parameter.TYPE_ITEM:
+					ItemStack item = ((Parameter<ItemStack>) parameter).getValue();
+
+					if (item.getId() <= 0) {
+						output.writeShort(-1);
+					} else {
+						output.writeShort(item.getId());
+						output.writeByte(item.getCount());
+						output.writeShort(item.getDamage());
+						output.writeShort(-1);
+						// TODO implement NBT tag writing
+					}
+					break;
+					
+				case Parameter.TYPE_COORDINATE:
+					Coordinate coord = ((Parameter<Coordinate>) parameter).getValue();
+					
+					output.writeInt(coord.getX());
+					output.writeInt(coord.getY());
+					output.writeInt(coord.getZ());
+			}
+		}
+    }
+    
+    public Parameter<?>[] readMetadata(DataInput input) throws IOException {
+    	
+    	Parameter<?>[] parameters = new Parameter<?>[Parameter.METADATA_SIZE];
+    	
+		for (int data = input.readUnsignedByte(); data != 127; data = input.readUnsignedByte()) {
+			int index = data & 0x1F;
+			int type = data >> 5;
+					
+			MetadataType metaType = MetadataType.fromId(type);
+			
+			switch (metaType) {
+				case BYTE:
+					parameters[index] = new Parameter<Byte>(type, index, input.readByte());
+					break;
+					
+				case SHORT:
+					parameters[index] = new Parameter<Short>(type, index, input.readShort());
+					break;
+					
+				case INT:
+					parameters[index] = new Parameter<Integer>(type, index, input.readInt());
+					break;
+					
+				case FLOAT:
+					parameters[index] = new Parameter<Float>(type, index, input.readFloat());
+					break;
+					
+				case STRING:
+					parameters[index] = new Parameter<String>(type, index, readString(input, 9999999, false));
+					break;
+					
+				case ITEM:
+					short id = input.readShort();
+					if (id <= 0) {
+						parameters[index] = new Parameter<ItemStack>(type, index, ItemStack.NULL_ITEM);
+					} else {
+						byte stackSize = input.readByte();
+						short dataValue = input.readShort();
+						// TODO Implement NBT tag reading
+						parameters[index] = new Parameter<ItemStack>(type, index, new ItemStack(id, stackSize, dataValue));
+					}
+					break;
+					
+				case POSITION:
+					int x = input.readInt();
+					int y = input.readInt();
+					int z = input.readInt();
+					
+					parameters[index] = new Parameter<Coordinate>(type, index, new Coordinate(x, y, z));
+					
+				default:
+					throw new UnsupportedOperationException("Metadata-type '" + metaType + "' is not implemented!");
+			}
+		}
+		return parameters;
     }
     
 	public abstract String getToStringDescription();
