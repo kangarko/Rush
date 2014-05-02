@@ -229,6 +229,7 @@ public abstract class Packet extends HashcodeAndEqualsStub {
 					output.writeInt(coord.getZ());
 			}
 		}
+    	output.writeByte(127);
     }
     
     public Parameter<?>[] readMetadata(DataInput input) throws IOException {

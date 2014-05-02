@@ -33,6 +33,7 @@ import net.rush.net.PacketEncoder;
 import net.rush.net.Session;
 import net.rush.net.SessionRegistry;
 import net.rush.packets.KickPacketWriter;
+import net.rush.packets.Packet;
 import net.rush.packets.Varint21FrameDecoder;
 import net.rush.packets.Varint21LengthFieldPrepender;
 import net.rush.packets.legacy.CompatChecker;
@@ -220,6 +221,11 @@ public final class Server {
 
 	public static Server getServer() {
 		return server;
+	}
+	
+	public void broadcastPacket(Packet packet) {
+		for(Player pl : getWorld().getPlayers())
+			pl.getSession().send(packet);
 	}
 
 	/**

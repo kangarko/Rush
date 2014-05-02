@@ -44,7 +44,7 @@ public class DestroyEntityPacket extends Packet {
 	@Override
 	public void read17(ByteBufInputStream input) throws IOException {
 		entityCount = input.readByte();
-		entityIDs = new int[entityCount];
+		//entityIDs = new int[entityCount];
 
         for (int i = 0; i < entityCount; ++i) {
             entityIDs[i] = input.readInt();
@@ -54,7 +54,7 @@ public class DestroyEntityPacket extends Packet {
 	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {
 		output.writeByte(entityCount);
-		for (int i = 0; i < entityIDs.length; i++) {
+		for (int i = 0; i < entityCount; i++) {
 			output.write(entityIDs[i]);
 		}
 	}

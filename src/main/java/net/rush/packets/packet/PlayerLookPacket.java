@@ -1,6 +1,7 @@
 package net.rush.packets.packet;
 
 import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 
 import java.io.IOException;
 
@@ -52,6 +53,13 @@ public class PlayerLookPacket extends Packet {
 		yaw = input.readFloat();
 		pitch = input.readFloat();
 		onGround = input.readBoolean();
+	}
+	
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeFloat(yaw);
+		output.writeFloat(pitch);
+		output.writeBoolean(onGround);
 	}
 
 }

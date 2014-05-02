@@ -8,7 +8,8 @@ public final class PlayerOnGroundPacketHandler extends PacketHandler<PlayerOnGro
 
 	@Override
 	public void handle(Session session, Player player, PlayerOnGroundPacket message) {
-		//player.sendMessage("&6on ground: " + (message.getOnGround() ? "&atrue" : "&cfalse"));
+		if(player == null)
+			return;
 		player.setOnGround(message.getOnGround());
 	}
 

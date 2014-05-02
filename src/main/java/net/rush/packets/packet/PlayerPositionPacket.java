@@ -1,6 +1,7 @@
 package net.rush.packets.packet;
 
 import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 
 import java.io.IOException;
 
@@ -69,13 +70,13 @@ public class PlayerPositionPacket extends Packet {
 		z = input.readDouble();
 		onGround = input.readBoolean();
 	}
-
-	/*@Override
+	
+	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {
 		output.writeDouble(x);
 		output.writeDouble(y);
 		output.writeDouble(stance);
 		output.writeDouble(z);
 		output.writeBoolean(onGround);
-	}*/
+	}
 }

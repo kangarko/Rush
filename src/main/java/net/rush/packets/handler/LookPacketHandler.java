@@ -3,6 +3,7 @@ package net.rush.packets.handler;
 import net.rush.model.Player;
 import net.rush.model.Rotation;
 import net.rush.net.Session;
+import net.rush.packets.packet.EntityHeadLookPacket;
 import net.rush.packets.packet.PlayerLookPacket;
 
 /**
@@ -18,6 +19,7 @@ public final class LookPacketHandler extends PacketHandler<PlayerLookPacket> {
 			return;
 
 		player.setRotation(new Rotation(message.getYaw(), message.getPitch()));
+		session.getServer().broadcastPacket(new EntityHeadLookPacket(player.getId(), (byte) player.getRotation().getIntYaw()));
 	}
 
 }

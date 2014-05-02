@@ -1,5 +1,9 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.model.Position;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
@@ -7,8 +11,8 @@ import net.rush.packets.serialization.Type;
 import net.rush.util.Parameter;
 
 public class SpawnMobPacket extends Packet {
+	
 	public SpawnMobPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.INT, order = 0)
@@ -108,4 +112,19 @@ public class SpawnMobPacket extends Packet {
 		return String.format("entityId=\"%d\",entityType=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\"," + "yaw=\"%d\",pitch=\"%d\",headYaw=\"%d\",metadata=\"%s\"", entityId, entityType, x, y, z, yaw, pitch, headYaw, metadata);
 	}
 
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		writeVarInt(entityId, output);
+		output.writeByte(entityType);
+		output.writeInt(x);
+		output.writeInt(y);
+		output.writeInt(z);
+		output.writeByte(pitch);
+		output.writeByte(headYaw);
+		output.writeByte(yaw);
+		output.writeShort(velocityX);
+		output.writeShort(velocityY);
+		output.writeShort(velocityZ);
+		writeMetadata(output, metadata);
+	}
 }

@@ -1,5 +1,9 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.model.Position;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
@@ -7,8 +11,8 @@ import net.rush.packets.serialization.Type;
 import net.rush.util.Parameter;
 
 public class NamedEntitySpawnPacket extends Packet {
+	
 	public NamedEntitySpawnPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.INT, order = 0)
@@ -87,7 +91,6 @@ public class NamedEntitySpawnPacket extends Packet {
 		return String.format("entityId=\"%d\",playerName=\"%s\",x=\"%d\",y=\"%d\",z=\"%d\",yaw=\"%d\",pitch=\"%d\",currentItem=\"%d\"", entityId, entityName, x, y, z, yaw, pitch, currentItem);
 	}
 
-	/*@SuppressWarnings("unchecked")
 	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {
 		writeVarInt(entityId, output);
@@ -99,56 +102,6 @@ public class NamedEntitySpawnPacket extends Packet {
 		output.writeByte(yaw);
 		output.writeByte(pitch);
 		output.writeShort(currentItem);
-
-		for (Parameter<?> parameter : metadata) {
-
-			if (parameter == null)
-				continue;
-
-			int type = parameter.getType();
-			int index = parameter.getIndex();
-
-			output.writeByte(((type & 0x07) << 5) | (index & 0x1F));
-
-			switch (type) {
-				case Parameter.TYPE_BYTE:
-					output.writeByte(((Parameter<Byte>) parameter).getValue());
-					break;
-				case Parameter.TYPE_SHORT:
-					output.writeShort(((Parameter<Short>) parameter).getValue());
-					break;
-				case Parameter.TYPE_INT:
-					output.writeInt(((Parameter<Integer>) parameter).getValue());
-					break;
-				case Parameter.TYPE_FLOAT:
-					output.writeFloat(((Parameter<Float>) parameter).getValue());
-					break;
-				case Parameter.TYPE_STRING:
-					Type.writeUtf8String(output, ((Parameter<String>) parameter).getValue());
-					break;
-				case Parameter.TYPE_ITEM:
-					ItemStack item = ((Parameter<ItemStack>) parameter).getValue();
-
-					if (item.getId() <= 0) { // FIXME less then zero check
-						output.writeShort(-1);
-					} else {
-						output.writeShort(item.getId());
-						output.writeByte(item.getCount());
-						output.writeShort(item.getDamage());
-						output.writeShort(-1);
-						//if (item.getDataLength() >= 0) { // FIXME previous check if its enchantable
-						//	out.write(item.getMetadata());
-						//}
-					}
-					break;
-				case Parameter.TYPE_COORDINATE:
-					Coordinate coord = ((Parameter<Coordinate>) parameter).getValue();
-					output.writeInt(coord.getX());
-					output.writeInt(coord.getY());
-					output.writeInt(coord.getZ());
-					break;
-			}
-		}
-		output.writeByte(127);
-	}*/
+		writeMetadata(output, metadata);
+	}
 }
