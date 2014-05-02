@@ -17,15 +17,17 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 	public void handle(Session session, Player player, PlayerBlockPlacementPacket packet) {
 		World world = player.getWorld();
 		
-		if(packet.getHeldItem() == ItemStack.NULL_ITEM || Block.byId[packet.getHeldItem().getId()] == null || !Block.byId[packet.getHeldItem().getId()].material.isSolid())
-			return;
-
-		if(packet.getDirection() == -1)
-			return;
-		
 		int x = packet.getX();
 		int z = packet.getZ();
 		int y = packet.getY();
+		
+		boolean valid = true; // TODO better way to make it
+		
+		if(packet.getHeldItem() == ItemStack.NULL_ITEM || packet.getDirection() == -1)
+			return;
+		
+		if(Block.byId[packet.getHeldItem().getId()] == null || !Block.byId[packet.getHeldItem().getId()].material.isSolid())
+			valid = false;
 		
 		int xOffset = (int) (packet.getCursorX() * 16.0F);
 		int yOffset = (int) (packet.getCursorY() * 16.0F);
@@ -34,10 +36,11 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		int blockId = packet.getHeldItem().getId();
 		int direction = packet.getDirection();
 
-		placeOrActivate(player, world, packet.getHeldItem(), x, y, z, direction, xOffset, yOffset, zOffset);
+		if(valid)
+			placeOrActivate(player, world, packet.getHeldItem(), x, y, z, direction, xOffset, yOffset, zOffset);
 		
 		player.getSession().send(new BlockChangePacket(x, y, z, world));
-
+		
 		if (direction == 0)
 			--y;
 
@@ -58,14 +61,8 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 
 		player.getSession().send(new BlockChangePacket(x, y, z, world));
 		
-		/*BlockChangePacket bcmsg = new BlockChangePacket(posX, posY, posZ, (byte)blockId, (byte)packet.getHeldItem().getDamage()); 
-		for (Player pl: world.getPlayers()) {
-			pl.getSession().send(bcmsg);
-		}*/
-		
-		//chunk.setType((int)pos.getX(), (int)pos.getY(),(int)pos.getZ(), blockId);
-		
-		player.sendMessage("&bYou have placed " + Block.byId[blockId].getName() + " @ " + StringUtils.serializeLoc(x, y, z) + " side: " + packet.getDirection());
+		if(valid)
+			player.sendMessage("&bYou have placed " + Block.byId[blockId].getName() + " @ " + StringUtils.serializeLoc(x, y, z) + " side: " + packet.getDirection());
 	}
 	
 	public boolean placeOrActivate(Player player, World world, ItemStack item, int x, int y, int z, int direction, float cursorX, float cursorY, float cursorZ) {

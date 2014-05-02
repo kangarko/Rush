@@ -8,8 +8,10 @@ import java.io.IOException;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
+import net.rush.util.enums.AnimationEnum;
 
 public class AnimationPacket extends Packet {
+	
 	@Serialize(type = Type.INT, order = 0)
 	private int entityId;
 	@Serialize(type = Type.BYTE, order = 1)
@@ -18,6 +20,10 @@ public class AnimationPacket extends Packet {
 	public AnimationPacket() {
 	}
 
+	public AnimationPacket(int entityId, AnimationEnum animation) {
+		this(entityId, animation.getId());
+	}
+	
 	public AnimationPacket(int entityId, byte animation) {
 		super();
 		this.entityId = entityId;
@@ -45,10 +51,10 @@ public class AnimationPacket extends Packet {
 		entityId = input.readInt();
 		animation = input.readByte();
 	}
-
+	
 	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {
-		output.writeInt(entityId);
+		writeVarInt(entityId, output);
 		output.writeByte(animation);
 	}
 }

@@ -1,12 +1,17 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class CloseWindowPacket extends Packet {
+	
 	public CloseWindowPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.BYTE, order = 0)
@@ -27,6 +32,16 @@ public class CloseWindowPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("windowId=\"%d\"", windowId);
+	}
+	
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		windowId = (byte) input.readUnsignedByte();
+	}
+	
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeByte(windowId);
 	}
 
 }

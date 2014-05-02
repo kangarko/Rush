@@ -1,12 +1,17 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class EntityLookAndRelMovePacket extends Packet {
+	
 	public EntityLookAndRelMovePacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.INT, order = 0)
@@ -63,5 +68,24 @@ public class EntityLookAndRelMovePacket extends Packet {
 	public String getToStringDescription() {
 		return String.format("entityId=\"%d\",diffX=\"%d\",diffY=\"%d\",diffZ=\"%d\",yaw=\"%d\",pitch=\"%d\"", entityId, diffX, diffY, diffZ, yaw, pitch);
 	}
+	
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		entityId = input.readInt();
+		diffX = input.readByte();
+		diffY = input.readByte();
+		diffZ = input.readByte();
+		yaw = input.readByte();
+		pitch = input.readByte();
+	}
 
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(entityId);
+		output.writeByte(diffX);
+		output.writeByte(diffY);
+		output.writeByte(diffZ);
+		output.writeByte(yaw);
+		output.writeByte(pitch);
+	}
 }

@@ -1,12 +1,16 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class NamedSoundEffectPacket extends Packet {
+	
 	public NamedSoundEffectPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.STRING, order = 0)
@@ -72,5 +76,14 @@ public class NamedSoundEffectPacket extends Packet {
 	public String getToStringDescription() {
 		return String.format("soundName=\"%s\",x=\"%s\",y=\"%s\",z=\"%s\",volume=\"%s\",pitch=\"%s\"", soundName, x, y, z, volume, pitch);
 	}
-
+	
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		writeString(soundName, output, false);
+		output.writeInt(x);
+		output.writeInt(y);
+		output.writeInt(z);
+		output.writeFloat(volume);
+		output.writeByte(pitch);
+	}
 }
