@@ -1,13 +1,18 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.model.Position;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SpawnObjectPacket extends Packet {
+	
 	public SpawnObjectPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.INT, order = 0)
@@ -78,5 +83,16 @@ public class SpawnObjectPacket extends Packet {
 	public String getToStringDescription() {
 		return String.format("entityId=\"%d\",type=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",fireballThrower=\"%d\"," + "fireballSpeedX=\"%d\",fireballSpeedY=\"%d\",fireballSpeedZ=\"%d\"", entityId, type, x, y, z);
 	}
-
+	
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		writeVarInt(entityId, output);
+		output.writeByte(type);
+		output.writeInt(x);
+		output.writeInt(y);
+		output.writeInt(z);
+		output.writeByte(pitch);
+		output.writeByte(yaw);
+		output.writeInt(integer);
+	}
 }
