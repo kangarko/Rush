@@ -21,6 +21,7 @@ import net.rush.packets.packet.PlayerPositionAndLookPacket;
 import net.rush.packets.packet.SetWindowItemsPacket;
 import net.rush.packets.packet.SpawnPositionPacket;
 import net.rush.util.Parameter;
+import net.rush.util.enums.GameStateReason;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -253,7 +254,7 @@ public final class Player extends LivingEntity implements CommandSender {
 	@SuppressWarnings("deprecation")
 	public void setGamemode(GameMode gamemode) {
 		this.gamemode = gamemode;
-		this.getSession().send(new ChangeGameStatePacket((byte)3, (byte)gamemode.getValue()));
+		this.getSession().send(new ChangeGameStatePacket(GameStateReason.CHANGE_GAMEMODE, gamemode.getValue()));
 	}
 	
 	public boolean isRiding() {

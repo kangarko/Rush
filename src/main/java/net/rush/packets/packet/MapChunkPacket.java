@@ -1,6 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 
 import java.io.IOException;
@@ -83,7 +82,7 @@ public class MapChunkPacket extends Packet {
 				compressedChunkData.length);
 	}
 
-	@Override
+	/*@Override
 	public void read17(ByteBufInputStream input) throws IOException {
 		x = input.readInt();
 		z = input.readInt();
@@ -127,7 +126,7 @@ public class MapChunkPacket extends Packet {
 		} finally {
 		    inflater.end();
 		}*/
-	}
+	//}
 
 	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {

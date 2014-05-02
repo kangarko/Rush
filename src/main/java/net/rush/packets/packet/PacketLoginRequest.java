@@ -1,7 +1,6 @@
 package net.rush.packets.packet;
 
 import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 
 import java.io.IOException;
 
@@ -27,10 +26,4 @@ public class PacketLoginRequest extends Packet {
 	public void read17(ByteBufInputStream input) throws IOException {
 		name = readString(input, 16, false);
 	}
-
-	@Override
-	public void write17(ByteBufOutputStream output) throws IOException {
-		throw new IOException("cannot write " + this);
-	}
-
 }

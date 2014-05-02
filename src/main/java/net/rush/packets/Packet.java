@@ -8,6 +8,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import net.rush.model.ItemStack;
 import net.rush.packets.serialization.HashcodeAndEqualsStub;
 
 import com.google.common.base.Charsets;
@@ -138,18 +139,48 @@ public abstract class Packet extends HashcodeAndEqualsStub {
         writeVarInt( b.length, output );
         output.write( b );
     }
-
 	
+    public void writeItemstack(ItemStack item, DataOutput output) throws IOException {
+    	if (item == ItemStack.NULL_ITEM || item.getId() <= 0) { // FIXME less then zero check
+    		output.writeShort(-1);
+		} else {
+			output.writeShort(item.getId());
+			output.writeByte(item.getCount());
+			output.writeShort(item.getDamage());
+			output.writeShort(item.getDataLength());
+			if (item.getDataLength() > 0) { // FIXME previous check if its enchantable // TODO is is Id or datalength?
+				output.write(item.getData());
+			}
+		}
+    }
+    
+    public ItemStack readItemstack(DataInput input) throws IOException {
+		short id = input.readShort();
+		if (id <= 0) {
+			return ItemStack.NULL_ITEM;
+		} else {
+			byte stackSize = input.readByte();
+			short dataValue = input.readShort();
+			short dataLenght = input.readShort();
+			byte[] metadata = new byte[0];
+			if (dataLenght >= 0 && id != 0) { // FIXME previous check if its enchantable. Since MC 1.3.2 all items except 0 (empty hand) can send this.
+				metadata = new byte[dataLenght];
+				input.readFully(metadata);
+			}
+			return new ItemStack(id, stackSize, dataValue);
+		}
+    }
+    
 	public abstract String getToStringDescription();
 
 	public abstract int getOpcode();
 
 	public void read17(ByteBufInputStream input) throws IOException {
-		throw new UnsupportedOperationException("PacketErr: Reading of " + this + " is not possible or was not implemented");
+		throw new UnsupportedOperationException("PacketErr: Reading of " + this + " not possible or not implemented");
 	}
 
 	public void write17(ByteBufOutputStream output) throws IOException {
-		throw new UnsupportedOperationException("PacketErr: Writing " + this + " is not possible or was not implemented");
+		throw new UnsupportedOperationException("PacketErr: Writing " + this + " not possible or not implemented");
 	}
 	
 	public void read18(ByteBufInputStream input) throws IOException {

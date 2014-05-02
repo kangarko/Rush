@@ -1,12 +1,15 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class HeldItemChangePacket extends Packet {
 	public HeldItemChangePacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.SHORT, order = 0)
@@ -29,4 +32,8 @@ public class HeldItemChangePacket extends Packet {
 		return String.format("slotId=\"%d\"", slotId);
 	}
 
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		slotId = input.readByte();
+	}
 }

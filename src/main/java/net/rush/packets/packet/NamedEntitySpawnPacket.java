@@ -1,11 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufOutputStream;
-
-import java.io.IOException;
-
-import net.rush.model.Coordinate;
-import net.rush.model.ItemStack;
 import net.rush.model.Position;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;

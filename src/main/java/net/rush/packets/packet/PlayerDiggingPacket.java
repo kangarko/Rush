@@ -1,5 +1,9 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -7,12 +11,14 @@ import net.rush.packets.serialization.Type;
 public class PlayerDiggingPacket extends Packet {
 
 	public PlayerDiggingPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
-	public static final int STATE_START_DIGGING = 0;
-	public static final int STATE_DONE_DIGGING = 2;
-	public static final int STATE_DROP_ITEM = 4;
+	public static final int START_DIGGING = 0;
+	public static final int CANCEL_DIGGING = 1;
+	public static final int DONE_DIGGING = 2;
+	public static final int DROP_ITEMSTACK = 3;
+	public static final int DROP_ITEM = 4;
+	public static final int SHOOT_OR_EAT = 5;
 
 	@Serialize(type = Type.BYTE, order = 0)
 	private byte status;
@@ -60,6 +66,15 @@ public class PlayerDiggingPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("status=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",face=\"%d\"", status, x, y, z, face);
+	}
+	
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		status = input.readByte();
+		x = input.readInt();
+		y = input.readUnsignedByte();
+		z = input.readInt();
+		face = input.readByte();
 	}
 
 }

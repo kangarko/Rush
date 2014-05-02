@@ -42,7 +42,7 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 		Chunk chunk = world.getChunks().getChunk(chunkX, chunkZ);
 		int oldType = chunk.getType(localX, localZ, y);
 		
-		if(player.getGamemode() == GameMode.CREATIVE || message.getStatus() == PlayerDiggingPacket.STATE_DONE_DIGGING)
+		if(player.getGamemode() == GameMode.CREATIVE || message.getStatus() == PlayerDiggingPacket.DONE_DIGGING)
 			chunk.setType(localX, localZ, y, Block.AIR);
 		
 		if (player.getGamemode() == GameMode.CREATIVE) {
@@ -59,7 +59,7 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 			return;
 		}
 		
-		if (message.getStatus() == PlayerDiggingPacket.STATE_DONE_DIGGING) {
+		if (message.getStatus() == PlayerDiggingPacket.DONE_DIGGING) {
 			SoundOrParticleEffectPacket soundMsg = new SoundOrParticleEffectPacket(SoundOrParticleEffectPacket.DIG_SOUND, x, (byte)y, z, oldType, false);
 			BlockChangePacket blockChangePacket = new BlockChangePacket(x, y, z, world);
 			for (Player p: world.getPlayers()) {

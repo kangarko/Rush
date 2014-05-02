@@ -1,5 +1,9 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+
+import java.io.IOException;
+
 import net.rush.model.ItemStack;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
@@ -77,6 +81,18 @@ public class PlayerBlockPlacementPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("x=\"%d\",y=\"%d\",z=\"%d\",direction=\"%d\",heldItem=\"%s\"", x, y, z, direction, heldItem);
+	}
+	
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		x = input.readInt();
+		y = (byte) input.readUnsignedByte();
+		z = input.readInt();
+		direction = input.readByte();
+		heldItem = readItemstack(input);
+		cursorX = input.readByte();
+		cursorY = input.readByte();
+		cursorZ = input.readByte();
 	}
 
 }

@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import net.rush.PacketLogger;
 import net.rush.packets.Packet;
 import net.rush.packets.misc.Protocol;
 import net.rush.packets.packet.PacketLoginSuccess;
@@ -26,6 +27,8 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
 		if (packet instanceof PacketLoginSuccess)
 			setProtocol(ctx, Protocol.GAME);
+		
+		PacketLogger.submitWrite(packet, false);	
 	}
 
 	public void setProtocol(ChannelHandlerContext channel, Protocol prot) {

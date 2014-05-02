@@ -138,7 +138,7 @@ public final class TaskScheduler {
 
 		// handle general game logic
 		lag[1] = server.getWorld().pulse();
-		
+
 		return lag;
 	}
 

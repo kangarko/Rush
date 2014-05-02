@@ -1,5 +1,9 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -50,4 +54,10 @@ public class EntityActionPacket extends Packet {
 		return String.format("entityId=\"%d\",actionId=\"%d\"", entityId, actionId);
 	}
 
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		entityId = input.readInt();
+		actionId = input.readByte();
+		horseJumpBoost = input.readInt();
+	}
 }

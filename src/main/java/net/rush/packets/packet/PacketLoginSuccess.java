@@ -1,6 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 
 import java.io.IOException;
@@ -27,10 +26,6 @@ public class PacketLoginSuccess extends Packet {
 
 	public int getOpcode() {
 		return 2;
-	}
-
-	@Override
-	public void read17(ByteBufInputStream input) {
 	}
 
 	@Override

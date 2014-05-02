@@ -19,6 +19,7 @@ public class ThreadConsoleReader extends Thread {
 		this.reader = new ConsoleReader(System.in, System.out);
 		this.reader.setExpandEvents(false);
 		this.setDaemon(true);
+		this.setName("Console Reader Thread");
 
 		System.setOut(new PrintStream(new LoggerOutputStream(server.getLogger(), Level.INFO), true));
 		System.setErr(new PrintStream(new LoggerOutputStream(server.getLogger(), Level.SEVERE), true));

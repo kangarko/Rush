@@ -93,8 +93,7 @@ public final class Server {
 					jline = false;
 			}
 
-			Thread threadConsoleReader = new ThreadConsoleReader(server, jline);
-			threadConsoleReader.start();
+			new ThreadConsoleReader(server, jline).start();
 
 		} catch (Throwable t) {
 			Logger.getGlobal().log(Level.SEVERE, "Error during server initializing", t);
