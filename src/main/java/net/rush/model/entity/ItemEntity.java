@@ -19,15 +19,20 @@ public final class ItemEntity extends Entity {
 	 * The item.
 	 */
 	private final ItemStack item;
+	
+	public int pickupDelay = 60;
 
 	/**
 	 * Creates a new item entity.
 	 * @param world The world.
 	 * @param item The item.
 	 */
-	public ItemEntity(World world, ItemStack item) {
+	public ItemEntity(World world, double x, double y, double z, ItemStack item) {
 		super(world, EntityType.DROPPED_ITEM);
 		this.item = item;
+		setPosition(x, y, z);
+		getRotation().setYaw((double) (Math.random() * 360.0D));
+		setMetadata(new Parameter<ItemStack>(Parameter.TYPE_ITEM, 10, item));
 	}
 
 	/**
@@ -43,10 +48,6 @@ public final class ItemEntity extends Entity {
 		int pitch = rotation.getIntPitch();
 		
 		return new SpawnObjectPacket(id, 2, position, yaw, pitch);
-	}
-	
-	public void handleMetadata() {
-		setMetadata(new Parameter<ItemStack>(Parameter.TYPE_ITEM, 10, item));
 	}
 
 	public Packet createUpdateMessage() {

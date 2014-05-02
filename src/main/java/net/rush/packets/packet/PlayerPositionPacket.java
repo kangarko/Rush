@@ -10,8 +10,8 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class PlayerPositionPacket extends Packet {
+	
 	public PlayerPositionPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.DOUBLE, order = 0)

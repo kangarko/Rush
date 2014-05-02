@@ -21,7 +21,7 @@ public class DestroyEntityPacket extends Packet {
 
 	public DestroyEntityPacket(int[] entityIDs) {
 		super();
-		entityCount = (byte) entityIDs.length;
+		this.entityCount = (byte) entityIDs.length;
 		this.entityIDs = entityIDs;
 	}
 
@@ -42,21 +42,18 @@ public class DestroyEntityPacket extends Packet {
 	}
 	
 	@Override
-	public void read17(ByteBufInputStream input) throws IOException {
+	public void read17(ByteBufInputStream input) throws IOException {      
 		entityCount = input.readByte();
-		//entityIDs = new int[entityCount];
 
-        for (int i = 0; i < entityCount; ++i) {
+        for (int i = 0; i < entityCount; ++i) 
             entityIDs[i] = input.readInt();
-        }
 	}
 	
 	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {
-		output.writeByte(entityCount);
-		for (int i = 0; i < entityCount; i++) {
-			output.write(entityIDs[i]);
-		}
-	}
+        output.writeByte(entityIDs.length);
 
+        for (int i = 0; i < entityIDs.length; ++i)
+            output.writeInt(entityIDs[i]);
+	}
 }

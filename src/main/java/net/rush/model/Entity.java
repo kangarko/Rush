@@ -38,7 +38,7 @@ public abstract class Entity {
 	/**
 	 * The current position.
 	 */
-	protected Position position = null;
+	protected Position position = Position.ZERO;
 
 	/**
 	 * The position in the last cycle.
@@ -65,6 +65,9 @@ public abstract class Entity {
 		this.world = world;
 		this.entityType = entityType;
 		world.getEntities().allocate(this);
+		
+		//setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, (byte) 0), false);
+		//setMetadata(new Parameter<Short>(Parameter.TYPE_SHORT, 1, (short) 300), false);
 	}
 
 	/**
@@ -156,7 +159,11 @@ public abstract class Entity {
 	public void setPosition(Position position) {
 		this.position = position;
 	}
-
+	
+	public void setPosition(double x, double y, double z) {
+		this.position = new Position(x, y, z);
+	}
+	
 	/**
 	 * Gets this entity's rotation.
 	 * @return The rotation of this entity.
@@ -179,6 +186,10 @@ public abstract class Entity {
 	 */
 	public void setRotation(Rotation rotation) {
 		this.rotation = rotation;
+	}
+	
+	public void setRotation(double yaw, double pitch) {
+		this.rotation = new Rotation(yaw, pitch);
 	}
 
 	@Override
@@ -243,10 +254,15 @@ public abstract class Entity {
 	public Parameter<?> getMetadata(int index) {
 		return metadata[index];
 	}
-
+	
 	public void setMetadata(Parameter<?> data) {
+		setMetadata(data, true);
+	}
+
+	public void setMetadata(Parameter<?> data, boolean sendPacketUpdate) {
 		metadata[data.getIndex()] = data;
-		createMetadataMessage();
+		if(sendPacketUpdate)
+			createMetadataMessage();
 	}
 	
 	public void createMetadataMessage() {

@@ -28,7 +28,7 @@ public class MinecraftHandler extends SimpleChannelInboundHandler<Packet> {
 	private final Server server;
 	private final boolean compact;
 	
-	private Session session;
+	Session session;
 	
 	/**
 	 * Creates a new network event handler.

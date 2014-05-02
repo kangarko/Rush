@@ -49,8 +49,8 @@ public abstract class RotatableBlock extends Block {
 	}
 
 	
-	public int func_111050_e(int par1) {
-		return par1 & 3;
+	public int getDamage(int type) {
+		return type & 3;
 	}
 
 	/**
@@ -59,6 +59,6 @@ public abstract class RotatableBlock extends Block {
 	 */
 	@Override
 	protected ItemStack createStackedBlock(int type) {
-		return new ItemStack(id, 1, func_111050_e(type));
+		return new ItemStack(id, 1, getDamage(type));
 	}
 }

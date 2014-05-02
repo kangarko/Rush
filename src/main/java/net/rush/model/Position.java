@@ -3,9 +3,8 @@ package net.rush.model;
 public final class Position {
 	public static final int GRANULARITY = 32;
 	public static final Position ZERO = new Position(0.0D, 0.0D, 0.0D);
-	private final double x;
-	private final double y;
-	private final double z;
+	
+	private final double x, y, z;
 
 	public Position(double x, double y, double z) {
 		this.x = x;

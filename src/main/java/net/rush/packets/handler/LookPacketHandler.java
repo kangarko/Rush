@@ -18,7 +18,7 @@ public final class LookPacketHandler extends PacketHandler<PlayerLookPacket> {
 		if (player == null)
 			return;
 
-		player.setRotation(new Rotation(message.getYaw(), message.getPitch()));
+		player.setRotation(message.getYaw(), message.getPitch());
 		session.getServer().broadcastPacket(new EntityHeadLookPacket(player.getId(), (byte) player.getRotation().getIntYaw()));
 	}
 

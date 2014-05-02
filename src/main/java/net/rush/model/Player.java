@@ -80,6 +80,7 @@ public final class Player extends LivingEntity implements CommandSender {
 	@SuppressWarnings("deprecation")
 	public Player(Session session, String name) {
 		super(session.getServer().getWorld(), EntityType.PLAYER);
+
 		this.name = name;
 		this.session = session;
 		this.gamemode = GameMode.getByValue(session.getServer().getProperties().gamemode);
@@ -95,9 +96,6 @@ public final class Player extends LivingEntity implements CommandSender {
 
 		this.session.send(new SpawnPositionPacket(position));
 		this.session.send(new PlayerPositionAndLookPacket(position.getX(), position.getY(), position.getZ(), position.getY() + NORMAL_EYE_HEIGHT, (float) rotation.getYaw(), (float) rotation.getPitch(), true));
-
-		//if(world.getPlayers().size() > 1)
-		//	this.notifyOthers();
 		
 		getServer().getLogger().info(name + " [" + session.getIp() + "] logged in with entity id " + id + " at ([" + world.getName() + "] " + (int)position.getX() + ", " + (int)position.getY() + ", " + (int)position.getZ() + ")");
 		getServer().broadcastMessage("&e" + name + " has joined the game.");
@@ -132,13 +130,6 @@ public final class Player extends LivingEntity implements CommandSender {
 			session.send(new PlayerListItemPacket(pl.getName(), true, (short)100));
 		}
 	}
-	
-	/*public void notifyOthers() {
-		Packet spawnNewPlayer = new NamedEntitySpawnPacket(id, name, position, (byte)rotation.getIntYaw(), (byte)rotation.getIntPitch(), (short) getItemInHand().id, metadata);
-		
-		for(Player pl : session.getServer().getWorld().getPlayers())
-			pl.getSession().send(spawnNewPlayer);
-	}*/
 	
 	@Override
 	public void pulse() {

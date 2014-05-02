@@ -20,8 +20,8 @@ public final class PositionAndLookPacketHandler extends PacketHandler<PlayerPosi
 		if (player == null)
 			return;
 
-		player.setPosition(new Position(message.getX(), message.getYOrStance(), message.getZ()));
-		player.setRotation(new Rotation(message.getYaw(), message.getPitch()));
+		player.setPosition(message.getX(), message.getYOrStance(), message.getZ());
+		player.setRotation(message.getYaw(), message.getPitch());
 		
 		session.getServer().broadcastPacket(new EntityHeadLookPacket(player.getId(), (byte) player.getRotation().getIntYaw()));
 	}

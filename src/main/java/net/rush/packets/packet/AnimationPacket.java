@@ -48,7 +48,7 @@ public class AnimationPacket extends Packet {
 
 	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {
-		writeVarInt(entityId, output);
+		output.writeInt(entityId);
 		output.writeByte(animation);
 	}
 }

@@ -18,7 +18,7 @@ public final class HandshakePacketHandler extends PacketHandler<HandshakePacket>
 	public void handle(Session session, Player player, HandshakePacket message) {
 		// 1.7 clients are not logging in that way
 		if (!session.isCompat()) {
-			session.setClientVersion(message.protocolVersion == 4 ? "1.7.2" : message.protocolVersion == 5 ? "1.7.6" : "unsure", message.protocolVersion);
+			session.setClientVersion(message.protocolVersion == 4 ? "1.7.2" : message.protocolVersion == 5 ? "1.7.6" : message.protocolVersion == 12 ? "1.8" : "unsure", message.protocolVersion);
 			return;
 		}
 		

@@ -546,14 +546,14 @@ public class Block {
 	/**
 	 * Drops the specified block items
 	 */
-	public final void dropBlockAsItem(World world, int x, int y, int z, int damage, int bonus) {
-		dropBlockAsItemWithChance(world, x, y, z, damage, 1.0F, bonus);
+	public final void dropBlock(World world, int x, int y, int z, int damage, int bonus) {
+		dropBlockWithChance(world, x, y, z, damage, 1.0F, bonus);
 	}
 
 	/**
 	 * Drops the block items with a specified chance of dropping the specified items
 	 */
-	public void dropBlockAsItemWithChance(World world, int x, int y, int z, int damage, float chance, int bonus) {
+	public void dropBlockWithChance(World world, int x, int y, int z, int damage, float chance, int bonus) {
 		int quantity = quantityDroppedWithBonus(bonus);
 
 		for (int i = 0; i < quantity; ++i) {
@@ -561,26 +561,10 @@ public class Block {
 				int id = idDropped();
 
 				if (id > 0) {
-					dropBlockAsItem_do(world, x, y, z, new ItemStack(id, 1, damageDropped(damage)));
+					world.dropItem(x, y, z, id, 1, damageDropped(damage));
 				}
 			}
 		}
-	}
-
-	/**
-	 * Spawns EntityItem in the world for the given ItemStack if the world is not remote.
-	 */
-	protected void dropBlockAsItem_do(World world, int x, int y, int z, ItemStack itemStack) {
-		// TODO
-		/*if (world.getGameRules().getGameRuleBooleanValue("doTileDrops")) {
-			float var6 = 0.7F;
-			double var7 = (double) (world.rand.nextFloat() * var6) + (double) (1.0F - var6) * 0.5D;
-			double var9 = (double) (world.rand.nextFloat() * var6) + (double) (1.0F - var6) * 0.5D;
-			double var11 = (double) (world.rand.nextFloat() * var6) + (double) (1.0F - var6) * 0.5D;
-			ItemEntity var13 = new ItemEntity(world, (double) x + var7, (double) y + var9, (double) z + var11, itemStack);
-			var13.delayBeforeCanPickup = 10;
-			world.spawnEntityInWorld(var13);
-		}*/
 	}
 
 	/**

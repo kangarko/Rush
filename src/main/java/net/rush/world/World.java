@@ -16,10 +16,12 @@ import net.rush.io.ChunkIoService;
 import net.rush.model.Block;
 import net.rush.model.Entity;
 import net.rush.model.EntityManager;
+import net.rush.model.ItemStack;
 import net.rush.model.LivingEntity;
 import net.rush.model.Player;
 import net.rush.model.Position;
 import net.rush.model.entity.EntityRegistry;
+import net.rush.model.entity.ItemEntity;
 import net.rush.model.misc.NextTickEntry;
 import net.rush.model.misc.Vec3Pool;
 import net.rush.packets.Packet;
@@ -65,7 +67,7 @@ public class World {
 	private int maxHeight = 256;
 	public final Vec3Pool vectorPool = new Vec3Pool(300, 2000);
 	public Random rand = new Random();
-	
+
 	protected int randomBlockChooser = rand.nextInt();
 
 	/**
@@ -198,6 +200,10 @@ public class World {
 		return chunks.getChunk(x, z);
 	}
 
+	public void setAir(int x, int y, int z) {
+		setTypeId(x, y, z, 0, true);
+	}
+	
 	public boolean setTypeAndData(int x, int y, int z, int type, int data, boolean notifyPlayers) {
 		setTypeId(x, y, z, type, notifyPlayers);
 		setBlockData(x, y, z, data, notifyPlayers);
@@ -265,23 +271,26 @@ public class World {
 		Chunk chunk = chunks.getChunk(chunkX, chunkZ);
 		return chunk.getMetaData(localX, localZ, y);
 	}
+	
+	public void dropItem(double x, double y, double z, int type, int count, int data) {
+		ItemStack item = new ItemStack(type, count, data);
+		float offset = 0.7F;
+		double offsetX = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
+		double offsetY = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
+		double offsetZ = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
+		ItemEntity entity = new ItemEntity(this, x + offsetX, y + offsetY, z + offsetZ, item);
+		spawnEntity(entity);
+	}
+	
+	public void dropItem(double x, double y, double z, int type) {
+		dropItem(x, y, z, type, 1, 0);
+	}
 
-	public LivingEntity spawnEntity(Position pos, Class<? extends LivingEntity> clazz) {
-		try {
-			LivingEntity entity = clazz.getDeclaredConstructor(World.class).newInstance(this);
+	public void spawnEntity(Entity en) {
+		Packet packet = en.createSpawnMessage();
 
-			entity.setPosition(pos);
-			Packet smp = entity.createSpawnMessage();
-
-			for(Player pl : getPlayers()) {
-				pl.getSession().send(smp);
-			}
-
-			return entity;
-
-		} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException ex) {
-			throw new Error("Error spawning entity" + clazz.getSimpleName(), ex);
-		}
+		for(Player pl : getPlayers()) 
+			pl.getSession().send(packet);
 	}
 
 	public LivingEntity spawnEntity(Position pos, EntityType type) {
@@ -290,10 +299,10 @@ public class World {
 			LivingEntity entity = clazz.getDeclaredConstructor(World.class).newInstance(this);
 
 			entity.setPosition(pos);
-			Packet smp = entity.createSpawnMessage();
+			Packet packet = entity.createSpawnMessage();
 
 			for(Player pl : getPlayers()) {
-				pl.getSession().send(smp);
+				pl.getSession().send(packet);
 			}
 
 			return entity;
@@ -346,7 +355,7 @@ public class World {
 	public int getBlockLightValue(int x, int y, int z) {
 		return 0;
 	}
-	
+
 	public void playSound(double x, double y, double z, String soundName, float volume, float pitch) {
 		if (soundName != null) {
 			for (Player pl : getPlayers()) {
@@ -397,30 +406,30 @@ public class World {
 
 			int chunkX = coords.x * Chunk.WIDTH;
 			int chunkZ = coords.z * Chunk.HEIGHT;
-			
+
 			// In 3 rounds, picks up random block in a chunk and tick it,
 			// x y z is converted to world x y z
 			// Since Minecraft 1.8 this is customizable in attribute "randomTick" (or similar)
 			for(int count = 0; count < 3; count++) {
-				
+
 				// the rand.nextInt can be 0 and is always one number lower than the argument
 				int x = rand.nextInt(16);
 				int y = rand.nextInt(maxHeight);
 				int z = rand.nextInt(16);
-				
+
 				int type = chunk.getType(x, z, y);
-				
+
 				if(type != 0)
 					if(Block.byId[type].getTickRandomly())
 						Block.byId[type].tick(this, x + chunkX + Chunk.WIDTH, y, z + chunkZ + Chunk.HEIGHT, rand);
 			}
-			
+
 			// Ticks every block, laggy
 			// code commented for later purposes
 			/*for(int xx = chunkX; xx < chunkX + Chunk.WIDTH; xx++) {
 				for(int zz = chunkZ; zz < chunkZ + Chunk.HEIGHT; zz++)	{		    	
 					for(int yy = 0; yy < Chunk.DEPTH; yy++) {
-						
+
 						int type = getTypeId(xx, yy, zz);
 
 						if(type == 0) 
@@ -430,7 +439,7 @@ public class World {
 
 						if(block != null && block.getTickRandomly())
 							block.tick(this, xx, yy, zz, rand);
-						
+
 					}
 				}
 			}*/

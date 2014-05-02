@@ -3,6 +3,7 @@ package net.rush.packets.packet;
 import io.netty.buffer.ByteBufOutputStream;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import net.rush.model.Position;
 import net.rush.packets.Packet;

@@ -8,7 +8,6 @@ import net.rush.packets.packet.PlayerPositionPacket;
 /**
  * A {@link PacketHandler} that updates a {@link Player}'s {@link Position}
  * when the server receives a {@link PositionMessage}.
-
  */
 public final class PositionPacketHandler extends PacketHandler<PlayerPositionPacket> {
 
@@ -17,7 +16,7 @@ public final class PositionPacketHandler extends PacketHandler<PlayerPositionPac
 		if (player == null)
 			return;
 
-		player.setPosition(new Position(message.getX(), message.getY(), message.getZ()));
+		player.setPosition(message.getX(), message.getY(), message.getZ());
 	}
 
 }
