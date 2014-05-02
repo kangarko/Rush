@@ -3,7 +3,6 @@ package net.rush.packets.packet;
 import io.netty.buffer.ByteBufOutputStream;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import net.rush.model.Position;
 import net.rush.packets.Packet;
@@ -95,7 +94,7 @@ public class NamedEntitySpawnPacket extends Packet {
 	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {
 		writeVarInt(entityId, output);
-		writeString("0-0-0-0-0", output, false);
+		writeString("invalid", output, false);
 		writeString(entityName, output, false);
 		output.writeInt(x);
 		output.writeInt(y);
@@ -105,4 +104,19 @@ public class NamedEntitySpawnPacket extends Packet {
 		output.writeShort(currentItem);
 		writeMetadata(output, metadata);
 	}
+	
+	@Override
+	public void write176(ByteBufOutputStream output) throws IOException {
+		writeVarInt(entityId, output);
+		writeString("0-0-0-0-0", output, false);
+		writeString(entityName, output, false);
+		writeVarInt(0, output);
+		output.writeInt(x);
+		output.writeInt(y);
+		output.writeInt(z);
+		output.writeByte(yaw);
+		output.writeByte(pitch);
+		output.writeShort(currentItem);
+		writeMetadata(output, metadata);
+	};
 }
