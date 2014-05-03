@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-import net.rush.model.Coordinate;
 import net.rush.model.ItemStack;
+import net.rush.model.Position;
 import net.rush.util.nbt.CompoundTag;
 import net.rush.util.nbt.NBTInputStream;
 import net.rush.util.nbt.NBTOutputStream;
@@ -72,10 +72,10 @@ public final class ByteBufUtils {
 				buf.writeShort(item.getDamage());
 				break;
 			case Parameter.TYPE_COORDINATE:
-				Coordinate coord = ((Parameter<Coordinate>) parameter).getValue();
-				buf.writeInt(coord.getX());
-				buf.writeInt(coord.getY());
-				buf.writeInt(coord.getZ());
+				Position coord = ((Parameter<Position>) parameter).getValue();
+				buf.writeInt((int) coord.getX());
+				buf.writeInt((int) coord.getY());
+				buf.writeInt((int) coord.getZ());
 				break;
 			}
 		}
@@ -123,8 +123,8 @@ public final class ByteBufUtils {
 				int x = buf.readInt();
 				int y = buf.readInt();
 				int z = buf.readInt();
-				Coordinate coordinate = new Coordinate(x, y, z);
-				parameters[index] = new Parameter<Coordinate>(type, index, coordinate);
+				Position coordinate = new Position(x, y, z);
+				parameters[index] = new Parameter<Position>(type, index, coordinate);
 				break;
 			}
 		}

@@ -11,7 +11,6 @@ import net.rush.packets.serialization.Type;
 public class EntityActionPacket extends Packet {
 
 	public EntityActionPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public static final int ACTION_CROUCH = 1;

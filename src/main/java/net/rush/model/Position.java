@@ -1,5 +1,7 @@
 package net.rush.model;
 
+import net.rush.util.StringUtils;
+
 public final class Position {
 	public static final int GRANULARITY = 32;
 	public static final Position ZERO = new Position(0.0D, 0.0D, 0.0D);
@@ -63,5 +65,10 @@ public final class Position {
 		if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return StringUtils.serializeLoc((int)x, (int)y, (int)z);
 	}
 }

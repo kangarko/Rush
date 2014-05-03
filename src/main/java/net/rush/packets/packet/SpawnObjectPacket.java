@@ -11,6 +11,31 @@ import net.rush.packets.serialization.Type;
 
 public class SpawnObjectPacket extends Packet {
 	
+	public static final int BOAT = 1;
+	/** Use EntityMetadataPacket to send item type and data.*/
+	public static final int ITEM = 2;
+	public static final int MINECART = 10;	
+	/** @deprecated unused since 1.6.x  */
+	public static final int STORAGE_MINECART = 11;
+	/** @deprecated unused since 1.6.x  */
+	public static final int POWERED_MINECART = 12;
+	public static final int ACTIVATED_TNT = 50;
+	public static final int ENDER_CRYSTAL = 51;
+	public static final int ARROW = 61;
+	public static final int SNOWBALL = 62;
+	public static final int EGG = 63;
+	public static final int FIRE_CHARGE = 64;
+	public static final int THROWN_ENDERPARL = 65;
+	public static final int WITHER_SKULL = 66;
+	public static final int FALLING_BLOCK = 70;
+	public static final int ITEM_FRAME = 71;
+	public static final int EYE_OF_ENDER = 72;
+	public static final int THROWN_POTION = 73;
+	public static final int FALLING_DRAGIN_EGG = 74;
+	public static final int THROWN_EXP_BOTTLE = 75;
+	public static final int FISHING_BOAT = 90;
+	
+	/** To prevent typos, use inbuilt types ids. */
 	public SpawnObjectPacket() {
 	}
 
@@ -31,6 +56,7 @@ public class SpawnObjectPacket extends Packet {
 	@Serialize(type = Type.INT, order = 7)
 	private int integer;
 
+	/** To prevent typos, use inbuilt types ids. */
 	public SpawnObjectPacket(int entityId, int type, Position pos, int pitch, int yaw) {
 		super();
 		this.entityId = entityId;

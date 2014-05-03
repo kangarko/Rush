@@ -1,7 +1,7 @@
 package net.rush.packets.misc;
 
-import gnu.trove.map.TObjectIntMap;
-import gnu.trove.map.hash.TObjectIntHashMap;
+import java.util.HashMap;
+
 import net.rush.packets.Packet;
 import net.rush.packets.packet.AnimationPacket;
 import net.rush.packets.packet.AttachEntityPacket;
@@ -219,12 +219,11 @@ public enum Protocol {
 		}
 
 		private final String name;
-		private final TObjectIntMap<Class<? extends Packet>> packetMap = new TObjectIntHashMap<Class<? extends Packet>>(MAX_PACKET_ID);
+		private final HashMap<Class<? extends Packet>, Integer> packetMap = new HashMap<Class<? extends Packet>, Integer>();
 		private final Class<? extends Packet>[] packetClasses = new Class[MAX_PACKET_ID];
-		//private final Constructor<? extends Packet>[] packetConstructors = new Constructor[MAX_PACKET_ID];
 
 		public boolean hasPacket(int id) {
-			return id < MAX_PACKET_ID && /*packetConstructors*/packetClasses[id] != null;
+			return id < MAX_PACKET_ID && packetClasses[id] != null;
 		}
 
 		@Override
@@ -234,10 +233,7 @@ public enum Protocol {
 
 		public final Class<? extends Packet> createPacket(int id) {
 			if (id > MAX_PACKET_ID) 
-				throw new RuntimeException("Packet with id " + id + " outside of range ");
-			
-			/*if (packetConstructors[id] == null) 
-				throw new RuntimeException("No packet with id " + id);*/		
+				throw new RuntimeException("Packet with id " + id + " outside of range ");	
 
 			try {
 				return packetClasses[id];
@@ -247,11 +243,6 @@ public enum Protocol {
 		}
 
 		protected final void registerPacket(int id, Class<? extends Packet> packetClass) {
-			/*try {
-				packetConstructors[id] = packetClass.getDeclaredConstructor();
-			} catch (NoSuchMethodException ex) {
-				throw new RuntimeException("No NoArgsConstructor for packet class " + packetClass);
-			}*/
 			packetClasses[id] = packetClass;
 			packetMap.put(packetClass, id);
 		}
@@ -259,12 +250,11 @@ public enum Protocol {
 		protected final void unregisterPacket(int id) {
 			packetMap.remove(packetClasses[id]);
 			packetClasses[id] = null;
-			//packetConstructors[id] = null;
 		}
 
 		public final int getId(Class<? extends Packet> packet) {
 			Preconditions.checkArgument(packetMap.containsKey(packet), "Cannot get ID for packet " + packet);
-
+			
 			return packetMap.get(packet);
 		}
 	}

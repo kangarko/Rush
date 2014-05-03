@@ -1,12 +1,16 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class EntityEffectPacket extends Packet {
+	
 	public EntityEffectPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.INT, order = 0)
@@ -50,4 +54,11 @@ public class EntityEffectPacket extends Packet {
 		return String.format("entityId=\"%d\",effectId=\"%d\",amplifier=\"%d\",duration=\"%d\"", entityId, effectId, amplifier, duration);
 	}
 
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(entityId);
+		output.writeByte(effectId);
+		output.writeByte(amplifier);
+		output.writeShort(duration);
+	}
 }

@@ -19,11 +19,13 @@ public abstract class Entity {
 	 * The world this entity belongs to.
 	 */
 	protected final World world;
-	
+
 	/**
 	 * The entity's metadata.
 	 */
 	protected final Parameter<?>[] metadata = new Parameter<?>[Parameter.METADATA_SIZE];
+	
+	private boolean metadataChanged = false;
 
 	/**
 	 * A flag indicating if this entity is currently active.
@@ -65,9 +67,9 @@ public abstract class Entity {
 		this.world = world;
 		this.entityType = entityType;
 		world.getEntities().allocate(this);
-		
-		//setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, (byte) 0), false);
-		//setMetadata(new Parameter<Short>(Parameter.TYPE_SHORT, 1, (short) 300), false);
+
+		setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, (byte) 0));
+		setMetadata(new Parameter<Short>(Parameter.TYPE_SHORT, 1, (short) 300));
 	}
 
 	/**
@@ -80,7 +82,7 @@ public abstract class Entity {
 	public boolean isWithinDistance(Entity other) {
 		if(position == null)
 			throw new Error("Position of entity is null!");
-			
+
 		double dx = Math.abs(position.getX() - other.position.getX());
 		double dz = Math.abs(position.getZ() - other.position.getZ());
 		return dx <= (Server.getServer().getProperties().viewDistance * Chunk.WIDTH) && dz <= (Server.getServer().getProperties().viewDistance * Chunk.HEIGHT);
@@ -124,6 +126,19 @@ public abstract class Entity {
 	 * periodic functionality e.g. mob AI.
 	 */
 	public void pulse() {}
+	
+	public void updateMetadata() {
+		if(metadataChanged) {
+			EntityMetadataPacket message = new EntityMetadataPacket(id, metadata.clone());
+			for (Player player : world.getPlayers()) {
+				if (player != this) {
+					player.getSession().send(message);
+					player.sendMessage("&cRecieved metadata of " + entityType.toString() + " (id " + id + ") @ " + position.toString());
+				}
+			}
+			metadataChanged = false;
+		}
+	}
 
 	/**
 	 * Resets the previous position and rotations of the entity to the current
@@ -159,11 +174,11 @@ public abstract class Entity {
 	public void setPosition(Position position) {
 		this.position = position;
 	}
-	
+
 	public void setPosition(double x, double y, double z) {
 		this.position = new Position(x, y, z);
 	}
-	
+
 	/**
 	 * Gets this entity's rotation.
 	 * @return The rotation of this entity.
@@ -187,7 +202,7 @@ public abstract class Entity {
 	public void setRotation(Rotation rotation) {
 		this.rotation = rotation;
 	}
-	
+
 	public void setRotation(double yaw, double pitch) {
 		this.rotation = new Rotation(yaw, pitch);
 	}
@@ -235,7 +250,7 @@ public abstract class Entity {
 	public boolean hasMoved() {
 		if(position == null)
 			throw new Error("Position of entity is null!");
-		
+
 		return !position.equals(previousPosition);
 	}
 
@@ -250,30 +265,14 @@ public abstract class Entity {
 	public EntityType getType() {
 		return entityType;
 	}
-	
+
 	public Parameter<?> getMetadata(int index) {
 		return metadata[index];
 	}
-	
-	public void setMetadata(Parameter<?> data) {
-		setMetadata(data, true);
-	}
 
-	public void setMetadata(Parameter<?> data, boolean sendPacketUpdate) {
+	public void setMetadata(Parameter<?> data) {
 		metadata[data.getIndex()] = data;
-		if(sendPacketUpdate)
-			createMetadataMessage();
+		metadataChanged = true;
 	}
-	
-	public void createMetadataMessage() {
-		EntityMetadataPacket message = new EntityMetadataPacket(id, metadata.clone());
-		for (Player player : world.getPlayers()) {
-			if (player != this) {
-				player.getSession().send(message);
-				player.sendMessage("&cRecieved metadata of " + entityType.toString() + " (id " + id + ") @ " + position.getX() + ", " + position.getY() + ", " + position.getZ());
-			}
-		}
-	}
-	
 }
 

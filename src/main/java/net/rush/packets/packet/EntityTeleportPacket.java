@@ -1,13 +1,17 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.RotationUtils;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class EntityTeleportPacket extends Packet {
+	
 	public EntityTeleportPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.INT, order = 0)
@@ -69,4 +73,13 @@ public class EntityTeleportPacket extends Packet {
 		return String.format("entityId=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",yaw=\"%d\",pitch=\"%d\"", entityId, x, y, z, yaw, pitch);
 	}
 
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(entityId);
+		output.writeInt(x);
+		output.writeInt(y);
+		output.writeInt(z);
+		output.writeByte(yaw);
+		output.writeByte(pitch);
+	}
 }

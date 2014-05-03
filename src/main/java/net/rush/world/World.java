@@ -88,8 +88,10 @@ public class World {
 	 */
 	public int pulse() {
 		long now = System.currentTimeMillis();
-		for (Entity entity : entities)
+		for (Entity entity : entities) {
 			entity.pulse();
+			entity.updateMetadata();
+		}
 
 		for (Entity entity : entities)
 			entity.reset();
@@ -203,7 +205,7 @@ public class World {
 	public void setAir(int x, int y, int z) {
 		setTypeId(x, y, z, 0, true);
 	}
-	
+
 	public boolean setTypeAndData(int x, int y, int z, int type, int data, boolean notifyPlayers) {
 		setTypeId(x, y, z, type, notifyPlayers);
 		setBlockData(x, y, z, data, notifyPlayers);
@@ -271,26 +273,27 @@ public class World {
 		Chunk chunk = chunks.getChunk(chunkX, chunkZ);
 		return chunk.getMetaData(localX, localZ, y);
 	}
-	
+
 	public void dropItem(double x, double y, double z, int type, int count, int data) {
 		ItemStack item = new ItemStack(type, count, data);
 		float offset = 0.7F;
-		double offsetX = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
-		double offsetY = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
-		double offsetZ = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
-		ItemEntity entity = new ItemEntity(this, x + offsetX, y + offsetY, z + offsetZ, item);
-		spawnEntity(entity);
+		double randX = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
+		double randY = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
+		double randZ = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
+		ItemEntity entity = new ItemEntity(this, x + randX, y + randY, z + randZ, item);
+		sendEntitySpawnPacket(entity);
+		//entity.sendMetadataMessage();
 	}
-	
+
 	public void dropItem(double x, double y, double z, int type) {
 		dropItem(x, y, z, type, 1, 0);
 	}
 
-	public void spawnEntity(Entity en) {
-		Packet packet = en.createSpawnMessage();
-
-		for(Player pl : getPlayers()) 
-			pl.getSession().send(packet);
+	public void sendEntitySpawnPacket(Entity en) {
+		Packet spawn = en.createSpawnMessage();
+		
+		for(Player pl : getPlayers())
+			pl.getSession().send(spawn);		
 	}
 
 	public LivingEntity spawnEntity(Position pos, EntityType type) {
@@ -342,14 +345,8 @@ public class World {
 		}
 	}
 
-	public boolean setSpawnLocation(int x, int y, int z) {
-		try {
-			spawnPosition = new Position(x, y, z);
-			return true;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return false;
-		}
+	public void setSpawnLocation(int x, int y, int z) {
+		spawnPosition = new Position(x, y, z);
 	}
 
 	public int getBlockLightValue(int x, int y, int z) {
@@ -357,11 +354,9 @@ public class World {
 	}
 
 	public void playSound(double x, double y, double z, String soundName, float volume, float pitch) {
-		if (soundName != null) {
-			for (Player pl : getPlayers()) {
+		if (soundName != null) 
+			for (Player pl : getPlayers())
 				pl.playSound(soundName, x, y, z, volume, pitch);
-			}
-		}
 	}
 
 	/**

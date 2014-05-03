@@ -25,10 +25,10 @@ public final class ChatPacketHandler extends PacketHandler<ChatPacket> {
 			if (text.startsWith("/")) {
 				CommandManager manager = session.getServer().getCommandManager();
 				manager.execute(player, text);
-				System.out.println(player.getName() + " issued server command: " + text);
+				logger.info(player.getName() + " issued server command: " + text);
 			} else {
 				player.getServer().broadcastMessage("<" + player.getName() + "> " + text);
-				System.out.println(player.getName() + ": " + text);
+				logger.info(player.getName() + ": " + text);
 			}
 		}
 	}	

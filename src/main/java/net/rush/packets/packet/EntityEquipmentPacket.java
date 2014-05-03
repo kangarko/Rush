@@ -1,12 +1,17 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
+import net.rush.model.ItemStack;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class EntityEquipmentPacket extends Packet {
+	
 	public EntityEquipmentPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.INT, order = 0)
@@ -18,12 +23,15 @@ public class EntityEquipmentPacket extends Packet {
 	@Serialize(type = Type.SHORT, order = 3)
 	private short dataValue;
 
+	private ItemStack item;
+	
 	public EntityEquipmentPacket(int entityId, short slot, short itemId, short dataValue) {
 		super();
 		this.entityId = entityId;
 		this.slot = slot;
 		this.itemId = itemId;
 		this.dataValue = dataValue;
+		this.item = new ItemStack(itemId, 1, dataValue);
 	}
 
 	public int getOpcode() {
@@ -50,4 +58,10 @@ public class EntityEquipmentPacket extends Packet {
 		return String.format("entityId=\"%d\",slot=\"%d\",itemId=\"%d\",dataValue=\"%d\"", entityId, slot, itemId, dataValue);
 	}
 
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(entityId);
+		output.writeShort(slot);
+		writeItemstack(item, output);
+	}
 }

@@ -1,6 +1,5 @@
 package net.rush.packets.packet;
 
-import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 
 import java.io.IOException;
@@ -65,15 +64,6 @@ public class BlockChangePacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("x=\"%d\",y=\"%d\",z=\"%d\",blockType=\"%d\",blockMetadata=\"%d\"", x, y, z, blockType, blockMetadata);
-	}
-
-	@Override
-	public void read17(ByteBufInputStream input) throws IOException {
-		x = input.readInt();
-		y = (byte) input.readUnsignedByte();
-		z = input.readInt();
-		blockType = input.readShort();
-		blockMetadata = (byte) input.readUnsignedByte();
 	}
 
 	@Override

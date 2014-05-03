@@ -105,7 +105,7 @@ public final class Server {
 	 * Creates and initializes a new server.
 	 */
 	public Server() {
-		logger.info("Initializing Rush for Minecraft 1.6.4");
+		logger.info("Initializing Rush for Minecraft 1.6.4 - 1.7.9");
 		long initialTime = System.currentTimeMillis();
 
 		server = this;
@@ -269,7 +269,10 @@ public final class Server {
 							.addLast("decoder", new LegacyDecoder()) // 1.6 decoder - reader
 							.addLast("encoder", new LegacyEncoder()) // 1.6 encoder - writer
 							.addLast("handler", new MinecraftHandler(server, true));
-						} else {
+						} else {					
+							if(LegacyCompatProvider.isThrottled(ch.remoteAddress()))
+								return;
+							
 							ch.pipeline()
 							
 							.addLast("old", new KickPacketWriter())

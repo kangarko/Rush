@@ -13,7 +13,7 @@ public final class PluginMessagePacketHandler extends PacketHandler<PluginMessag
 
 	@Override
 	public void handle(Session session, Player player, PluginMessagePacket message) {
-		System.out.println("pluginMessage channel: " + message.getChannel());
+		logger.info("pluginMessage channel: " + message.getChannel());
 		// Moved to ServerListPingPacketHandler
 		//if(message.getChannel().equals("MC|PingHost")) {}
 	}

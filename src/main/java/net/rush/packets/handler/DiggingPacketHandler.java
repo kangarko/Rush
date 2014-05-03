@@ -1,6 +1,5 @@
 package net.rush.packets.handler;
 
-import net.rush.model.Block;
 import net.rush.model.Player;
 import net.rush.net.Session;
 import net.rush.packets.packet.PlayerDiggingPacket;
@@ -27,12 +26,14 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 		int z = message.getZ();
 		int y = message.getY();
 
-		int oldType = world.getTypeId(x, y, z);
+		int idBroken = world.getTypeId(x, y, z);
+		
+		player.sendMessage("status: &3" + message.getStatus());
 		
 		if (player.getGamemode() == GameMode.CREATIVE || message.getStatus() == PlayerDiggingPacket.DONE_DIGGING) {			
 			world.setAir(x, y, z);
 			
-			SoundOrParticleEffectPacket soundMsg = new SoundOrParticleEffectPacket(SoundOrParticleEffectPacket.DIG_SOUND, x, y, z, oldType, false);
+			SoundOrParticleEffectPacket soundMsg = new SoundOrParticleEffectPacket(SoundOrParticleEffectPacket.DIG_SOUND, x, y, z, idBroken, false);
 			
 			for (Player p: world.getPlayers()) {
 				if(p != player && player.isWithinDistance(p))
@@ -41,10 +42,10 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 			}
 			
 			if(player.getGamemode() == GameMode.CREATIVE)
-				player.sendMessage("block broken in creative: " + Material.getMaterial(oldType) + " at X: " + x + " Y: " + y + " Z: " + z);
+				player.sendMessage("block broken in creative: " + Material.getMaterial(idBroken) + " at X: " + x + " Y: " + y + " Z: " + z);
 			else {
-				player.getWorld().dropItem(x, y + 0.1, z, oldType);
-				player.sendMessage("survival block break: " + Block.byId[oldType].getName() + " at X: " + x + " Y: " + y + " Z: " + z);
+				player.getWorld().dropItem(x, y, z, idBroken);
+				//player.sendMessage("survival block break: " + Block.byId[idBroken].getName() + " at X: " + x + " Y: " + y + " Z: " + z);
 			}
 		}
 	}

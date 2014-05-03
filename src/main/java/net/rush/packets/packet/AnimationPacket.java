@@ -8,22 +8,35 @@ import java.io.IOException;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
-import net.rush.util.enums.AnimationEnum;
 
 public class AnimationPacket extends Packet {
+	
+	public static final int NO_ANIMATION = 0;
+	public static final int SWING_ARM = 1;
+	public static final int DAMAGE_ANIMATION = 2;
+	public static final int BED_LEAVE = 3;
+	public static final int EAT_FOOD = 5;
+	public static final int CRITICAL_EFFECT = 6;
+	public static final int MAGIC_CRITICAL_EFFECT = 7;
+	public static final int UNKNOWN = 102;
+	public static final int CROUNCH = 104;
+	public static final int UNCROUNCH = 105;
 	
 	@Serialize(type = Type.INT, order = 0)
 	private int entityId;
 	@Serialize(type = Type.BYTE, order = 1)
 	private byte animation;
 
+	/** To prevent typos, use inbuilt types ids. */
 	public AnimationPacket() {
 	}
-
-	public AnimationPacket(int entityId, AnimationEnum animation) {
-		this(entityId, animation.getId());
+	
+	/** To prevent typos, use inbuilt types ids. */
+	public AnimationPacket(int entityId, int animation) {
+		this(entityId, (byte)animation);
 	}
 	
+	/** To prevent typos, use inbuilt types ids. */
 	public AnimationPacket(int entityId, byte animation) {
 		super();
 		this.entityId = entityId;

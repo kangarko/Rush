@@ -8,8 +8,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.rush.model.Coordinate;
 import net.rush.model.ItemStack;
+import net.rush.model.Position;
 import net.rush.packets.misc.MetadataType;
 import net.rush.util.ByteBufUtils;
 import net.rush.util.Parameter;
@@ -221,10 +221,10 @@ public enum Type {
 						}
 						break;
 					case Parameter.TYPE_COORDINATE:
-						Coordinate coord = ((Parameter<Coordinate>) parameter).getValue();
-						output.writeInt(coord.getX());
-						output.writeInt(coord.getY());
-						output.writeInt(coord.getZ());
+						Position coord = ((Parameter<Position>) parameter).getValue();
+						output.writeInt((int) coord.getX());
+						output.writeInt((int) coord.getY());
+						output.writeInt((int) coord.getZ());
 						break;
 				}
 			}
@@ -321,27 +321,27 @@ public enum Type {
 			if (val != Short.MIN_VALUE)
 				out.writeShort(val);
 		}
-	}), BLOCKCOORD_COLLECTION(new Serializor<Collection<Coordinate>>() {
+	}), BLOCKCOORD_COLLECTION(new Serializor<Collection<Position>>() {
 		@Override
-		public Collection<Coordinate> read(DataInput in) throws IOException {
+		public Collection<Position> read(DataInput in) throws IOException {
 			int size = in.readInt();
-			Set<Coordinate> ret = new HashSet<Coordinate>();
+			Set<Position> ret = new HashSet<Position>();
 			for (int i = 0; i < size; i++) {
 				int x = in.readByte();
 				int y = in.readByte();
 				int z = in.readByte();
-				ret.add(new Coordinate(x, y, z));
+				ret.add(new Position(x, y, z));
 			}
 			return ret;
 		}
 
 		@Override
-		public void write(DataOutput out, Collection<Coordinate> val) throws IOException {
+		public void write(DataOutput out, Collection<Position> val) throws IOException {
 			out.writeInt(val.size());
-			for (Coordinate block : val) {
-				out.writeByte(block.getX());
-				out.writeByte(block.getY());
-				out.writeByte(block.getZ());
+			for (Position block : val) {
+				out.writeByte((int) block.getX());
+				out.writeByte((int) block.getY());
+				out.writeByte((int) block.getZ());
 			}
 		}
 	});

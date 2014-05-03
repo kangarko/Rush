@@ -9,15 +9,11 @@ import net.rush.packets.Packet;
 import net.rush.packets.misc.ServerPing;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
-
-import com.google.gson.Gson;
+import net.rush.util.JsonUtils;
 
 public class KickPacket extends Packet {
 	@Serialize(type = Type.STRING, order = 0)
 	private String reason;
-
-	private Gson gson = new Gson();
-	private boolean jsonize = true;
 
 	public KickPacket() {
 	}
@@ -27,8 +23,7 @@ public class KickPacket extends Packet {
 	}
 
 	public KickPacket(ServerPing ping) {
-		this.reason = gson.toJson(ping);
-		jsonize = false;
+		this.reason = JsonUtils.serverPingToJson(ping);
 	}
 
 	public int getOpcode() {
@@ -50,6 +45,7 @@ public class KickPacket extends Packet {
 
 	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {
-		writeString(jsonize ? gson.toJson(reason) : reason, output, false);
+		writeString(reason, output, false);
 	}
+	
 }

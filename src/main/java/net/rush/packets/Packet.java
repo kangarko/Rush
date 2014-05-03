@@ -8,8 +8,8 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import net.rush.model.Coordinate;
 import net.rush.model.ItemStack;
+import net.rush.model.Position;
 import net.rush.packets.misc.MetadataType;
 import net.rush.packets.serialization.HashcodeAndEqualsStub;
 import net.rush.util.Parameter;
@@ -222,11 +222,11 @@ public abstract class Packet extends HashcodeAndEqualsStub {
 					break;
 					
 				case Parameter.TYPE_COORDINATE:
-					Coordinate coord = ((Parameter<Coordinate>) parameter).getValue();
+					Position coord = ((Parameter<Position>) parameter).getValue();
 					
-					output.writeInt(coord.getX());
-					output.writeInt(coord.getY());
-					output.writeInt(coord.getZ());
+					output.writeInt((int) coord.getX());
+					output.writeInt((int) coord.getY());
+					output.writeInt((int) coord.getZ());
 			}
 		}
     	output.writeByte(127);
@@ -280,7 +280,7 @@ public abstract class Packet extends HashcodeAndEqualsStub {
 					int y = input.readInt();
 					int z = input.readInt();
 					
-					parameters[index] = new Parameter<Coordinate>(type, index, new Coordinate(x, y, z));
+					parameters[index] = new Parameter<Position>(type, index, new Position(x, y, z));
 					
 				default:
 					throw new UnsupportedOperationException("Metadata-type '" + metaType + "' is not implemented!");

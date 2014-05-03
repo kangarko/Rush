@@ -27,7 +27,7 @@ public final class ItemEntity extends Entity {
 	 * @param world The world.
 	 * @param item The item.
 	 */
-	public ItemEntity(World world, double x, double y, double z, ItemStack item) {
+	public ItemEntity(World world, double x, double y, double z, final ItemStack item) {
 		super(world, EntityType.DROPPED_ITEM);
 		this.item = item;
 		setPosition(x, y, z);
@@ -42,12 +42,20 @@ public final class ItemEntity extends Entity {
 	public ItemStack getItem() {
 		return item;
 	}
+	
+	@Override
+	public void pulse() {
+		super.pulse();
+		
+		if(getPosition().getY() < 0)
+			this.destroy();
+	}
 
 	public Packet createSpawnMessage() {
 		int yaw = rotation.getIntYaw();
 		int pitch = rotation.getIntPitch();
 		
-		return new SpawnObjectPacket(id, 2, position, yaw, pitch);
+		return new SpawnObjectPacket(id, SpawnObjectPacket.ITEM, position, yaw, pitch);
 	}
 
 	public Packet createUpdateMessage() {

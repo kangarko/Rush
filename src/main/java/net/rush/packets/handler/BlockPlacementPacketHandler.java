@@ -10,9 +10,11 @@ import net.rush.util.StringUtils;
 import net.rush.world.World;
 
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 
 public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlockPlacementPacket> {
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void handle(Session session, Player player, PlayerBlockPlacementPacket packet) {
 		World world = player.getWorld();
@@ -62,7 +64,9 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		player.getSession().send(new BlockChangePacket(x, y, z, world));
 		
 		if(valid)
-			player.sendMessage("&bYou have placed " + Block.byId[blockId].getName() + " @ " + StringUtils.serializeLoc(x, y, z) + " side: " + packet.getDirection());
+			player.sendMessage("&bPlaced " + Block.byId[blockId].getName() + " @ " + StringUtils.serializeLoc(x, y, z) + " &dside: " + packet.getDirection());
+		else
+			player.sendMessage("&6Block " + Material.getMaterial(blockId) + " is not yet implemented!");
 	}
 	
 	public boolean placeOrActivate(Player player, World world, ItemStack item, int x, int y, int z, int direction, float cursorX, float cursorY, float cursorZ) {

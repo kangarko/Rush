@@ -2,7 +2,7 @@ package net.rush.packets.packet;
 
 import java.util.Set;
 
-import net.rush.model.Coordinate;
+import net.rush.model.Position;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -21,9 +21,9 @@ public class ExplosionPacket extends Packet {
 	@Serialize(type = Type.FLOAT, order = 3)
 	private float size;
 	@Serialize(type = Type.BLOCKCOORD_COLLECTION, order = 4)
-	private Set<Coordinate> destroyedBlocks;
+	private Set<Position> destroyedBlocks;
 
-	public ExplosionPacket(double x, double y, double z, float size, Set<Coordinate> destroyedBlocks) {
+	public ExplosionPacket(double x, double y, double z, float size, Set<Position> destroyedBlocks) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -52,7 +52,7 @@ public class ExplosionPacket extends Packet {
 		return size;
 	}
 
-	public Set<Coordinate> getDestroyedBlocks() {
+	public Set<Position> getDestroyedBlocks() {
 		return destroyedBlocks;
 	}
 
