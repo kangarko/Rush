@@ -2,7 +2,7 @@ package net.rush.inventory;
 
 import net.rush.model.ItemStack;
 
-public class PlayerInventory extends Inventory{
+public class PlayerInventory extends Inventory {
 
     // 36 = 4 rows of 9
     // ... + 4 = armor, completed inventory

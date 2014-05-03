@@ -210,7 +210,6 @@ public enum Type {
 						if (item.getId() < 0) { // FIXME less then zero check
 							output.writeShort(-1);
 						} else {
-							System.out.println("writing id: " + item.getId());
 							output.writeShort(item.getId());
 							output.writeByte(item.getCount());
 							output.writeShort(item.getDamage());

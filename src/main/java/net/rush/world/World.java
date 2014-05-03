@@ -292,7 +292,7 @@ public class World {
 		dropItem(x, y, z, type, 1, 0);
 	}
 
-	public void sendEntitySpawnPacket(Entity en) {
+	private void sendEntitySpawnPacket(Entity en) {
 		Packet spawn = en.createSpawnMessage();
 
 		for(Player pl : getPlayers())
