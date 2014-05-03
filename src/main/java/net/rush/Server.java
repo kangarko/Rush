@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Random;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -69,8 +70,7 @@ public final class Server {
 	/** A group containing all of the channels. */
 	private final ChannelGroup group = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
-	private final EventLoopGroup bossGroup = new NioEventLoopGroup();
-	private final EventLoopGroup workerGroup = new NioEventLoopGroup();
+	private final EventLoopGroup eventGroup = new NioEventLoopGroup(4, Executors.newWorkStealingPool()); // TODO configurable
 
 	/** A list of all the active {@link Session}s. */
 	private final SessionRegistry sessions = new SessionRegistry();
@@ -227,6 +227,10 @@ public final class Server {
 		for(Player pl : getWorld().getPlayers())
 			pl.getSession().send(packet);
 	}
+	
+	public boolean isPrimaryThread() {
+		return scheduler.isPrimaryThread();
+	}
 
 	/**
 	 * A {@link Runnable} which saves chunks on shutdown.
@@ -255,7 +259,7 @@ public final class Server {
 		public void run() {
 
 			try {
-				bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<SocketChannel>() {
+				bootstrap.group(eventGroup).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<SocketChannel>() {
 					@Override
 					protected void initChannel(SocketChannel ch) throws Exception {
 
@@ -300,8 +304,7 @@ public final class Server {
 					System.exit(0);
 				}
 			} finally {
-				bossGroup.shutdownGracefully();
-				workerGroup.shutdownGracefully();
+				eventGroup.shutdownGracefully();
 			}
 		}
 	}
