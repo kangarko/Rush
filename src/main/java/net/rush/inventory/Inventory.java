@@ -45,7 +45,6 @@ public abstract class Inventory {
 
     private void sendUpdate(int index) {
         for (Player viewer : viewers) {
-        	System.out.println(viewer.getName() + " recieved update!");
             viewer.onSlotSet(this, index, slots[index]);
         }
     }

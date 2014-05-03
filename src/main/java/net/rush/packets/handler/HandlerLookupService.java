@@ -6,6 +6,7 @@ import java.util.Map;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.AnimationPacket;
 import net.rush.packets.packet.ChatPacket;
+import net.rush.packets.packet.CreativeInventoryActionPacket;
 import net.rush.packets.packet.EntityActionPacket;
 import net.rush.packets.packet.HandshakePacket;
 import net.rush.packets.packet.HeldItemChangePacket;
@@ -54,6 +55,8 @@ public final class HandlerLookupService {
 			bind(PluginMessagePacket.class, PluginMessagePacketHandler.class);
 			bind(HeldItemChangePacket.class, HeldItemChangePacketHandler.class);
 			bind(ServerListPingPacket.class, ServerListPingPacketHandler.class);
+			bind(CreativeInventoryActionPacket.class, CreativeInventoryActionPacketHandler.class);
+			
 			// 1.7
 			bind(PacketStatusRequest.class, PacketStatusRequestHandler.class);
 			bind(PacketLoginRequest.class, PacketLoginRequestHandler.class);

@@ -1,5 +1,9 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.model.ItemStack;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
@@ -17,6 +21,10 @@ public class SetSlotPacket extends Packet {
 	@Serialize(type = Type.ITEM, order = 2)
 	private ItemStack item;
 
+	public SetSlotPacket(int windowId, int slot, ItemStack item) {
+		this((byte)windowId, (short)slot, item);
+	}
+	
 	public SetSlotPacket(byte windowId, short slot, ItemStack item) {
 		super();
 		this.windowId = windowId;
@@ -44,4 +52,10 @@ public class SetSlotPacket extends Packet {
 		return String.format("windowId=\"%d\",slot=\"%d\",item=\"%s\"", windowId, slot, item);
 	}
 
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeByte(windowId);
+		output.writeShort(slot);
+		writeItemstack(item, output);
+	}
 }

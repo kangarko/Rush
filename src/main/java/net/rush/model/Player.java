@@ -18,7 +18,7 @@ import net.rush.packets.packet.NamedEntitySpawnPacket;
 import net.rush.packets.packet.NamedSoundEffectPacket;
 import net.rush.packets.packet.PlayerListItemPacket;
 import net.rush.packets.packet.PlayerPositionAndLookPacket;
-import net.rush.packets.packet.SetWindowItemsPacket;
+import net.rush.packets.packet.SetSlotPacket;
 import net.rush.packets.packet.SoundOrParticleEffectPacket;
 import net.rush.packets.packet.SpawnPositionPacket;
 import net.rush.util.Parameter;
@@ -297,7 +297,7 @@ public final class Player extends LivingEntity implements CommandSender {
 
     // FIXME don´t work, yet
 	public void onSlotSet(Inventory inv, int index, ItemStack item) {
-		getSession().send(new SetWindowItemsPacket(0, index, new ItemStack[] {item}));
+		getSession().send(new SetSlotPacket(0, index, item));
 	}
 
 	public Server getServer() {
