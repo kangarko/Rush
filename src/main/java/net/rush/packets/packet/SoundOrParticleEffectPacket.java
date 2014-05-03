@@ -1,5 +1,11 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
+import org.bukkit.Effect;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -7,18 +13,7 @@ import net.rush.packets.serialization.Type;
 public class SoundOrParticleEffectPacket extends Packet {
 
 	public SoundOrParticleEffectPacket() {
-		// TODO Auto-generated constructor stub
 	}
-
-	public static final int CLICK2 = 1000;
-
-	public static final int CLICK1 = 1001;
-
-	public static final int BOW_FIRE = 1002;
-
-	public static final int RECORD_PLAY = 1005;
-
-	public static final int DIG_SOUND = 2001;
 
 	@Serialize(type = Type.INT, order = 0)
 	private int effectId;
@@ -33,6 +28,11 @@ public class SoundOrParticleEffectPacket extends Packet {
 	@Serialize(type = Type.BOOL, order = 5)
 	private boolean relativeVolume;
 
+	@SuppressWarnings("deprecation")
+	public SoundOrParticleEffectPacket(Effect effect, int x, int y, int z, int data) {
+		this(effect.getId(), x, y, z, data, false);
+	}
+	
 	public SoundOrParticleEffectPacket(int effectId, int x, int y, int z, int data, boolean relativeVolume) {
 		super();
 		this.effectId = effectId;
@@ -75,4 +75,13 @@ public class SoundOrParticleEffectPacket extends Packet {
 		return String.format("effectId=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",data=\"%d\"", effectId, x, y, z, data);
 	}
 
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(effectId);
+		output.writeInt(x);
+		output.writeByte(y);
+		output.writeInt(z);
+		output.writeInt(data);
+		output.writeBoolean(relativeVolume);
+	}
 }

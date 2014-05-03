@@ -29,6 +29,7 @@ import net.rush.packets.packet.BlockChangePacket;
 import net.rush.packets.packet.TimeUpdatePacket;
 
 import org.bukkit.Difficulty;
+import org.bukkit.Effect;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
 import org.bukkit.entity.EntityType;
@@ -36,6 +37,7 @@ import org.bukkit.entity.EntityType;
 /**
  * A class which represents the in-game world.
  */
+@SuppressWarnings("deprecation")
 public class World {
 
 	/**
@@ -276,13 +278,14 @@ public class World {
 
 	public void dropItem(double x, double y, double z, int type, int count, int data) {
 		ItemStack item = new ItemStack(type, count, data);
+		
 		float offset = 0.7F;
 		double randX = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
 		double randY = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
 		double randZ = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
+		
 		ItemEntity entity = new ItemEntity(this, x + randX, y + randY, z + randZ, item);
 		sendEntitySpawnPacket(entity);
-		//entity.sendMetadataMessage();
 	}
 
 	public void dropItem(double x, double y, double z, int type) {
@@ -291,7 +294,7 @@ public class World {
 
 	public void sendEntitySpawnPacket(Entity en) {
 		Packet spawn = en.createSpawnMessage();
-		
+
 		for(Player pl : getPlayers())
 			pl.getSession().send(spawn);		
 	}
@@ -357,6 +360,28 @@ public class World {
 		if (soundName != null) 
 			for (Player pl : getPlayers())
 				pl.playSound(soundName, x, y, z, volume, pitch);
+	}
+
+	public void playEffect(int effectId, int x, int y, int z, int data) {
+		for (Player pl : getPlayers())
+			pl.playEffect(effectId, x, y, z, data);
+	}
+	
+	public void playEffect(Effect effect, int x, int y, int z, int data) {
+		playEffect(effect.getId(), x, y, z, data);
+	}
+	
+	/**
+	 * Used on block break.
+	 */
+	public void playEffectExceptTo(int effectId, int x, int y, int z, int data, Player ignoredPl) {
+		for (Player pl : getPlayers())
+			if(pl != ignoredPl && pl.isWithinDistance(ignoredPl))
+				pl.playEffect(effectId, x, y, z, data);
+	}
+
+	public void playEffectExceptTo(Effect effect, int x, int y, int z, int data, Player ignoredPl) {
+		playEffectExceptTo(effect.getId(), x, y, z, data, ignoredPl);
 	}
 
 	/**

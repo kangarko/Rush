@@ -26,7 +26,7 @@ public class ChatPacket extends Packet {
 	public ChatPacket(String message) {
 		super();
 		JSONObject msg = new JSONObject();
-		msg.put("text", ChatColor.translateAlternateColorCodes("&".charAt(0), message));
+		msg.put("text", ChatColor.translateAlternateColorCodes('&', message));
 		this.message = msg.toJSONString();
 		plainText = message;
 	}

@@ -56,7 +56,7 @@ public class Block {
 	public static final BlockGrass GRASS = (BlockGrass) new BlockGrass(2).setHardness(0.6F).setStepSound(Sound.GRASS).setName("grass").setTextureName("grass").setTickRandomly(true);
 	public static final Block DIRT = new Block(3, Material.DIRT).setHardness(0.5F).setStepSound(Sound.GRAVEL).setName("dirt").setTextureName("dirt");
 	public static final Block COBBLESTONE = (new Block(4, Material.STONE)).setHardness(2.0F).setResistance(10F).setStepSound(Sound.STONE).setName("stonebrick").setTextureName("cobblestone");
-	public static final Block WOOD = new Block(5, Material.WOOD).setHardness(2F).setResistance(5F).setStepSound(Sound.WOOD).setName("wood").setTextureName("planks");
+	public static final Block WOOD = new BlockWood(5).setHardness(2F).setResistance(5F).setStepSound(Sound.WOOD).setName("wood").setTextureName("planks");
 	/*public static final Block SAPLING = (new BlockSapling(6)).setHardness(0.0F).setStepSound(soundGrassFootstep).setName("sapling").setTextureName("sapling");
 	*/public static final Block BEDROCK = new Block(7, Material.STONE).setBlockUnbreakable().setResistance(6000000.0F).setStepSound(Sound.STONE).setName("bedrock").setTextureName("bedrock");
 	/*public static final BlockFluid WATER = (BlockFluid) (new BlockFlowing(8, Material.water)).setHardness(100.0F).setLightOpacity(3).setName("water").setTextureName("water_flow");
@@ -487,7 +487,7 @@ public class Block {
 	/**
 	 * Called right before the block is destroyed by a player.  Args: world, x, y, z, metaData
 	 */
-	public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int metaData) {
+	public void onBlockDestroyedByPlayer(World world, Player player, int x, int y, int z, int metaData) {
 	}
 
 	/**

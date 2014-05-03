@@ -42,7 +42,7 @@ public class BlockLog extends RotatableBlock {
 	/**
 	 * returns a number between 0 and 3
 	 */
-	public static int limitToValidMetadata(int par0) {
-		return par0 & 3;
+	public static int limitToValidMetadata(int blockRotation) {
+		return blockRotation & 3;
 	}
 }

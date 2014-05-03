@@ -1,11 +1,12 @@
 package net.rush.packets.handler;
 
+import net.rush.model.Block;
 import net.rush.model.Player;
 import net.rush.net.Session;
 import net.rush.packets.packet.PlayerDiggingPacket;
-import net.rush.packets.packet.SoundOrParticleEffectPacket;
 import net.rush.world.World;
 
+import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 
@@ -26,27 +27,27 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 		int z = message.getZ();
 		int y = message.getY();
 
-		int idBroken = world.getTypeId(x, y, z);
+		Block block = Block.byId[world.getTypeId(x, y, z)];
 		
-		player.sendMessage("status: &3" + message.getStatus());
+		if(block == null) {
+			player.sendMessage("&cUnknown broken block: " + Material.getMaterial(world.getTypeId(x, y, z)));
+			return;
+		}
 		
-		if (player.getGamemode() == GameMode.CREATIVE || message.getStatus() == PlayerDiggingPacket.DONE_DIGGING) {			
+		int metadata = world.getBlockData(x, y, z);
+		
+		if (player.getGamemode() == GameMode.CREATIVE || message.getStatus() == PlayerDiggingPacket.DONE_DIGGING) {
+			
 			world.setAir(x, y, z);
+			world.playEffectExceptTo(Effect.STEP_SOUND, x, y, z, block.id, player);
 			
-			SoundOrParticleEffectPacket soundMsg = new SoundOrParticleEffectPacket(SoundOrParticleEffectPacket.DIG_SOUND, x, y, z, idBroken, false);
+			block.onBlockPreDestroy(world, x, y, z, metadata);
+			block.onBlockDestroyedByPlayer(world, player, x, y, z, metadata);
 			
-			for (Player p: world.getPlayers()) {
-				if(p != player && player.isWithinDistance(p))
-					p.getSession().send(soundMsg);
-				
-			}
-			
-			if(player.getGamemode() == GameMode.CREATIVE)
-				player.sendMessage("block broken in creative: " + Material.getMaterial(idBroken) + " at X: " + x + " Y: " + y + " Z: " + z);
-			else {
-				player.getWorld().dropItem(x, y, z, idBroken);
-				//player.sendMessage("survival block break: " + Block.byId[idBroken].getName() + " at X: " + x + " Y: " + y + " Z: " + z);
-			}
+			if(player.getGamemode() != GameMode.CREATIVE)
+				block.dropBlock(world, x, y, z, metadata, 0);
+			else
+				player.sendMessage("Block broken in creative: " + block.getName() + " at X: " + x + " Y: " + y + " Z: " + z);
 		}
 	}
 

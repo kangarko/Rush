@@ -46,6 +46,11 @@ public final class TaskScheduler {
 	 * A list of active tasks.
 	 */
 	private final List<Task> tasks = new ArrayList<Task>();
+	
+    /**
+     * The primary scheduler thread in which pulse() is called.
+     */
+    private Thread primaryThread;
 
 	/**
 	 * Creates a new task scheduler.
@@ -110,11 +115,23 @@ public final class TaskScheduler {
 		scheduleExecutor.schedule(task, delayTicks * 50, TimeUnit.MILLISECONDS);
 	}
 
+    /**
+     * Returns true if the current {@link Thread} is the server's primary thread.
+     */
+    public boolean isPrimaryThread() {
+        return Thread.currentThread() == primaryThread;
+    }
+	
 	/**
 	 * Adds new tasks and updates existing tasks, removing them if necessary.
 	 * @return 2 integers. One is lag from session registry pulsing, second from world pulsing.
 	 */
 	private int[] pulse() {
+        if (primaryThread == null) {
+            primaryThread = Thread.currentThread();
+            primaryThread.setName("Rush Core Thread");
+        }
+		
 		int[] lag = new int[2];
 		// handle incoming messages
 		lag[0] = server.getSessionRegistry().pulse();

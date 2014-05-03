@@ -8,7 +8,6 @@ import net.rush.packets.packet.ChatPacket;
 /**
  * A {@link PacketHandler} which handles {@link ChatMessage}s by processing
  * commands or broadcasting messages to every player in the server.
-
  */
 public final class ChatPacketHandler extends PacketHandler<ChatPacket> {
 	
@@ -18,9 +17,17 @@ public final class ChatPacketHandler extends PacketHandler<ChatPacket> {
 			return;
 
 		String text = message.getPlainMessage();
+		
+		if(text == null || "".equals(text))
+			session.disconnect("Cannot send empty message");
+		
 		if (text.length() > 110) {
 			session.disconnect("Chat message too long");
 		} else {
+			
+			if(text.matches("(&([a-f0-9k-or]))"))
+				return;
+			
 			text = text.replaceAll("\\s+", " ").trim();
 			if (text.startsWith("/")) {
 				CommandManager manager = session.getServer().getCommandManager();

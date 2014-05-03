@@ -3,6 +3,8 @@ package net.rush.packets.handler;
 import net.rush.model.Player;
 import net.rush.net.Session;
 import net.rush.packets.misc.ServerPing;
+import net.rush.packets.misc.ServerPing.Players;
+import net.rush.packets.misc.ServerPing.Protocol;
 import net.rush.packets.packet.KickPacket;
 import net.rush.packets.packet.PacketStatusRequest;
 
@@ -16,10 +18,9 @@ public final class PacketStatusRequestHandler extends PacketHandler<PacketStatus
 
 	@Override
 	public void handle(Session session, Player player, PacketStatusRequest message) {
-
 		ServerPing response = new ServerPing(
-				new ServerPing.Protocol(session.getClientVersion().getVersion(), session.getClientVersion().getProtocol()), 
-				new ServerPing.Players(session.getServer().getProperties().maxPlayers, session.getServer().getWorld().getPlayers().size()),
+				new Protocol(session.getClientVersion().getVersion(), session.getClientVersion().getProtocol()), 
+				new Players(session.getServer().getProperties().maxPlayers, session.getServer().getWorld().getPlayers().size()),
 				session.getServer().getProperties().motd + "\n" + ChatColor.GREEN + "You are displaying Rush on " + session.getClientVersion().toString(), 
 				session.getServer().getProperties().favicon);
 

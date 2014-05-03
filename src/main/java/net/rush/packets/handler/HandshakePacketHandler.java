@@ -23,11 +23,10 @@ public final class HandshakePacketHandler extends PacketHandler<HandshakePacket>
 		}
 		
 		if(message.getProtocolVer() < 78) {
-			session.disconnect("Outdated client! Server is running on 1.6.4!");
+			session.disconnect("Outdated client! (Connect with 1.6.4)");
 			return;
 		} else if (message.getProtocolVer() > 78) {
-			session.disconnect("Outdated server! (Try connect with 1.7.2)");
-			logger.severe("Illegal state achieved, " + session.getPlayer().getName() + " tried connect with his client: " + session.getClientVersion().toString());
+			session.disconnect("Outdated server!");
 		}
 		
 		Session.State state = session.getState();

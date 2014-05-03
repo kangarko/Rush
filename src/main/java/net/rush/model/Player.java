@@ -19,6 +19,7 @@ import net.rush.packets.packet.NamedSoundEffectPacket;
 import net.rush.packets.packet.PlayerListItemPacket;
 import net.rush.packets.packet.PlayerPositionAndLookPacket;
 import net.rush.packets.packet.SetWindowItemsPacket;
+import net.rush.packets.packet.SoundOrParticleEffectPacket;
 import net.rush.packets.packet.SpawnPositionPacket;
 import net.rush.util.Parameter;
 import net.rush.util.enums.GameStateReason;
@@ -120,6 +121,10 @@ public final class Player extends LivingEntity implements CommandSender {
 
 	public void playSound(String soundName, double x, double y, double z, float volume, float pitch) {
 		session.send(new NamedSoundEffectPacket(soundName, x, y, z, volume, pitch));
+	}
+	
+	public void playEffect(int effectId, int x, int y, int z, int data) {
+		session.send(new SoundOrParticleEffectPacket(effectId, x, y, z, data, false));
 	}
 	
 	public void updateTabList() {
@@ -297,11 +302,6 @@ public final class Player extends LivingEntity implements CommandSender {
 
 	public Server getServer() {
 		return session.getServer();
-	}
-	
-	/** @return fake UUID (five times zero divided by -) */
-	public String getUuid() {
-		return "0-0-0-0-0";
 	}
 }
 

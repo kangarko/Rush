@@ -9,7 +9,6 @@ import net.rush.packets.Packet;
 /**
  * A {@link PacketHandler} performs some actions upon the arrival of an
  * incoming {@link Packet}.
-
  * @param <T> The type of {@link Packet}.
  */
 public abstract class PacketHandler<T extends Packet> {

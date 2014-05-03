@@ -17,7 +17,7 @@ public final class PacketLoginRequestHandler extends PacketHandler<PacketLoginRe
 	@Override
 	public void handle(Session session, Player player, PacketLoginRequest message) {
 		if(player != null)
-			throw new RushException("Player must be null but got " + player.getName());
+			throw new RushException("Player must be null! Got " + player.getName());
 
 		session.send(new PacketLoginSuccess("0-0-0-0-0", message.name));
 		

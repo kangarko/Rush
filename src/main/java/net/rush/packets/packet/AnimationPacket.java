@@ -11,7 +11,6 @@ import net.rush.packets.serialization.Type;
 
 public class AnimationPacket extends Packet {
 	
-	public static final int NO_ANIMATION = 0;
 	public static final int SWING_ARM = 1;
 	public static final int DAMAGE_ANIMATION = 2;
 	public static final int BED_LEAVE = 3;
@@ -68,6 +67,14 @@ public class AnimationPacket extends Packet {
 	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {
 		writeVarInt(entityId, output);
-		output.writeByte(animation);
+		output.writeByte(toNewId(animation));
+	}
+	
+	private int toNewId(int id) {
+		if(id == 2)
+			return 1;
+		if(id == 1)
+			return 0;
+		return id-= 2;
 	}
 }
