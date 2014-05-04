@@ -2,7 +2,6 @@ package net.rush.packets.handler;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import net.rush.packets.Packet;
 import net.rush.packets.packet.AnimationPacket;

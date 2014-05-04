@@ -25,7 +25,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		
 		boolean valid = true; // TODO better way to make it
 		
-		if(packet.getHeldItem() == ItemStack.NULL_ITEM || packet.getDirection() == -1)
+		if(packet.getHeldItem() == ItemStack.NULL_ITEMSTACK || packet.getDirection() == -1)
 			return;
 		
 		if(Block.byId[packet.getHeldItem().getId()] == null || !Block.byId[packet.getHeldItem().getId()].material.isSolid())

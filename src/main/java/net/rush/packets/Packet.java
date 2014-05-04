@@ -144,7 +144,7 @@ public abstract class Packet extends HashcodeAndEqualsStub {
     }
 	
     public void writeItemstack(ItemStack item, DataOutput output) throws IOException {
-    	if (item == ItemStack.NULL_ITEM || item.getId() <= 0) { // FIXME less then zero check
+    	if (item == ItemStack.NULL_ITEMSTACK || item.getId() <= 0) { // FIXME less then zero check
     		output.writeShort(-1);
 		} else {
 			output.writeShort(item.getId());
@@ -160,7 +160,7 @@ public abstract class Packet extends HashcodeAndEqualsStub {
     public ItemStack readItemstack(DataInput input) throws IOException {
 		short id = input.readShort();
 		if (id <= 0) {
-			return ItemStack.NULL_ITEM;
+			return ItemStack.NULL_ITEMSTACK;
 		} else {
 			byte stackSize = input.readByte();
 			short dataValue = input.readShort();
@@ -266,7 +266,7 @@ public abstract class Packet extends HashcodeAndEqualsStub {
 				case ITEM:
 					short id = input.readShort();
 					if (id <= 0) {
-						parameters[index] = new Parameter<ItemStack>(type, index, ItemStack.NULL_ITEM);
+						parameters[index] = new Parameter<ItemStack>(type, index, ItemStack.NULL_ITEMSTACK);
 					} else {
 						byte stackSize = input.readByte();
 						short dataValue = input.readShort();

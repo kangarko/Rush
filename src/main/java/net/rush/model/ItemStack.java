@@ -2,7 +2,7 @@ package net.rush.model;
 
 public class ItemStack {
 
-	public static final ItemStack NULL_ITEM = new ItemStack(-1, -1, -1) {
+	public static final ItemStack NULL_ITEMSTACK = new ItemStack(-1, -1, -1) {
         @Override
         public int getId() {
             throw new NullException("You tried to use the legendary NULL-ItemStack!");

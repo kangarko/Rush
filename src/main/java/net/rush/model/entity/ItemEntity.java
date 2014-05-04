@@ -2,12 +2,9 @@ package net.rush.model.entity;
 
 import net.rush.model.Entity;
 import net.rush.model.ItemStack;
-import net.rush.model.Player;
 import net.rush.packets.Packet;
-import net.rush.packets.packet.ItemCollectPacket;
 import net.rush.packets.packet.SpawnObjectPacket;
 import net.rush.util.Parameter;
-import net.rush.util.enums.SoundNames;
 import net.rush.world.World;
 
 import org.bukkit.entity.EntityType;
@@ -23,7 +20,7 @@ public final class ItemEntity extends Entity {
 	 */
 	private final ItemStack item;
 
-	public int pickupDelay = 60;
+	public int pickupDelay = 40;
 
 	/**
 	 * Creates a new item entity.
@@ -49,32 +46,52 @@ public final class ItemEntity extends Entity {
 	@Override
 	public void pulse() {
 		super.pulse();
+		
+		if(pickupDelay > 0)
+			--pickupDelay;
 
 		// FIXME implementation for debug purposes not for real usage
-		if(ticksLived > 40)
-			for(Entity en : getWorld().getEntities()) {
-				if(en == this) 
-					continue;
-				if(en.getType() == EntityType.PLAYER) 
+
+		
+		
+		/*for(Entity en : getWorld().getEntities()) {
+			if(en == this) 
+				continue;
+			if(pickupDelay == 0) {
+				if(en.getType() == EntityType.PLAYER) {
 					if(getPosition().distance(en.getPosition()) < 0.9D) {
 						Player pl = (Player) en;
 						pl.getSession().send(new ItemCollectPacket(getId(), pl.getId()));
 						pl.getInventory().addItem(item);
 						pl.playSound(SoundNames.RandomPop, pl.getPosition(), 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 						this.destroy();
-						return;
 					}
+					return;
+				}
 			}
-
-		if(getPosition().getY() < 0)
+			if (en.getType() == EntityType.DROPPED_ITEM) 
+				if(getPosition().distance(en.getPosition()) < 0.3) 
+					combineWith((ItemEntity)en);
+		}*/
+		
+		if (ticksLived >= 6000 || getPosition().getY() < 0)
 			this.destroy();
+	}
+
+	public void combineWith(ItemEntity item) {
+		if (item == this)
+			return;
+		if(item.getItem().getId() == this.getItem().getId() && item.getItem().getDamage() == this.getItem().getDamage()) {
+			this.getItem().count+= item.getItem().getCount();
+			item.destroy();
+		}
 	}
 
 	public Packet createSpawnMessage() {
 		int yaw = rotation.getIntYaw();
 		int pitch = rotation.getIntPitch();
 
-		return new SpawnObjectPacket(id, SpawnObjectPacket.ITEM, position, yaw, pitch);
+		return new SpawnObjectPacket(id, SpawnObjectPacket.ITEM, position, yaw, pitch, throwerId, (short)motionX, (short)motionY, (short)motionZ);
 	}
 
 	public Packet createUpdateMessage() {

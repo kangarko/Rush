@@ -9,6 +9,7 @@ import net.rush.chunk.Chunk;
 import net.rush.chunk.ChunkCoords;
 import net.rush.inventory.Inventory;
 import net.rush.inventory.PlayerInventory;
+import net.rush.model.entity.ItemEntity;
 import net.rush.net.Session;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.ChangeGameStatePacket;
@@ -21,6 +22,7 @@ import net.rush.packets.packet.PlayerPositionAndLookPacket;
 import net.rush.packets.packet.SetSlotPacket;
 import net.rush.packets.packet.SoundOrParticleEffectPacket;
 import net.rush.packets.packet.SpawnPositionPacket;
+import net.rush.util.MathHelper;
 import net.rush.util.Parameter;
 import net.rush.util.enums.GameStateReason;
 
@@ -36,23 +38,23 @@ public final class Player extends LivingEntity implements CommandSender {
 	/**
 	 * The normal height of a player's eyes above their feet.
 	 */
-	public static final double NORMAL_EYE_HEIGHT = 1.62D;
+	private final double NORMAL_EYE_HEIGHT = 1.62D;
 
 	/**
 	 * The height of a player's eyes above their feet when they are crouching.
 	 */
-	public static final double CROUCH_EYE_HEIGHT = 1.42D;
+	private final double CROUCH_EYE_HEIGHT = 1.42D;
 
 	private final String name;
 	private GameMode gamemode;
 	private boolean sprinting = false;
 	private boolean riding = false;
 	private boolean onGround = true;
-	
+
 	private float exhaustion = 0F;
-	
+
 	private final PlayerInventory inventory = new PlayerInventory();
-	
+
 	/**
 	 * This player's session.
 	 */
@@ -88,16 +90,16 @@ public final class Player extends LivingEntity implements CommandSender {
 		this.position = world.getSpawnPosition();
 
 		this.inventory.addViewer(this);
-		
+
 		// stream the initial set of blocks and teleport us
 		this.streamBlocks();
-		
+
 		// display player in the TAB list
 		this.updateTabList();
 
 		this.session.send(new SpawnPositionPacket(position));
 		this.session.send(new PlayerPositionAndLookPacket(position.getX(), position.getY(), position.getZ(), position.getY() + NORMAL_EYE_HEIGHT, (float) rotation.getYaw(), (float) rotation.getPitch(), true));
-		
+
 		getServer().getLogger().info(name + " [" + session.getIp() + "] logged in with entity id " + id + " at ([" + world.getName() + "] " + (int)position.getX() + ", " + (int)position.getY() + ", " + (int)position.getZ() + ")");
 		getServer().broadcastMessage("&e" + name + " has joined the game.");
 		this.sendMessage("&3Rush // &fWelcome to Rush, " + name);
@@ -122,24 +124,24 @@ public final class Player extends LivingEntity implements CommandSender {
 	public void playSound(String soundName, double x, double y, double z, float volume, float pitch) {
 		session.send(new NamedSoundEffectPacket(soundName, x, y, z, volume, pitch));
 	}
-	
+
 	public void playSound(String soundName, Position pos, float volume, float pitch) {
 		session.send(new NamedSoundEffectPacket(soundName, pos.getX(), pos.getY(), pos.getZ(), volume, pitch));
 	}
-	
+
 	public void playEffect(int effectId, int x, int y, int z, int data) {
 		session.send(new SoundOrParticleEffectPacket(effectId, x, y, z, data, false));
 	}
-	
+
 	public void updateTabList() {
 		Packet newPlayer = new PlayerListItemPacket(name, true, (short)100);
-	
+
 		for(Player pl : session.getServer().getWorld().getPlayers()) {
 			pl.getSession().send(newPlayer);
 			session.send(new PlayerListItemPacket(pl.getName(), true, (short)100));
 		}
 	}
-	
+
 	@Override
 	public void pulse() {
 		super.pulse();
@@ -171,7 +173,7 @@ public final class Player extends LivingEntity implements CommandSender {
 			}
 		}
 	}
- 
+
 	/**
 	 * Streams chunks to the player's client.
 	 */
@@ -182,7 +184,7 @@ public final class Player extends LivingEntity implements CommandSender {
 		int centralZ = ((int) position.getZ()) / Chunk.HEIGHT;
 
 		int viewDistance = Server.getServer().getProperties().viewDistance;
-		
+
 		for (int x = (centralX - viewDistance); x <= (centralX + viewDistance); x++) {
 			for (int z = (centralZ - viewDistance); z <= (centralZ + viewDistance); z++) {
 				ChunkCoords key = new ChunkCoords(x, z);
@@ -191,7 +193,7 @@ public final class Player extends LivingEntity implements CommandSender {
 					//session.send(new PreChunkPacketImpl(x, z, true));
 					session.send(world.getChunks().getChunk(x, z).toMessage());
 				}
-				
+
 				previousChunks.remove(key);
 			}
 		}
@@ -240,66 +242,98 @@ public final class Player extends LivingEntity implements CommandSender {
 	public boolean isCrouching() {
 		return crouching;
 	}
-	
+
 	public boolean isSprinting() {
 		return sprinting;
 	}
-	
+
 	public void setSprinting(boolean sprinting) {
 		this.sprinting = sprinting;
 		setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, new Byte((byte) (sprinting ? 0x08: 0))));
 		// FIXME: other bits in the bitmask would be wiped out
 	}
-	
+
 	public GameMode getGamemode() {
 		return gamemode;
 	}
-	
+
 	public boolean isOnGround() {
 		return onGround;
 	}
-	
+
 	public void setOnGround(boolean onGround) {
 		this.onGround = onGround;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public void setGamemode(GameMode gamemode) {
 		this.gamemode = gamemode;
 		this.getSession().send(new ChangeGameStatePacket(GameStateReason.CHANGE_GAMEMODE, gamemode.getValue()));
 	}
-	
+
 	public boolean isRiding() {
 		return riding;
 	}
-	
+
 	public void setRiding(boolean riding) {
 		this.riding = riding;
 	}
-	
+
 	public void addExhaustion(float exhaustion) {
 		this.exhaustion+= exhaustion;
 	}
-	
+
 	public float getExhaustion() {
 		return exhaustion;
-	}	
-	
+	}
+
+	public double getEyeHeight() {
+		return isCrouching() ? CROUCH_EYE_HEIGHT : NORMAL_EYE_HEIGHT;
+	}
+
+	public ItemEntity throwItemFromPlayer(ItemStack itemstack) {
+		if (itemstack == ItemStack.NULL_ITEMSTACK)
+			return null;
+		else {
+			ItemEntity item = new ItemEntity(world, getPosition().getX(), getPosition().getY() - 0.30000001192092896D + 0.12F, getPosition().getZ(), itemstack);
+			item.pickupDelay = 40;
+			
+			float offsetX = 0.1F;
+			float offsetZ;
+
+			offsetX = 0.3F;
+			item.motionX = -MathHelper.sin((float)getRotation().getYaw() / 180.0F * (float) Math.PI) * MathHelper.cos((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX;
+			item.motionZ = MathHelper.cos((float)getRotation().getYaw() / 180.0F * (float) Math.PI) * MathHelper.cos((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX;
+			item.motionY = -MathHelper.sin((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX + 0.1F;
+			
+			offsetX = 0.02F;
+			offsetZ = rand.nextFloat() * (float) Math.PI * 2.0F;
+			offsetX *= rand.nextFloat();
+			
+			item.motionX += Math.cos(offsetZ) * offsetX;
+			item.motionY += (rand.nextFloat() - rand.nextFloat()) * 0.1F;
+			item.motionZ += Math.sin(offsetZ) * offsetX;
+
+			item.throwerId = this.id;
+			return item;
+		}
+	}
+
 	// Inventory
-	
-    public PlayerInventory getInventory() {
-        return inventory;
-    }
 
-    public ItemStack getItemInHand() {
-        return inventory.getItemInHand();
-    }
+	public PlayerInventory getInventory() {
+		return inventory;
+	}
 
-    public void setItemInHand(ItemStack item) {
-        inventory.setItemInHand(item);
-    }
+	public ItemStack getItemInHand() {
+		return inventory.getItemInHand();
+	}
 
-    // FIXME don´t work, yet
+	public void setItemInHand(ItemStack item) {
+		inventory.setItemInHand(item);
+	}
+
+	// FIXME don´t work, yet
 	public void onSlotSet(Inventory inv, int index, ItemStack item) {
 		getSession().send(new SetSlotPacket(0, index, item));
 	}

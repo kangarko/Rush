@@ -296,6 +296,5 @@ public final class Chunk {
 
 		return realCompressed;
 	}
-
 }
 

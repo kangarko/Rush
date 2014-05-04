@@ -54,10 +54,21 @@ public class SpawnObjectPacket extends Packet {
 	@Serialize(type = Type.BYTE, order = 6)
 	private byte yaw;
 	@Serialize(type = Type.INT, order = 7)
-	private int integer;
+	private int data;
+	@Serialize(type = Type.SHORT, order = 8)
+	private short speedX;
+	@Serialize(type = Type.SHORT, order = 9)
+	private short speedY;
+	@Serialize(type = Type.SHORT, order = 10)
+	private short speedZ;
 
 	/** To prevent typos, use inbuilt types ids. */
 	public SpawnObjectPacket(int entityId, int type, Position pos, int pitch, int yaw) {
+		this(entityId, type, pos, pitch, yaw, 0, 0, 0, 0);
+	}
+	
+	/** To prevent typos, use inbuilt types ids. */
+	public SpawnObjectPacket(int entityId, int type, Position pos, int pitch, int yaw, int throwerEntityId, int speedX, int speedY, int speedZ) {
 		super();
 		this.entityId = entityId;
 		this.type = (byte) type;
@@ -66,7 +77,10 @@ public class SpawnObjectPacket extends Packet {
 		z = (int) pos.getPixelZ();
 		this.pitch = (byte)pitch;
 		this.yaw = (byte)yaw;
-		integer = 0; // TODO
+		this.data = throwerEntityId;
+		this.speedX = (short)speedX;
+		this.speedY = (short)speedY;
+		this.speedZ = (short)speedZ;
 	}
 
 	public int getOpcode() {
@@ -101,12 +115,24 @@ public class SpawnObjectPacket extends Packet {
 		return yaw;
 	}
 
-	public int getInteger() {
-		return integer;
+	public int getData() {
+		return data;
+	}
+	
+	public short getSpeedX() {
+		return speedX;
+	}
+	
+	public short getSpeedY() {
+		return speedY;
+	}
+	
+	public short getSpeedZ() {
+		return speedZ;
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",type=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",fireballThrower=\"%d\"," + "fireballSpeedX=\"%d\",fireballSpeedY=\"%d\",fireballSpeedZ=\"%d\"", entityId, type, x, y, z);
+		return String.format("entityId=\"%d\",type=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",fireballThrower=\"%d\"," + "speedX=\"%d\",speedY=\"%d\",speedZ=\"%d\"", entityId, type, x, y, z);
 	}
 	
 	@Override
@@ -118,6 +144,11 @@ public class SpawnObjectPacket extends Packet {
 		output.writeInt(z);
 		output.writeByte(pitch);
 		output.writeByte(yaw);
-		output.writeInt(integer);
+		output.writeInt(data);
+		if(data > 0) {
+			output.writeShort(speedX);
+			output.writeShort(speedY);
+			output.writeShort(speedZ);
+		}			
 	}
 }

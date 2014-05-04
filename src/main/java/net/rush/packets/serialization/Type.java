@@ -154,7 +154,7 @@ public enum Type {
 					case ITEM:
 						short id = input.readShort();
 						if (id <= 0) {
-							parameters[index] = new Parameter<ItemStack>(type, index, ItemStack.NULL_ITEM);
+							parameters[index] = new Parameter<ItemStack>(type, index, ItemStack.NULL_ITEMSTACK);
 						} else {
 							byte stackSize = input.readByte();
 							short dataValue = input.readShort();
@@ -234,7 +234,7 @@ public enum Type {
 		public ItemStack read(DataInput in) throws IOException {
 			short id = in.readShort();
 			if (id <= 0) {
-				return ItemStack.NULL_ITEM;
+				return ItemStack.NULL_ITEMSTACK;
 			} else {
 				byte stackSize = in.readByte();
 				short dataValue = in.readShort();
@@ -250,7 +250,7 @@ public enum Type {
 
 		@Override
 		public void write(DataOutput out, ItemStack val) throws IOException {
-			if (val == ItemStack.NULL_ITEM || val.getId() <= 0) { // FIXME less then zero check
+			if (val == ItemStack.NULL_ITEMSTACK || val.getId() <= 0) { // FIXME less then zero check
 				out.writeShort(-1);
 			} else {
 				out.writeShort(val.getId());

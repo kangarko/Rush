@@ -284,32 +284,18 @@ public class World {
 		double randY = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
 		double randZ = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
 		
-		ItemEntity entity = new ItemEntity(this, x + randX, y + randY, z + randZ, item);
-		sendEntitySpawnPacket(entity);
+		new ItemEntity(this, x + randX, y + randY, z + randZ, item);
 	}
 
 	public void dropItem(double x, double y, double z, int type) {
 		dropItem(x, y, z, type, 1, 0);
 	}
 
-	private void sendEntitySpawnPacket(Entity en) {
-		Packet spawn = en.createSpawnMessage();
-
-		for(Player pl : getPlayers())
-			pl.getSession().send(spawn);		
-	}
-
 	public LivingEntity spawnEntity(Position pos, EntityType type) {
 		try {
 			Class<? extends LivingEntity> clazz = EntityRegistry.entityLookup(type);
 			LivingEntity entity = clazz.getDeclaredConstructor(World.class).newInstance(this);
-
 			entity.setPosition(pos);
-			Packet packet = entity.createSpawnMessage();
-
-			for(Player pl : getPlayers()) {
-				pl.getSession().send(packet);
-			}
 
 			return entity;
 

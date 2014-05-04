@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.rush.Server;
 import net.rush.chunk.Chunk;
+import net.rush.model.misc.AxisAlignedBB;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.EntityMetadataPacket;
 import net.rush.util.Parameter;
@@ -61,8 +62,14 @@ public abstract class Entity {
 
 	protected EntityType entityType;
 	
-	protected long ticksLived;
+	protected long ticksLived = 0;
+	protected int throwerId = 0;
 
+	protected AxisAlignedBB boundingBox = AxisAlignedBB.EMPTY_BOUNDING_BOX;
+	protected double motionX = 0;
+	protected double motionY = 0;
+	protected double motionZ = 0;
+	
 	protected Random rand = new Random();
 	
 	/**
@@ -75,8 +82,8 @@ public abstract class Entity {
 		this.ticksLived = 0;
 		world.getEntities().allocate(this);
 
-		setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, (byte) 0));
-		setMetadata(new Parameter<Short>(Parameter.TYPE_SHORT, 1, (short) 300));
+		//setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, (byte) 0));
+		//setMetadata(new Parameter<Short>(Parameter.TYPE_SHORT, 1, (short) 300));
 	}
 
 	/**
