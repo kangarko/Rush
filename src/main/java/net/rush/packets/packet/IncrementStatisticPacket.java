@@ -5,8 +5,8 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class IncrementStatisticPacket extends Packet {
+	
 	public IncrementStatisticPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.INT, order = 0)

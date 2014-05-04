@@ -18,13 +18,13 @@ public class UseEntityPacket extends Packet {
 	@Serialize(type = Type.INT, order = 1)
 	private int targetEntityId;
 	@Serialize(type = Type.BOOL, order = 2)
-	private boolean isLeftClick;
+	private boolean rightclick;
 
-	public UseEntityPacket(int playerEntityId, int targetEntityId, boolean isLeftClick) {
+	public UseEntityPacket(int playerEntityId, int targetEntityId, boolean rightclick) {
 		super();
 		this.playerEntityId = playerEntityId;
 		this.targetEntityId = targetEntityId;
-		this.isLeftClick = isLeftClick;
+		this.rightclick = rightclick;
 	}
 
 	public int getOpcode() {
@@ -39,18 +39,18 @@ public class UseEntityPacket extends Packet {
 		return targetEntityId;
 	}
 
-	public boolean getIsLeftClick() {
-		return isLeftClick;
+	public boolean getRightclick() {
+		return rightclick;
 	}
 
 	public String getToStringDescription() {
-		return String.format("playerEntityId=\"%d\",targetEntityId=\"%d\",isLeftClick=\"%b\"", playerEntityId, targetEntityId, isLeftClick);
+		return String.format("playerEntityId=\"%d\",targetEntityId=\"%d\",rightclick=\"%b\"", playerEntityId, targetEntityId, rightclick);
 	}
 	
 	@Override
 	public void read17(ByteBufInputStream input) throws IOException {
 		targetEntityId = input.readInt();
-		isLeftClick = input.readByte() == 1;
+		rightclick = input.readByte() == 0;
 	}
 
 }

@@ -1,12 +1,16 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class UseBedPacket extends Packet {
+	
 	public UseBedPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.INT, order = 0)
@@ -20,10 +24,10 @@ public class UseBedPacket extends Packet {
 	@Serialize(type = Type.INT, order = 4)
 	private int z;
 
-	public UseBedPacket(int entityId, byte unknown_byte_0, int x, byte y, int z) {
+	public UseBedPacket(int entityId, int x, byte y, int z) {
 		super();
 		this.entityId = entityId;
-		this.unknown_byte_0 = unknown_byte_0;
+		this.unknown_byte_0 = 0;
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -56,5 +60,12 @@ public class UseBedPacket extends Packet {
 	public String getToStringDescription() {
 		return String.format("entityId=\"%d\",unknown_byte_0=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\"", entityId, unknown_byte_0, x, y, z);
 	}
-
+	
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(entityId);
+		output.writeInt(x);
+		output.writeByte(y);
+		output.writeInt(z);
+	}
 }

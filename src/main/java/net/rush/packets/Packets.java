@@ -37,7 +37,7 @@ import net.rush.packets.packet.HandshakePacket;
 import net.rush.packets.packet.HeldItemChangePacket;
 import net.rush.packets.packet.IncrementStatisticPacket;
 import net.rush.packets.packet.ItemCollectPacket;
-import net.rush.packets.packet.ItemDataPacket;
+import net.rush.packets.packet.MapDataPacket;
 import net.rush.packets.packet.KeepAlivePacket;
 import net.rush.packets.packet.KickPacket;
 import net.rush.packets.packet.LoginPacket;
@@ -83,6 +83,12 @@ public final class Packets {
 
     private static final Map<Integer, Class<? extends Packet>> classMappings = new HashMap<Integer, Class<? extends Packet>>();
     
+    /* TODO Explosion packet
+    	IncrementStatisticPacket
+    	MapDataPacket - check 1.7
+    	SpawnExperienceOrbPacket - check fixed-point number (*32)
+    	ThunderBoltPacket - check fixed-point number
+    */
     static {
         registerPacket(0x00, KeepAlivePacket.class);
         registerPacket(0x01, LoginPacket.class);
@@ -143,7 +149,7 @@ public final class Packets {
         registerPacket(0x6B, CreativeInventoryActionPacket.class);
         registerPacket(0x6C, EnchantItemPacket.class);
         registerPacket(0x82, UpdateSignPacket.class);
-        registerPacket(0x83, ItemDataPacket.class);
+        registerPacket(0x83, MapDataPacket.class);
         registerPacket(0x84, UpdateTileEntityPacket.class);
         registerPacket(0xC8, IncrementStatisticPacket.class);
         registerPacket(0xC9, PlayerListItemPacket.class);

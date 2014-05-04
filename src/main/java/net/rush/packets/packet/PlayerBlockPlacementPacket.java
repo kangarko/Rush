@@ -94,5 +94,4 @@ public class PlayerBlockPlacementPacket extends Packet {
 		cursorY = input.readByte();
 		cursorZ = input.readByte();
 	}
-
 }

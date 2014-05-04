@@ -1,12 +1,16 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SpawnPaintingPacket extends Packet {
+	
 	public SpawnPaintingPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.INT, order = 0)
@@ -64,4 +68,13 @@ public class SpawnPaintingPacket extends Packet {
 		return String.format("entityId=\"%d\",title=\"%s\",x=\"%d\",y=\"%d\",z=\"%d\",direction=\"%d\"", entityId, title, x, y, z, direction);
 	}
 
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		writeVarInt(entityId, output);
+		writeString(title, output, false);
+		output.writeInt(x);
+		output.writeInt(y);
+		output.writeInt(z);
+		output.writeInt(direction);
+	}
 }

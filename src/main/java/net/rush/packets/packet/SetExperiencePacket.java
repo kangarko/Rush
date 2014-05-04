@@ -1,12 +1,16 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SetExperiencePacket extends Packet {
+	
 	public SetExperiencePacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.FLOAT, order = 0)
@@ -42,5 +46,11 @@ public class SetExperiencePacket extends Packet {
 	public String getToStringDescription() {
 		return String.format("experienceBar=\"%d\",level=\"%d\",totalExperience=\"%d\"", experienceBar, level, totalExperience);
 	}
-
+	
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeFloat(experienceBar);
+		output.writeShort(level);
+		output.writeShort(totalExperience);
+	}
 }

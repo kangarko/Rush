@@ -10,8 +10,8 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SetWindowItemsPacket extends Packet {
+	
 	public SetWindowItemsPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.BYTE, order = 0)

@@ -1,12 +1,16 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SteerVehiclePacket extends Packet {
+	
 	public SteerVehiclePacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.FLOAT, order = 0)
@@ -50,4 +54,11 @@ public class SteerVehiclePacket extends Packet {
 		return String.format("sideways=%d,forward=%d,jump=%b,unmount=%b", sideways, forward, jump, unmount);
 	}
 
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		sideways = input.readFloat();
+		forward = input.readFloat();
+		jump = input.readBoolean();
+		unmount = input.readBoolean();
+	}
 }

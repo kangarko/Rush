@@ -1,12 +1,16 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class UpdateHealthPacket extends Packet {
+	
 	public UpdateHealthPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.FLOAT, order = 0)
@@ -43,4 +47,10 @@ public class UpdateHealthPacket extends Packet {
 		return String.format("health=\"%d\",food=\"%d\",saturation=\"%d\"", health, food, saturation);
 	}
 
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeFloat(health);
+		output.writeShort(food);
+		output.writeFloat(saturation);
+	}
 }

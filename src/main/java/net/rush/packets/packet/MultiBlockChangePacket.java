@@ -1,12 +1,16 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class MultiBlockChangePacket extends Packet {
+	
 	public MultiBlockChangePacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.INT, order = 0)
@@ -55,6 +59,15 @@ public class MultiBlockChangePacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("chunkX=\"%d\",chunkZ=\"%d\",recordCount=\"%d\",dataSize=\"%d\",data=byte[%d]", chunkX, chunkZ, recordCount, dataSize, data.length);
+	}
+	
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(chunkX);
+		output.writeInt(chunkZ);
+		output.writeShort(recordCount);
+		output.writeInt(dataSize);
+		output.write(data);
 	}
 
 }

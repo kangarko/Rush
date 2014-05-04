@@ -28,8 +28,6 @@ public class MapChunkPacket extends Packet {
 	@Serialize(type = Type.BYTE_ARRAY, order = 6, moreInfo = 5)
 	private byte[] compressedChunkData;
 
-	//private static byte[] buildBuffer = new byte[196864];
-
 	public MapChunkPacket(int x, int z, boolean groundUpContinuous, int primaryBitMap, int addBitMap, byte[] chunkData) {
 		this(x, z, groundUpContinuous, primaryBitMap, addBitMap, chunkData.length, chunkData);
 	}

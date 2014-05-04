@@ -1,12 +1,16 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class UpdateWindowPropertyPacket extends Packet {
+	
 	public UpdateWindowPropertyPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.BYTE, order = 0)
@@ -43,4 +47,10 @@ public class UpdateWindowPropertyPacket extends Packet {
 		return String.format("windowId=\"%d\",property=\"%d\",value=\"%d\"", windowId, property, value);
 	}
 
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeByte(windowId);
+		output.writeShort(property);
+		output.writeShort(value);
+	}
 }

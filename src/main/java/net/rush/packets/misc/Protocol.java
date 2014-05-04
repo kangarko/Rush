@@ -34,7 +34,7 @@ import net.rush.packets.packet.ExplosionPacket;
 import net.rush.packets.packet.HandshakePacket;
 import net.rush.packets.packet.HeldItemChangePacket;
 import net.rush.packets.packet.ItemCollectPacket;
-import net.rush.packets.packet.ItemDataPacket;
+import net.rush.packets.packet.MapDataPacket;
 import net.rush.packets.packet.KeepAlivePacket;
 import net.rush.packets.packet.KickPacket;
 import net.rush.packets.packet.LoginPacket;
@@ -144,7 +144,7 @@ public enum Protocol {
 			TO_CLIENT.registerPacket(0x31, UpdateWindowPropertyPacket.class);
 			TO_CLIENT.registerPacket(0x32, ConfirmTransactionPacket.class);
 			TO_CLIENT.registerPacket(0x33, UpdateSignPacket.class);
-			TO_CLIENT.registerPacket(0x34, ItemDataPacket.class);
+			TO_CLIENT.registerPacket(0x34, MapDataPacket.class);
 			TO_CLIENT.registerPacket(0x35, UpdateTileEntityPacket.class);
 			//TO_CLIENT.registerPacket(0x36, Packet133OpenTileEntity.class);
 			//TO_CLIENT.registerPacket(0x37, Packet200Statistic.class);

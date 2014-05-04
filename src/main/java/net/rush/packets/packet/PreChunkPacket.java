@@ -1,12 +1,16 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class PreChunkPacket extends Packet {
+	
 	public PreChunkPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.SHORT, order = 0)
@@ -77,6 +81,19 @@ public class PreChunkPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("x=\"%a,%b,%c,x=%d,z=%e,%f,%g", chunkCount, dataLength, data, x, z, primaryBitMap, addBitMap);
+	}
+	
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeShort(chunkCount);
+		output.writeInt(dataLength);
+		output.writeBoolean(skyLight);
+		output.write(data);
+		//meta
+		output.writeInt(x);
+		output.writeInt(z);
+		output.writeShort(primaryBitMap);
+		output.writeShort(addBitMap);
 	}
 
 }

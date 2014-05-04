@@ -5,8 +5,8 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class ServerListPingPacket extends Packet {
+	
 	public ServerListPingPacket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Serialize(type = Type.BYTE, order = 0)
@@ -27,5 +27,4 @@ public class ServerListPingPacket extends Packet {
 	public String getToStringDescription() {
 		return new String();
 	}
-
 }
