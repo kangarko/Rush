@@ -92,7 +92,7 @@ public class World {
 		long now = System.currentTimeMillis();
 		for (Entity entity : entities) {
 			entity.pulse();
-			entity.updateMetadata();
+			entity.updateEntity();
 		}
 
 		for (Entity entity : entities)

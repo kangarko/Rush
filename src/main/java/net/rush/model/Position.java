@@ -2,6 +2,8 @@ package net.rush.model;
 
 import net.rush.util.StringUtils;
 
+import org.bukkit.util.NumberConversions;
+
 public final class Position {
 	public static final int GRANULARITY = 32;
 	public static final Position ZERO = new Position(0.0D, 0.0D, 0.0D);
@@ -66,6 +68,17 @@ public final class Position {
 			return false;
 		return true;
 	}
+	
+    public double distance(Position o) {
+        return Math.sqrt(distanceSquared(o));
+    }
+    
+    public double distanceSquared(Position o) {
+        if (o == null)
+            throw new IllegalArgumentException("Cannot measure distance to a null location");
+
+        return NumberConversions.square(x - o.x) + NumberConversions.square(y - o.y) + NumberConversions.square(z - o.z);
+    }
 	
 	@Override
 	public String toString() {

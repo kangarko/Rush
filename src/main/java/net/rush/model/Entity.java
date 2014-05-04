@@ -1,5 +1,7 @@
 package net.rush.model;
 
+import java.util.Random;
+
 import net.rush.Server;
 import net.rush.chunk.Chunk;
 import net.rush.packets.Packet;
@@ -58,7 +60,11 @@ public abstract class Entity {
 	protected Rotation previousRotation = Rotation.ZERO;
 
 	protected EntityType entityType;
+	
+	protected long ticksLived;
 
+	protected Random rand = new Random();
+	
 	/**
 	 * Creates an entity and adds it to the specified world.
 	 * @param world The world.
@@ -66,6 +72,7 @@ public abstract class Entity {
 	protected Entity(World world, EntityType entityType) {
 		this.world = world;
 		this.entityType = entityType;
+		this.ticksLived = 0;
 		world.getEntities().allocate(this);
 
 		setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, (byte) 0));
@@ -127,7 +134,12 @@ public abstract class Entity {
 	 */
 	public void pulse() {}
 	
-	public void updateMetadata() {
+	/**
+	 * The reason this is not in pulse() is to prevent disabling that in case I forget to use super.pulse();
+	 */
+	public void updateEntity() {
+		ticksLived++;
+		
 		if(metadataChanged) {
 			EntityMetadataPacket message = new EntityMetadataPacket(id, metadata.clone());
 			for (Player player : world.getPlayers()) {
@@ -206,7 +218,7 @@ public abstract class Entity {
 	public void setRotation(double yaw, double pitch) {
 		this.rotation = new Rotation(yaw, pitch);
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

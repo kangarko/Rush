@@ -123,6 +123,10 @@ public final class Player extends LivingEntity implements CommandSender {
 		session.send(new NamedSoundEffectPacket(soundName, x, y, z, volume, pitch));
 	}
 	
+	public void playSound(String soundName, Position pos, float volume, float pitch) {
+		session.send(new NamedSoundEffectPacket(soundName, pos.getX(), pos.getY(), pos.getZ(), volume, pitch));
+	}
+	
 	public void playEffect(int effectId, int x, int y, int z, int data) {
 		session.send(new SoundOrParticleEffectPacket(effectId, x, y, z, data, false));
 	}
