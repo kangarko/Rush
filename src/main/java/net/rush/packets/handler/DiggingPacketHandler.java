@@ -1,6 +1,7 @@
 package net.rush.packets.handler;
 
 import net.rush.model.Block;
+import net.rush.model.ItemStack;
 import net.rush.model.Player;
 import net.rush.net.Session;
 import net.rush.packets.packet.PlayerDiggingPacket;
@@ -31,6 +32,14 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 		
 		if(block == null) {
 			player.sendMessage("&cUnknown broken block: " + Material.getMaterial(world.getTypeId(x, y, z)));
+			return;
+		}
+
+		player.getInventory().setItemInHand(new ItemStack(1));
+		
+		if(message.getStatus() == PlayerDiggingPacket.DROP_ITEM) {
+			player.getInventory().remove(player.getItemInHand());
+			world.dropItem(player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ(), 1);
 			return;
 		}
 		

@@ -51,19 +51,20 @@ public final class ItemEntity extends Entity {
 		super.pulse();
 
 		// FIXME implementation for debug purposes not for real usage
-		for(Entity en : getWorld().getEntities()) {
-			if(en == this) 
-				continue;
-			if(en.getType() == EntityType.PLAYER) 
-				if(getPosition().distance(en.getPosition()) < 0.9D) {
-					Player pl = (Player) en;
-					pl.getSession().send(new ItemCollectPacket(getId(), pl.getId()));
-					pl.getInventory().addItem(item);
-					pl.playSound(SoundNames.RandomPop, pl.getPosition(), 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-					this.destroy();
-					return;
-				}
-		}
+		if(ticksLived > 40)
+			for(Entity en : getWorld().getEntities()) {
+				if(en == this) 
+					continue;
+				if(en.getType() == EntityType.PLAYER) 
+					if(getPosition().distance(en.getPosition()) < 0.9D) {
+						Player pl = (Player) en;
+						pl.getSession().send(new ItemCollectPacket(getId(), pl.getId()));
+						pl.getInventory().addItem(item);
+						pl.playSound(SoundNames.RandomPop, pl.getPosition(), 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+						this.destroy();
+						return;
+					}
+			}
 
 		if(getPosition().getY() < 0)
 			this.destroy();

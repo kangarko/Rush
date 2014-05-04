@@ -2,6 +2,7 @@ package net.rush.packets.handler;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import net.rush.packets.Packet;
 import net.rush.packets.packet.AnimationPacket;
@@ -23,6 +24,7 @@ import net.rush.packets.packet.PlayerPositionAndLookPacket;
 import net.rush.packets.packet.PlayerPositionPacket;
 import net.rush.packets.packet.PluginMessagePacket;
 import net.rush.packets.packet.ServerListPingPacket;
+import net.rush.packets.packet.SetSlotPacket;
 
 /**
  * A class used to look up message handlers.
@@ -56,7 +58,7 @@ public final class HandlerLookupService {
 			bind(HeldItemChangePacket.class, HeldItemChangePacketHandler.class);
 			bind(ServerListPingPacket.class, ServerListPingPacketHandler.class);
 			bind(CreativeInventoryActionPacket.class, CreativeInventoryActionPacketHandler.class);
-			
+			bind(SetSlotPacket.class, SetSlotPacketHandler.class);
 			// 1.7
 			bind(PacketStatusRequest.class, PacketStatusRequestHandler.class);
 			bind(PacketLoginRequest.class, PacketLoginRequestHandler.class);
