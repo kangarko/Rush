@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Random;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,6 +47,8 @@ import net.rush.util.NumberUtils;
 import net.rush.world.ForestWorldGenerator;
 import net.rush.world.World;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 /**
  * The core class of the Rush server.
  */
@@ -70,7 +71,7 @@ public final class Server {
 	/** A group containing all of the channels. */
 	private final ChannelGroup group = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
-	private final EventLoopGroup eventGroup = new NioEventLoopGroup(4, Executors.newWorkStealingPool()); // TODO configurable
+	private final EventLoopGroup eventGroup = new NioEventLoopGroup(3, new ThreadFactoryBuilder().setNameFormat("Netty IO Thread").build()); // TODO configurable
 
 	/** A list of all the active {@link Session}s. */
 	private final SessionRegistry sessions = new SessionRegistry();
@@ -89,10 +90,9 @@ public final class Server {
 
 			boolean jline = true;
 
-			for (String arg : args) {
+			for (String arg : args)
 				if ("nojline".equalsIgnoreCase(arg))
 					jline = false;
-			}
 
 			new ThreadConsoleReader(server, jline).start();
 
@@ -235,7 +235,7 @@ public final class Server {
 	/**
 	 * A {@link Runnable} which saves chunks on shutdown.
 	 */
-	private class ServerShutdownHandler extends Thread {
+	private class ServerShutdownHandler implements Runnable {
 
 		@Override
 		public void run() {

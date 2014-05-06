@@ -157,7 +157,7 @@ public final class Player extends LivingEntity implements CommandSender {
 				if (msg != null)
 					session.send(msg);
 			} else {
-				session.send(new DestroyEntityPacket(new int[]{entity.getId()} ));
+				session.send(new DestroyEntityPacket(new int[] {entity.getId()} ));
 				it.remove();
 			}
 		}
