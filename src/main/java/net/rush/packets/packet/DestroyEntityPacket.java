@@ -19,6 +19,10 @@ public class DestroyEntityPacket extends Packet {
 	@Serialize(type = Type.INT_ARRAY, order = 1)
 	private int[] entityIDs;
 
+	public DestroyEntityPacket(int entityID) {
+		this(new int[] {entityID});
+	}
+	
 	public DestroyEntityPacket(int[] entityIDs) {
 		super();
 		this.entityCount = (byte) entityIDs.length;

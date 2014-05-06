@@ -79,7 +79,7 @@ public class LoginPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",username=\"%s\",levelType=\"%s\"mode=\"%d\",dimension=\"%d\",difficulty=\"%d\",worldHeight=\"%d\",maxPlayers=\"%d\"", entityId, worldType, mode, dimension, difficulty, worldHeight, maxPlayers);
+		return String.format("entityId=\"%d\",levelType=\"%s\"mode=\"%d\",dimension=\"%d\",difficulty=\"%d\",worldHeight=\"%d\",maxPlayers=\"%d\"", entityId, worldType, mode, dimension, difficulty, worldHeight, maxPlayers);
 	}
 
 	@Override

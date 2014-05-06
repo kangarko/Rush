@@ -132,7 +132,8 @@ public class SpawnObjectPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",type=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",fireballThrower=\"%d\"," + "speedX=\"%d\",speedY=\"%d\",speedZ=\"%d\"", entityId, type, x, y, z);
+		return String.format("entityId=\"%d\",type=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",data=\"%d\",speedX=\"%d\",speedY=\"%d\",speedZ=\"%d\"", 
+				entityId, type, x, y, z, data, speedX, speedY, speedZ);
 	}
 	
 	@Override
