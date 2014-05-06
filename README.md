@@ -1,6 +1,9 @@
 Rush
 ==========
 
+Check out the Minecraft 1.6-1.7 branch!
+--------------------------------------
+
 Introduction
 ------------
 
