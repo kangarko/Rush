@@ -2,10 +2,8 @@ package net.rush.model;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
-import net.minecraft.src.Entity;
 import net.rush.Server;
 import net.rush.chunk.Chunk;
 import net.rush.chunk.ChunkCoords;
@@ -187,7 +185,7 @@ public final class Player extends LivingEntity implements CommandSender {
 		if (ticksLived % 20 * 12 == 0)
 			heal();
 		
-		if (getHealth() > 0) {
+		/*if (getHealth() > 0) {
 			List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, boundingBox.expand(1.0D, 0.0D, 1.0D));
 			if (list != null)
 				for (int index = 0; index < list.size(); index++) {
@@ -195,7 +193,7 @@ public final class Player extends LivingEntity implements CommandSender {
 					if (entity.isActive() && entity instanceof Player)
 						onCollideWithPlayer((Player) entity);
 				}
-		}
+		}*/
 	}
 
 	/**
