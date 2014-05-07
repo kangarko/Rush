@@ -14,6 +14,9 @@ public class LivingEntity extends Mob {
 
 	// TODO Horse, Bat, Sheep
 	
+	protected int health;
+	protected int maxHealth;
+	
 	/**
 	 * Creates a new living entity (e.g. zombie or a pig).
 	 * @param world The world this living entity is in.
@@ -47,6 +50,7 @@ public class LivingEntity extends Mob {
 
 	public void setHealth(float health) {
 		setMetadata(new Parameter<Float>(Parameter.TYPE_FLOAT, 6, health));
+		this.health = (int)health;
 	}
 	
 	public int getPotionEffectColor() {

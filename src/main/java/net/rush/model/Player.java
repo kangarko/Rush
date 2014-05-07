@@ -2,8 +2,10 @@ package net.rush.model;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
+import net.minecraft.src.Entity;
 import net.rush.Server;
 import net.rush.chunk.Chunk;
 import net.rush.chunk.ChunkCoords;
@@ -22,6 +24,7 @@ import net.rush.packets.packet.PlayerPositionAndLookPacket;
 import net.rush.packets.packet.SetSlotPacket;
 import net.rush.packets.packet.SoundOrParticleEffectPacket;
 import net.rush.packets.packet.SpawnPositionPacket;
+import net.rush.packets.packet.UpdateHealthPacket;
 import net.rush.util.MathHelper;
 import net.rush.util.Parameter;
 import net.rush.util.enums.GameStateReason;
@@ -52,6 +55,8 @@ public final class Player extends LivingEntity implements CommandSender {
 	private boolean onGround = true;
 
 	private float exhaustion = 0F;
+	private int food = 20;
+	private float saturation = 0;
 
 	private final PlayerInventory inventory = new PlayerInventory();
 
@@ -84,6 +89,7 @@ public final class Player extends LivingEntity implements CommandSender {
 	public Player(Session session, String name) {
 		super(session.getServer().getWorld(), EntityType.PLAYER);
 
+		this.maxHealth = 20;
 		this.name = name;
 		this.session = session;
 		this.gamemode = GameMode.getByValue(session.getServer().getProperties().gamemode);
@@ -171,6 +177,24 @@ public final class Player extends LivingEntity implements CommandSender {
 				knownEntities.add(entity);
 				session.send(entity.createSpawnMessage());
 			}
+		}
+	}
+	
+	@Override
+	public void updateEntity() {
+		super.updateEntity();
+		
+		if (ticksLived % 20 * 12 == 0)
+			heal();
+		
+		if (getHealth() > 0) {
+			List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, boundingBox.expand(1.0D, 0.0D, 1.0D));
+			if (list != null)
+				for (int index = 0; index < list.size(); index++) {
+					Entity entity = list.get(index);
+					if (entity.isActive() && entity instanceof Player)
+						onCollideWithPlayer((Player) entity);
+				}
 		}
 	}
 
@@ -340,6 +364,13 @@ public final class Player extends LivingEntity implements CommandSender {
 
 	public Server getServer() {
 		return session.getServer();
+	}
+	
+	public void heal() {
+		if(health < maxHealth) {
+			setHealth(health + 1);
+			getSession().send(new UpdateHealthPacket(health, (short)food, saturation));
+		}
 	}
 }
 

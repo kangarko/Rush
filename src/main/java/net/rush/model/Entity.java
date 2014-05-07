@@ -3,6 +3,7 @@ package net.rush.model;
 import java.util.Random;
 
 import net.rush.Server;
+import net.rush.ServerProperties;
 import net.rush.chunk.Chunk;
 import net.rush.model.misc.AxisAlignedBB;
 import net.rush.packets.Packet;
@@ -44,6 +45,8 @@ public abstract class Entity {
 	 * The current position.
 	 */
 	protected Position position = Position.ZERO;
+	
+	public Position chunkPosition = Position.ZERO;
 
 	/**
 	 * The position in the last cycle.
@@ -69,7 +72,7 @@ public abstract class Entity {
 	protected double motionX = 0;
 	protected double motionY = 0;
 	protected double motionZ = 0;
-	
+
 	protected Random rand = new Random();
 	
 	/**
@@ -87,7 +90,7 @@ public abstract class Entity {
 	}
 
 	/**
-	 * Checks if this entity is within the {@link Chunk#VISIBLE_RADIUS} of
+	 * Checks if this entity is within the {@link ServerProperties#viewDistance} of
 	 * another.
 	 * @param other The other entity.
 	 * @return {@code true} if the entities can see each other, {@code false} if
@@ -96,10 +99,12 @@ public abstract class Entity {
 	public boolean isWithinDistance(Entity other) {
 		if(position == null)
 			throw new Error("Position of entity is null!");
-
+		
+		int distance = Server.getServer().getProperties().viewDistance > 10 ? 10 : Server.getServer().getProperties().viewDistance;
+		
 		double dx = Math.abs(position.getX() - other.position.getX());
 		double dz = Math.abs(position.getZ() - other.position.getZ());
-		return dx <= (Server.getServer().getProperties().viewDistance * Chunk.WIDTH) && dz <= (Server.getServer().getProperties().viewDistance * Chunk.HEIGHT);
+		return dx <= (distance * Chunk.WIDTH) && dz <= (distance * Chunk.HEIGHT);
 	}
 
 	/**
@@ -177,7 +182,7 @@ public abstract class Entity {
 			throw new Error("Position of entity is null!");
 		return position;
 	}
-
+	
 	/**
 	 * Gets the entity's previous position.
 	 * @return The previous position of this entity.
@@ -224,6 +229,9 @@ public abstract class Entity {
 
 	public void setRotation(double yaw, double pitch) {
 		this.rotation = new Rotation(yaw, pitch);
+	}
+	
+	public void onCollideWithPlayer(Player pl) {
 	}
 	
 	@Override
@@ -292,6 +300,10 @@ public abstract class Entity {
 	public void setMetadata(Parameter<?> data) {
 		metadata[data.getIndex()] = data;
 		metadataChanged = true;
+	}
+	
+	public Chunk getChunk() {
+		return getWorld().getChunkFromBlockCoords((int)getPosition().getX(), (int)getPosition().getZ());
 	}
 }
 

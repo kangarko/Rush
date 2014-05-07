@@ -60,13 +60,15 @@ public final class EntityManager implements Iterable<Entity> {
 	 */
 	@SuppressWarnings("unchecked")
 	int allocate(Entity entity) {
+		int eid = -1;
+		
 		for (int id = nextId; id < Integer.MAX_VALUE; id++) {
 			if (!entities.containsKey(id)) {
 				entities.put(id, entity);
 				entity.id = id;
 				((Collection<Entity>) getAll(entity.getClass())).add(entity);
 				nextId = id + 1;
-				return id;
+				eid = id;
 			}
 		}
 
@@ -75,11 +77,15 @@ public final class EntityManager implements Iterable<Entity> {
 				entities.put(id, entity);
 				((Collection<Entity>) getAll(entity.getClass())).add(entity);
 				nextId = id + 1;
-				return id;
+				eid = id;
 			}
 		}
-
-		throw new IllegalStateException("No free entity ids");
+		
+		if(eid == -1)
+			throw new IllegalStateException("No free entity ids");
+	
+		entity.getChunk().addEntity(entity);;
+		return eid;
 	}
 
 	/**

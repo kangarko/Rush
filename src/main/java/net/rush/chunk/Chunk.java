@@ -3,12 +3,15 @@ package net.rush.chunk;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.zip.Deflater;
 
 import net.rush.model.Block;
+import net.rush.model.Entity;
 import net.rush.model.Position;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.MapChunkPacket;
+import net.rush.util.MathHelper;
 import net.rush.world.World;
 
 /**
@@ -32,6 +35,9 @@ public final class Chunk {
 	 */
 	public final byte[] types;
 	private final byte[] metaData, skyLight, blockLight;
+	
+	@SuppressWarnings("unchecked")
+	private Set<Entity>[] entities = new TreeSet[DEPTH / 16];
 
 	/**
 	 * Creates a new chunk with a specified X and Z coordinate.
@@ -44,6 +50,9 @@ public final class Chunk {
 		this.metaData = new byte[SIZE];
 		this.skyLight = new byte[SIZE];
 		this.blockLight = new byte[SIZE];
+		
+		for (int i = 0; i < entities.length; i++)
+			entities[i] = new TreeSet<Entity>();
 	}
 
 	/**
@@ -295,6 +304,27 @@ public final class Chunk {
 		}
 
 		return realCompressed;
+	}
+	
+	public void addEntity(Entity en) {
+		int posX = MathHelper.floor_double(en.getPosition().getX() / 16D);
+		int posZ = MathHelper.floor_double(en.getPosition().getZ() / 16D);
+		
+		if (posX != getX() || posZ != getZ()) {
+			System.out.println("Wrong location! " + en.getPosition());
+			Thread.dumpStack();
+		}
+		
+		int posY = MathHelper.floor_double(en.getPosition().getY() / 16D);
+		
+		if (posY < 0)
+			posY = 0;
+		
+		if (posY >= entities.length)
+			posY = entities.length - 1;
+		
+		en.chunkPosition = new Position(getX(), posY, getZ());
+		entities[posY].add(en);
 	}
 }
 
