@@ -24,7 +24,6 @@ import net.rush.model.entity.EntityRegistry;
 import net.rush.model.entity.ItemEntity;
 import net.rush.model.misc.NextTickEntry;
 import net.rush.model.misc.Vec3Pool;
-import net.rush.packets.Packet;
 import net.rush.packets.packet.BlockChangePacket;
 import net.rush.packets.packet.TimeUpdatePacket;
 

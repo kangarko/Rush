@@ -51,8 +51,6 @@ public final class ItemEntity extends Entity {
 			--pickupDelay;
 
 		// FIXME implementation for debug purposes not for real usage
-
-		
 		
 		/*for(Entity en : getWorld().getEntities()) {
 			if(en == this) 

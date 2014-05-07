@@ -42,7 +42,7 @@ public class DestroyEntityPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityCount=\"%d\", entityIDs=\"%c\"", entityCount, entityIDs);
+		return String.format("entityCount=\"%d\", entityIDs=\"%s\"", entityCount, entityIDs);
 	}
 	
 	@Override
