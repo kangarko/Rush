@@ -28,9 +28,9 @@ public final class GiveCommand extends Command {
 			pl.sendMessage("&cUsage: /i <item>");
 		} else if(args.length == 1) {
 			try {
-				pl.getInventory().addItem(new ItemStack[] {new ItemStack(Material.getMaterial(args[0].toUpperCase()).getId())});
+				pl.getInventory().addItem(new ItemStack(Material.getMaterial(args[0].toUpperCase()).getId()));
 				pl.sendMessage("&3Rush // &2Given 1x of " + args[0].toUpperCase() + " to " + player.getName());
-			} catch (Exception ex) {
+			} catch (NullPointerException ex) {
 				pl.sendMessage("&cInvalid item: " + args[0]);
 			}
 		}

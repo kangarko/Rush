@@ -19,7 +19,7 @@ public final class TestCommand extends Command {
 			return;
 		}
 		
-		Player pl = (Player) player;
+		//Player pl = (Player) player;
 		//pl.getSession().send(new ItemCollectPacket(Integer.valueOf(args[0]), pl.getId()));
 	}
 

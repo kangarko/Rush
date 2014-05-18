@@ -182,7 +182,6 @@ public enum Protocol {
 			TO_SERVER.registerPacket(0x15, ClientSettingsPacket.class);
 			TO_SERVER.registerPacket(0x16, ClientStatusPacket.class);
 			TO_SERVER.registerPacket(0x17, PluginMessagePacket.class);
-
 		}
 	},
 	// 1
@@ -206,7 +205,7 @@ public enum Protocol {
 			//TO_SERVER.registerPacket(0x01, EncryptionKeyResponsePacket.class);
 		}
 	};
-	/*========================================================================*/
+
 	public final int MAX_PACKET_ID = 0xFF;
 	public final ProtocolDirection TO_SERVER = new ProtocolDirection("TO_SERVER");
 	public final ProtocolDirection TO_CLIENT = new ProtocolDirection("TO_CLIENT");

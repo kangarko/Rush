@@ -111,6 +111,17 @@ public final class TaskScheduler {
 		}
 	}
 
+	/**
+	 * Runs specified task once.
+	 */
+	public void runTask(Runnable task) {
+		runTaskLater(task, 0);
+	}
+	
+	/**
+	 * Runs the specified task once after the ticks in dealy.
+	 * @param delayTicks how long to postpone the task
+	 */
 	public void runTaskLater(Runnable task, int delayTicks) {
 		scheduleExecutor.schedule(task, delayTicks * 50, TimeUnit.MILLISECONDS);
 	}

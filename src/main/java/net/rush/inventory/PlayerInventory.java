@@ -102,6 +102,13 @@ public class PlayerInventory extends Inventory {
 		return 64;
 	}
 	
+	public void takeItemInHand() {
+		if(getItemInHand().getCount() > 1)
+			setItemInHand(new ItemStack(getItemInHand().getId(), getItemInHand().getCount() - 1, getItemInHand().getDamage()));
+		else
+			setItemInHand(null);
+	}
+	
 	public static class PlayerInventorySlotConverter {
 
 	    private int mappings[] = { 36, 37, 38, 39, 40, 41, 42, 43,

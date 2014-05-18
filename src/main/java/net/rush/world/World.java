@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
@@ -405,8 +406,12 @@ public class World {
 		}
 	}
 
-	protected void tickActiveChunks() {		
-		for(ChunkCoords coords : activeChunks) {
+	protected void tickActiveChunks() {
+		
+		Iterator<ChunkCoords> it = activeChunks.iterator();
+		
+		while(it.hasNext()) {
+			ChunkCoords coords = it.next();
 			Chunk chunk = getChunkFromChunkCoords(coords.x, coords.z);
 
 			int chunkX = coords.x * Chunk.WIDTH;

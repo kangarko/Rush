@@ -355,7 +355,6 @@ public final class Player extends LivingEntity implements CommandSender {
 		inventory.setItemInHand(item);
 	}
 
-	// FIXME don´t work, yet
 	public void onSlotSet(Inventory inv, int index, ItemStack item) {
 		getSession().send(new SetSlotPacket(0, index, item));
 	}

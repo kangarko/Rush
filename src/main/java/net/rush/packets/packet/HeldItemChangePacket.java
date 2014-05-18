@@ -34,6 +34,6 @@ public class HeldItemChangePacket extends Packet {
 
 	@Override
 	public void read17(ByteBufInputStream input) throws IOException {
-		slotId = input.readByte();
+		slotId = input.readShort();
 	}
 }

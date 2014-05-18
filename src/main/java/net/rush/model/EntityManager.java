@@ -1,11 +1,10 @@
 package net.rush.model;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A class which manages all of the entities within a world.
@@ -16,12 +15,12 @@ public final class EntityManager implements Iterable<Entity> {
 	/**
 	 * A map of all the entity ids to the corresponding entities.
 	 */
-	private final Map<Integer, Entity> entities = new HashMap<Integer, Entity>();
+	private final ConcurrentHashMap<Integer, Entity> entities = new ConcurrentHashMap<Integer, Entity>();
 
 	/**
 	 * A map of entity types to a set containing all entities of that type.
 	 */
-	private final Map<Class<? extends Entity>, Set<? extends Entity>> groupedEntities = new HashMap<Class<? extends Entity>, Set<? extends Entity>>();
+	private final ConcurrentHashMap<Class<? extends Entity>, Set<? extends Entity>> groupedEntities = new ConcurrentHashMap<Class<? extends Entity>, Set<? extends Entity>>();
 
 	/**
 	 * The next id to check.

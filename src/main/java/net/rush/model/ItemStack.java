@@ -5,27 +5,27 @@ public class ItemStack {
 	public static final ItemStack NULL_ITEMSTACK = new ItemStack(-1, -1, -1) {
         @Override
         public int getId() {
-            throw new NullException("You tried to use the legendary NULL-ItemStack!");
+            throw new NullPointerException("You tried to use the legendary NULL-ItemStack!");
         }
 
         @Override
         public int getCount() {
-            throw new NullException("You tried to use the legendary NULL-ItemStack!");
+            throw new NullPointerException("You tried to use the legendary NULL-ItemStack!");
         }
 
         @Override
         public int getDamage() {
-            throw new NullException("You tried to use the legendary NULL-ItemStack!");
+            throw new NullPointerException("You tried to use the legendary NULL-ItemStack!");
         }
         
         @Override
         public int getDataLength() {
-            throw new NullException("You tried to use the legendary NULL-ItemStack!");
+            throw new NullPointerException("You tried to use the legendary NULL-ItemStack!");
         }
 
         @Override
         public byte[] getData() {
-            throw new NullException("You tried to use the legendary NULL-ItemStack!");
+            throw new NullPointerException("You tried to use the legendary NULL-ItemStack!");
         }
     };
 	
@@ -145,6 +145,10 @@ public class ItemStack {
 		this.count = count;	
 	}
 	
+	public boolean doMaterialsMatch(ItemStack is) {
+		return this.id == is.id && this.damage == is.damage;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -176,16 +180,6 @@ public class ItemStack {
 	@Override
 	public String toString() {
 		return String.format("ItemStack [id=%s,count=%d,damage=%d])", id, count, damage);
-	}
-
-	
-	private class NullException extends NullPointerException {
-
-		private static final long serialVersionUID = 1L;
-
-		public NullException(String str) {
-			super(str);
-		}
 	}
 }
 
