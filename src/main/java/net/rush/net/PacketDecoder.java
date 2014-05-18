@@ -9,7 +9,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import net.rush.PacketLogger;
 import net.rush.net.Session.ClientVersion;
 import net.rush.packets.Packet;
 import net.rush.packets.misc.Protocol;
@@ -66,7 +65,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 					break;
 			}
 		}
-		PacketLogger.submitWrite(packet, version.getProtocol(), true);
+		//PacketLogger.submitWrite(packet, version.getProtocol(), true);
 	}
 
 	public void setProtocol(ChannelHandlerContext channel, Protocol prot) {
