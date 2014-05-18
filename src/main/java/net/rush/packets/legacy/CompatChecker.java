@@ -19,10 +19,7 @@ public class CompatChecker extends ByteToMessageDecoder {
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
 
-		// MC 1.4.2 - 1.5.2
-		
-		System.out.println("readableBytes: " + in.readableBytes());
-		
+		// MC 1.4.2 - 1.5.2		
 		if(in.readableBytes() == 2) {
 			int index = in.readerIndex();
 			short b1 = in.getUnsignedByte(index++);
