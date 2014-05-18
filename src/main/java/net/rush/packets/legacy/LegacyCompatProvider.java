@@ -24,7 +24,7 @@ public class LegacyCompatProvider {
 	}
 	
 	private static void unThrottle(String addr) {
-		compats.remove(addr);
+		throttled.remove(addr);
 	}
 	
 	public static void provideCompatFor(SocketAddress address) {

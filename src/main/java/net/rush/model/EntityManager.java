@@ -3,6 +3,7 @@ package net.rush.model;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,15 +13,16 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class EntityManager implements Iterable<Entity> {
 
+	
 	/**
 	 * A map of all the entity ids to the corresponding entities.
 	 */
-	private final ConcurrentHashMap<Integer, Entity> entities = new ConcurrentHashMap<Integer, Entity>();
+	private final Map<Integer, Entity> entities = new ConcurrentHashMap<Integer, Entity>();
 
 	/**
 	 * A map of entity types to a set containing all entities of that type.
 	 */
-	private final ConcurrentHashMap<Class<? extends Entity>, Set<? extends Entity>> groupedEntities = new ConcurrentHashMap<Class<? extends Entity>, Set<? extends Entity>>();
+	private final Map<Class<? extends Entity>, Set<? extends Entity>> groupedEntities = new ConcurrentHashMap<Class<? extends Entity>, Set<? extends Entity>>();
 
 	/**
 	 * The next id to check.
@@ -59,7 +61,6 @@ public final class EntityManager implements Iterable<Entity> {
 	 */
 	@SuppressWarnings("unchecked")
 	int allocate(Entity entity) {
-		int eid = -1;
 		
 		for (int id = nextId; id < Integer.MAX_VALUE; id++) {
 			if (!entities.containsKey(id)) {
@@ -67,7 +68,7 @@ public final class EntityManager implements Iterable<Entity> {
 				entity.id = id;
 				((Collection<Entity>) getAll(entity.getClass())).add(entity);
 				nextId = id + 1;
-				eid = id;
+				return id;
 			}
 		}
 
@@ -76,15 +77,13 @@ public final class EntityManager implements Iterable<Entity> {
 				entities.put(id, entity);
 				((Collection<Entity>) getAll(entity.getClass())).add(entity);
 				nextId = id + 1;
-				eid = id;
+				return id;
 			}
 		}
 		
-		if(eid == -1)
-			throw new IllegalStateException("No free entity ids");
+		throw new IllegalStateException("No free entity ids");
 	
-		entity.getChunk().addEntity(entity);;
-		return eid;
+		//entity.getChunk().addEntity(entity);
 	}
 
 	/**

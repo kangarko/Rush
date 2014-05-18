@@ -94,7 +94,7 @@ public final class Player extends LivingEntity implements CommandSender {
 		this.position = world.getSpawnPosition();
 
 		this.inventory.addViewer(this);
-
+		
 		// stream the initial set of blocks and teleport us
 		this.streamBlocks();
 

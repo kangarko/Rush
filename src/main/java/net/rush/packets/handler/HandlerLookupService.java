@@ -95,9 +95,7 @@ public final class HandlerLookupService {
 	/**
 	 * Default private constructor to prevent instantiation.
 	 */
-	private HandlerLookupService() {
-
-	}
+	private HandlerLookupService() {}
 
 }
 

@@ -163,9 +163,9 @@ public final class Session {
 			if (handler != null) {
 				handler.handle(this, player, packet);
 				String name = packet.getPacketType().getSimpleName();
-				if(!name.contains("Position") && !name.contains("PlayerOnGround") && !name.contains("Look") && !name.contains("ChatPacket") && !name.contains("KeepAlive")  && !name.contains("Animation")) {
+				if(!name.contains("Position") && !name.contains("PlayerOnGround") && !name.contains("Look") && !name.contains("ChatPacket") && !name.contains("KeepAlive")  && !name.contains("Animation"))
 					server.getLogger().info("Handling packet: " + packet.getPacketType().getSimpleName());
-				}
+				
 			} else {
 				server.getLogger().info("&cMissing handler for packet: " + packet.getPacketType().getSimpleName());
 				server.getGui().showPane(new GuiPane("Unhandled packet", "Missing handler for packet:", packet.getPacketType().getSimpleName(), Color.RED, Color.WHITE, Color.WHITE));

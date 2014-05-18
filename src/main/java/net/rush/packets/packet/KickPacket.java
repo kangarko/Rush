@@ -15,6 +15,8 @@ public class KickPacket extends Packet {
 	@Serialize(type = Type.STRING, order = 0)
 	private String reason;
 
+	private boolean jsonize = true;
+	
 	public KickPacket() {
 	}
 
@@ -24,6 +26,7 @@ public class KickPacket extends Packet {
 
 	public KickPacket(ServerPing ping) {
 		this.reason = JsonUtils.serverPingToJson(ping);
+		jsonize = false;
 	}
 
 	public int getOpcode() {
@@ -45,7 +48,7 @@ public class KickPacket extends Packet {
 
 	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {
-		writeString(reason, output, false);
+		writeString(!jsonize ? reason : "\"" + reason + "\"", output, false);
 	}
 	
 }

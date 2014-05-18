@@ -1,14 +1,12 @@
 package net.rush.util;
 
-import org.json.simple.JSONObject;
-
 import net.rush.packets.misc.ServerPing;
 
 public class JsonUtils {
 	
 	private JsonUtils() {}
 	
-	/*public static String serverPingToJson(ServerPing ping) {
+	public static String serverPingToJson(ServerPing ping) {
 		String json = "{";
 		json+= "\"version\":{\"name\":\"" + ping.getVersion().getName() + "\",\"protocol\":" + ping.getVersion().getProtocol() + "},";
 		json+= "\"description\":\"" + ping.getDescription() + "\",";
@@ -16,9 +14,9 @@ public class JsonUtils {
 		json+= "\"players\":{\"max\":" + ping.getPlayers().getMax() + ",\"online\":" + ping.getPlayers().getOnline() + "}}";
 		
 		return json;
-	}*/
+	}
 	
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	public static String serverPingToJson(ServerPing ping) {
 		
 		JSONObject version = new JSONObject();		
@@ -36,5 +34,5 @@ public class JsonUtils {
 		json.put("players", players);
 		
 		return json.toJSONString();
-	}
+	}*/
 }

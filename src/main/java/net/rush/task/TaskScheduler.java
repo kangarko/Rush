@@ -3,6 +3,8 @@ package net.rush.task;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -36,6 +38,8 @@ public final class TaskScheduler {
 	 * The scheduled executor service which backs this scheduler.
 	 */
 	private final ScheduledExecutorService scheduleExecutor = Executors.newSingleThreadScheduledExecutor();
+	
+	private final ExecutorService asyncExecutor = Executors.newWorkStealingPool();
 
 	/**
 	 * A list of new tasks to be added.
@@ -114,15 +118,15 @@ public final class TaskScheduler {
 	/**
 	 * Runs specified task once.
 	 */
-	public void runTask(Runnable task) {
-		runTaskLater(task, 0);
+	public void runTaskAsync(Runnable task) {
+		asyncExecutor.submit(task);
 	}
 	
 	/**
 	 * Runs the specified task once after the ticks in dealy.
 	 * @param delayTicks how long to postpone the task
 	 */
-	public void runTaskLater(Runnable task, int delayTicks) {
+	public void runTaskSyncLater(Runnable task, int delayTicks) {
 		scheduleExecutor.schedule(task, delayTicks * 50, TimeUnit.MILLISECONDS);
 	}
 

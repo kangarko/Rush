@@ -9,7 +9,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import net.rush.net.Session.ClientVersion;
+import net.rush.PacketLogger;
 import net.rush.packets.Packet;
 import net.rush.packets.misc.Protocol;
 import net.rush.packets.packet.HandshakePacket;
@@ -32,7 +32,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 		if(in.readableBytes() == 0)
 			return;
 
-		ClientVersion version = ctx.pipeline().get(MinecraftHandler.class).session.getClientVersion();
+		int clientProtocol = ctx.pipeline().get(MinecraftHandler.class).session.getClientVersion().getProtocol();
 
 		int packetId = Packet.readVarInt(in);
 		Class<? extends Packet> packetClazz = protocol.TO_SERVER.createPacket(packetId);
@@ -44,9 +44,9 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 		
 		ByteBufInputStream is = new ByteBufInputStream(in);
 		
-		if (version.getProtocol() == 12)
+		if (clientProtocol == 12)
 			packet.read18(is);
-		else if (version.getProtocol() == 5)
+		else if (clientProtocol == 5)
 			packet.read176(is);
 		else
 			packet.read17(is);
@@ -65,7 +65,8 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 					break;
 			}
 		}
-		//PacketLogger.submitWrite(packet, version.getProtocol(), true);
+		
+		PacketLogger.submitWrite(packet, clientProtocol, true);
 	}
 
 	public void setProtocol(ChannelHandlerContext channel, Protocol prot) {

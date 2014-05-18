@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,7 +21,7 @@ public class MinecraftHandler extends SimpleChannelInboundHandler<Packet> {
 	/**
 	 * The logger for this class.
 	 */
-	private static final Logger logger = Logger.getLogger(MinecraftHandler.class.getName());
+	private static final Logger logger = Logger.getLogger("Minecraft");
 
 	/**
 	 * The server.
@@ -71,9 +72,9 @@ public class MinecraftHandler extends SimpleChannelInboundHandler<Packet> {
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-		/*if (cause instanceof IOException)
-			logger.info("Reached end of stream for " + ctx.channel().remoteAddress());
-		else*/
+		if (cause instanceof IOException)
+			logger.info("End of stream ");
+		else
 			logger.log(Level.WARNING, "Exception caught, closing channel: " + ctx.channel() + "...", cause);
 		ctx.close();
 	}

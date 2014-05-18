@@ -182,6 +182,7 @@ public enum Protocol {
 			TO_SERVER.registerPacket(0x15, ClientSettingsPacket.class);
 			TO_SERVER.registerPacket(0x16, ClientStatusPacket.class);
 			TO_SERVER.registerPacket(0x17, PluginMessagePacket.class);
+			
 		}
 	},
 	// 1
