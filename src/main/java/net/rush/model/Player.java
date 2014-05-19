@@ -15,6 +15,7 @@ import net.rush.packets.Packet;
 import net.rush.packets.packet.ChangeGameStatePacket;
 import net.rush.packets.packet.ChatPacket;
 import net.rush.packets.packet.DestroyEntityPacket;
+import net.rush.packets.packet.EntityEquipmentPacket;
 import net.rush.packets.packet.NamedEntitySpawnPacket;
 import net.rush.packets.packet.NamedSoundEffectPacket;
 import net.rush.packets.packet.PlayerListItemPacket;
@@ -78,6 +79,8 @@ public final class Player extends LivingEntity implements CommandSender {
 	 */
 	private boolean crouching = false;
 
+	private ItemStack itemOnCursor = ItemStack.NULL_ITEMSTACK;
+
 	/**
 	 * Creates a new player and adds it to the world.
 	 * @param session The player's session.
@@ -94,7 +97,7 @@ public final class Player extends LivingEntity implements CommandSender {
 		this.position = world.getSpawnPosition();
 
 		this.inventory.addViewer(this);
-		
+
 		// stream the initial set of blocks and teleport us
 		this.streamBlocks();
 
@@ -177,14 +180,14 @@ public final class Player extends LivingEntity implements CommandSender {
 			}
 		}
 	}
-	
+
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		
+
 		/*if (ticksLived % 20 * 12 == 0)
 			heal();
-		
+
 		if (getHealth() > 0) {
 			List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, boundingBox.expand(1.0D, 0.0D, 1.0D));
 			if (list != null)
@@ -319,7 +322,7 @@ public final class Player extends LivingEntity implements CommandSender {
 		else {
 			ItemEntity item = new ItemEntity(world, getPosition().getX(), getPosition().getY() - 0.30000001192092896D + 0.12F, getPosition().getZ(), itemstack);
 			item.pickupDelay = 40;
-			
+
 			float offsetX = 0.1F;
 			float offsetZ;
 
@@ -327,11 +330,11 @@ public final class Player extends LivingEntity implements CommandSender {
 			item.motionX = -MathHelper.sin((float)getRotation().getYaw() / 180.0F * (float) Math.PI) * MathHelper.cos((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX;
 			item.motionZ = MathHelper.cos((float)getRotation().getYaw() / 180.0F * (float) Math.PI) * MathHelper.cos((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX;
 			item.motionY = -MathHelper.sin((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX + 0.1F;
-			
+
 			offsetX = 0.02F;
 			offsetZ = rand.nextFloat() * (float) Math.PI * 2.0F;
 			offsetX *= rand.nextFloat();
-			
+
 			item.motionX += Math.cos(offsetZ) * offsetX;
 			item.motionY += (rand.nextFloat() - rand.nextFloat()) * 0.1F;
 			item.motionZ += Math.sin(offsetZ) * offsetX;
@@ -355,14 +358,62 @@ public final class Player extends LivingEntity implements CommandSender {
 		inventory.setItemInHand(item);
 	}
 
+	public ItemStack getItemOnCursor() {
+		return itemOnCursor;
+	}
+
+	public void setItemOnCursor(ItemStack item) {
+		itemOnCursor = item;
+		if (item == null) {
+			session.send(new SetSlotPacket(1, inventory.getHeldItemSlot(), ItemStack.NULL_ITEMSTACK));
+		} else {
+			session.send(new SetSlotPacket(1, inventory.getHeldItemSlot(), item));
+		}
+	}
+
 	public void onSlotSet(Inventory inv, int index, ItemStack item) {
-		getSession().send(new SetSlotPacket(0, index, item));
+		//getSession().send(new SetSlotPacket(0, index, item));
+
+		int type = item == null ? -1 : item.getId();
+		int data = item == null ? 0 : item.getDamage();
+
+		int equipSlot = -1;
+		
+		if (index == getInventory().getHeldItemSlot()) {
+			equipSlot = EntityEquipmentPacket.HELD_ITEM;
+		
+		} else if (index == PlayerInventory.HELMET_SLOT) {
+			equipSlot = EntityEquipmentPacket.HELMET_SLOT;
+		
+		} else if (index == PlayerInventory.CHESTPLATE_SLOT) {
+			equipSlot = EntityEquipmentPacket.CHESTPLATE_SLOT;
+		
+		} else if (index == PlayerInventory.LEGGINGS_SLOT) {
+			equipSlot = EntityEquipmentPacket.LEGGINGS_SLOT;
+		
+		} else if (index == PlayerInventory.BOOTS_SLOT) {
+			equipSlot = EntityEquipmentPacket.BOOTS_SLOT;
+		}
+
+		if (equipSlot >= 0) {
+			EntityEquipmentPacket message = new EntityEquipmentPacket(getId(), (short)equipSlot, (short)type, (short)data);
+			for (Player player : getWorld().getPlayers())
+				if (player != this && player.isWithinDistance(this))
+					player.getSession().send(message);
+		}
+
+
+		if (item == null) {
+			session.send(new SetSlotPacket(inventory.getId(), index, ItemStack.NULL_ITEMSTACK));
+		} else {
+			session.send(new SetSlotPacket(inventory.getId(), index, item));
+		}
 	}
 
 	public Server getServer() {
 		return session.getServer();
 	}
-	
+
 	public void heal() {
 		if(health < maxHealth) {
 			setHealth(health + 1);
