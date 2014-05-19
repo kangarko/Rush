@@ -85,9 +85,9 @@ public final class ItemEntity extends Entity {
 	public void combineWith(ItemEntity item) {
 		if (item == this)
 			return;
-		if(item.getItem().getId() == this.getItem().getId() && item.getItem().getDamage() == this.getItem().getDamage()) {
-			this.getItem().count+= item.getItem().getCount();
-			item.destroy();
+		if(item.getItem().doMaterialsMatch(getItem())) {
+			getItem().count+= item.getItem().getCount();
+			destroy();
 		}
 	}
 

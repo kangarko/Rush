@@ -12,6 +12,7 @@ import net.rush.model.ItemStack;
 import net.rush.model.Position;
 import net.rush.packets.misc.MetadataType;
 import net.rush.util.ByteBufUtils;
+import net.rush.util.JsonUtils;
 import net.rush.util.Parameter;
 
 public enum Type {
@@ -64,6 +65,16 @@ public enum Type {
 		@Override
 		public void write(DataOutput out, String val) throws IOException {
 			ByteBufUtils.writeStringToDataOutput(out, val);
+		}
+	}), JSON_CHAT(new Serializor<String>() {
+		@Override
+		public String read(DataInput in) throws IOException {
+			return ByteBufUtils.readStringFromDataInput(in, 1000);
+		}
+
+		@Override
+		public void write(DataOutput out, String val) throws IOException {
+			ByteBufUtils.writeStringToDataOutput(out, JsonUtils.chatMessageToJson(val));
 		}
 	}), SHORT(new Serializor<Short>() {
 		@Override

@@ -2,6 +2,10 @@ package net.rush.util;
 
 import net.rush.packets.misc.ServerPing;
 
+/**
+ * Nice and easy JSON handling without the need of additional library.
+ * @author kangarko
+ */
 public class JsonUtils {
 	
 	private JsonUtils() {}
@@ -13,6 +17,12 @@ public class JsonUtils {
 		json+= "\"favicon\":\"" + ping.getFavicon() + "\",";
 		json+= "\"players\":{\"max\":" + ping.getPlayers().getMax() + ",\"online\":" + ping.getPlayers().getOnline() + "}}";
 		
+		return json;
+	}
+	
+	public static String chatMessageToJson(String str) {
+		String json = "\"" + StringUtils.colorize(str) + "\"";
+
 		return json;
 	}
 	

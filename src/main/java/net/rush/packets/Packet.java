@@ -7,14 +7,13 @@ import io.netty.buffer.ByteBufOutputStream;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import net.rush.model.ItemStack;
 import net.rush.model.Position;
 import net.rush.packets.misc.MetadataType;
 import net.rush.packets.serialization.HashcodeAndEqualsStub;
 import net.rush.util.Parameter;
-
-import com.google.common.base.Charsets;
 
 public abstract class Packet extends HashcodeAndEqualsStub {
 
@@ -125,7 +124,7 @@ public abstract class Packet extends HashcodeAndEqualsStub {
         byte[] b = new byte[ len ];
         datainput.readFully( b );
 
-        return new String( b, Charsets.UTF_8 );
+        return new String( b, StandardCharsets.UTF_8 );
     }
     
     public void writeString(String string, DataOutput output , boolean compatmode) throws IOException {
@@ -138,7 +137,7 @@ public abstract class Packet extends HashcodeAndEqualsStub {
                 return;
             }
         }
-        byte[] b = string.getBytes( Charsets.UTF_8 );
+        byte[] b = string.getBytes( StandardCharsets.UTF_8 );
         writeVarInt( b.length, output );
         output.write( b );
     }

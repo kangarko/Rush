@@ -2,9 +2,6 @@ package net.rush.util;
 
 import java.text.DecimalFormat;
 
-import org.bukkit.ChatColor;
-
-
 public final class StringUtils {
 	
 	private static DecimalFormat twoDecFormat = new DecimalFormat("#.##");
@@ -26,7 +23,7 @@ public final class StringUtils {
 	 * @returns colorized string
 	 */
 	public static String colorize(String str) {
-		return ChatColor.translateAlternateColorCodes('&', str);
+		return str.replace('&', '\u00A7');
 	}
 	
 	public static String serializeLoc(Number x, Number y, Number z) {

@@ -25,7 +25,7 @@ public class Block {
 		public static final StepSound WOOL = new StepSound("cloth", 1.0F, 1.0F);
 		public static final StepSound SAND = new StepSound("sand", 1.0F, 1.0F);
 		public static final StepSound SNOW = new StepSound("snow", 1.0F, 1.0F);
-		public static final StepSound LADDER = new StepSound.StepSoundSand("ladder", 1.0F, 1.0F);
+		public static final StepSound LADDER = new StepSound.StepSoundLadder("ladder", 1.0F, 1.0F);
 		public static final StepSound ANVIL = new StepSound.StepSoundAnvil("anvil", 0.3F, 1.0F);
 	}
 

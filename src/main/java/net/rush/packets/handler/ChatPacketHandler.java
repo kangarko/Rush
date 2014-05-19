@@ -16,7 +16,7 @@ public final class ChatPacketHandler extends PacketHandler<ChatPacket> {
 		if (player == null)
 			return;
 
-		String text = message.getPlainMessage();
+		String text = message.getMessage();
 		
 		if(text == null || "".equals(text))
 			session.disconnect("Cannot send empty message");

@@ -13,7 +13,7 @@
 	<repositories>
 		<repository>
 			<id>bukkit-snapshots</id>
-			<url>http://repo.bukkit.org/content/repositories/snapshots/</url>
+			<url>http://repo.bukkit.org/content/repositories/public/</url>
 		</repository>
 		<repository>
 			<id>mvn-repo</id>

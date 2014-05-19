@@ -5,15 +5,15 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.bukkit.ChatColor;
-
-import com.google.common.io.Files;
+import net.rush.util.StringUtils;
 
 public class ServerProperties {
 
@@ -105,7 +105,7 @@ public class ServerProperties {
 		spawnMonsters = getBoolean("spawn-monsters", true);
 		generateStructures = getBoolean("generate-structures", true);
 		viewDistance = getInt("view-distance", 10);
-		motd = ChatColor.translateAlternateColorCodes('&', getString("motd", "A Rush server"));
+		motd = StringUtils.colorize(getString("motd", "A Rush server"));
 
 		favicon = loadFavicon();
 	}
@@ -114,7 +114,7 @@ public class ServerProperties {
 		File fav = new File( "server-icon.png" );
 		if (fav.exists()) {
 			try {
-				return "data:image/png;base64," + DatatypeConverter.printBase64Binary(Files.toByteArray(fav));
+				return "data:image/png;base64," + DatatypeConverter.printBase64Binary(Files.readAllBytes(Paths.get(fav.getPath())));
 			} catch (IOException e) {
 				logger.warning("Malformed server-icon.png");
 			}
@@ -126,8 +126,8 @@ public class ServerProperties {
 	private boolean getOnlineMode() {
 		boolean online = getBoolean("online-mode", true);
 		if(online) {
-			logger.warning("* ! * ! * ! * ! * ! * ! * ! * ! * ! * !");
-			logger.warning("Online mode is currently unavailable!");
+			logger.warning("* ! * ! * ! * ! * ! * ! * ! * ! *");
+			logger.warning("Online mode currently unavailable");
 			set("online-mode", false);
 			online = false;
 		}
