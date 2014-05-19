@@ -83,7 +83,7 @@ public abstract class Inventory {
 
             if (toAdd > 0) {
                 for (int j = 0; toAdd > 0 && j < getSize(); ++j) {
-                    if (slots[j] == null) {
+                    if (slots[j] == null || slots[j] == ItemStack.NULL_ITEMSTACK || slots[j].getId() == 0) {
                         int num = toAdd > maxStackSize ? maxStackSize : toAdd;
                         slots[j] = new ItemStack(mat, num, damage);
                         toAdd -= num;
@@ -92,9 +92,8 @@ public abstract class Inventory {
                 }
             }
 
-            if (toAdd > 0) {
+            if (toAdd > 0)
                 result.put(i, new ItemStack(mat, toAdd, damage));
-            }
         }
 
         return result;

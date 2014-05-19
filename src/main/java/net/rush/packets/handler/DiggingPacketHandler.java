@@ -29,30 +29,30 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 		int y = message.getY();
 
 		Block block = Block.byId[world.getTypeId(x, y, z)];
-		
+
 		if(block == null) {
 			player.sendMessage("&cUnknown broken block: " + Material.getMaterial(world.getTypeId(x, y, z)));
 			return;
 		}
 
-		player.getInventory().setItemInHand(new ItemStack(1));
-		
 		if(message.getStatus() == PlayerDiggingPacket.DROP_ITEM) {
-			player.throwItemFromPlayer(new ItemStack(Block.GRASS.id));
-			player.getInventory().takeItemInHand();
+			if(player.getItemInHand() != null && player.getItemInHand() != ItemStack.NULL_ITEMSTACK && player.getItemInHand().getId() != 0) {
+				player.throwItemFromPlayer(player.getItemInHand());
+				player.getInventory().takeItemInHand();
+			}
 			return;
 		}
-		
+
 		int metadata = world.getBlockData(x, y, z);
-		
+
 		if (player.getGamemode() == GameMode.CREATIVE || message.getStatus() == PlayerDiggingPacket.DONE_DIGGING) {
-			
+
 			world.setAir(x, y, z);
 			world.playEffectExceptTo(Effect.STEP_SOUND, x, y, z, block.id, player);
-			
+
 			block.onBlockPreDestroy(world, x, y, z, metadata);
 			block.onBlockDestroyedByPlayer(world, player, x, y, z, metadata);
-			
+
 			if(player.getGamemode() != GameMode.CREATIVE)
 				block.dropBlock(world, x, y, z, metadata, 0);
 			else

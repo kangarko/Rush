@@ -103,10 +103,12 @@ public class PlayerInventory extends Inventory {
 	}
 	
 	public void takeItemInHand() {
+		if(getItemInHand() == null || getItemInHand() == ItemStack.NULL_ITEMSTACK)
+			return;
 		if(getItemInHand().getCount() > 1)
 			setItemInHand(new ItemStack(getItemInHand().getId(), getItemInHand().getCount() - 1, getItemInHand().getDamage()));
 		else
-			setItemInHand(null);
+			setItemInHand(ItemStack.NULL_ITEMSTACK);
 	}
 	
 	public static class PlayerInventorySlotConverter {
