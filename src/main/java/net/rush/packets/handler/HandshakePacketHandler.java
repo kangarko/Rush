@@ -27,6 +27,7 @@ public final class HandshakePacketHandler extends PacketHandler<HandshakePacket>
 			return;
 		} else if (message.getProtocolVer() > 78) {
 			session.disconnect("Outdated server!");
+			return;
 		}
 		
 		Session.State state = session.getState();

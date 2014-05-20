@@ -41,7 +41,7 @@ public class ThreadLoginVerifier extends Thread {
 				session.disconnect("Failed to verify username!");
 			
 		} catch (Exception ex) {
-			session.disconnect("Failed to verify username! [internal error " + ex + "]");
+			session.disconnect("Failed to verify username! [Error: " + ex + "]");
 			ex.printStackTrace();
 		}
 	}

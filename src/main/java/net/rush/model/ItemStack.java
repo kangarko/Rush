@@ -1,5 +1,7 @@
 package net.rush.model;
 
+import org.bukkit.Material;
+
 public class ItemStack {
 
 	public static final ItemStack NULL_ITEMSTACK = new ItemStack(-1, -1, -1) {
@@ -177,9 +179,11 @@ public class ItemStack {
 		return true;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public String toString() {
-		return String.format("ItemStack [id=%s,count=%d,damage=%d])", id, count, damage);
+		return Material.getMaterial(id) + "x" + count +  (damage != 0 ? "@" + damage : "");
+		//return String.format("ItemStack [id=%s,count=%d,damage=%d])", id, count, damage);
 	}
 }
 

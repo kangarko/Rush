@@ -41,7 +41,6 @@ import net.rush.packets.legacy.LegacyCompatProvider;
 import net.rush.packets.legacy.LegacyDecoder;
 import net.rush.packets.legacy.LegacyEncoder;
 import net.rush.packets.misc.Protocol;
-import net.rush.packets.packet.ChatPacket;
 import net.rush.task.TaskScheduler;
 import net.rush.util.NumberUtils;
 import net.rush.world.ForestWorldGenerator;
@@ -190,9 +189,8 @@ public final class Server {
 	 * @param text The message text.
 	 */
 	public void broadcastMessage(String text) {
-		ChatPacket message = new ChatPacket(text);
 		for (Player player : getWorld().getPlayers())
-			player.getSession().send(message);
+			player.sendMessage(text);
 	}
 
 	/**

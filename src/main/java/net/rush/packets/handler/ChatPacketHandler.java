@@ -1,6 +1,5 @@
 package net.rush.packets.handler;
 
-import net.rush.cmd.CommandManager;
 import net.rush.model.Player;
 import net.rush.net.Session;
 import net.rush.packets.packet.ChatPacket;
@@ -19,7 +18,7 @@ public final class ChatPacketHandler extends PacketHandler<ChatPacket> {
 		String text = message.getMessage();
 		
 		if(text == null || "".equals(text))
-			session.disconnect("Cannot send empty message");
+			session.disconnect("Cannot send an empty message");
 		
 		if (text.length() > 110) {
 			session.disconnect("Chat message too long");
@@ -29,9 +28,9 @@ public final class ChatPacketHandler extends PacketHandler<ChatPacket> {
 				return;
 			
 			text = text.replaceAll("\\s+", " ").trim();
+			
 			if (text.startsWith("/")) {
-				CommandManager manager = session.getServer().getCommandManager();
-				manager.execute(player, text);
+				session.getServer().getCommandManager().execute(player, text);
 				logger.info(player.getName() + " issued server command: " + text);
 			} else {
 				player.getServer().broadcastMessage("<" + player.getName() + "> " + text);

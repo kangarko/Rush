@@ -28,7 +28,6 @@ import net.rush.util.MathHelper;
 import net.rush.util.Parameter;
 import net.rush.util.enums.GameStateReason;
 
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 
@@ -125,7 +124,7 @@ public final class Player extends LivingEntity implements CommandSender {
 	 * @param message The message.
 	 */
 	public void sendMessage(String message) {
-		session.send(new ChatPacket(ChatColor.translateAlternateColorCodes("&".charAt(0), message)));
+        session.send(new ChatPacket(message));
 	}
 
 	public void playSound(String soundName, double x, double y, double z, float volume, float pitch) {
@@ -320,6 +319,7 @@ public final class Player extends LivingEntity implements CommandSender {
 		if (itemstack == ItemStack.NULL_ITEMSTACK)
 			return null;
 		else {
+			
 			ItemEntity item = new ItemEntity(world, getPosition().getX(), getPosition().getY() - 0.30000001192092896D + 0.12F, getPosition().getZ(), itemstack);
 			item.pickupDelay = 40;
 

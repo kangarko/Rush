@@ -208,10 +208,9 @@ public class World {
 		setTypeId(x, y, z, 0, true);
 	}
 
-	public boolean setTypeAndData(int x, int y, int z, int type, int data, boolean notifyPlayers) {
+	public void setTypeAndData(int x, int y, int z, int type, int data, boolean notifyPlayers) {
 		setTypeId(x, y, z, type, notifyPlayers);
 		setBlockData(x, y, z, data, notifyPlayers);
-		return true;
 	}
 
 	/** @param notifyPlayers - should we send BlockChangePacket to all players in the world? */
@@ -278,12 +277,12 @@ public class World {
 
 	public void dropItem(double x, double y, double z, int type, int count, int data) {
 		ItemStack item = new ItemStack(type, count, data);
-		
+
 		float offset = 0.7F;
 		double randX = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
 		double randY = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
 		double randZ = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
-		
+
 		new ItemEntity(this, x + randX, y + randY, z + randZ, item);
 	}
 
@@ -343,20 +342,19 @@ public class World {
 	}
 
 	public void playSound(double x, double y, double z, String soundName, float volume, float pitch) {
-		if (soundName != null) 
-			for (Player pl : getPlayers())
-				pl.playSound(soundName, x, y, z, volume, pitch);
+		for (Player pl : getPlayers())
+			pl.playSound(soundName, x, y, z, volume, pitch);
 	}
 
 	public void playEffect(int effectId, int x, int y, int z, int data) {
 		for (Player pl : getPlayers())
 			pl.playEffect(effectId, x, y, z, data);
 	}
-	
+
 	public void playEffect(Effect effect, int x, int y, int z, int data) {
 		playEffect(effect.getId(), x, y, z, data);
 	}
-	
+
 	/**
 	 * Used on block break.
 	 */
@@ -372,7 +370,6 @@ public class World {
 
 	/**
 	 * Runs through the list of updates to run and ticks them
-	 * @return true if pending tick queue is empty
 	 */
 	public void tickFromQueue() {
 		if(tickQueue.isEmpty())
@@ -393,9 +390,9 @@ public class World {
 
 	public void scheduleBlockUpdate(int x, int y, int z, int blockID, int priority) {
 		NextTickEntry tickEntry = new NextTickEntry(x, y, z, blockID);
-		byte osem = 0; // FIXME eight or zero?
+		byte radius = 0; // FIXME
 
-		if (chunks.chunkExist(x - osem, y - osem, z - osem, x + osem, y + osem, z + osem)) {
+		if (chunks.chunkExist(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius)) {
 			if (blockID > 0) {
 				tickEntry.setScheduledTime(getTime());
 				tickEntry.setPriority(priority);
@@ -407,9 +404,9 @@ public class World {
 	}
 
 	protected void tickActiveChunks() {
-		
+
 		Iterator<ChunkCoords> it = activeChunks.iterator();
-		
+
 		while(it.hasNext()) {
 			ChunkCoords coords = it.next();
 			Chunk chunk = getChunkFromChunkCoords(coords.x, coords.z);

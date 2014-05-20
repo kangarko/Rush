@@ -342,17 +342,9 @@ public class Item {
 	}
 
 	/**
-	 * Returns the unlocalized name of this item.
+	 * Returns the name of this item.
 	 */
-	public String getUnlocalizedName() {
-		return "item." + name;
-	}
-
-	/**
-	 * Returns the unlocalized name of this item. This version accepts an ItemStack so different stacks can have
-	 * different names based on their damage or NBT.
-	 */
-	public String getUnlocalizedName(ItemStack item) {
+	public String getName() {
 		return "item." + name;
 	}
 

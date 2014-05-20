@@ -37,7 +37,7 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 
 		if(message.getStatus() == PlayerDiggingPacket.DROP_ITEM) {
 			if(player.getItemInHand() != null && player.getItemInHand() != ItemStack.NULL_ITEMSTACK && player.getItemInHand().getId() != 0) {
-				player.throwItemFromPlayer(player.getItemInHand());
+				player.throwItemFromPlayer(new ItemStack(player.getItemInHand().getId(), 1, player.getItemInHand().getDamage()));
 				player.getInventory().takeItemInHand();
 			}
 			return;
