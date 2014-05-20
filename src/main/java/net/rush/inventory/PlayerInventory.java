@@ -1,6 +1,7 @@
 package net.rush.inventory;
 
 import net.rush.model.ItemStack;
+import net.rush.util.RushException;
 
 public class PlayerInventory extends Inventory {
 
@@ -104,11 +105,12 @@ public class PlayerInventory extends Inventory {
 	
 	public void takeItemInHand() {
 		if(getItemInHand() == null || getItemInHand() == ItemStack.NULL_ITEMSTACK)
-			return;
+			throw new RushException("Cannot drop null item in hand!");		
+		
 		if(getItemInHand().getCount() > 1)
 			setItemInHand(new ItemStack(getItemInHand().getId(), getItemInHand().getCount() - 1, getItemInHand().getDamage()));
 		else
-			setItemInHand(ItemStack.NULL_ITEMSTACK);
+			setItemInHand(new ItemStack(0, 0));
 	}
 	
 	public static class PlayerInventorySlotConverter {

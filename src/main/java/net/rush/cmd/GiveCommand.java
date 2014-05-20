@@ -26,12 +26,18 @@ public final class GiveCommand extends Command {
 		Player pl = (Player) player;
 		if(args.length == 0) {
 			pl.sendMessage("&cUsage: /i <item>");
-		} else if(args.length == 1) {
+		} else if(args.length >= 1) {
 			try {
-				pl.getInventory().addItem(new ItemStack(Material.getMaterial(args[0].toUpperCase()).getId()));
-				pl.sendMessage("&3Rush // &2Given 1x of " + args[0].toUpperCase() + " to " + player.getName());
+				int amount = args[1] != null ? Integer.parseInt(args[1]) : 1;				
+				ItemStack item = new ItemStack(Material.getMaterial(args[0].toUpperCase()).getId(), amount);
+				
+				pl.getInventory().addItem(item);
+				
+				pl.sendMessage("&3Rush // &2Given " + item + " to " + player.getName());
 			} catch (NullPointerException ex) {
 				pl.sendMessage("&cInvalid item: " + args[0]);
+			} catch (NumberFormatException ex) {
+				pl.sendMessage("&cInvalid item amount: " + args[1]);
 			}
 		}
 	}
