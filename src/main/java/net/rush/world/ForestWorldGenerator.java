@@ -14,11 +14,9 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 	private static final int MAX_TREES = 2;
 
 	private static final int TREE_MIN_HEIGHT = 6;
-
 	private static final int TREE_MAX_HEIGHT = 9;
-
+	
 	private static final int TREE_CANOPY_HEIGHT = 5;
-
 	private static final int TREE_CANOPY_WIDTH = 5;
 
 	private Random random = new Random();
@@ -39,7 +37,7 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 		/*for (int cislo = 0; cislo < 8; cislo++) {
 			int x = random.nextInt(Chunk.WIDTH);
 			int z = random.nextInt(Chunk.HEIGHT);
-			if (chunk.isBlockAir(x, z, 61) //&& ((BlockFlower) Block.blocksList[plantBlockId]).canBlockStay(world, i1, j1, k1))
+			if (chunk.isBlockAir(x, z, 61))
 				if(random.nextBoolean())
 					chunk.setType(x, z, 61, 37 + random.nextInt(2));
 		}
@@ -47,7 +45,7 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 		for (int cislo = 0; cislo < 16; cislo++) {
 			int x = random.nextInt(Chunk.WIDTH);
 			int z = random.nextInt(Chunk.HEIGHT);
-			if (chunk.isBlockAir(x, z, 61) //&& ((BlockFlower) Block.blocksList[plantBlockId]).canBlockStay(world, i1, j1, k1))
+			if (chunk.isBlockAir(x, z, 61))
 				chunk.setType(x, z, 61, 31);
 				chunk.setMetaData(x, z, 61, 1);
 		}*/
@@ -83,15 +81,12 @@ public final class ForestWorldGenerator extends FlatGrassWorldGenerator {
 				endZ--;
 			}
 
-			for (int cx = startX; cx < endX; cx++) {
-				for (int cz = startZ; cz < endZ; cz++) {
-					if (cx == trunkX && cz == trunkZ && cy < (height - 2)) { // trunk, leave some leaves above it
+			for (int cx = startX; cx < endX; cx++)
+				for (int cz = startZ; cz < endZ; cz++)
+					if (cx == trunkX && cz == trunkZ && cy < (height - 2)) // trunk, leave some leaves above it
 						chunk.setTypeAndData(trunkX, trunkZ, y + cy, Block.LOG.id, type);
-					} else {
+					else 
 						chunk.setTypeAndData(cx, cz, y + cy, Block.LEAVES.id, type);
-					}
-				}
-			}
 		}
 	}
 

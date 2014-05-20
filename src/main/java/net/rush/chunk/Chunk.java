@@ -116,11 +116,7 @@ public final class Chunk {
 	}
 
 	public boolean isBlockAir(int x, int z, int y) {
-		try {
-			return getType(x, z, y) == 0;
-		} catch (Exception ex) {
-			return true;
-		}
+		return getType(x, z, y) == 0;
 	}
 
 	/**
@@ -132,7 +128,7 @@ public final class Chunk {
 	 */
 	public void setMetaData(int x, int z, int y, int metaData) {
 		if (metaData < 0 || metaData >= 16)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Metadata must be between 0 and 15");
 
 		this.metaData[coordToIndex(x, z, y)] = (byte) metaData;
 	}
@@ -157,7 +153,7 @@ public final class Chunk {
 	 */
 	public void setSkyLight(int x, int z, int y, int skyLight) {
 		if (skyLight < 0 || skyLight >= 16)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Skylight must be between 0 and 15");
 
 		this.skyLight[coordToIndex(x, z, y)] = (byte) skyLight;
 	}
@@ -182,7 +178,7 @@ public final class Chunk {
 	 */
 	public void setBlockLight(int x, int z, int y, int blockLight) {
 		if (blockLight < 0 || blockLight >= 16)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Blocklight must be between 0 and 15");
 
 		this.blockLight[coordToIndex(x, z, y)] = (byte) blockLight;
 	}
@@ -253,38 +249,41 @@ public final class Chunk {
 
 		int pos = types.length;
 
+		// types
 		System.arraycopy(types, 0, data, 0, types.length);
 
-		if (pos != types.length) {
+		if (pos != types.length)
 			throw new IllegalStateException("Illegal pos: " + pos + " vs " + types.length);
-		}
 
+		// metadata
 		for (int i = 0; i < metaData.length; i += 2) {
 			byte meta1 = metaData[i];
 			byte meta2 = metaData[i + 1];
 			data[pos++] = (byte) ((meta2 << 4) | meta1);
 		}
 
+		// skylight
 		for (int i = 0; i < skyLight.length; i += 2) {
 			byte light1 = skyLight[i];
 			byte light2 = skyLight[i + 1];
 			data[pos++] = (byte) ((light2 << 4) | light1);
 		}
 
+		// blocklight
 		for (int i = 0; i < blockLight.length; i += 2) {
 			byte light1 = blockLight[i];
 			byte light2 = blockLight[i + 1];
 			data[pos++] = (byte) ((light2 << 4) | light1);
 		}
 
-		for (int i = 0; i < 256; i++) {
+		// biome
+		for (int i = 0; i < 256; i++)
 			data[pos++] = 4; // biome data, just set it to forest
-		}
 
-		if (pos != data.length) {
+		if (pos != data.length)
 			throw new IllegalStateException("Illegal Pos: " + pos + " vs " + data.length);
-		}
 
+		// we are done, now compress it
 		Deflater deflater = new Deflater(Deflater.BEST_SPEED);
 		deflater.setInput(data);
 		deflater.finish();
@@ -296,9 +295,8 @@ public final class Chunk {
 
 		byte[] realCompressed = new byte[length];
 
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < length; i++)
 			realCompressed[i] = compressed[i];
-		}
 
 		return realCompressed;
 	}
