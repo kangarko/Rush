@@ -101,7 +101,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 	}
 	
 	public boolean tryPlace(ItemStack item, Player player, World world, int x, int y, int z, int direction, float xOffset, float yOffset, float zOffset) {
-		int id = item.getId(); //world.getTypeId(x, y, z);
+		int id = item.getId();
 
 		if(world.getTypeId(x, y, z) == item.getId() && (id == Block.VINE.id || id == Block.TALL_GRASS.id || id == Block.DEAD_BUSH.id))
 			return false;
@@ -139,7 +139,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		if (y == 255 && block.material.isSolid())
 			return false;
 		
-		//else if (world.canPlaceEntityOnSide(id, x, y, z, false, side, player, item)) {
+		//else if (world.canPlaceEntityOnSide(id, x, y, z, false, direction, player, item)) {
 
 		int metadata = block.onBlockPlaced(world, x, y, z, direction, xOffset, yOffset, zOffset, item.getDamage());
 		block.onPostBlockPlaced(world, x, y, z, metadata);

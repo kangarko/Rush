@@ -23,7 +23,7 @@ public class DestroyEntityPacket extends Packet {
 		this(new int[] {entityID});
 	}
 	
-	public DestroyEntityPacket(int[] entityIDs) {
+	public DestroyEntityPacket(int... entityIDs) {
 		super();
 		this.entityCount = (byte) entityIDs.length;
 		this.entityIDs = entityIDs;

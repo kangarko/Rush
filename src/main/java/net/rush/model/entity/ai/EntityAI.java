@@ -1,9 +1,18 @@
 package net.rush.model.entity.ai;
 
+import java.util.Random;
+
+import net.rush.model.LivingEntity;
+
 public abstract class EntityAI {
 
-	public abstract boolean shouldExecute();
-
+	protected final LivingEntity entity;
+	protected final Random rand = new Random();
+	
+	protected EntityAI(LivingEntity entity) {
+		this.entity = entity;
+	}
+	
 	/**
 	 * Returns whether the task requires multiple updates or not
 	 */
@@ -11,6 +20,5 @@ public abstract class EntityAI {
 		return true;
 	}
 
-	public void pulse() {
-	}
+	public abstract void pulse();
 }

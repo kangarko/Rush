@@ -163,7 +163,7 @@ public final class Player extends LivingEntity implements CommandSender {
 				if (msg != null)
 					session.send(msg);
 			} else {
-				session.send(new DestroyEntityPacket(new int[] {entity.getId()} ));
+				session.send(new DestroyEntityPacket(entity.getId()));
 				it.remove();
 			}
 		}
@@ -184,10 +184,10 @@ public final class Player extends LivingEntity implements CommandSender {
 	public void updateEntity() {
 		super.updateEntity();
 
-		/*if (ticksLived % 20 * 12 == 0)
+		if (ticksLived % 20 * 12 == 0)
 			heal();
 
-		if (getHealth() > 0) {
+		/*if (getHealth() > 0) {
 			List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, boundingBox.expand(1.0D, 0.0D, 1.0D));
 			if (list != null)
 				for (int index = 0; index < list.size(); index++) {

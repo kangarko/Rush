@@ -159,18 +159,19 @@ public class World {
 	public Player getPlayer(String name) {	
         Validate.notNull(name, "Name cannot be null");
 
-        Collection<Player> players = getPlayers();
         Player found = null;
         String lowerName = name.toLowerCase();
         int delta = Integer.MAX_VALUE;
-        for (Player player : players) {
+        
+        for (Player player : getPlayers()) {
             if (player.getName().toLowerCase().startsWith(lowerName)) {
                 int curDelta = player.getName().length() - lowerName.length();
                 if (curDelta < delta) {
                     found = player;
                     delta = curDelta;
                 }
-                if (curDelta == 0) break;
+                if (curDelta == 0) 
+                	break;
             }
         }
         return found;

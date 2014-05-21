@@ -1,6 +1,15 @@
 package net.rush.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.rush.model.entity.ai.EntityAI;
+import net.rush.model.entity.ai.WorldThreadAI;
 import net.rush.packets.Packet;
+import net.rush.packets.packet.EntityLookAndRelMovePacket;
+import net.rush.packets.packet.EntityLookPacket;
+import net.rush.packets.packet.EntityRelMovePacket;
+import net.rush.packets.packet.EntityTeleportPacket;
 import net.rush.packets.packet.SpawnMobPacket;
 import net.rush.util.Parameter;
 import net.rush.world.World;
@@ -16,6 +25,7 @@ public class LivingEntity extends Mob {
 	
 	protected int health;
 	protected int maxHealth;
+	protected List<EntityAI> aiTasks = new ArrayList<EntityAI>();
 	
 	/**
 	 * Creates a new living entity (e.g. zombie or a pig).
@@ -42,6 +52,47 @@ public class LivingEntity extends Mob {
 		return new SpawnMobPacket(id, (byte)getType().getTypeId(), new Position(x, y, z), (byte)yaw, (byte)pitch, (byte)yaw, new Position(0, 0, 0), metadata.clone());
 	}
 	
+	@Override
+	public Packet createUpdateMessage() {		
+		if(position == null)
+			throw new NullPointerException("Entity position is null!");
+		
+		boolean moved = !position.equals(previousPosition);
+		boolean rotated = !rotation.equals(previousRotation);
+		
+		int x = position.getPixelX();
+		int y = position.getPixelY();
+		int z = position.getPixelZ();
+
+		int dx = x - previousPosition.getPixelX();
+		int dy = y - previousPosition.getPixelY();
+		int dz = z - previousPosition.getPixelZ();
+
+		boolean teleport = dx > Byte.MAX_VALUE || dy > Byte.MAX_VALUE || dz > Byte.MAX_VALUE || dx < Byte.MIN_VALUE || dy < Byte.MIN_VALUE || dz < Byte.MIN_VALUE;
+
+		int yaw = rotation.getIntYaw();
+		int pitch = rotation.getIntPitch();
+
+		if (moved && teleport) {
+			return new EntityTeleportPacket(id, x, y, z, yaw, pitch);
+		} else if (moved && rotated) {
+			return new EntityLookAndRelMovePacket(id, (byte)dx, (byte)dy, (byte)dz, (byte)yaw, (byte)pitch);
+		} else if (moved) {
+			return new EntityRelMovePacket(id, (byte)dx, (byte)dy, (byte)dz);
+		} else if (rotated) {
+			return new EntityLookPacket(id, (byte)yaw, (byte)pitch);
+		}
+
+		return null;
+	}
+	
+	@Override
+	public void pulse() {
+		for(EntityAI task : aiTasks) {
+			WorldThreadAI.addTask(task);
+		}
+	}
+
 	// METADATA START
 	
 	public float getHealth() {

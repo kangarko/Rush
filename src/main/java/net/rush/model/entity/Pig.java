@@ -1,6 +1,7 @@
 package net.rush.model.entity;
 
 import net.rush.model.EntityAgeable;
+import net.rush.model.entity.ai.EntityAITest;
 import net.rush.util.Parameter;
 import net.rush.world.World;
 
@@ -10,6 +11,8 @@ public class Pig extends EntityAgeable {
 	
 	public Pig(World world) {
 		super(world, EntityType.PIG);
+		
+		aiTasks.add(new EntityAITest(this));
 	}
 	
 	public void setSaddle(boolean hasSadle) {

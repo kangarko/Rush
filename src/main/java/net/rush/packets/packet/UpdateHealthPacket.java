@@ -44,7 +44,7 @@ public class UpdateHealthPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("health=\"%d\",food=\"%d\",saturation=\"%d\"", health, food, saturation);
+		return String.format("health=\"%s\",food=\"%s\",saturation=\"%s\"", health, food, saturation);
 	}
 
 	@Override
