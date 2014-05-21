@@ -56,10 +56,8 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		if (direction == 5)
 			++x;
 
-		//player.getSession().send(new BlockChangePacket(x, y, z, world));
-		
-		
-		
+		player.getSession().send(new BlockChangePacket(x, y, z, world));
+
 		if (Block.byId[blockId] != null && Block.byId[blockId].material.isSolid())
 			player.sendMessage("&bPlaced " + Block.byId[blockId].getName() + " @ " + StringUtils.serializeLoc(x, y, z) + " &dside: " + packet.getDirection());
 		else if (Item.byId[blockId] != null)
@@ -70,30 +68,34 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 			player.sendMessage("&6Block " + Material.getMaterial(blockId) + " is not yet implemented!");
 	}
 
-	public boolean placeOrActivate(Player player, World world, ItemStack item, int x, int y, int z, int direction, float cursorX, float cursorY, float cursorZ) {
+	public boolean placeOrActivate(Player player, World world, ItemStack item, int x, int y, int z, int direction, float xOffset, float yOffset, float zOffset) {
 		int blockId = 0;
-
+		
 		if (!player.isCrouching() || player.getItemInHand() == null) {
 			blockId = world.getTypeId(x, y, z);
 
-			if (blockId > 0 && Block.byId[blockId].onBlockActivated(world, x, y, z, player, direction, cursorX, cursorY, cursorZ))
-				return true;
+			if (blockId > 0) {
+				if (Block.byId[blockId].onBlockActivated(world, x, y, z, player, direction, xOffset, yOffset, zOffset))
+					return true;
+				if (item != null && Item.byId[item.getId()].onItemUse(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset))
+					return true;
+			}
 		}
-		
+
 		if (item == null)
 			return false;
 		if (player.getGamemode() == GameMode.CREATIVE) {
 			int oldDamage = item.getDamage();
 			int oldCount = item.getCount();
 
-			boolean placedSuccessfully = tryPlace(item, player, world, x, y, z, direction, cursorX, cursorY, cursorZ);
+			boolean placedSuccessfully = tryPlace(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset);
 
 			item.damage = oldDamage;
 			item.count = oldCount;
 
 			return placedSuccessfully;
 		} else
-			return tryPlace(item, player, world, x, y, z, direction, cursorX, cursorY, cursorZ);
+			return tryPlace(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset);
 	}
 
 	public boolean tryPlace(ItemStack item, Player player, World world, int x, int y, int z, int direction, float xOffset, float yOffset, float zOffset) {
@@ -105,7 +107,6 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 			if (direction == 0) {
 				--y;
 			}
-			System.out.println("edit");
 			if (direction == 1) {
 				++y;
 			}
@@ -126,20 +127,19 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 				++x;
 			}
 		}
-		
+
 		if (item.getCount() == 0)
 			return false;
 		if (y == 255 && Block.byId[id].material.isSolid())
 			return false;
 		//else if (world.canPlaceEntityOnSide(id, x, y, z, false, side, player, item)) {
 		Block block = Block.byId[id];
-		
+
 		if(block == null)
 			return false;
-		
+
 		int metadata = Block.byId[id].onBlockPlaced(world, x, y, z, direction, xOffset, yOffset, zOffset, item.getDamage());
 
-		System.out.println("y: " + y);
 		world.setTypeAndData(x, y, z, id, metadata, false);
 
 		if (world.getTypeId(x, y, z) == id) {
@@ -148,7 +148,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		}
 
 		world.playSound(x + 0.5D, y + 0.5D, z + 0.5D, block.sound.getPlaceSound(), (block.sound.getVolume() + 1.0F) / 2.0F, block.sound.getPitch() * 0.8F);
-		item.setCount(item.getCount() - 1);
+		item.count--;
 
 		return true;
 		//}

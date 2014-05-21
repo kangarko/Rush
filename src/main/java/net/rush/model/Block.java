@@ -3,8 +3,11 @@ package net.rush.model;
 import java.util.List;
 import java.util.Random;
 
+import net.rush.model.block.BlockCrops;
+import net.rush.model.block.BlockFlower;
 import net.rush.model.block.BlockGrass;
 import net.rush.model.block.BlockLog;
+import net.rush.model.block.BlockSapling;
 import net.rush.model.block.BlockStone;
 import net.rush.model.misc.AxisAlignedBB;
 import net.rush.model.misc.MovingObjectPosition;
@@ -57,8 +60,8 @@ public class Block {
 	public static final Block DIRT = new Block(3, Material.DIRT).setHardness(0.5F).setStepSound(Sound.GRAVEL).setName("dirt").setTextureName("dirt");
 	public static final Block COBBLESTONE = (new Block(4, Material.STONE)).setHardness(2.0F).setResistance(10F).setStepSound(Sound.STONE).setName("stonebrick").setTextureName("cobblestone");
 	public static final Block WOOD = new BlockWood(5).setHardness(2F).setResistance(5F).setStepSound(Sound.WOOD).setName("wood").setTextureName("planks");
-	/*public static final Block SAPLING = (new BlockSapling(6)).setHardness(0.0F).setStepSound(soundGrassFootstep).setName("sapling").setTextureName("sapling");
-	*/public static final Block BEDROCK = new Block(7, Material.STONE).setBlockUnbreakable().setResistance(6000000.0F).setStepSound(Sound.STONE).setName("bedrock").setTextureName("bedrock");
+	public static final Block SAPLING = (new BlockSapling(6)).setHardness(0.0F).setStepSound(Sound.GRASS).setName("sapling").setTextureName("sapling");
+	public static final Block BEDROCK = new Block(7, Material.STONE).setBlockUnbreakable().setResistance(6000000.0F).setStepSound(Sound.STONE).setName("bedrock").setTextureName("bedrock");
 	/*public static final BlockFluid WATER = (BlockFluid) (new BlockFlowing(8, Material.water)).setHardness(100.0F).setLightOpacity(3).setName("water").setTextureName("water_flow");
 	public static final Block STATIONARY_WATER = (new BlockStationary(9, Material.water)).setHardness(100.0F).setLightOpacity(3).setName("water").setTextureName("water_still");
 	public static final BlockFluid LAVA = (BlockFluid) (new BlockFlowing(10, Material.lava)).setHardness(0.0F).setLightValue(1.0F).setName("lava").setTextureName("lava_flow");
@@ -92,9 +95,9 @@ public class Block {
 	public static final BlockPistonExtension PISTON_EXTENSION = new BlockPistonExtension(34);
 	public static final Block WOOL = (new BlockColored(35, Material.cloth)).setHardness(0.8F).setStepSound(soundClothFootstep).setName("cloth").setTextureName("wool_colored");
 	public static final BlockPistonMoving MOVING_PISTON = new BlockPistonMoving(36);
-	public static final BlockFlower YELLOW_FLOWER = (BlockFlower) (new BlockFlower(37)).setHardness(0.0F).setStepSound(soundGrassFootstep).setName("flower").setTextureName("flower_dandelion");
-	public static final BlockFlower RED_ROSE = (BlockFlower) (new BlockFlower(38)).setHardness(0.0F).setStepSound(soundGrassFootstep).setName("rose").setTextureName("flower_rose");
-	public static final BlockFlower BROWN_MUSHROOM = (BlockFlower) (new BlockMushroom(39)).setHardness(0.0F).setStepSound(soundGrassFootstep).setLightValue(0.125F).setName("mushroom").setTextureName("mushroom_brown");
+	*/public static final Block YELLOW_FLOWER = new BlockFlower(37).setHardness(0.0F).setStepSound(Sound.GRASS).setName("flower").setTextureName("flower_dandelion");
+	public static final Block RED_ROSE = new BlockFlower(38).setHardness(0.0F).setStepSound(Sound.GRASS).setName("rose").setTextureName("flower_rose");
+	/*public static final BlockFlower BROWN_MUSHROOM = (BlockFlower) (new BlockMushroom(39)).setHardness(0.0F).setStepSound(soundGrassFootstep).setLightValue(0.125F).setName("mushroom").setTextureName("mushroom_brown");
 	public static final BlockFlower RED_MUSHROOM = (BlockFlower) (new BlockMushroom(40)).setHardness(0.0F).setStepSound(soundGrassFootstep).setName("mushroom").setTextureName("mushroom_red");
 	public static final Block GOLD_BLOCK = (new BlockOreStorage(41)).setHardness(3.0F).setResistance(10.0F).setStepSound(soundMetalFootstep).setName("blockGold").setTextureName("gold_block");
 	public static final Block IRON_BLOCK = (new BlockOreStorage(42)).setHardness(5.0F).setResistance(10.0F).setStepSound(soundMetalFootstep).setName("blockIron").setTextureName("iron_block");
@@ -114,8 +117,8 @@ public class Block {
 	public static final Block DIAMOND_ORE = (new BlockOre(56)).setHardness(3.0F).setResistance(5.0F).setStepSound(soundStoneFootstep).setName("oreDiamond").setTextureName("diamond_ore");
 	public static final Block DIAMOND_BLOCK = (new BlockOreStorage(57)).setHardness(5.0F).setResistance(10.0F).setStepSound(soundMetalFootstep).setName("blockDiamond").setTextureName("diamond_block");
 	public static final Block WORKBENCH = (new BlockWorkbench(58)).setHardness(2.5F).setStepSound(soundWoodFootstep).setName("workbench").setTextureName("crafting_table");
-	public static final Block CROPS = (new BlockCrops(59)).setName("crops").setTextureName("wheat");
-	public static final Block SOILD = (new BlockFarmland(60)).setHardness(0.6F).setStepSound(soundGravelFootstep).setName("farmland").setTextureName("farmland");
+	*/public static final Block CROPS = new BlockCrops(59).setName("crops").setTextureName("wheat");
+	/*public static final Block SOILD = (new BlockFarmland(60)).setHardness(0.6F).setStepSound(soundGravelFootstep).setName("farmland").setTextureName("farmland");
 	public static final Block FURNACE = (new BlockFurnace(61, false)).setHardness(3.5F).setStepSound(soundStoneFootstep).setName("furnace").setCreativeTab(CreativeTabs.tabDecorations);
 	public static final Block BURNING_FURNACE = (new BlockFurnace(62, true)).setHardness(3.5F).setStepSound(soundStoneFootstep).setLightValue(0.875F).setName("furnace");
 	public static final Block SIGN_POST = (new BlockSign(63, TileEntitySign.class, true)).setHardness(1.0F).setStepSound(soundWoodFootstep).setName("sign").disableStats();
@@ -770,6 +773,14 @@ public class Block {
 	public void velocityToAddToEntity(World world, int x, int y, int z, Entity en, Vec3 vector) {
 	}
 
+	/**
+	 * Used on growing trees, mushrooms, crops etc
+	 * @returns true if the grow was successfully
+	 */
+	public boolean grow(World world, int x, int y, int z, boolean bonemeal) {
+		return true;
+	}
+	
 	/**
 	 * Updates the blocks bounds based on its current state. Args: world, x, y, z
 	 */

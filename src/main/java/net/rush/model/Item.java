@@ -3,6 +3,7 @@ package net.rush.model;
 import java.util.Random;
 import java.util.UUID;
 
+import net.rush.model.item.ItemDye;
 import net.rush.model.item.ItemRecord;
 import net.rush.world.World;
 
@@ -113,9 +114,9 @@ public class Item {
 	/*public static Item GLOWSTONE = new Item(92).setName("yellowDust").setPotionEffect(PotionHelper.glowstoneEffect);
 	public static Item RAW_FISH = new ItemFood(93, 2, 0.3F, false).setName("fishRaw");
 	public static Item COOKED_FISH = new ItemFood(94, 5, 0.6F, false).setName("fishCooked");
-	public static Item INK_SACK = new ItemDye(95).setName("dyePowder");
-	*/public static Item BONE = new Item(96).setName("bone").setFull3D();
-	/*public static Item SUGAR = new Item(97).setName("sugar").setPotionEffect(PotionHelper.sugarEffect);
+	*/public static Item INK_SACK = new ItemDye(95).setName("dyePowder");
+	/*public static Item BONE = new Item(96).setName("bone").setFull3D();
+	public static Item SUGAR = new Item(97).setName("sugar").setPotionEffect(PotionHelper.sugarEffect);
 	public static Item CAKE = new ItemReed(98, Block.cake).setMaxStackSize(1).setName("cake");
 	public static Item BED = new ItemBed(99).setMaxStackSize(1).setName("bed");
 	public static Item REDSTONE_REPEATER = new ItemReed(100, Block.redstoneRepeaterIdle).setName("diode");
@@ -218,9 +219,8 @@ public class Item {
 	protected Item(int id) {
 		this.id = 256 + id;
 
-		if (byId[256 + id] != null) {
+		if (byId[256 + id] != null)
 			System.out.println("CONFLICT @ " + id);
-		}
 
 		byId[256 + id] = this;
 	}
