@@ -34,8 +34,10 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		int blockId = packet.getHeldItem().getId();
 		int direction = packet.getDirection();
 
-		placeOrActivate(player, world, packet.getHeldItem(), x, y, z, direction, xOffset, yOffset, zOffset);
-
+		if (placeOrActivate(player, world, packet.getHeldItem(), x, y, z, direction, xOffset, yOffset, zOffset))
+			if(player.getGamemode() != GameMode.CREATIVE)
+				player.getInventory().takeItemInHand();
+		
 		player.getSession().send(new BlockChangePacket(x, y, z, world));
 
 		if (direction == 0)
@@ -69,22 +71,22 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 	}
 
 	public boolean placeOrActivate(Player player, World world, ItemStack item, int x, int y, int z, int direction, float xOffset, float yOffset, float zOffset) {
-		int blockId = 0;
-		
+
 		if (!player.isCrouching() || player.getItemInHand() == null) {
-			blockId = world.getTypeId(x, y, z);
+			int blockId = world.getTypeId(x, y, z);
 
-			if (blockId > 0) {
-				if (Block.byId[blockId].onBlockActivated(world, x, y, z, player, direction, xOffset, yOffset, zOffset))
-					return true;
-				if (item != null && Item.byId[item.getId()].onItemUse(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset))
-					return true;
-			}
+			if (blockId > 0 && Block.byId[blockId] != null && Block.byId[blockId].onBlockActivated(world, x, y, z, player, direction, xOffset, yOffset, zOffset))
+				return true;
 		}
-
+		
 		if (item == null)
 			return false;
-		if (player.getGamemode() == GameMode.CREATIVE) {
+
+		if(Item.byId[item.getId()] != null)
+			Item.byId[item.getId()].onItemUse(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset);
+
+		
+		/*if (player.getGamemode() == GameMode.CREATIVE) {
 			int oldDamage = item.getDamage();
 			int oldCount = item.getCount();
 
@@ -94,61 +96,57 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 			item.count = oldCount;
 
 			return placedSuccessfully;
-		} else
-			return tryPlace(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset);
+		}*/
+		return tryPlace(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset);
 	}
-
+	
 	public boolean tryPlace(ItemStack item, Player player, World world, int x, int y, int z, int direction, float xOffset, float yOffset, float zOffset) {
 		int id = item.getId(); //world.getTypeId(x, y, z);
 
+		if(world.getTypeId(x, y, z) == item.getId() && (id == Block.VINE.id || id == Block.TALL_GRASS.id || id == Block.DEAD_BUSH.id))
+			return false;
+		
 		if (id == Block.SNOW.id && (world.getBlockData(x, y, z) & 7) < 1) {
 			direction = 1;
 		} else /*if (id != Block.VINE.id && id != Block.TALL_GRASS.id && id != Block.DEAD_BUSH.id)*/ {
-			if (direction == 0) {
+			if (direction == 0)
 				--y;
-			}
-			if (direction == 1) {
+
+			if (direction == 1)
 				++y;
-			}
 
-			if (direction == 2) {
+			if (direction == 2)
 				--z;
-			}
 
-			if (direction == 3) {
+			if (direction == 3)
 				++z;
-			}
 
-			if (direction == 4) {
+			if (direction == 4)
 				--x;
-			}
 
-			if (direction == 5) {
+			if (direction == 5)
 				++x;
-			}
 		}
-
+		
 		if (item.getCount() == 0)
 			return false;
-		if (y == 255 && Block.byId[id].material.isSolid())
-			return false;
-		//else if (world.canPlaceEntityOnSide(id, x, y, z, false, side, player, item)) {
+		
 		Block block = Block.byId[id];
 
 		if(block == null)
 			return false;
+		
+		if (y == 255 && block.material.isSolid())
+			return false;
+		
+		//else if (world.canPlaceEntityOnSide(id, x, y, z, false, side, player, item)) {
 
-		int metadata = Block.byId[id].onBlockPlaced(world, x, y, z, direction, xOffset, yOffset, zOffset, item.getDamage());
-
+		int metadata = block.onBlockPlaced(world, x, y, z, direction, xOffset, yOffset, zOffset, item.getDamage());
+		block.onPostBlockPlaced(world, x, y, z, metadata);
+		
 		world.setTypeAndData(x, y, z, id, metadata, false);
 
-		if (world.getTypeId(x, y, z) == id) {
-			Block.byId[id].onBlockPlacedBy(world, x, y, z, player, item);
-			Block.byId[id].onPostBlockPlaced(world, x, y, z, metadata);
-		}
-
 		world.playSound(x + 0.5D, y + 0.5D, z + 0.5D, block.sound.getPlaceSound(), (block.sound.getVolume() + 1.0F) / 2.0F, block.sound.getPitch() * 0.8F);
-		item.count--;
 
 		return true;
 		//}

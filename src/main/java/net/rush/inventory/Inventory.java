@@ -54,7 +54,7 @@ public abstract class Inventory {
     }
 
     public void setItem(int index, ItemStack item) {
-        slots[index] = item;
+    	slots[index] = item;
         sendUpdate(index);
     }
 

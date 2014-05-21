@@ -1,22 +1,19 @@
 package net.rush.model;
 
 import java.util.Random;
-import java.util.UUID;
 
 import net.rush.model.item.ItemDye;
+import net.rush.model.item.ItemHoe;
 import net.rush.model.item.ItemRecord;
+import net.rush.util.enums.EnumToolMaterial;
 import net.rush.world.World;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 public class Item {
-	protected static final UUID uuid = UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF");
 
-	/** The RNG used by the Item subclasses. */
 	protected static Random rand = new Random();
-
-	/** A 32000 elements Item array. */
 	public static Item[] byId = new Item[32000];
 
 	/*public static Item IRON_SPADE = new ItemSpade(0, EnumToolMaterial.IRON).setName("shovelIron");
@@ -53,12 +50,12 @@ public class Item {
 	public static Item TRIPWIRE = new ItemReed(31, Block.tripWire).setName("string");
 	*/public static Item FEATHER = new Item(32).setName("feather");
 	/*public static Item GUNPOWDER = new Item(33).setName("sulphur").setPotionEffect(PotionHelper.gunpowderEffect);
-	public static Item WOODEN_HOE = new ItemHoe(34, EnumToolMaterial.WOOD).setName("hoeWood");
+	*/public static Item WOODEN_HOE = new ItemHoe(34, EnumToolMaterial.WOOD).setName("hoeWood");
 	public static Item STONE_HOE = new ItemHoe(35, EnumToolMaterial.STONE).setName("hoeStone");
 	public static Item IRON_HOE = new ItemHoe(36, EnumToolMaterial.IRON).setName("hoeIron");
 	public static Item DIAMOND_HOE = new ItemHoe(37, EnumToolMaterial.DIAMOND).setName("hoeDiamond");
 	public static Item GOLDEN_HOE = new ItemHoe(38, EnumToolMaterial.GOLD).setName("hoeGold");
-	public static Item SEEDS = new ItemSeeds(39, Block.crops.id, Block.tilledField.id).setName("seeds");
+	/*public static Item SEEDS = new ItemSeeds(39, Block.crops.id, Block.tilledField.id).setName("seeds");
 	*/public static Item WHEAT = new Item(40).setName("wheat");
 	/*public static Item BREAD = new ItemFood(41, 5, 0.6F, false).setName("bread");
 	public static ItemArmor LEATHER_HELMET = (ItemArmor) new ItemArmor(42, EnumArmorMaterial.CLOTH, 0, 0).setName("helmetCloth");
@@ -220,7 +217,7 @@ public class Item {
 		this.id = 256 + id;
 
 		if (byId[256 + id] != null)
-			System.out.println("CONFLICT @ " + id);
+			System.out.println("ITEM CONFLICT @ " + id);
 
 		byId[256 + id] = this;
 	}
@@ -497,7 +494,7 @@ public class Item {
 	public Multimap<?, ?> getItemAttributeModifiers() {
 		return HashMultimap.create();
 	}
-
+	
 	public enum ActionOnUse {
 		NONE, EAT, DRINK, BLOCK, SHOOT_ARROW;
 	}

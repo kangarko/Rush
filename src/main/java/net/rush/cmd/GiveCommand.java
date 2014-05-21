@@ -24,12 +24,14 @@ public final class GiveCommand extends Command {
 			return;
 		}
 		Player pl = (Player) player;
+		
 		if(args.length == 0) {
 			pl.sendMessage("&cUsage: /i <item>");
-		} else if(args.length >= 1) {
+		} else {
 			try {
-				int amount = args[1] != null ? Integer.parseInt(args[1]) : 1;				
-				ItemStack item = new ItemStack(Material.getMaterial(args[0].toUpperCase()).getId(), amount);
+				int amount = args.length == 2 ? Integer.parseInt(args[1]) : 1;
+				int data = args.length == 3 ? Integer.parseInt(args[2]) : 0;
+				ItemStack item = new ItemStack(Material.getMaterial(args[0].toUpperCase()).getId(), amount, data);
 				
 				pl.getInventory().addItem(item);
 				
@@ -37,7 +39,7 @@ public final class GiveCommand extends Command {
 			} catch (NullPointerException ex) {
 				pl.sendMessage("&cInvalid item: " + args[0]);
 			} catch (NumberFormatException ex) {
-				pl.sendMessage("&cInvalid item amount: " + args[1]);
+				pl.sendMessage("&cInvalid item amount: " + args[1] + " or damage: " + args[2]);
 			}
 		}
 	}

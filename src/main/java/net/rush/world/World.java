@@ -28,6 +28,7 @@ import net.rush.model.misc.Vec3Pool;
 import net.rush.packets.packet.BlockChangePacket;
 import net.rush.packets.packet.TimeUpdatePacket;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Difficulty;
 import org.bukkit.Effect;
 import org.bukkit.World.Environment;
@@ -154,7 +155,27 @@ public class World {
 	public Collection<Player> getPlayers() {
 		return entities.getAll(Player.class);
 	}
+	
+	public Player getPlayer(String name) {	
+        Validate.notNull(name, "Name cannot be null");
 
+        Collection<Player> players = getPlayers();
+        Player found = null;
+        String lowerName = name.toLowerCase();
+        int delta = Integer.MAX_VALUE;
+        for (Player player : players) {
+            if (player.getName().toLowerCase().startsWith(lowerName)) {
+                int curDelta = player.getName().length() - lowerName.length();
+                if (curDelta < delta) {
+                    found = player;
+                    delta = curDelta;
+                }
+                if (curDelta == 0) break;
+            }
+        }
+        return found;
+	}	
+	
 	/**
 	 * Gets the spawn position.
 	 * 

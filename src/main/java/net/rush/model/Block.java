@@ -8,6 +8,7 @@ import net.rush.model.block.BlockFlower;
 import net.rush.model.block.BlockGrass;
 import net.rush.model.block.BlockLog;
 import net.rush.model.block.BlockSapling;
+import net.rush.model.block.BlockSoil;
 import net.rush.model.block.BlockStone;
 import net.rush.model.misc.AxisAlignedBB;
 import net.rush.model.misc.MovingObjectPosition;
@@ -118,8 +119,8 @@ public class Block {
 	public static final Block DIAMOND_BLOCK = (new BlockOreStorage(57)).setHardness(5.0F).setResistance(10.0F).setStepSound(soundMetalFootstep).setName("blockDiamond").setTextureName("diamond_block");
 	public static final Block WORKBENCH = (new BlockWorkbench(58)).setHardness(2.5F).setStepSound(soundWoodFootstep).setName("workbench").setTextureName("crafting_table");
 	*/public static final Block CROPS = new BlockCrops(59).setName("crops").setTextureName("wheat");
-	/*public static final Block SOILD = (new BlockFarmland(60)).setHardness(0.6F).setStepSound(soundGravelFootstep).setName("farmland").setTextureName("farmland");
-	public static final Block FURNACE = (new BlockFurnace(61, false)).setHardness(3.5F).setStepSound(soundStoneFootstep).setName("furnace").setCreativeTab(CreativeTabs.tabDecorations);
+	public static final Block SOIL = new BlockSoil(60).setHardness(0.6F).setStepSound(Sound.GRAVEL).setName("farmland").setTextureName("farmland");
+	/*public static final Block FURNACE = (new BlockFurnace(61, false)).setHardness(3.5F).setStepSound(soundStoneFootstep).setName("furnace").setCreativeTab(CreativeTabs.tabDecorations);
 	public static final Block BURNING_FURNACE = (new BlockFurnace(62, true)).setHardness(3.5F).setStepSound(soundStoneFootstep).setLightValue(0.875F).setName("furnace");
 	public static final Block SIGN_POST = (new BlockSign(63, TileEntitySign.class, true)).setHardness(1.0F).setStepSound(soundWoodFootstep).setName("sign").disableStats();
 	public static final Block WOOD_DOOR = (new BlockDoor(64, Material.wood)).setHardness(3.0F).setStepSound(soundWoodFootstep).setName("doorWood").setTextureName("door_wood");
