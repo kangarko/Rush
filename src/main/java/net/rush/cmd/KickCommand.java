@@ -2,7 +2,6 @@ package net.rush.cmd;
 
 import net.rush.model.CommandSender;
 import net.rush.model.Player;
-import net.rush.packets.packet.KickPacket;
 
 /**
  * A command that kicks a user off the server.
@@ -20,26 +19,27 @@ public final class KickCommand extends Command {
 	@Override
 	public void execute(CommandSender player, String[] args) {
 		// TODO check if the player executing this command is an admin
-		if (args.length != 1) {
-			player.sendMessage("§eUsage: /kick <username>");
+		if (args.length == 0) {
+			player.sendMessage("&eUsage: /kick <username>");
 			return;
 		}
 
 		String name = args[0];
+		Player victim = player.getServer().getWorld().getPlayer(name);
 
-		for (Player p : player.getServer().getWorld().getPlayers()) {
-			if (p.getName().equalsIgnoreCase(name)) {
-				player.sendMessage("§eKicking " + p.getName());
-				p.getSession().send(new KickPacket("Kicked by " + player.getName()));
-				return;
-			} else if (p.getName().toLowerCase().contains(name.toLowerCase())) {
-				player.sendMessage("§ePartial match, kicking " + p.getName());
-				p.getSession().send(new KickPacket("Kicked by " + player.getName()));
-				return;
-			}
+		if(victim == null) {
+			player.sendMessage("&eCan't find user " + name + ". No kick.");
+			return;
 		}
 
-		player.sendMessage("§eCan't find user " + name + ". No kick.");
+		String reason = "";
+		
+		for(int i = 1; i < args.length; i++)
+			reason+= " " + args[i];
+
+		victim.getSession().disconnect("&4Kicked by " + player.getName() + (reason == "" ? "" : "\n\n&7Reason:&f" + reason));
+
+		player.sendMessage("&eCan't find user " + name + ". No kick.");
 	}
 
 }

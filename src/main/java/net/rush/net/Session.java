@@ -16,6 +16,7 @@ import net.rush.packets.handler.HandlerLookupService;
 import net.rush.packets.handler.PacketHandler;
 import net.rush.packets.packet.KeepAlivePacket;
 import net.rush.packets.packet.KickPacket;
+import net.rush.util.StringUtils;
 
 /**
  * A single connection to the server, which may or may not be associated with a
@@ -200,7 +201,7 @@ public final class Session {
 	 * @param reason The reason for disconnection.
 	 */
 	public void disconnect(String reason) {
-		channel.writeAndFlush(new KickPacket(reason)).addListener(ChannelFutureListener.CLOSE);
+		channel.writeAndFlush(new KickPacket(StringUtils.colorize(reason))).addListener(ChannelFutureListener.CLOSE);
 	}
 
 	/**
