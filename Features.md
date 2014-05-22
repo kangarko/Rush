@@ -7,6 +7,8 @@
 * Spawnable entities (No AI)
 * Implemented some blocks, their sounds and block drops.
 * Configuration (fully compatible and backwards compatible with vanilla server)
+* Basic entity interaction and test AI.
+* Block placing & removing + partial interaction (bonemeal, hoe making farmland, ...)
 * Packet logging.
 * W.I.P GUI!
 * and more! still in heavy development
