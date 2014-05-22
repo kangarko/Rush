@@ -13,6 +13,18 @@ of the Bukkit API and Minecraft server where exact vanilla functionality is
 not needed or higher performance is desired than the official software can
 deliver.
 
+Compatibility
+-------------
+
+Rush is currently compatible with following Minecraft versions.
+* Minecraft 1.7.6 - 1.7.9 (protocol #5)
+* Minecraft 1.7.2 - 1.7.5 (protocol #4)
+* Minecraft 1.6.4 - (protocol #78)
+* 
+Planned compatibility:
+* Minecraft 1.8
+* Minecraft 1.2.5 (?)
+
 Building
 --------
 
