@@ -146,12 +146,10 @@ public final class Player extends LivingEntity implements CommandSender {
 		session.send(new NamedSoundEffectPacket(SoundEnum.getSoundName(sound), x, y, z, volume, pitch));
 	}
 
-	@Deprecated
 	public void playSound(String sound, Position pos) {
 		session.send(new NamedSoundEffectPacket(sound, pos.getX(), pos.getY(), pos.getZ(), (0.5F + 0.5F * (float)rand.nextInt(2)), ((float) (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F)));
 	}
 	
-	@Deprecated
 	public void playSound(String sound, double x, double y, double z, float volume, float pitch) {
 		session.send(new NamedSoundEffectPacket(sound, x, y, z, volume, pitch));
 	}
