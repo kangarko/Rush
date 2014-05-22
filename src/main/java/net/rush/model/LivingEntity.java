@@ -6,6 +6,7 @@ import java.util.List;
 import net.rush.model.entity.ai.EntityAI;
 import net.rush.model.entity.ai.WorldThreadAI;
 import net.rush.packets.Packet;
+import net.rush.packets.packet.AnimationPacket;
 import net.rush.packets.packet.EntityLookAndRelMovePacket;
 import net.rush.packets.packet.EntityLookPacket;
 import net.rush.packets.packet.EntityRelMovePacket;
@@ -35,7 +36,8 @@ public class LivingEntity extends Mob {
 	protected LivingEntity(World world, EntityType type) {
 		super(world, type);
 		// Set health to prevent sending null metadata that crash client.
-		setHealth(20F);
+		setMetadata(new Parameter<Float>(Parameter.TYPE_FLOAT, 6, 20F), false);
+		this.health = (int)20;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -93,6 +95,23 @@ public class LivingEntity extends Mob {
 		}
 	}
 
+	/** On right click on the entity */
+	public void onPlayerInteract(Player pl) {}
+	
+	/** On left click on the entity */
+	public void onPlayerHit(Player pl) {
+		pl.playAnimationOf(this.id, AnimationPacket.DAMAGE_ANIMATION);
+		pl.playSound(getHurtSound(), position);
+	}
+	
+	public String getHurtSound() {
+		return "mob." + getType().name().toLowerCase() + ".hurt";
+	}
+	
+	public String getDeathSound() {
+		return "mob." + getType().name().toLowerCase() + ".death";
+	}
+	
 	// METADATA START
 	
 	public float getHealth() {

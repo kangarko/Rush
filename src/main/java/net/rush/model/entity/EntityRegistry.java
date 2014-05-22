@@ -24,6 +24,7 @@ public class EntityRegistry {
 	
 	public static Class<? extends LivingEntity> entityLookup(EntityType type) {
         Class<? extends LivingEntity> clazz = entities.get(type);
+
         if (clazz == null)
             throw new NullPointerException("Unknown entity " + type.toString() + "! Is is implemented?");
         return clazz;

@@ -142,7 +142,7 @@ public abstract class Packet extends HashcodeAndEqualsStub {
         output.write( b );
     }
 	
-    public void writeItemstack(ItemStack item, DataOutput output) throws IOException {
+    public static void writeItemstack(ItemStack item, DataOutput output) throws IOException {
     	if (item == ItemStack.NULL_ITEMSTACK || item.getId() <= 0) { // FIXME less then zero check
     		output.writeShort(-1);
 		} else {

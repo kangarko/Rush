@@ -3,7 +3,8 @@ package net.rush.model.entity.ai;
 import net.rush.model.LivingEntity;
 import net.rush.model.Player;
 import net.rush.packets.packet.AnimationPacket;
-import net.rush.util.enums.SoundNames;
+
+import org.bukkit.Sound;
 
 public class EntityAITest extends EntityAI {
 
@@ -60,13 +61,13 @@ public class EntityAITest extends EntityAI {
 				System.out.println("ticks in air: " + airTicks);
 
 				if(airTicks > 5) {
-					entity.getWorld().playSound(entity.getPosition().getX(), entity.getPosition().getY(), entity.getPosition().getZ(), SoundNames.MobPigdeath, 1F, 1F);
+					entity.getWorld().playSound(entity.getPosition().getX(), entity.getPosition().getY(), entity.getPosition().getZ(), Sound.PIG_DEATH, 1F, 1F);
 					//entity.setName(rand.nextBoolean() ? "&cThat hurted!" : "&cDon't u kill me there!");
 					entity.setNameVisible(true);
 
 					for(Player pl : entity.getWorld().getPlayers())
 						if(pl.isWithinDistance(entity))
-							pl.getSession().send(new AnimationPacket(entity.getId(), AnimationPacket.DAMAGE_ANIMATION));
+							pl.playAnimationOf(entity.getId(), AnimationPacket.DAMAGE_ANIMATION);
 
 					hasName = true;
 				}

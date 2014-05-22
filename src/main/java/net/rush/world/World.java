@@ -31,6 +31,7 @@ import net.rush.packets.packet.TimeUpdatePacket;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Difficulty;
 import org.bukkit.Effect;
+import org.bukkit.Sound;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldType;
 import org.bukkit.entity.EntityType;
@@ -368,9 +369,14 @@ public class World {
 		return 0;
 	}
 
-	public void playSound(double x, double y, double z, String soundName, float volume, float pitch) {
+	public void playSound(double x, double y, double z, String sound, float volume, float pitch) {
 		for (Player pl : getPlayers())
-			pl.playSound(soundName, x, y, z, volume, pitch);
+			pl.playSound(sound, x, y, z, volume, pitch);
+	}
+	
+	public void playSound(double x, double y, double z, Sound sound, float volume, float pitch) {
+		for (Player pl : getPlayers())
+			pl.playSound(sound, x, y, z, volume, pitch);
 	}
 
 	public void playEffect(int effectId, int x, int y, int z, int data) {

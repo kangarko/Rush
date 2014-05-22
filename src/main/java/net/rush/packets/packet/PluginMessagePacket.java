@@ -21,10 +21,10 @@ public class PluginMessagePacket extends Packet {
 	@Serialize(type = Type.BYTE_ARRAY, order = 2, moreInfo = 1)
 	private byte[] data;
 
-	public PluginMessagePacket(String channel, short length, byte[] data) {
+	public PluginMessagePacket(String channel, byte[] data) {
 		super();
 		this.channel = channel;
-		this.length = length;
+		this.length = (short) data.length;
 		this.data = data;
 	}
 

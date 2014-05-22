@@ -7,9 +7,9 @@ import net.rush.packets.Packet;
 import net.rush.packets.packet.ItemCollectPacket;
 import net.rush.packets.packet.SpawnObjectPacket;
 import net.rush.util.Parameter;
-import net.rush.util.enums.SoundNames;
 import net.rush.world.World;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 
 /**
@@ -71,7 +71,7 @@ public final class ItemEntity extends Entity {
 					Player pl = (Player) en;
 					pl.getSession().send(new ItemCollectPacket(getId(), pl.getId()));
 					pl.getInventory().addItem(item);
-					pl.playSound(SoundNames.RandomPop, pl.getPosition(), 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+					pl.playSound(Sound.ITEM_PICKUP, pl.getPosition(), 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 					this.destroy();
 				}
 				return;

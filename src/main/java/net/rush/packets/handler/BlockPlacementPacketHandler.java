@@ -83,24 +83,12 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 				return true;
 		}
 		
-		if (item == null)
+		if (item == ItemStack.NULL_ITEMSTACK)
 			return false;
 
 		if(Item.byId[item.getId()] != null)
 			Item.byId[item.getId()].onItemUse(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset);
 
-		
-		/*if (player.getGamemode() == GameMode.CREATIVE) {
-			int oldDamage = item.getDamage();
-			int oldCount = item.getCount();
-
-			boolean placedSuccessfully = tryPlace(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset);
-
-			item.damage = oldDamage;
-			item.count = oldCount;
-
-			return placedSuccessfully;
-		}*/
 		return tryPlace(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset);
 	}
 	

@@ -12,6 +12,13 @@ public class Spider extends EntityAgeable {
 		super(world, EntityType.SPIDER);
 	}
 	
+	@Override
+	public String getHurtSound() {
+		return "mob.spider.say";
+	}
+	
+	// METADATA
+	
 	public void setClimbing(boolean climbing) {
 		setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 16, (byte) (climbing ? 1 : 0)));
 	}

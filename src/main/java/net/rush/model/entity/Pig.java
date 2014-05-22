@@ -15,6 +15,13 @@ public class Pig extends EntityAgeable {
 		aiTasks.add(new EntityAITest(this));
 	}
 	
+	@Override
+	public String getHurtSound() {
+		return "mob.pig.say";
+	}
+	
+	// METADATA
+	
 	public void setSaddle(boolean hasSadle) {
 		byte hasSadleByte = (byte) (hasSadle ? 1 : 0);
 		setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 16, hasSadleByte));

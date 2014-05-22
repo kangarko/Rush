@@ -12,6 +12,7 @@ import net.rush.inventory.PlayerInventory;
 import net.rush.model.entity.ItemEntity;
 import net.rush.net.Session;
 import net.rush.packets.Packet;
+import net.rush.packets.packet.AnimationPacket;
 import net.rush.packets.packet.ChangeGameStatePacket;
 import net.rush.packets.packet.ChatPacket;
 import net.rush.packets.packet.DestroyEntityPacket;
@@ -29,8 +30,10 @@ import net.rush.util.MathHelper;
 import net.rush.util.Parameter;
 import net.rush.util.enums.GameStateReason;
 import net.rush.util.enums.InventoryEnum;
+import net.rush.util.enums.SoundEnum;
 
 import org.bukkit.GameMode;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 
 /**
@@ -82,7 +85,7 @@ public final class Player extends LivingEntity implements CommandSender {
 
 	private ItemStack itemOnCursor = ItemStack.NULL_ITEMSTACK;
 	
-	private int windowId = 0;
+	public int windowId = 0;
 
 	/**
 	 * Creates a new player and adds it to the world.
@@ -131,18 +134,43 @@ public final class Player extends LivingEntity implements CommandSender {
 		session.send(new ChatPacket(message));
 	}
 
-	public void playSound(String soundName, double x, double y, double z, float volume, float pitch) {
-		session.send(new NamedSoundEffectPacket(soundName, x, y, z, volume, pitch));
+	public void playSound(Sound sound, Position pos) {
+		playSound(sound, pos, (0.5F + 0.5F * (float)rand.nextInt(2)), ((float) (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F));
+	}
+	
+	public void playSound(Sound sound, Position pos, float volume, float pitch) {
+		playSound(sound, pos.getX(), pos.getY(), pos.getZ(), volume, pitch);
+	}
+	
+	public void playSound(Sound sound, double x, double y, double z, float volume, float pitch) {
+		session.send(new NamedSoundEffectPacket(SoundEnum.getSoundName(sound), x, y, z, volume, pitch));
 	}
 
-	public void playSound(String soundName, Position pos, float volume, float pitch) {
-		session.send(new NamedSoundEffectPacket(soundName, pos.getX(), pos.getY(), pos.getZ(), volume, pitch));
+	@Deprecated
+	public void playSound(String sound, Position pos) {
+		session.send(new NamedSoundEffectPacket(sound, pos.getX(), pos.getY(), pos.getZ(), (0.5F + 0.5F * (float)rand.nextInt(2)), ((float) (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F)));
 	}
-
+	
+	@Deprecated
+	public void playSound(String sound, double x, double y, double z, float volume, float pitch) {
+		session.send(new NamedSoundEffectPacket(sound, x, y, z, volume, pitch));
+	}
+	
 	public void playEffect(int effectId, int x, int y, int z, int data) {
 		session.send(new SoundOrParticleEffectPacket(effectId, x, y, z, data, false));
 	}
+	
+	/** To prevent typos use animations in AnimationPacket class. */
+	public void playAnimation(int animationId) {
+		session.send(new AnimationPacket(getId(), animationId));
+	}
 
+	
+	/** To prevent typos use animations in AnimationPacket class. */
+	public void playAnimationOf(int entityId, int animationId) {
+		session.send(new AnimationPacket(entityId, animationId));
+	}
+	
 	public void updateTabList() {
 		Packet newPlayer = new PlayerListItemPacket(name, true, (short)100);
 
@@ -289,6 +317,17 @@ public final class Player extends LivingEntity implements CommandSender {
 		this.sprinting = sprinting;
 		setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, new Byte((byte) (sprinting ? 0x08: 0))));
 		// FIXME: other bits in the bitmask would be wiped out
+	}
+	
+	@Override
+	public void setHealth(float newHealth) {
+		float oldHealth = health;
+		super.setHealth(newHealth);
+		
+		session.send(new UpdateHealthPacket(newHealth, (short) food, saturation));
+		
+		if(newHealth < oldHealth)
+			playSound(Sound.ARROW_HIT, position);
 	}
 
 	public GameMode getGamemode() {

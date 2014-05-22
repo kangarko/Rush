@@ -24,6 +24,7 @@ import net.rush.packets.packet.PlayerPositionAndLookPacket;
 import net.rush.packets.packet.PlayerPositionPacket;
 import net.rush.packets.packet.PluginMessagePacket;
 import net.rush.packets.packet.ServerListPingPacket;
+import net.rush.packets.packet.UseEntityPacket;
 
 /**
  * A class used to look up message handlers.
@@ -58,6 +59,7 @@ public final class HandlerLookupService {
 			bind(ServerListPingPacket.class, ServerListPingPacketHandler.class);
 			bind(CreativeInventoryActionPacket.class, CreativeInventoryActionPacketHandler.class);
 			bind(ClickWindowPacket.class, ClickWindowPacketHandler.class);
+			bind(UseEntityPacket.class, UseEntityPacketHandler.class);
 			// 1.7
 			bind(PacketStatusRequest.class, PacketStatusRequestHandler.class);
 			bind(PacketLoginRequest.class, PacketLoginRequestHandler.class);
