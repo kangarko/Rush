@@ -29,7 +29,7 @@ public abstract class Entity {
 	 */
 	protected final Parameter<?>[] metadata = new Parameter<?>[Parameter.METADATA_SIZE];
 	
-	private boolean metadataChanged = false;
+	protected boolean metadataChanged = false;
 
 	/**
 	 * A flag indicating if this entity is currently active.
@@ -73,6 +73,9 @@ public abstract class Entity {
 	protected double motionY = 0;
 	protected double motionZ = 0;
 
+	// debug purposes
+	protected boolean announced = false;
+	
 	protected Random rand = new Random();
 	
 	/**
@@ -160,6 +163,10 @@ public abstract class Entity {
 					player.sendMessage("&cRecieved metadata of " + entityType.toString() + " (id " + id + ") @ " + position.toString());
 				}
 			}
+			
+			if(!announced)
+				System.out.println("Created Metadada Packet");			
+				
 			metadataChanged = false;
 		}
 	}

@@ -26,6 +26,17 @@ public enum Type {
 		public void write(DataOutput out, Integer val) throws IOException {
 			out.writeInt(val);
 		}
+	}), NULL_INT(new Serializor<Integer>() {
+		@Override
+		public Integer read(DataInput in) throws IOException {
+			return in.readInt();
+		}
+
+		@Override
+		public void write(DataOutput out, Integer val) throws IOException {
+			if(val != -1)
+				out.writeInt(val);
+		}
 	}), BYTE(new Serializor<Byte>() {
 		@Override
 		public Byte read(DataInput in) throws IOException {

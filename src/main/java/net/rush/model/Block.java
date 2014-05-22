@@ -3,6 +3,7 @@ package net.rush.model;
 import java.util.List;
 import java.util.Random;
 
+import net.rush.model.block.BlockCraftingTable;
 import net.rush.model.block.BlockCrops;
 import net.rush.model.block.BlockFlower;
 import net.rush.model.block.BlockGrass;
@@ -117,8 +118,8 @@ public class Block {
 	public static final BlockRedstoneWire REDSTONE_WIRE = (BlockRedstoneWire) (new BlockRedstoneWire(55)).setHardness(0.0F).setStepSound(soundPowderFootstep).setName("redstoneDust").setTextureName("redstone_dust");
 	public static final Block DIAMOND_ORE = (new BlockOre(56)).setHardness(3.0F).setResistance(5.0F).setStepSound(soundStoneFootstep).setName("oreDiamond").setTextureName("diamond_ore");
 	public static final Block DIAMOND_BLOCK = (new BlockOreStorage(57)).setHardness(5.0F).setResistance(10.0F).setStepSound(soundMetalFootstep).setName("blockDiamond").setTextureName("diamond_block");
-	public static final Block WORKBENCH = (new BlockWorkbench(58)).setHardness(2.5F).setStepSound(soundWoodFootstep).setName("workbench").setTextureName("crafting_table");
-	*/public static final Block CROPS = new BlockCrops(59).setName("crops").setTextureName("wheat");
+	*/public static final Block WORKBENCH = (new BlockCraftingTable(58)).setHardness(2.5F).setStepSound(Sound.WOOD).setName("workbench").setTextureName("crafting_table");
+	public static final Block CROPS = new BlockCrops(59).setName("crops").setTextureName("wheat");
 	public static final Block SOIL = new BlockSoil(60).setHardness(0.6F).setStepSound(Sound.GRAVEL).setName("farmland").setTextureName("farmland");
 	/*public static final Block FURNACE = (new BlockFurnace(61, false)).setHardness(3.5F).setStepSound(soundStoneFootstep).setName("furnace").setCreativeTab(CreativeTabs.tabDecorations);
 	public static final Block BURNING_FURNACE = (new BlockFurnace(62, true)).setHardness(3.5F).setStepSound(soundStoneFootstep).setLightValue(0.875F).setName("furnace");
@@ -745,7 +746,7 @@ public class Block {
 	/**
 	 * Called upon block activation (right click on the block.)
 	 */
-	public boolean onBlockActivated(World world, int x, int y, int z, Player par5EntityPlayer, int par6, float par7, float par8, float par9) {
+	public boolean onBlockActivated(World world, int x, int y, int z, Player player, int direction, float xOffset, float yOffset, float zOffset) {
 		return false;
 	}
 
@@ -756,9 +757,9 @@ public class Block {
 	}
 
 	/**
-	 * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
+	 * Called when a block is placed using its ItemBlock.
 	 */
-	public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int blockData) {
+	public int onBlockPlaced(World world, int x, int y, int z, int direction, float xOffset, float yOffset, float zOffset, int blockData) {
 		return 0;
 	}
 

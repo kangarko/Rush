@@ -24,15 +24,19 @@ public class OpenWindowPacket extends Packet {
 	private byte numberOfSlots;
 	@Serialize(type = Type.BOOL, order = 4)
 	private boolean useProvidedWindowTitle;
-	@Serialize(type = Type.INT, order = 5)
+	@Serialize(type = Type.NULL_INT, order = 5)
 	private int horseId;
-
-	public OpenWindowPacket(byte windowId, byte inventoryType, String windowTitle, byte numberOfSlots, boolean useProvidedWindowTitle, int horseId) {
+	
+	public OpenWindowPacket(int windowId, int inventoryType, String windowTitle, int numberOfSlots, boolean useProvidedWindowTitle) {
+		this(windowId, inventoryType, windowTitle, numberOfSlots, useProvidedWindowTitle, -1);
+	}
+	
+	public OpenWindowPacket(int windowId, int inventoryType, String windowTitle, int numberOfSlots, boolean useProvidedWindowTitle, int horseId) {
 		super();
-		this.windowId = windowId;
-		this.inventoryType = inventoryType;
+		this.windowId = (byte)windowId;
+		this.inventoryType = (byte)inventoryType;
 		this.windowTitle = windowTitle;
-		this.numberOfSlots = numberOfSlots;
+		this.numberOfSlots = (byte)numberOfSlots;
 		this.useProvidedWindowTitle = useProvidedWindowTitle;
 		this.horseId = horseId;
 	}
@@ -76,7 +80,9 @@ public class OpenWindowPacket extends Packet {
 		windowTitle = readString(input, 33, false);
 		numberOfSlots = (byte) input.readUnsignedByte();
 		useProvidedWindowTitle = input.readBoolean();
-		horseId = input.readInt();
+		
+		if(inventoryType == 11)
+			horseId = input.readInt();
 	}
 	
 	@Override
@@ -86,7 +92,9 @@ public class OpenWindowPacket extends Packet {
 		writeString(windowTitle, output, false);
 		output.writeByte(numberOfSlots);
 		output.writeBoolean(useProvidedWindowTitle);
-		output.writeInt(horseId);
+		
+		if(inventoryType == 11)
+			output.writeInt(horseId);
 	}
 
 }

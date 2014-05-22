@@ -36,7 +36,7 @@ public final class ItemEntity extends Entity {
 
 		setPosition(x, y, z);
 		getRotation().setYaw((double) (Math.random() * 360.0D));
-		setMetadata(new Parameter<ItemStack>(Parameter.TYPE_ITEM, 10, item), false);
+		setMetadata(new Parameter<ItemStack>(Parameter.TYPE_ITEM, 10, item));
 	}
 
 	/**
@@ -60,11 +60,11 @@ public final class ItemEntity extends Entity {
 			if(en == this) 
 				continue;
 
-			if (en.getType() == EntityType.DROPPED_ITEM) 
+			/*if (en.getType() == EntityType.DROPPED_ITEM) 
 				if(getPosition().distance(en.getPosition()) < 0.3) {
 					combineWith((ItemEntity)en);
 					continue;
-				}
+				}*/
 
 			if(pickupDelay == 0 && en.getType() == EntityType.PLAYER) {
 				if(getPosition().distance(en.getPosition()) < 0.9D) {

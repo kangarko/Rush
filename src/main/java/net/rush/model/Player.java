@@ -18,6 +18,7 @@ import net.rush.packets.packet.DestroyEntityPacket;
 import net.rush.packets.packet.EntityEquipmentPacket;
 import net.rush.packets.packet.NamedEntitySpawnPacket;
 import net.rush.packets.packet.NamedSoundEffectPacket;
+import net.rush.packets.packet.OpenWindowPacket;
 import net.rush.packets.packet.PlayerListItemPacket;
 import net.rush.packets.packet.PlayerPositionAndLookPacket;
 import net.rush.packets.packet.SetSlotPacket;
@@ -27,6 +28,7 @@ import net.rush.packets.packet.UpdateHealthPacket;
 import net.rush.util.MathHelper;
 import net.rush.util.Parameter;
 import net.rush.util.enums.GameStateReason;
+import net.rush.util.enums.InventoryEnum;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
@@ -79,6 +81,8 @@ public final class Player extends LivingEntity implements CommandSender {
 	private boolean crouching = false;
 
 	private ItemStack itemOnCursor = ItemStack.NULL_ITEMSTACK;
+	
+	private int windowId = 0;
 
 	/**
 	 * Creates a new player and adds it to the world.
@@ -163,6 +167,12 @@ public final class Player extends LivingEntity implements CommandSender {
 				Packet msg = entity.createUpdateMessage();
 				if (msg != null)
 					session.send(msg);
+				
+				if(!announced) {
+					System.out.println("Created Update Message Packet - closing debug");
+					announced = true;
+				}
+					
 			} else {
 				session.send(new DestroyEntityPacket(entity.getId()));
 				it.remove();
@@ -177,6 +187,9 @@ public final class Player extends LivingEntity implements CommandSender {
 			if (withinDistance && !knownEntities.contains(entity)) {
 				knownEntities.add(entity);
 				session.send(entity.createSpawnMessage());
+				
+				if(!announced)
+					System.out.println("Created Spawn Packet");
 			}
 		}
 	}
@@ -340,6 +353,19 @@ public final class Player extends LivingEntity implements CommandSender {
 		item.motionZ += Math.sin(offsetZ) * offsetX;
 
 		item.throwerId = this.id;
+	}
+	
+	public void openInventory(InventoryEnum type) {
+		openInventory(type, 9, "", -1);
+	}
+	
+	public void openInventory(InventoryEnum type, int slots, String name) {
+		openInventory(type, slots, name, -1);
+	}
+	
+	public void openInventory(InventoryEnum type, int slots, String name, int horseId) {
+		windowId++;		
+		session.send(new OpenWindowPacket(windowId, type.id, name, slots, name != "", horseId));
 	}
 
 	// Inventory

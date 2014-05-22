@@ -24,19 +24,23 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		int z = packet.getZ();
 		int y = packet.getY();
 
-		if(packet.getHeldItem() == ItemStack.NULL_ITEMSTACK || packet.getDirection() == -1)
+		if(packet.getDirection() == -1)
 			return;
 
 		int xOffset = (int) (packet.getCursorX() * 16.0F);
 		int yOffset = (int) (packet.getCursorY() * 16.0F);
 		int zOffset = (int) (packet.getCursorZ() * 16.0F);
 
-		int blockId = packet.getHeldItem().getId();
 		int direction = packet.getDirection();
 
 		if (placeOrActivate(player, world, packet.getHeldItem(), x, y, z, direction, xOffset, yOffset, zOffset))
 			if(player.getGamemode() != GameMode.CREATIVE)
 				player.getInventory().takeItemInHand();
+		
+		if(packet.getHeldItem() == ItemStack.NULL_ITEMSTACK)
+			return;
+
+		int blockId = packet.getHeldItem().getId();
 		
 		player.getSession().send(new BlockChangePacket(x, y, z, world));
 
@@ -72,7 +76,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 
 	public boolean placeOrActivate(Player player, World world, ItemStack item, int x, int y, int z, int direction, float xOffset, float yOffset, float zOffset) {
 
-		if (!player.isCrouching() || player.getItemInHand() == null) {
+		if (!player.isCrouching() || item == ItemStack.NULL_ITEMSTACK) {
 			int blockId = world.getTypeId(x, y, z);
 
 			if (blockId > 0 && Block.byId[blockId] != null && Block.byId[blockId].onBlockActivated(world, x, y, z, player, direction, xOffset, yOffset, zOffset))
