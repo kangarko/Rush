@@ -298,8 +298,12 @@ public abstract class Entity {
 	}
 
 	public void setMetadata(Parameter<?> data) {
+		setMetadata(data, true);
+	}
+	
+	public void setMetadata(Parameter<?> data, boolean sendPackets) {
 		metadata[data.getIndex()] = data;
-		metadataChanged = true;
+		metadataChanged = sendPackets;
 	}
 	
 	public Chunk getChunk() {

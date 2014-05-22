@@ -124,7 +124,7 @@ public final class Player extends LivingEntity implements CommandSender {
 	 * @param message The message.
 	 */
 	public void sendMessage(String message) {
-        session.send(new ChatPacket(message));
+		session.send(new ChatPacket(message));
 	}
 
 	public void playSound(String soundName, double x, double y, double z, float volume, float pitch) {
@@ -156,6 +156,7 @@ public final class Player extends LivingEntity implements CommandSender {
 
 		for (Iterator<Entity> it = knownEntities.iterator(); it.hasNext(); ) {
 			Entity entity = it.next();
+
 			boolean withinDistance = entity.isActive() && isWithinDistance(entity);
 
 			if (withinDistance) {
@@ -315,33 +316,30 @@ public final class Player extends LivingEntity implements CommandSender {
 		return isCrouching() ? CROUCH_EYE_HEIGHT : NORMAL_EYE_HEIGHT;
 	}
 
-	public ItemEntity throwItemFromPlayer(ItemStack itemstack) {
+	public void throwItemFromPlayer(ItemStack itemstack) {
 		if (itemstack == ItemStack.NULL_ITEMSTACK)
-			return null;
-		else {
-			
-			ItemEntity item = new ItemEntity(world, getPosition().getX(), getPosition().getY() - 0.30000001192092896D + 0.12F, getPosition().getZ(), itemstack);
-			item.pickupDelay = 40;
+			return;
 
-			float offsetX = 0.1F;
-			float offsetZ;
+		ItemEntity item = new ItemEntity(world, getPosition().getX(), getPosition().getY() - 0.30000001192092896D + 0.12F, getPosition().getZ(), itemstack);
+		item.pickupDelay = 40;
 
-			offsetX = 0.3F;
-			item.motionX = -MathHelper.sin((float)getRotation().getYaw() / 180.0F * (float) Math.PI) * MathHelper.cos((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX;
-			item.motionZ = MathHelper.cos((float)getRotation().getYaw() / 180.0F * (float) Math.PI) * MathHelper.cos((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX;
-			item.motionY = -MathHelper.sin((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX + 0.1F;
+		float offsetX = 0.1F;
+		float offsetZ;
 
-			offsetX = 0.02F;
-			offsetZ = rand.nextFloat() * (float) Math.PI * 2.0F;
-			offsetX *= rand.nextFloat();
+		offsetX = 0.3F;
+		item.motionX = -MathHelper.sin((float)getRotation().getYaw() / 180.0F * (float) Math.PI) * MathHelper.cos((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX;
+		item.motionZ = MathHelper.cos((float)getRotation().getYaw() / 180.0F * (float) Math.PI) * MathHelper.cos((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX;
+		item.motionY = -MathHelper.sin((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX + 0.1F;
 
-			item.motionX += Math.cos(offsetZ) * offsetX;
-			item.motionY += (rand.nextFloat() - rand.nextFloat()) * 0.1F;
-			item.motionZ += Math.sin(offsetZ) * offsetX;
+		offsetX = 0.02F;
+		offsetZ = rand.nextFloat() * (float) Math.PI * 2.0F;
+		offsetX *= rand.nextFloat();
 
-			item.throwerId = this.id;
-			return item;
-		}
+		item.motionX += Math.cos(offsetZ) * offsetX;
+		item.motionY += (rand.nextFloat() - rand.nextFloat()) * 0.1F;
+		item.motionZ += Math.sin(offsetZ) * offsetX;
+
+		item.throwerId = this.id;
 	}
 
 	// Inventory
@@ -362,6 +360,10 @@ public final class Player extends LivingEntity implements CommandSender {
 		return itemOnCursor;
 	}
 
+	public Set<Entity> getKnownEntities() {
+		return knownEntities;
+	}
+
 	public void setItemOnCursor(ItemStack item) {
 		itemOnCursor = item;
 		if (item == null) {
@@ -378,19 +380,19 @@ public final class Player extends LivingEntity implements CommandSender {
 		int data = item == null ? 0 : item.getDamage();
 
 		int equipSlot = -1;
-		
+
 		if (index == getInventory().getHeldItemSlot()) {
 			equipSlot = EntityEquipmentPacket.HELD_ITEM;
-		
+
 		} else if (index == PlayerInventory.HELMET_SLOT) {
 			equipSlot = EntityEquipmentPacket.HELMET_SLOT;
-		
+
 		} else if (index == PlayerInventory.CHESTPLATE_SLOT) {
 			equipSlot = EntityEquipmentPacket.CHESTPLATE_SLOT;
-		
+
 		} else if (index == PlayerInventory.LEGGINGS_SLOT) {
 			equipSlot = EntityEquipmentPacket.LEGGINGS_SLOT;
-		
+
 		} else if (index == PlayerInventory.BOOTS_SLOT) {
 			equipSlot = EntityEquipmentPacket.BOOTS_SLOT;
 		}

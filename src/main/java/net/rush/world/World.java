@@ -155,28 +155,28 @@ public class World {
 	public Collection<Player> getPlayers() {
 		return entities.getAll(Player.class);
 	}
-	
-	public Player getPlayer(String name) {	
-        Validate.notNull(name, "Name cannot be null");
 
-        Player found = null;
-        String lowerName = name.toLowerCase();
-        int delta = Integer.MAX_VALUE;
-        
-        for (Player player : getPlayers()) {
-            if (player.getName().toLowerCase().startsWith(lowerName)) {
-                int curDelta = player.getName().length() - lowerName.length();
-                if (curDelta < delta) {
-                    found = player;
-                    delta = curDelta;
-                }
-                if (curDelta == 0) 
-                	break;
-            }
-        }
-        return found;
+	public Player getPlayer(String name) {	
+		Validate.notNull(name, "Name cannot be null");
+
+		Player found = null;
+		String lowerName = name.toLowerCase();
+		int delta = Integer.MAX_VALUE;
+
+		for (Player player : getPlayers()) {
+			if (player.getName().toLowerCase().startsWith(lowerName)) {
+				int curDelta = player.getName().length() - lowerName.length();
+				if (curDelta < delta) {
+					found = player;
+					delta = curDelta;
+				}
+				if (curDelta == 0) 
+					break;
+			}
+		}
+		return found;
 	}	
-	
+
 	/**
 	 * Gets the spawn position.
 	 * 
@@ -325,6 +325,11 @@ public class World {
 		}
 	}
 
+	public Entity spawn(Entity en) {
+		// FIXME en.allocate();
+		return null;
+	}
+	
 	// //
 
 	public Difficulty getDifficulty() {

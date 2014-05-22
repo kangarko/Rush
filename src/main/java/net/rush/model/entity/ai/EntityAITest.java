@@ -36,7 +36,7 @@ public class EntityAITest extends EntityAI {
 			if(!hasName && !was) {
 				hasName = true;
 				entity.setNameVisible(true);
-				entity.setName("I am stuck!");
+				//entity.setName("I am stuck!");
 				was = true;
 			}
 			return;
@@ -45,7 +45,7 @@ public class EntityAITest extends EntityAI {
 		if(was && !hasName) {
 			hasName = true;
 			entity.setNameVisible(true);
-			entity.setName(rand.nextBoolean() ? "&aI am free!" : "&9Rush rocks!");
+			//entity.setName(rand.nextBoolean() ? "&aI am free!" : "&9Rush rocks!");
 			was = false;
 		}
 
@@ -61,7 +61,7 @@ public class EntityAITest extends EntityAI {
 
 				if(airTicks > 5) {
 					entity.getWorld().playSound(entity.getPosition().getX(), entity.getPosition().getY(), entity.getPosition().getZ(), SoundNames.MobPigdeath, 1F, 1F);
-					entity.setName(rand.nextBoolean() ? "&cThat hurted!" : "&cDon't u kill me there!");
+					//entity.setName(rand.nextBoolean() ? "&cThat hurted!" : "&cDon't u kill me there!");
 					entity.setNameVisible(true);
 
 					for(Player pl : entity.getWorld().getPlayers())

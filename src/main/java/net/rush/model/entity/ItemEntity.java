@@ -33,9 +33,10 @@ public final class ItemEntity extends Entity {
 	public ItemEntity(World world, double x, double y, double z, final ItemStack item) {
 		super(world, EntityType.DROPPED_ITEM);
 		this.item = item;
+
 		setPosition(x, y, z);
 		getRotation().setYaw((double) (Math.random() * 360.0D));
-		setMetadata(new Parameter<ItemStack>(Parameter.TYPE_ITEM, 10, item));
+		setMetadata(new Parameter<ItemStack>(Parameter.TYPE_ITEM, 10, item), false);
 	}
 
 	/**
