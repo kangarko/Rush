@@ -36,22 +36,12 @@ public final class SessionRegistry {
 		}
 
 		for (final Iterator<Session> it = sessions.iterator(); it.hasNext(); ) {
-			final Session session = it.next();
+			Session session = it.next();
 			
-			session.getServer().getScheduler().runTaskAsync(new Runnable() {
-				
-				@Override
-				public void run() {
-					if (!session.pulse()) {
-						it.remove();
-						session.dispose();
-					}
-				}
-			});
-			/*if (!session.pulse()) {
+			if (!session.pulse()) {
 				it.remove();
 				session.dispose();
-			}*/
+			}
 		}
 		return (int) (System.currentTimeMillis() - now);
 	}
