@@ -51,10 +51,9 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 			block.onBlockPreDestroy(world, x, y, z, metadata);
 			block.onBlockDestroyedByPlayer(world, player, x, y, z, metadata);
 
-			if(player.getGamemode() != GameMode.CREATIVE) {
+			if(player.getGamemode() != GameMode.CREATIVE)
 				block.dropBlock(world, x, y, z, metadata, 0);
-				player.sendMessage("&dSURVIVAL BLOCK BREAK: " + block.getName() + " at X: " + x + " Y: " + y + " Z: " + z);
-			} else
+			else
 				player.sendMessage("Block broken in creative: " + block.getName() + " at X: " + x + " Y: " + y + " Z: " + z);
 
 			world.setAir(x, y, z);
