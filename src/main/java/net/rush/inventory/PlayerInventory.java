@@ -134,10 +134,10 @@ public class PlayerInventory extends Inventory {
 		
 		if(hand.getCount() > 1) {
 			setItemInHand(new ItemStack(hand.getId(), hand.getCount() - 1, hand.getDamage()));
-			pl.sendMessage("&2You have " + (hand.getCount() - 1) + " left of " + Material.getMaterial(hand.getId()) + " after drop.");
+			pl.sendMessage("&2You have " + (hand.getCount() - 1) + " left of " + Material.getMaterial(hand.getId()) + " from your inventory.");
 		} else {
 			setItemInHand(new ItemStack(0, 0));
-			pl.sendMessage("&2Removing last piece of " + Material.getMaterial(hand.getId()) + " after drop.");
+			pl.sendMessage("&2Removing last piece of " + Material.getMaterial(hand.getId()) + " from your inventory.");
 		}
 	}
 
