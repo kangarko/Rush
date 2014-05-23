@@ -56,7 +56,7 @@ public final class ItemEntity extends Entity {
 	}
 	
 	// had to copy the loong double from notchian client to make it accurate with the client
-	// getting accuracy 85-95% still W.I.P
+	// getting accuracy 93-99% still W.I.P
 	@Override
 	public void pulse() {
 		super.pulse();
