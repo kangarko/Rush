@@ -8,9 +8,9 @@ public final class CreativeInventoryActionPacketHandler extends PacketHandler<Cr
 
 	@Override
 	public void handle(Session session, Player player, CreativeInventoryActionPacket message) {
-		
+				
 		if(message.getSlot() == -1)
-			player.throwItemFromPlayer(message.getItem());
+			player.throwItemFromPlayer(message.getItem(), message.getItem().count);
 		else
 			player.getInventory().setItem(player.getInventory().getSlotConverter().netToLocal(message.getSlot()), message.getItem());
 	}

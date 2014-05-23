@@ -36,8 +36,8 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 		}
 
 		if(message.getStatus() == PlayerDiggingPacket.DROP_ITEM) {
-			if(player.getItemInHand() != ItemStack.NULL_ITEMSTACK) {
-				//player.throwItemFromPlayer(new ItemStack(player.getItemInHand().getId(), 1, player.getItemInHand().getDamage()));
+			if(player.getItemInHand() != null && player.getItemInHand() != ItemStack.NULL_ITEMSTACK && player.getItemInHand().getId() != 0 ) {
+				player.throwItemFromPlayer(player.getItemInHand(), 1);
 				player.getInventory().takeOrDamageItemInHand(player);
 			}
 			return;
@@ -45,18 +45,20 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 
 		int metadata = world.getBlockData(x, y, z);
 
-		if (player.getGamemode() == GameMode.CREATIVE || message.getStatus() == PlayerDiggingPacket.DONE_DIGGING) {
-
-			world.setAir(x, y, z);
-			world.playEffectExceptTo(Effect.STEP_SOUND, x, y, z, block.id, player);
+		if (player.getGamemode() == GameMode.CREATIVE || message.getStatus() == PlayerDiggingPacket.DONE_DIGGING
+				|| (message.getStatus() == PlayerDiggingPacket.START_DIGGING && block.getBlockHardness() == 0F)) {
 
 			block.onBlockPreDestroy(world, x, y, z, metadata);
 			block.onBlockDestroyedByPlayer(world, player, x, y, z, metadata);
 
-			if(player.getGamemode() != GameMode.CREATIVE)
+			if(player.getGamemode() != GameMode.CREATIVE) {
 				block.dropBlock(world, x, y, z, metadata, 0);
-			else
+				player.sendMessage("&dSURVIVAL BLOCK BREAK: " + block.getName() + " at X: " + x + " Y: " + y + " Z: " + z);
+			} else
 				player.sendMessage("Block broken in creative: " + block.getName() + " at X: " + x + " Y: " + y + " Z: " + z);
+
+			world.setAir(x, y, z);
+			world.playEffectExceptTo(Effect.STEP_SOUND, x, y, z, block.id, player);
 		}
 	}
 

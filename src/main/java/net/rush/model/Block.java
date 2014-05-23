@@ -12,6 +12,7 @@ import net.rush.model.block.BlockSapling;
 import net.rush.model.block.BlockSoil;
 import net.rush.model.block.BlockStone;
 import net.rush.model.block.BlockWood;
+import net.rush.model.item.ItemBlock;
 import net.rush.model.misc.AxisAlignedBB;
 import net.rush.model.misc.MovingObjectPosition;
 import net.rush.model.misc.Vec3;
@@ -276,6 +277,7 @@ public class Block {
 		sound = Sound.STONE;
 		blockParticleGravity = 1.0F;
 		slipperiness = 0.6F;
+		blockHardness = 0.0F;
 
 		if (byId[id] != null) {
 			throw new IllegalArgumentException("Slot " + id + " is already occupied by " + byId[id] + " when adding " + this);
@@ -372,9 +374,9 @@ public class Block {
 	}
 
 	/**
-	 * Returns the block hardness at a location. Args: world, x, y, z
+	 * Returns the block hardness at a location.
 	 */
-	public float getBlockHardness(World world, int x, int y, int z) {
+	public float getBlockHardness() {
 		return blockHardness;
 	}
 
@@ -507,7 +509,7 @@ public class Block {
 	 * Player.
 	 */
 	public float getPlayerRelativeBlockHardness(Player player, World world, int x, int y, int z) {
-		float hardness = getBlockHardness(world, x, y, z);
+		float hardness = getBlockHardness();
 		return hardness;//hardness < 0.0F ? 0.0F : (!player.canHarvestBlock(this) ? player.getCurrentPlayerStrVsBlock(this, false) / hardness / 100.0F : player.getCurrentPlayerStrVsBlock(this, true) / hardness / 30.0F);
 				// TODO
 	}
@@ -969,10 +971,10 @@ public class Block {
 		 */
 		for (int i = 0; i < 256; ++i) {
 			if (byId[i] != null) {
-				/*if (Item.itemsList[var0] == null) {
-					Item.itemsList[var0] = new ItemBlock(var0 - 256);
-					byId[var0].initializeBlock();
-				}*/
+				if (Item.byId[i] == null) {
+					Item.byId[i] = new ItemBlock(i - 256);
+					byId[i].initializeBlock();
+				}
 
 				boolean useNeightborBrightness = false;
 

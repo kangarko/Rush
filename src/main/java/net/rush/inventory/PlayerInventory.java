@@ -113,8 +113,8 @@ public class PlayerInventory extends Inventory {
 	public void takeOrDamageItemInHand(Player pl) {
 		ItemStack hand = getItemInHand();
 		
-		if(hand == null || hand == ItemStack.NULL_ITEMSTACK)
-			throw new RushException("Cannot drop null air!");		
+		if(hand == null || hand == ItemStack.NULL_ITEMSTACK || hand.getId() == 0)
+			throw new RushException("Cannot drop air!");		
 
 		Item item = Item.byId[hand.getId()];
 		
@@ -123,10 +123,14 @@ public class PlayerInventory extends Inventory {
 			if (hand.getDamage() >= item.getMaxDamage()) {
 				setItemInHand(new ItemStack(0, 0));
 				pl.playSound(Sound.ITEM_BREAK, pl.getPosition());
-			} else
-				setItemInHand(new ItemStack(hand.getId(), hand.getCount(), hand.getDamage() + 1));
+			} else {
+				hand.damage++;
+				setItemInHand(hand);
+			}
 			return;	
 		}
+
+		System.out.println("count: " + hand.getCount());
 		
 		if(hand.getCount() > 1) {
 			setItemInHand(new ItemStack(hand.getId(), hand.getCount() - 1, hand.getDamage()));

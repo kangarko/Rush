@@ -366,9 +366,13 @@ public final class Player extends LivingEntity implements CommandSender {
 		return isCrouching() ? CROUCH_EYE_HEIGHT : NORMAL_EYE_HEIGHT;
 	}
 
-	public void throwItemFromPlayer(ItemStack itemstack) {
-		if (itemstack == ItemStack.NULL_ITEMSTACK)
+	public void throwItemFromPlayer(ItemStack theItemStack, int count) {
+		if (theItemStack == ItemStack.NULL_ITEMSTACK)
 			return;
+		
+		ItemStack itemstack = theItemStack.clone(); 
+		
+		itemstack.count = count;
 
 		ItemEntity item = new ItemEntity(world, getPosition().getX(), getPosition().getY() + getEyeHeight() - .3, getPosition().getZ(), itemstack);
 		item.pickupDelay = 40;
@@ -432,7 +436,7 @@ public final class Player extends LivingEntity implements CommandSender {
 
 	public void setItemOnCursor(ItemStack item) {
 		itemOnCursor = item;
-		if (item == ItemStack.NULL_ITEMSTACK) {
+		if (item == null || item == ItemStack.NULL_ITEMSTACK) {
 			session.send(new SetSlotPacket(1, inventory.getHeldItemSlot(), ItemStack.NULL_ITEMSTACK));
 		} else {
 			session.send(new SetSlotPacket(1, inventory.getHeldItemSlot(), item));
@@ -442,8 +446,8 @@ public final class Player extends LivingEntity implements CommandSender {
 	public void onSlotSet(Inventory inv, int index, ItemStack item) {
 		//getSession().send(new SetSlotPacket(0, index, item));
 
-		int type = item == ItemStack.NULL_ITEMSTACK ? -1 : item.getId();
-		int data = item == ItemStack.NULL_ITEMSTACK ? 0 : item.getDamage();
+		int type = item == null || item == ItemStack.NULL_ITEMSTACK ? -1 : item.getId();
+		int data = item == null || item == ItemStack.NULL_ITEMSTACK ? 0 : item.getDamage();
 
 		int equipSlot = -1;
 
@@ -471,7 +475,7 @@ public final class Player extends LivingEntity implements CommandSender {
 		}
 
 
-		if (item == ItemStack.NULL_ITEMSTACK) {
+		if (item == null || item == ItemStack.NULL_ITEMSTACK) {
 			session.send(new SetSlotPacket(inventory.getId(), index, ItemStack.NULL_ITEMSTACK));
 		} else {
 			session.send(new SetSlotPacket(inventory.getId(), index, item));

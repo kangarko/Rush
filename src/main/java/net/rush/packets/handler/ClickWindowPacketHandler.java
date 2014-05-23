@@ -13,28 +13,29 @@ import org.bukkit.GameMode;
 
 public class ClickWindowPacketHandler extends PacketHandler<ClickWindowPacket> {
 
-    @SuppressWarnings("unused")
 	@Override
     public void handle(Session session, Player player, ClickWindowPacket message) {
         if (player == null)
             return;
         
         PlayerInventory inv = player.getInventory();
-        int slot = message.getSlot();
         
-        if (slot < 0) {
-            // TODO inv = player.getInventory().getCraftingInventory();
-            slot = message.getSlot();
-        }
-        if (slot == -1) {
-            player.setItemOnCursor(null);
+        if (message.getSlot() == -1 || message.getSlot() == -999) {
+            player.setItemOnCursor(ItemStack.NULL_ITEMSTACK);
             response(session, message, true);
+            return;
         }
+        
+        int slot = inv.getSlotConverter().netToLocal(message.getSlot());
+
         if (slot < 0) {
             response(session, message, false);
             player.getServer().getLogger().log(Level.WARNING, "Got invalid inventory slot " + message.getSlot() + " from " + player.getName());
             return;
         }
+        
+        System.out.println("mode: " + message.getMode());
+        System.out.println("slot: " + slot);
         
         ItemStack currentItem = inv.getItem(slot);
 
@@ -44,48 +45,46 @@ public class ClickWindowPacketHandler extends PacketHandler<ClickWindowPacket> {
             player.getServer().getLogger().log(Level.WARNING, player.getName() + " tried an invalid inventory action in Creative mode!");
             return;
         }
-        if (currentItem == ItemStack.NULL_ITEMSTACK) {
-            if (message.getClickedItem().getId() != -1) {
+        if (currentItem == null || currentItem == ItemStack.NULL_ITEMSTACK) {
+            if (message.getClickedItem() != null && message.getClickedItem() != ItemStack.NULL_ITEMSTACK && message.getClickedItem().getId() != -1) {
                 player.onSlotSet(inv, slot, currentItem);
                 response(session, message, false);
                 return;
             }
-        } else if (message.getClickedItem().getId() != currentItem.getId() ||
-                message.getClickedItem().getCount() != currentItem.getCount() ||
-                message.getClickedItem().getDamage() != currentItem.getDamage()) {
+        } else if (!message.getClickedItem().doItemsMatch(currentItem)) {
             player.onSlotSet(inv, slot, currentItem);
             response(session, message, false);
             return;
         }
         
         if (message.getMode() == 1) {
-            if (false /* inv == player.getInventory().getOpenWindow() */) {
+            /*if (inv == player.getInventory().getOpenWindow()) {
                 // TODO: if player has e.g. chest open
-            //} else if (inv == player.getInventory().getCraftingInventory()) {
-            //    // TODO: crafting stuff
-            } else {
+            } else if (inv == player.getInventory().getCraftingInventory()) {
+               // TODO: crafting stuff
+            } else {*/
                 if (slot < 9) {
                     for (int i = 9; i < 36; ++i) {
-                        if (inv.getItem(i) == null) {
+                        if (inv.getItem(i) == null || inv.getItem(i) == ItemStack.NULL_ITEMSTACK) {
                             // FIXME itemstacks
                             inv.setItem(i, currentItem);
-                            inv.setItem(slot, null);
+                            inv.setItem(slot, ItemStack.NULL_ITEMSTACK);
                             response(session, message, true);
                             return;
                         }
                     }
                 } else {
                     for (int i = 0; i < 9; ++i) {
-                        if (inv.getItem(i) == null) {
+                        if (inv.getItem(i) == null || inv.getItem(i) == ItemStack.NULL_ITEMSTACK) {
                             // FIXME itemstacks
                             inv.setItem(i, currentItem);
-                            inv.setItem(slot, null);
+                            inv.setItem(slot, ItemStack.NULL_ITEMSTACK);
                             response(session, message, true);
                             return;
                         }
                     }
                 }
-            }
+            //}
             response(session, message, false);
             return;
         }

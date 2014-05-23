@@ -233,6 +233,7 @@ public class World {
 	
 	public void setAir(int x, int y, int z) {
 		setTypeId(x, y, z, 0, true);
+		setBlockData(x, y, z, 0, false);
 	}
 
 	public void setTypeAndData(int x, int y, int z, int type, int data, boolean notifyPlayers) {
@@ -418,12 +419,10 @@ public class World {
 		if (chunks.chunkExist(nextTick.posX, nextTick.posZ)) {
 			int id = getTypeId(nextTick.posX, nextTick.posY, nextTick.posZ);
 
-			if (id > 0 && Block.isAssociatedWith(id, nextTick.blockId)) {
+			if (id > 0 && Block.isAssociatedWith(id, nextTick.blockId)) 
 				Block.byId[id].tick(this, nextTick.posX, nextTick.posY, nextTick.posZ, rand);
-			}
-		} else {
+		} else 
 			scheduleBlockUpdate(nextTick.posX, nextTick.posY, nextTick.posZ, nextTick.blockId, 0);
-		}
 	}
 
 	public void scheduleBlockUpdate(int x, int y, int z, int blockID, int priority) {
@@ -466,7 +465,7 @@ public class World {
 
 				if(type != 0)
 					if(Block.byId[type].getTickRandomly())
-						Block.byId[type].tick(this, x + chunkX + Chunk.WIDTH, y, z + chunkZ + Chunk.HEIGHT, rand);
+						Block.byId[type].tick(this, x + chunkX, y, z + chunkZ, rand);
 			}
 
 			// Ticks every block, laggy
