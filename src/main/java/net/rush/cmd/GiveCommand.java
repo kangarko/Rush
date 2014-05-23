@@ -2,7 +2,9 @@ package net.rush.cmd;
 
 import org.bukkit.Material;
 
+import net.rush.model.Block;
 import net.rush.model.CommandSender;
+import net.rush.model.Item;
 import net.rush.model.ItemStack;
 import net.rush.model.Player;
 
@@ -33,9 +35,14 @@ public final class GiveCommand extends Command {
 				int data = args.length == 3 ? Integer.parseInt(args[2]) : 0;
 				ItemStack item = new ItemStack(Material.getMaterial(args[0].toUpperCase()).getId(), amount, data);
 				
+				if(Item.byId[item.getId()] == null && Block.byId[item.getId()] == null) {
+					pl.sendMessage("&4" + (Item.byId[item.getId()] == null ? "Item " : "Block") + args[0].toUpperCase() + " is not yet implemented! ");
+					return;
+				}
+				
 				pl.getInventory().addItem(item);
 				
-				pl.sendMessage("&3Rush // &2Given " + item + " to " + player.getName());
+				pl.sendMessage("&3Rush // &2Given " + (Item.byId[item.getId()] == null ? "block " : "item ") + item + " to " + player.getName());
 			} catch (NullPointerException ex) {
 				pl.sendMessage("&cInvalid item: " + args[0]);
 			} catch (NumberFormatException ex) {

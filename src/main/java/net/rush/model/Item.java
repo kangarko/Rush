@@ -5,6 +5,7 @@ import java.util.Random;
 import net.rush.model.item.ItemDye;
 import net.rush.model.item.ItemHoe;
 import net.rush.model.item.ItemRecord;
+import net.rush.model.item.ItemSeeds;
 import net.rush.util.enums.EnumToolMaterial;
 import net.rush.world.World;
 
@@ -40,7 +41,7 @@ public class Item {
 	public static Item DIAMOND_SPADE = new ItemSpade(21, EnumToolMaterial.DIAMOND).setName("shovelDiamond");
 	public static Item DIAMOND_PICKAXE = new ItemPickaxe(22, EnumToolMaterial.DIAMOND).setName("pickaxeDiamond");
 	public static Item DIAMOND_AXE = new ItemAxe(23, EnumToolMaterial.DIAMOND).setName("hatchetDiamond");
-	*/public static Item STICK = new Item(24).setFull3D().setName("stick");
+	*/public static Item STICK = new Item(24).setName("stick");
 	public static Item BOWL = new Item(25).setName("bowl");
 	/*public static Item SOUP = new ItemSoup(26, 6).setName("mushroomStew");
 	public static Item GOLDEN_SWORD = new ItemSword(27, EnumToolMaterial.GOLD).setName("swordGold");
@@ -55,9 +56,9 @@ public class Item {
 	public static Item IRON_HOE = new ItemHoe(36, EnumToolMaterial.IRON).setName("hoeIron");
 	public static Item DIAMOND_HOE = new ItemHoe(37, EnumToolMaterial.DIAMOND).setName("hoeDiamond");
 	public static Item GOLDEN_HOE = new ItemHoe(38, EnumToolMaterial.GOLD).setName("hoeGold");
-	/*public static Item SEEDS = new ItemSeeds(39, Block.crops.id, Block.tilledField.id).setName("seeds");
-	*/public static Item WHEAT = new Item(40).setName("wheat");
-	/*public static Item BREAD = new ItemFood(41, 5, 0.6F, false).setName("bread");
+	public static Item SEEDS = new ItemSeeds(39, Block.CROPS.id).setName("seeds");
+	/*public static Item WHEAT = new Item(40).setName("wheat");
+	public static Item BREAD = new ItemFood(41, 5, 0.6F, false).setName("bread");
 	public static ItemArmor LEATHER_HELMET = (ItemArmor) new ItemArmor(42, EnumArmorMaterial.CLOTH, 0, 0).setName("helmetCloth");
 	public static ItemArmor LEATHER_CHESTPLATE = (ItemArmor) new ItemArmor(43, EnumArmorMaterial.CLOTH, 0, 1).setName("chestplateCloth");
 	public static ItemArmor LEATHER_LEGGINGS = (ItemArmor) new ItemArmor(44, EnumArmorMaterial.CLOTH, 0, 2).setName("leggingsCloth");
@@ -196,9 +197,6 @@ public class Item {
 	/** Maximum damage an item can handle. */
 	private int maxDamage;
 
-	/** If true, render the object in full 3D, like weapons and tools. */
-	protected boolean bFull3D;
-
 	/**
 	 * Some items (like dyes) have multiple subtypes on same item, this is field define this behavior
 	 */
@@ -320,14 +318,6 @@ public class Item {
 	 */
 	public boolean itemInteractionForEntity(ItemStack item, Player player, LivingEntity livingentity) {
 		return false;
-	}
-
-	/**
-	 * Sets bFull3D to True and return the object.
-	 */
-	public Item setFull3D() {
-		bFull3D = true;
-		return this;
 	}
 
 	/**

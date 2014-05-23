@@ -227,6 +227,10 @@ public class World {
 		return chunks.getChunk(x, z);
 	}
 
+	public boolean isAir(int x, int y, int z) {
+		return getTypeId(x, y, z) == 0;
+	}
+	
 	public void setAir(int x, int y, int z) {
 		setTypeId(x, y, z, 0, true);
 	}

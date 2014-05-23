@@ -1,7 +1,5 @@
 package net.rush.model.item;
 
-import org.bukkit.GameMode;
-
 import net.rush.model.Block;
 import net.rush.model.Item;
 import net.rush.model.ItemStack;
@@ -13,6 +11,7 @@ public class ItemDye extends Item {
 
 	public static final String colorNames[] = { "black", "red", "green", "brown", "blue", "purple", "cyan", "silver", "gray", "pink", "lime", 
 		"yellow", "lightBlue", "magenta", "orange", "white" };
+	
 	public static final int colorCodes[] = { 0x1e1b1b, 0xb3312c, 0x3b511a, 0x51301a, 0x253192, 0x7b2fbe, 0x287697, 0x287697, 0x434343, 0xd88198,
 		0x41cd34, 0xdecf2a, 0x6689d3, 0xc354cd, 0xeb8844, 0xf0f0f0 };
 
@@ -78,9 +77,9 @@ public class ItemDye extends Item {
 				success = true;
 			}
 			
-			if(success)
+			/*if(success)
 				if(player.getGamemode() != GameMode.CREATIVE)
-					item.count--;
+					item.count--;*/
 			
 			return success;
 		}

@@ -35,7 +35,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 
 		if (placeOrActivate(player, world, packet.getHeldItem(), x, y, z, direction, xOffset, yOffset, zOffset))
 			if(player.getGamemode() != GameMode.CREATIVE)
-				player.getInventory().takeItemInHand();
+				player.getInventory().takeOrDamageItemInHand(player);
 		
 		if(packet.getHeldItem() == ItemStack.NULL_ITEMSTACK)
 			return;
@@ -87,7 +87,9 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 			return false;
 
 		if(Item.byId[item.getId()] != null)
-			Item.byId[item.getId()].onItemUse(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset);
+			if (Item.byId[item.getId()].onItemUse(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset)) {
+				return true;
+			}				
 
 		return tryPlace(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset);
 	}

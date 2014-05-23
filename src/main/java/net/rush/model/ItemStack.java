@@ -151,6 +151,10 @@ public class ItemStack {
 		return this.id == is.id && this.damage == is.damage;
 	}
 	
+	public boolean doItemsMatch(ItemStack is) {
+		return this.id == is.id && this.damage == is.damage && this.count == is.count;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

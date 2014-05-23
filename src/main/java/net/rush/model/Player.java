@@ -432,7 +432,7 @@ public final class Player extends LivingEntity implements CommandSender {
 
 	public void setItemOnCursor(ItemStack item) {
 		itemOnCursor = item;
-		if (item == null) {
+		if (item == ItemStack.NULL_ITEMSTACK) {
 			session.send(new SetSlotPacket(1, inventory.getHeldItemSlot(), ItemStack.NULL_ITEMSTACK));
 		} else {
 			session.send(new SetSlotPacket(1, inventory.getHeldItemSlot(), item));
@@ -442,8 +442,8 @@ public final class Player extends LivingEntity implements CommandSender {
 	public void onSlotSet(Inventory inv, int index, ItemStack item) {
 		//getSession().send(new SetSlotPacket(0, index, item));
 
-		int type = item == null ? -1 : item.getId();
-		int data = item == null ? 0 : item.getDamage();
+		int type = item == ItemStack.NULL_ITEMSTACK ? -1 : item.getId();
+		int data = item == ItemStack.NULL_ITEMSTACK ? 0 : item.getDamage();
 
 		int equipSlot = -1;
 
@@ -471,7 +471,7 @@ public final class Player extends LivingEntity implements CommandSender {
 		}
 
 
-		if (item == null) {
+		if (item == ItemStack.NULL_ITEMSTACK) {
 			session.send(new SetSlotPacket(inventory.getId(), index, ItemStack.NULL_ITEMSTACK));
 		} else {
 			session.send(new SetSlotPacket(inventory.getId(), index, item));

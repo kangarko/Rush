@@ -1,18 +1,15 @@
 package net.rush.model.item;
 
 import net.rush.model.Block;
-import net.rush.model.Item;
 import net.rush.model.ItemStack;
 import net.rush.model.Player;
 import net.rush.util.enums.EnumToolMaterial;
 import net.rush.world.World;
 
-public class ItemHoe extends Item {
+public class ItemHoe extends ItemTool {
 
 	public ItemHoe(int id, EnumToolMaterial toolMaterial) {
-		super(id);
-		setMaxStackSize(1);
-		setMaxDamage(toolMaterial.getMaxUses());
+		super(id, toolMaterial);
 	}
 
 	@Override

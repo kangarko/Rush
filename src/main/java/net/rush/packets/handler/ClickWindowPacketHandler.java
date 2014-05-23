@@ -22,7 +22,6 @@ public class ClickWindowPacketHandler extends PacketHandler<ClickWindowPacket> {
         PlayerInventory inv = player.getInventory();
         int slot = message.getSlot();
         
-        // Modify slot if needed
         if (slot < 0) {
             // TODO inv = player.getInventory().getCraftingInventory();
             slot = message.getSlot();
@@ -33,7 +32,7 @@ public class ClickWindowPacketHandler extends PacketHandler<ClickWindowPacket> {
         }
         if (slot < 0) {
             response(session, message, false);
-            player.getServer().getLogger().log(Level.WARNING, "Got invalid inventory slot {0} from {1}", new Object[]{message.getSlot(), player.getName()});
+            player.getServer().getLogger().log(Level.WARNING, "Got invalid inventory slot " + message.getSlot() + " from " + player.getName());
             return;
         }
         
@@ -42,10 +41,10 @@ public class ClickWindowPacketHandler extends PacketHandler<ClickWindowPacket> {
         if (player.getGamemode() == GameMode.CREATIVE && message.getWindowId() == inv.getId()) {
             response(session, message, false);
             player.onSlotSet(inv, slot, currentItem);
-            player.getServer().getLogger().log(Level.WARNING, "{0} tried to do an invalid inventory action in Creative mode!", new Object[]{player.getName()});
+            player.getServer().getLogger().log(Level.WARNING, player.getName() + " tried an invalid inventory action in Creative mode!");
             return;
         }
-        if (currentItem == null) {
+        if (currentItem == ItemStack.NULL_ITEMSTACK) {
             if (message.getClickedItem().getId() != -1) {
                 player.onSlotSet(inv, slot, currentItem);
                 response(session, message, false);
@@ -68,7 +67,7 @@ public class ClickWindowPacketHandler extends PacketHandler<ClickWindowPacket> {
                 if (slot < 9) {
                     for (int i = 9; i < 36; ++i) {
                         if (inv.getItem(i) == null) {
-                            // TODO: deal with item stacks
+                            // FIXME itemstacks
                             inv.setItem(i, currentItem);
                             inv.setItem(slot, null);
                             response(session, message, true);
@@ -78,7 +77,7 @@ public class ClickWindowPacketHandler extends PacketHandler<ClickWindowPacket> {
                 } else {
                     for (int i = 0; i < 9; ++i) {
                         if (inv.getItem(i) == null) {
-                            // TODO: deal with item stacks
+                            // FIXME itemstacks
                             inv.setItem(i, currentItem);
                             inv.setItem(slot, null);
                             response(session, message, true);
