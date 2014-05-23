@@ -215,7 +215,7 @@ public final class Chunk {
 
 	Set<Position> tickedBlocks = new HashSet<Position>();
 	
-	public void tickBlocks(World world, Random rand) {
+	public void tickAllBlocks(World world, Random rand) {
 		tickedBlocks.clear();
 
 		for(int x = 0; x < WIDTH; x++) {
@@ -231,7 +231,7 @@ public final class Chunk {
 					if(block != null)
 						if(!tickedBlocks.contains(block)) {
 							tickedBlocks.add(new Position(x, y, z));
-							if(block.getTickRandomly())
+							//if(block.getTickRandomly())
 								block.tick(world, x * 16, y, z * 16, rand);
 						}
 				}
