@@ -23,6 +23,7 @@ public class ItemSeeds extends Item {
 		if (world.getTypeId(x, y, z) == Block.SOIL.id && world.isAir(x, y + 1, z)) {
 			world.setTypeId(x, y + 1, z, blockId, true);
 			//--item.count;
+			world.playSound(x + 0.5D, y + 0.5D, z + 0.5D, Block.Sound.GRASS.getPlaceSound(), (Block.Sound.GRASS.getVolume() + 1.0F) / 2.0F, Block.Sound.GRASS.getPitch() * 0.8F);
 			return true;
 		}
 		return false;

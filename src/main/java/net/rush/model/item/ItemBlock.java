@@ -61,13 +61,13 @@ public class ItemBlock extends Item {
 			return false;		
 		//else if (world.canPlaceEntityOnSide(blockID, x, y, z, false, direction, player, item)) {
 		Block block = Block.byId[blockID];
-		int blockDamage = getMetadata(item.getDamage());
-		int metadata = Block.byId[blockID].onBlockPlaced(world, x, y, z, direction, xOffset, yOffset, zOffset, blockDamage);
+
+		int metadata = block.onBlockPlaced(world, x, y, z, direction, xOffset, yOffset, zOffset, getMetadata(item.getDamage()));
 
 		world.setTypeAndData(x, y, z, blockID, metadata, false);
 		if (world.getTypeId(x, y, z) == blockID) {
-			Block.byId[blockID].onBlockPlacedBy(world, x, y, z, player, item);
-			Block.byId[blockID].onPostBlockPlaced(world, x, y, z, metadata);
+			block.onBlockPlacedBy(world, x, y, z, player, item);
+			block.onPostBlockPlaced(world, x, y, z, metadata);
 		}
 
 		world.playSound(x + 0.5F, y + 0.5F, z + 0.5F, block.sound.getPlaceSound(), (block.sound.getVolume() + 1.0F) / 2.0F, block.sound.getPitch() * 0.8F);
