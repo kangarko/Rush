@@ -37,6 +37,7 @@ public final class EntityManager implements Iterable<Entity> {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends Entity> Set<T> getAll(Class<T> type) {
+		
 		Set<T> set = (Set<T>) groupedEntities.get(type);
 		if (set == null) {
 			set = new HashSet<T>();
