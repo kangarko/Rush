@@ -61,7 +61,7 @@ public final class EntityManager implements Iterable<Entity> {
 	 * @return The id.
 	 */
 	@SuppressWarnings("unchecked")
-	int allocate(Entity entity) {
+	public int allocate(Entity entity) {
 		
 		for (int id = nextId; id < Integer.MAX_VALUE; id++) {
 			if (!entities.containsKey(id)) {

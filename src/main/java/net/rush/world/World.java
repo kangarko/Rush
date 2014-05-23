@@ -306,7 +306,8 @@ public class World {
 		double randY = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
 		double randZ = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
 
-		new ItemEntity(this, x + randX, y + randY, z + randZ, item);
+		ItemEntity itemEntity = new ItemEntity(this, x + randX, y + randY, z + randZ, item);
+		spawnEntity(itemEntity);
 	}
 
 	public void dropItem(double x, double y, double z, int type) {
@@ -326,9 +327,9 @@ public class World {
 		}
 	}
 
-	public Entity spawn(Entity en) {
-		// FIXME en.allocate();
-		return null;
+	/** Retursn the entity id. */
+	public int spawnEntity(Entity en) {
+		return getEntities().allocate(en);
 	}
 	
 	// //

@@ -81,6 +81,9 @@ public class SpawnObjectPacket extends Packet {
 		this.speedX = (short)speedX;
 		this.speedY = (short)speedY;
 		this.speedZ = (short)speedZ;
+		
+		// TODO
+		System.out.println("speed: " + speedX + "," + speedY + "," + speedX);
 	}
 
 	public int getOpcode() {
@@ -150,6 +153,6 @@ public class SpawnObjectPacket extends Packet {
 			output.writeShort(speedX);
 			output.writeShort(speedY);
 			output.writeShort(speedZ);
-		}			
+		}
 	}
 }

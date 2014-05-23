@@ -86,7 +86,7 @@ public abstract class Entity {
 		this.world = world;
 		this.entityType = entityType;
 		this.ticksLived = 0;
-		world.getEntities().allocate(this);
+		//world.getEntities().allocate(this);
 
 		//setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, (byte) 0));
 		//setMetadata(new Parameter<Short>(Parameter.TYPE_SHORT, 1, (short) 300));

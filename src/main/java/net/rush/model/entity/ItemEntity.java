@@ -95,7 +95,7 @@ public final class ItemEntity extends Entity {
 	public Packet createSpawnMessage() {
 		int yaw = rotation.getIntYaw();
 		int pitch = rotation.getIntPitch();
-
+		System.out.println("spawnmessg: " + motionX + "," + motionY + "," + motionX); // TODO
 		return new SpawnObjectPacket(id, SpawnObjectPacket.ITEM, position, yaw, pitch, throwerId, (short)motionX, (short)motionY, (short)motionZ);
 	}
 

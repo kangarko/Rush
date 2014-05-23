@@ -16,6 +16,8 @@ public abstract class Mob extends Entity {
 	 */
 	public Mob(World world, EntityType type) {
 		super(world, type);
+		
+		world.spawnEntity(this);
 	}
 }
 
