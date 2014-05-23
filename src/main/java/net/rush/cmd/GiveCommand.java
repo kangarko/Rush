@@ -31,7 +31,7 @@ public final class GiveCommand extends Command {
 			pl.sendMessage("&cUsage: /i <item>");
 		} else {
 			try {
-				int amount = args.length == 2 ? Integer.parseInt(args[1]) : 1;
+				int amount = args.length >= 2 ? Integer.parseInt(args[1]) : 1;
 				int data = args.length == 3 ? Integer.parseInt(args[2]) : 0;
 				ItemStack item = new ItemStack(Material.getMaterial(args[0].toUpperCase()).getId(), amount, data);
 				
