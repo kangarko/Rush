@@ -110,34 +110,35 @@ public class PlayerInventory extends Inventory {
 	}
 
 	@SuppressWarnings("deprecation")
-	public void takeOrDamageItemInHand(Player pl) {
+	public void takeOrDamageItemInHand(Player pl, boolean onlyDamage) {
 		ItemStack hand = getItemInHand();
-		
+
 		if(hand == null || hand == ItemStack.NULL_ITEMSTACK || hand.getId() == 0)
-			throw new RushException("Cannot drop air!");		
+			throw new RushException("Cannot take or damage NULL itemstack!");
 
 		Item item = Item.byId[hand.getId()];
-		
-		if(item != null && item instanceof ItemTool) {
-			
-			if (hand.getDamage() >= item.getMaxDamage()) {
-				setItemInHand(new ItemStack(0, 0));
-				pl.playSound(Sound.ITEM_BREAK, pl.getPosition());
-			} else {
-				hand.damage++;
-				setItemInHand(hand);
-			}
-			return;	
-		}
 
-		System.out.println("count: " + hand.getCount());
-		
-		if(hand.getCount() > 1) {
-			setItemInHand(new ItemStack(hand.getId(), hand.getCount() - 1, hand.getDamage()));
-			pl.sendMessage("&2You have " + (hand.getCount() - 1) + " left of " + Material.getMaterial(hand.getId()) + " from your inventory.");
+		if(onlyDamage) {
+			System.out.println("ONLY DAMAGEING");
+			if(item != null && item instanceof ItemTool) {
+
+				if (hand.getDamage() >= item.getMaxDamage()) {
+					setItemInHand(new ItemStack(0, 0));
+					pl.playSound(Sound.ITEM_BREAK, pl.getPosition());
+				} else {
+					hand.damage++;
+					setItemInHand(hand);
+				}
+				return;	
+			}
 		} else {
-			setItemInHand(new ItemStack(0, 0));
-			pl.sendMessage("&2Removing last piece of " + Material.getMaterial(hand.getId()) + " from your inventory.");
+			if(hand.getCount() > 1) {
+				setItemInHand(new ItemStack(hand.getId(), hand.getCount() - 1, hand.getDamage()));
+				pl.sendMessage("&2You have " + (hand.getCount() - 1) + " left of " + Material.getMaterial(hand.getId()) + " from your inventory.");
+			} else {
+				setItemInHand(new ItemStack(0, 0));
+				pl.sendMessage("&2Removing last piece of " + Material.getMaterial(hand.getId()) + " from your inventory.");
+			}
 		}
 	}
 

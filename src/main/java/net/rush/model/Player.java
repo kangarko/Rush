@@ -374,8 +374,9 @@ public final class Player extends LivingEntity implements CommandSender {
 		
 		itemstack.count = count;
 
-		ItemEntity item = new ItemEntity(world, getPosition().getX(), getPosition().getY() + getEyeHeight() - .3, getPosition().getZ(), itemstack);
+		ItemEntity item = new ItemEntity(world, itemstack, getPosition().getX(), getPosition().getY() + getEyeHeight() - .3, getPosition().getZ());
 		item.pickupDelay = 40;
+		item.setPosition(getPosition().getX(), getPosition().getY() + getEyeHeight() - .3, getPosition().getZ());
 
 		float offsetX = 0.1F;
 		float offsetZ;
@@ -389,14 +390,14 @@ public final class Player extends LivingEntity implements CommandSender {
 		offsetZ = rand.nextFloat() * (float) Math.PI * 2.0F;
 		offsetX *= rand.nextFloat();
 
-		// TODO
 		item.motionX += Math.cos(offsetZ) * offsetX;
 		item.motionY += (rand.nextFloat() - rand.nextFloat()) * 0.1F;
 		item.motionZ += Math.sin(offsetZ) * offsetX;
 
-		item.throwerId = this.id;
+		item.throwerId = id;
 		
-		world.spawnEntity(item);
+		world.spawnEntity(item);		
+		item.metadataChanged = true;
 	}
 	
 	public void openInventory(InventoryEnum type) {

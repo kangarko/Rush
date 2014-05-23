@@ -4,13 +4,13 @@ import io.netty.buffer.ByteBufOutputStream;
 
 import java.io.IOException;
 
-import net.rush.model.Position;
+import net.rush.model.Entity;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SpawnObjectPacket extends Packet {
-	
+
 	public static final int BOAT = 1;
 	/** Use EntityMetadataPacket to send item type and data.*/
 	public static final int ITEM = 2;
@@ -31,10 +31,10 @@ public class SpawnObjectPacket extends Packet {
 	public static final int ITEM_FRAME = 71;
 	public static final int EYE_OF_ENDER = 72;
 	public static final int THROWN_POTION = 73;
-	public static final int FALLING_DRAGIN_EGG = 74;
+	public static final int FALLING_DRAGON_EGG = 74;
 	public static final int THROWN_EXP_BOTTLE = 75;
 	public static final int FISHING_BOAT = 90;
-	
+
 	/** To prevent typos, use inbuilt types ids. */
 	public SpawnObjectPacket() {
 	}
@@ -54,7 +54,7 @@ public class SpawnObjectPacket extends Packet {
 	@Serialize(type = Type.BYTE, order = 6)
 	private byte yaw;
 	@Serialize(type = Type.INT, order = 7)
-	private int data;
+	private int throwerId;
 	@Serialize(type = Type.SHORT, order = 8)
 	private short speedX;
 	@Serialize(type = Type.SHORT, order = 9)
@@ -63,27 +63,50 @@ public class SpawnObjectPacket extends Packet {
 	private short speedZ;
 
 	/** To prevent typos, use inbuilt types ids. */
-	public SpawnObjectPacket(int entityId, int type, Position pos, int pitch, int yaw) {
-		this(entityId, type, pos, pitch, yaw, 0, 0, 0, 0);
+	public SpawnObjectPacket(Entity en, int type) {
+		this(en, type, 0, 0, 0, 0);
 	}
-	
+
 	/** To prevent typos, use inbuilt types ids. */
-	public SpawnObjectPacket(int entityId, int type, Position pos, int pitch, int yaw, int throwerEntityId, int speedX, int speedY, int speedZ) {
+	public SpawnObjectPacket(Entity en, int type, int throwerId, double speedX, double speedY, double speedZ) {
 		super();
-		this.entityId = entityId;
+		this.entityId = en.getId();
 		this.type = (byte) type;
-		x = (int) pos.getPixelX();
-		y = (int) pos.getPixelY();
-		z = (int) pos.getPixelZ();
-		this.pitch = (byte)pitch;
-		this.yaw = (byte)yaw;
-		this.data = throwerEntityId;
-		this.speedX = (short)speedX;
-		this.speedY = (short)speedY;
-		this.speedZ = (short)speedZ;
-		
-		// TODO
-		System.out.println("speed: " + speedX + "," + speedY + "," + speedX);
+		this.x = en.getPosition().getPixelX();
+		this.y =  en.getPosition().getPixelY();
+		this.z = en.getPosition().getPixelZ();		
+		this.pitch = (byte) en.getRotation().getIntPitch();
+		this.yaw = (byte) en.getRotation().getIntYaw();
+
+		this.throwerId = throwerId;
+
+		if (throwerId == 0)
+			return;
+
+		double limit = 3.9;
+
+		if (speedX < -limit)
+			speedX = -limit;
+
+		if (speedY < -limit)
+			speedY = -limit;
+
+		if (speedZ < -limit)
+			speedZ = -limit;
+
+		if (speedX > limit)
+			speedX = limit;
+
+		if (speedY > limit)
+			speedY = limit;
+
+		if (speedZ > limit)
+			speedZ = limit;
+
+		this.speedX = (short) (speedX * 8000);
+		this.speedY = (short) (speedY * 8000);
+		this.speedZ = (short) (speedZ * 8000);
+
 	}
 
 	public int getOpcode() {
@@ -118,27 +141,27 @@ public class SpawnObjectPacket extends Packet {
 		return yaw;
 	}
 
-	public int getData() {
-		return data;
+	public int getThrowerId() {
+		return throwerId;
 	}
-	
+
 	public short getSpeedX() {
 		return speedX;
 	}
-	
+
 	public short getSpeedY() {
 		return speedY;
 	}
-	
+
 	public short getSpeedZ() {
 		return speedZ;
 	}
 
 	public String getToStringDescription() {
 		return String.format("entityId=\"%d\",type=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",data=\"%d\",speedX=\"%d\",speedY=\"%d\",speedZ=\"%d\"", 
-				entityId, type, x, y, z, data, speedX, speedY, speedZ);
+				entityId, type, x, y, z, throwerId, speedX, speedY, speedZ);
 	}
-	
+
 	@Override
 	public void write17(ByteBufOutputStream output) throws IOException {
 		writeVarInt(entityId, output);
@@ -148,8 +171,8 @@ public class SpawnObjectPacket extends Packet {
 		output.writeInt(z);
 		output.writeByte(pitch);
 		output.writeByte(yaw);
-		output.writeInt(data);
-		if(data > 0) {
+		output.writeInt(throwerId);
+		if(throwerId > 0) {
 			output.writeShort(speedX);
 			output.writeShort(speedY);
 			output.writeShort(speedZ);

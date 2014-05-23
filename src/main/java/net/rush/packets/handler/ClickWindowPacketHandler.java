@@ -34,9 +34,6 @@ public class ClickWindowPacketHandler extends PacketHandler<ClickWindowPacket> {
             return;
         }
         
-        System.out.println("mode: " + message.getMode());
-        System.out.println("slot: " + slot);
-        
         ItemStack currentItem = inv.getItem(slot);
 
         if (player.getGamemode() == GameMode.CREATIVE && message.getWindowId() == inv.getId()) {

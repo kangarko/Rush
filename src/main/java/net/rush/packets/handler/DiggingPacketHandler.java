@@ -38,7 +38,7 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 		if(message.getStatus() == PlayerDiggingPacket.DROP_ITEM) {
 			if(player.getItemInHand() != null && player.getItemInHand() != ItemStack.NULL_ITEMSTACK && player.getItemInHand().getId() != 0 ) {
 				player.throwItemFromPlayer(player.getItemInHand(), 1);
-				player.getInventory().takeOrDamageItemInHand(player);
+				player.getInventory().takeOrDamageItemInHand(player, false);
 			}
 			return;
 		}
@@ -51,9 +51,12 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 			block.onBlockPreDestroy(world, x, y, z, metadata);
 			block.onBlockDestroyedByPlayer(world, player, x, y, z, metadata);
 
-			if(player.getGamemode() != GameMode.CREATIVE)
+			if(player.getGamemode() != GameMode.CREATIVE) {
 				block.dropBlock(world, x, y, z, metadata, 0);
-			else
+				
+				if(player.getItemInHand() != null && player.getItemInHand() != ItemStack.NULL_ITEMSTACK && player.getItemInHand().getId() != 0 )
+					player.getInventory().takeOrDamageItemInHand(player, true);
+			} else
 				player.sendMessage("Block broken in creative: " + block.getName() + " at X: " + x + " Y: " + y + " Z: " + z);
 
 			world.setAir(x, y, z);

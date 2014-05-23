@@ -234,8 +234,42 @@ public class World {
 	public void setAir(int x, int y, int z) {
 		setTypeId(x, y, z, 0, true);
 		setBlockData(x, y, z, 0, false);
+		
+		callNeighborChange(x, y, z, 0);
 	}
 
+	private void neighborChange(int x, int y, int z, int data) {
+		Block block = Block.byId[getTypeId(x, y, z)];
+		
+		if (block != null)
+			block.onNeighborBlockChange(this, x, y, z, data);
+	}
+
+	private void callNeighborChange(int x, int y, int z, int data) {
+		neighborChange(x - 1, y, z, data);
+		neighborChange(x + 1, y, z, data);
+		neighborChange(x, y - 1, z, data);
+		neighborChange(x, y + 1, z, data);
+		neighborChange(x, y, z - 1, data);
+		neighborChange(x, y, z + 1, data);
+	}
+	
+	public void setDataWithNotify(int x, int y, int z, int data, boolean notifyPlayers) {
+		setBlockData(x, y, z, data, notifyPlayers);
+		callNeighborChange(x, y, z, data);
+	}
+	
+	public void setTypeWithNotify(int x, int y, int z, int type, boolean notifyPlayers) {
+		setTypeId(x, y, z, type, notifyPlayers);
+		callNeighborChange(x, y, z, getBlockData(x, y, z));
+	}
+	
+	public void setTypeAndDataWithNotify(int x, int y, int z, int type, int data, boolean notifyPlayers) {
+		setTypeAndData(x, y, z, type, data, notifyPlayers);
+		callNeighborChange(x, y, z, data);
+	}
+	
+	////////////
 	public void setTypeAndData(int x, int y, int z, int type, int data, boolean notifyPlayers) {
 		setTypeId(x, y, z, type, notifyPlayers);
 		setBlockData(x, y, z, data, notifyPlayers);
@@ -254,7 +288,7 @@ public class World {
 
 		if(notifyPlayers) 
 			sendBlockChangePacket(x, y, z);
-	}	
+	}
 
 	public void setBlockData(int x, int y, int z, int data, boolean notifyPlayers) {
 		int chunkX = x / Chunk.WIDTH + ((x < 0 && x % Chunk.WIDTH != 0) ? -1 : 0);
@@ -272,6 +306,7 @@ public class World {
 
 	public void sendBlockChangePacket(int x, int y, int z) {
 		BlockChangePacket packet = new BlockChangePacket(x, y, z, this);
+		
 		for(Player pl : getPlayers())
 			pl.getSession().send(packet);
 	}
@@ -280,16 +315,12 @@ public class World {
 		if (x >= -30000000 && z >= -30000000 && x < 30000000 && z < 30000000) {
 			if (y < 0)
 				return 0;
-			else if (y >= 256)
+			if (y >= 256)
 				return 0;
-			else {
-				Chunk chunk = null;
-
-				chunk = getChunkFromBlockCoords(x, z);
-				return chunk.getType(x & 15, z & 15, y);
-			}
-		} else
-			return 0;
+		
+			return getChunkFromBlockCoords(x, z).getType(x & 15, z & 15, y);
+		}
+		return 0;
 	}
 
 	public int getBlockData(int x, int y, int z) {
@@ -311,7 +342,7 @@ public class World {
 		double randY = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
 		double randZ = rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
 
-		ItemEntity itemEntity = new ItemEntity(this, x + randX, y + randY, z + randZ, item);
+		ItemEntity itemEntity = new ItemEntity(this, item, x + randX, y + randY, z + randZ);
 		spawnEntity(itemEntity);
 	}
 

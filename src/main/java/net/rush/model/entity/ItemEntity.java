@@ -4,6 +4,10 @@ import net.rush.model.Entity;
 import net.rush.model.ItemStack;
 import net.rush.model.Player;
 import net.rush.packets.Packet;
+import net.rush.packets.packet.EntityLookAndRelMovePacket;
+import net.rush.packets.packet.EntityLookPacket;
+import net.rush.packets.packet.EntityRelMovePacket;
+import net.rush.packets.packet.EntityTeleportPacket;
 import net.rush.packets.packet.ItemCollectPacket;
 import net.rush.packets.packet.SpawnObjectPacket;
 import net.rush.util.Parameter;
@@ -30,13 +34,13 @@ public final class ItemEntity extends Entity {
 	 * @param world The world.
 	 * @param item The item.
 	 */
-	public ItemEntity(World world, double x, double y, double z, final ItemStack item) {
+	public ItemEntity(World world, ItemStack item, double x, double y, double z) {
 		super(world, EntityType.DROPPED_ITEM);
 		this.item = item;
+		this.setPosition(x, y, z);
 
-		setPosition(x, y, z);
 		getRotation().setYaw((double) (Math.random() * 360.0D));
-		setMetadata(new Parameter<ItemStack>(Parameter.TYPE_ITEM, 10, item));
+		setMetadata(new Parameter<ItemStack>(Parameter.TYPE_ITEM, 10, item), false);
 	}
 
 	/**
@@ -47,6 +51,12 @@ public final class ItemEntity extends Entity {
 		return item;
 	}
 
+	private boolean isOnGround() {
+		return world.getTypeId((int) (getPosition().getX() + motionX), (int) (getPosition().getY() + motionY), (int) (getPosition().getZ() + motionZ)) != 0;
+	}
+	
+	// had to copy the loong double from notchian client to make it accurate with the client
+	// getting accuracy 85-95% still W.I.P
 	@Override
 	public void pulse() {
 		super.pulse();
@@ -54,20 +64,38 @@ public final class ItemEntity extends Entity {
 		if(pickupDelay > 0)
 			--pickupDelay;
 
+		motionY -= 0.039999999105930328D;
+		
+		float sliperiness = 0.98F;
+		
+		if (isOnGround()) {
+			sliperiness -= 0.5880001F;
+			//sliperiness = (sliperiness of the block item is laying on) * 0.98F;
+		}
+		
+		motionX *= sliperiness;
+		motionY *= 0.98000001907348633D;
+		motionZ *= sliperiness;		
+		
+		if (isOnGround())
+			motionY *= -0.5D;
+		
+		setPosition(getPosition().getX() + motionX, getPosition().getY() + motionY, getPosition().getZ() + motionZ);
+		
 		// FIXME implementation for debug purposes not for real usage
 
 		for(Entity en : getWorld().getEntities()) {
 			if(en == this) 
 				continue;
 
-			/*if (en.getType() == EntityType.DROPPED_ITEM) 
+			if (en.getType() == EntityType.DROPPED_ITEM) 
 				if(getPosition().distance(en.getPosition()) < 0.3) {
 					combineWith((ItemEntity)en);
 					continue;
-				}*/
+				}
 
 			if(pickupDelay == 0 && en.getType() == EntityType.PLAYER) {
-				if(getPosition().distance(en.getPosition()) < 0.9D) {
+				if(getPosition().distance(en.getPosition()) < 1D) {
 					Player pl = (Player) en;
 					pl.getSession().send(new ItemCollectPacket(getId(), pl.getId()));
 					pl.getInventory().addItem(item);
@@ -89,18 +117,44 @@ public final class ItemEntity extends Entity {
 		if(item.getItem().doMaterialsMatch(this.item)) {
 			this.item.count+= item.getItem().getCount();
 			item.destroy();
+			this.metadataChanged = true;
 		}
 	}
 
 	public Packet createSpawnMessage() {
-		int yaw = rotation.getIntYaw();
-		int pitch = rotation.getIntPitch();
-		System.out.println("spawnmessg: " + motionX + "," + motionY + "," + motionX); // TODO
-		return new SpawnObjectPacket(id, SpawnObjectPacket.ITEM, position, yaw, pitch, throwerId, (short)motionX, (short)motionY, (short)motionZ);
+		return new SpawnObjectPacket(this, SpawnObjectPacket.ITEM, throwerId, motionX, motionY, motionZ);
 	}
 
 	public Packet createUpdateMessage() {
-		// TODO we can probably use some generic implementation for all of these
+		if(position == null)
+			throw new NullPointerException("Entity position is null!");
+		
+		boolean moved = !position.equals(previousPosition);
+		boolean rotated = !rotation.equals(previousRotation);
+		
+		int x = position.getPixelX();
+		int y = position.getPixelY();
+		int z = position.getPixelZ();
+
+		int dx = x - previousPosition.getPixelX();
+		int dy = y - previousPosition.getPixelY();
+		int dz = z - previousPosition.getPixelZ();
+
+		boolean teleport = dx > Byte.MAX_VALUE || dy > Byte.MAX_VALUE || dz > Byte.MAX_VALUE || dx < Byte.MIN_VALUE || dy < Byte.MIN_VALUE || dz < Byte.MIN_VALUE;
+	
+		int yaw = rotation.getIntYaw();
+		int pitch = rotation.getIntPitch();
+		
+		if (moved && teleport) {
+			return new EntityTeleportPacket(id, x, y, z, yaw, pitch);
+		} else if (moved && rotated) {
+			return new EntityLookAndRelMovePacket(id, (byte)dx, (byte)dy, (byte)dz, (byte)yaw, (byte)pitch);
+		} else if (moved) {
+			return new EntityRelMovePacket(id, (byte)dx, (byte)dy, (byte)dz);
+		} else if (rotated) {
+			return new EntityLookPacket(id, (byte)yaw, (byte)pitch);
+		}
+
 		return null;
 	}
 

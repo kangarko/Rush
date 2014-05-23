@@ -29,6 +29,7 @@ public abstract class Entity {
 	 */
 	protected final Parameter<?>[] metadata = new Parameter<?>[Parameter.METADATA_SIZE];
 	
+	/** If true, the metadata update update packet is sent in no time (0.041847 ms). */
 	protected boolean metadataChanged = false;
 
 	/**

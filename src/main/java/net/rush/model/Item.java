@@ -57,8 +57,8 @@ public class Item {
 	public static Item DIAMOND_HOE = new ItemHoe(37, EnumToolMaterial.DIAMOND).setName("hoeDiamond");
 	public static Item GOLDEN_HOE = new ItemHoe(38, EnumToolMaterial.GOLD).setName("hoeGold");
 	public static Item SEEDS = new ItemSeeds(39, Block.CROPS.id).setName("seeds");
-	/*public static Item WHEAT = new Item(40).setName("wheat");
-	public static Item BREAD = new ItemFood(41, 5, 0.6F, false).setName("bread");
+	public static Item WHEAT = new Item(40).setName("wheat");
+	/*public static Item BREAD = new ItemFood(41, 5, 0.6F, false).setName("bread");
 	public static ItemArmor LEATHER_HELMET = (ItemArmor) new ItemArmor(42, EnumArmorMaterial.CLOTH, 0, 0).setName("helmetCloth");
 	public static ItemArmor LEATHER_CHESTPLATE = (ItemArmor) new ItemArmor(43, EnumArmorMaterial.CLOTH, 0, 1).setName("chestplateCloth");
 	public static ItemArmor LEATHER_LEGGINGS = (ItemArmor) new ItemArmor(44, EnumArmorMaterial.CLOTH, 0, 2).setName("leggingsCloth");

@@ -4,17 +4,41 @@ import java.util.Random;
 
 import net.rush.model.Block;
 import net.rush.model.Item;
-import net.rush.model.Material;
 import net.rush.util.RushException;
 import net.rush.world.World;
 
-public class BlockCrops extends RotatableBlock {
+public class BlockCrops extends BlockFlower {
 
 	public BlockCrops(int id) {
-		super(id, Material.PLANT);
+		super(id);
 		setTickRandomly(true);
 	}
 
+	@Override
+	public boolean canPlaceBlockAt(World world, int x, int y, int z) {
+		int ground = world.getTypeId(x, y, z);
+		return ground == Block.SOIL.id;
+	}
+
+	@Override
+	public void dropBlockWithChance(World world, int x, int y, int z, int damage, float chance, int bonus) {
+		// min 0 wheat, max 3
+		int quantity = world.rand.nextInt(4);
+
+		if(world.getBlockData(x, y, z) > 2)
+			world.dropItem(x, y, z, idDropped(), 1, 0);
+			
+		if(world.getBlockData(x, y, z) < 7)
+			return;
+
+		for (int i = 0; i < quantity; ++i)
+			if (world.rand.nextFloat() <= .50)
+				world.dropItem(x, y, z, idDropped(), 1, 0);
+
+		for (int i = 0; i < quantity; ++i)
+			if (world.rand.nextFloat() <= .50)
+				world.dropItem(x, y, z, Item.WHEAT.id, 1, 0);
+	}
 
 	@Override
 	public void tick(World world, int x, int y, int z, Random rand) {

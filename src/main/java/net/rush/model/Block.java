@@ -838,13 +838,6 @@ public class Block {
 	}
 
 	/**
-	 * Can this block stay at this position.  Similar to canPlaceBlockAt except gets checked often with plants.
-	 */
-	public boolean canBlockStay(World world, int x, int y, int z) {
-		return true;
-	}
-
-	/**
 	 * Called when the block is placed in the world.
 	 */
 	public void onBlockPlacedBy(World world, int x, int y, int z, LivingEntity livingEntity, ItemStack itemStack) {

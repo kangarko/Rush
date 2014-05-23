@@ -35,7 +35,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 
 		if (placeOrActivate(player, world, packet.getHeldItem(), x, y, z, direction, xOffset, yOffset, zOffset))
 			if(player.getGamemode() != GameMode.CREATIVE)
-				player.getInventory().takeOrDamageItemInHand(player);
+				player.getInventory().takeOrDamageItemInHand(player, true);
 		
 		if(packet.getHeldItem() == ItemStack.NULL_ITEMSTACK)
 			return;
@@ -75,20 +75,23 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 	}
 
 	public boolean placeOrActivate(Player player, World world, ItemStack item, int x, int y, int z, int direction, float xOffset, float yOffset, float zOffset) {
-
+		
 		if (!player.isCrouching() || item == ItemStack.NULL_ITEMSTACK) {
 			int blockId = world.getTypeId(x, y, z);
 
-			if (blockId > 0 && Block.byId[blockId] != null && Block.byId[blockId].onBlockActivated(world, x, y, z, player, direction, xOffset, yOffset, zOffset))
+			if (blockId > 0 && Block.byId[blockId] != null && Block.byId[blockId].onBlockActivated(world, x, y, z, player, direction, xOffset, yOffset, zOffset)) {
 				return true;
+			}
 		}
+		
 		
 		if (item == ItemStack.NULL_ITEMSTACK)
 			return false;
 
 		if(Item.byId[item.getId()] != null)
-			if (Item.byId[item.getId()].onItemUse(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset))
+			if (Item.byId[item.getId()].onItemUse(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset)) {
 				return true;
+			}
 
 		return tryPlace(item, player, world, x, y, z, direction, xOffset, yOffset, zOffset);
 	}
@@ -127,7 +130,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		Block block = Block.byId[id];
 
 		if(block == null)
-			return false;
+			return false;		
 		
 		if (y == 255 && block.material.isSolid())
 			return false;
@@ -137,7 +140,7 @@ public final class BlockPlacementPacketHandler extends PacketHandler<PlayerBlock
 		int metadata = block.onBlockPlaced(world, x, y, z, direction, xOffset, yOffset, zOffset, item.getDamage());
 		block.onPostBlockPlaced(world, x, y, z, metadata);
 		
-		world.setTypeAndData(x, y, z, id, metadata, false);
+		world.setTypeAndDataWithNotify(x, y, z, id, metadata, false);
 
 		world.playSound(x + 0.5D, y + 0.5D, z + 0.5D, block.sound.getPlaceSound(), (block.sound.getVolume() + 1.0F) / 2.0F, block.sound.getPitch() * 0.8F);
 

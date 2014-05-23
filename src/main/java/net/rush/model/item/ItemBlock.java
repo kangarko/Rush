@@ -2,9 +2,6 @@ package net.rush.model.item;
 
 import net.rush.model.Block;
 import net.rush.model.Item;
-import net.rush.model.ItemStack;
-import net.rush.model.Player;
-import net.rush.world.World;
 
 
 public class ItemBlock extends Item {
@@ -23,11 +20,7 @@ public class ItemBlock extends Item {
 		return blockID;
 	}
 
-	/**
-	 * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
-	 * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
-	 */
-	@Override
+	/*@Override
 	public boolean onItemUse(ItemStack item, Player player, World world, int x, int y, int z, int direction, float xOffset, float yOffset, float zOffset) {
 		int id = world.getTypeId(x, y, z);
 
@@ -75,9 +68,8 @@ public class ItemBlock extends Item {
 
 
 		return true;
-		/*} else
-			return false;*/
-	}
+		//} else return false
+	}*/
 
 	@Override
 	public String getName() {
