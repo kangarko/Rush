@@ -8,10 +8,8 @@ import net.rush.model.CommandSender;
  */
 public abstract class Command {
 	
-	/**
-	 * The name of the command.
-	 */
 	private final String command;
+	private final String[] aliases;
 
 	/**
 	 * Creates a new command.
@@ -19,6 +17,17 @@ public abstract class Command {
 	 */
 	public Command(String command) {
 		this.command = command;
+		this.aliases = null;
+	}
+	
+	/**
+	 * Creates a new command.
+	 * @param command The name of the new command without the slash prefix.
+	 * @param aliases The available aliases.
+	 */
+	public Command(String command, String... aliases) {
+		this.command = command;
+		this.aliases = aliases;
 	}
 
 	/**
@@ -27,6 +36,10 @@ public abstract class Command {
 	 */
 	public final String getCommand() {
 		return command;
+	}
+	
+	public final String[] getAliases() {
+		return aliases;
 	}
 
 	/**

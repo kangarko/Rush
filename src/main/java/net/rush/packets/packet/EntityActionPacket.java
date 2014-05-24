@@ -1,10 +1,17 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class EntityActionPacket extends Packet {
+
+	public EntityActionPacket() {
+	}
 
 	public static final int ACTION_CROUCH = 1;
 	public static final int ACTION_UNCROUCH = 2;
@@ -13,11 +20,11 @@ public class EntityActionPacket extends Packet {
 	public static final int STOP_SPRINTING = 5;
 
 	@Serialize(type = Type.INT, order = 0)
-	private final int entityId;
+	private int entityId;
 	@Serialize(type = Type.BYTE, order = 1)
-	private final byte actionId;
+	private byte actionId;
 	@Serialize(type = Type.INT, order = 2)
-	private final int horseJumpBoost;
+	private int horseJumpBoost;
 
 	public EntityActionPacket(int entityId, byte actionId, int horseJumpBoost) {
 		super();
@@ -44,5 +51,12 @@ public class EntityActionPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("entityId=\"%d\",actionId=\"%d\"", entityId, actionId);
+	}
+
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		entityId = input.readInt();
+		actionId = input.readByte();
+		horseJumpBoost = input.readInt();
 	}
 }

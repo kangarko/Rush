@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.rush</groupId>
   <artifactId>rush</artifactId>
-  <version>MC-1.6.4-SNAPSHOT</version>
+  <version>0.0.1-SNAPSHOT</version>
   <build>
     <defaultGoal>clean install</defaultGoal>
     <plugins>
@@ -57,6 +57,10 @@
     <repository>
       <id>mvn-repo</id>
       <url>http://mvnrepository.com/artifact</url>
+    </repository>
+    <repository>
+      <id>netty-repo</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </repository>
   </repositories>
   <dependencies>

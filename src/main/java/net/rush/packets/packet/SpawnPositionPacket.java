@@ -1,23 +1,32 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.model.Position;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SpawnPositionPacket extends Packet {
+	
+	public SpawnPositionPacket() {
+	}
+
 	@Serialize(type = Type.INT, order = 0)
-	private final int x;
+	private int x;
 	@Serialize(type = Type.INT, order = 1)
-	private final int y;
+	private int y;
 	@Serialize(type = Type.INT, order = 2)
-	private final int z;
+	private int z;
 
 	public SpawnPositionPacket(Position pos) {
 		super();
-		x = (int) pos.getX();
-		y = (int) pos.getY();
-		z = (int) pos.getZ();
+		x = (int) pos.x;
+		y = (int) pos.y;
+		z = (int) pos.z;
 	}
 
 	public int getOpcode() {
@@ -38,5 +47,19 @@ public class SpawnPositionPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("x=\"%d\",y=\"%d\",z=\"%d\"", x, y, z);
+	}
+
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		x = input.readInt();
+		y = input.readInt();
+		z = input.readInt();
+	}
+
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(x);
+		output.writeInt(y);
+		output.writeInt(z);
 	}
 }

@@ -5,10 +5,14 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class IncrementStatisticPacket extends Packet {
+	
+	public IncrementStatisticPacket() {
+	}
+
 	@Serialize(type = Type.INT, order = 0)
-	private final int statisticId;
+	private int statisticId;
 	@Serialize(type = Type.BYTE, order = 1)
-	private final byte amount;
+	private byte amount;
 
 	public IncrementStatisticPacket(int statisticId, byte amount) {
 		super();
@@ -31,4 +35,5 @@ public class IncrementStatisticPacket extends Packet {
 	public String getToStringDescription() {
 		return String.format("statisticId=\"%d\",amount=\"%d\"", statisticId, amount);
 	}
+
 }

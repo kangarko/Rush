@@ -1,19 +1,39 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
+import net.rush.util.RushException;
+import net.rush.util.enums.GameStateReason;
 
 public class ChangeGameStatePacket extends Packet {
-	@Serialize(type = Type.BYTE, order = 0)
-	private final byte reason;
-	@Serialize(type = Type.BYTE, order = 1)
-	private final byte gameMode;
+	
+	public ChangeGameStatePacket() {
+	}
 
-	public ChangeGameStatePacket(byte reason, byte gameMode) {
+	@Serialize(type = Type.BYTE, order = 0)
+	private byte reason;
+	@Serialize(type = Type.BYTE, order = 1)
+	private byte value;
+
+	public ChangeGameStatePacket(GameStateReason reason, int value) {
 		super();
-		this.reason = reason;
-		this.gameMode = gameMode;
+		this.reason = (byte) reason.getValue();
+		this.value = (byte) value;
+	}
+	
+	public ChangeGameStatePacket(GameStateReason reason) {
+		super();
+		
+		if(reason.needsMoreInfo())
+			throw new RushException("GameStateReason: " + reason.name() + " needs additional info!");
+		
+		this.reason = (byte) reason.getValue();
+		this.value = 0;
 	}
 
 	public int getOpcode() {
@@ -24,11 +44,18 @@ public class ChangeGameStatePacket extends Packet {
 		return reason;
 	}
 
-	public byte getGameMode() {
-		return gameMode;
+	public byte getValue() {
+		return value;
 	}
 
 	public String getToStringDescription() {
-		return String.format("reason=\"%d\",gameMode=\"%d\"", reason, gameMode);
+		return String.format("reason=\"%d\",value=\"%d\"", reason, value);
 	}
+	
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeByte(reason);
+		output.writeFloat(value);
+	}
+
 }

@@ -1,12 +1,10 @@
 package net.rush.cmd;
 
 import net.rush.model.CommandSender;
-import net.rush.model.ItemStack;
 import net.rush.model.Player;
 
 /**
- * A command that displays help on using other commands.
-
+ * Random debug command.
  */
 public final class TestCommand extends Command {
 
@@ -20,8 +18,9 @@ public final class TestCommand extends Command {
 			player.sendMessage("Cannot assesible from console.");
 			return;
 		}
-		Player pl = (Player) player;
-		pl.setItemInHand(new ItemStack(1));
+		
+		//Player pl = (Player) player;
+		//pl.getSession().send(new ItemCollectPacket(Integer.valueOf(args[0]), pl.getId()));
 	}
 
 }

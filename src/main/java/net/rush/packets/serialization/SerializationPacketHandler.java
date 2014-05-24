@@ -15,7 +15,6 @@ public class SerializationPacketHandler<T extends Packet> {
 
 	public T handle(ByteBufInputStream in, Class<T> type) {
 		try {
-			// type = getImplVersion TODO make sure it works without it
 			List<SerializationInfo> serInfos = getSerializationInfos(type);
 			Object[] params = new Object[serInfos.size()];
 			Class<?>[] paramTypes = new Class<?>[serInfos.size()];
@@ -38,7 +37,7 @@ public class SerializationPacketHandler<T extends Packet> {
 			Constructor<? extends T> ctor = type.getConstructor(fixupClasses(paramTypes));
 			return ctor.newInstance(params);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new RuntimeException("Error while reading packet " + type.getSimpleName(), ex);
 		}
 	}
 }

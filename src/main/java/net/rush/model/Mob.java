@@ -21,16 +21,18 @@ public abstract class Mob extends Entity {
 	 */
 	public Mob(World world, EntityType type) {
 		super(world, type);
+		
+		world.spawnEntity(this);
 	}
-
+	
 	@Override
-	public Packet createUpdateMessage() {
+	public Packet createUpdateMessage() {		
 		if(position == null)
 			throw new NullPointerException("Entity position is null!");
 		
 		boolean moved = !position.equals(previousPosition);
 		boolean rotated = !rotation.equals(previousRotation);
-
+		
 		int x = position.getPixelX();
 		int y = position.getPixelY();
 		int z = position.getPixelZ();
@@ -56,6 +58,5 @@ public abstract class Mob extends Entity {
 
 		return null;
 	}
-
 }
 

@@ -28,7 +28,6 @@ final class SerializationHelper {
 					if (!clazz.getPackage().equals(HandshakePacket.class.getPackage()))
 						throw new IllegalArgumentException("Not in our package!");
 
-					//clazz = getImplClass(clazz); // TODO make sure it work without this
 					// *sigh* now let's get the attributes
 					List<SerializationInfo> serInfos = new LinkedList<SerializationInfo>();
 					Field[] fields = clazz.getDeclaredFields();

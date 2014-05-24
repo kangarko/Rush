@@ -1,5 +1,7 @@
 package net.rush.packets.handler;
 
+import java.util.logging.Logger;
+
 import net.rush.model.Player;
 import net.rush.net.Session;
 import net.rush.packets.Packet;
@@ -7,11 +9,12 @@ import net.rush.packets.Packet;
 /**
  * A {@link PacketHandler} performs some actions upon the arrival of an
  * incoming {@link Packet}.
-
  * @param <T> The type of {@link Packet}.
  */
 public abstract class PacketHandler<T extends Packet> {
 
+	protected Logger logger = Logger.getLogger("Minecraft");
+	
 	/**
 	 * Handles an incoming message.
 	 * @param session The session that sent the message.

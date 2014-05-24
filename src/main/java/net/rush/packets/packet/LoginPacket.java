@@ -1,5 +1,9 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
@@ -7,25 +11,30 @@ import net.rush.util.enums.Dimension;
 
 public class LoginPacket extends Packet {
 	@Serialize(type = Type.INT, order = 0)
-	private final int entityId;
+	private int entityId;
 	@Serialize(type = Type.STRING, order = 1)
-	private final String worldType;
+	private String worldType;
 	@Serialize(type = Type.BYTE, order = 2)
-	private final byte mode;
+	private byte mode;
 	@Serialize(type = Type.BYTE, order = 3)
-	private final byte dimension;
+	private byte dimension;
 	@Serialize(type = Type.BYTE, order = 4)
-	private final byte difficulty;
+	private byte difficulty;
 	@Serialize(type = Type.UNSIGNED_BYTE, order = 5)
-	private final int worldHeight;
+	private int worldHeight;
 	@Serialize(type = Type.UNSIGNED_BYTE, order = 6)
-	private final int maxPlayers;
+	private int maxPlayers;
 
-	public LoginPacket(int entityId, String worldType, int gamemode, Dimension dimension, int difficulty, int worldHeight, int maxPlayers) {
-		this(entityId, worldType, (byte) gamemode, dimension.getValue(), (byte) difficulty, worldHeight, maxPlayers);
+	private boolean hardcore = false;
+
+	public LoginPacket() {
 	}
 
-	protected LoginPacket(int entityId, String emptyString, byte mode, byte dimension, byte difficulty, int worldHeight, int maxPlayers) {
+	public LoginPacket(int entityId, String worldType, int gamemode, Dimension dimension, int difficulty, int worldHeight, int maxPlayers, boolean hardcore) {
+		this(entityId, worldType, (byte) gamemode, dimension.getValue(), (byte) difficulty, worldHeight, maxPlayers, hardcore);
+	}
+
+	protected LoginPacket(int entityId, String emptyString, byte mode, byte dimension, byte difficulty, int worldHeight, int maxPlayers, boolean hardcore) {
 		super();
 		this.entityId = entityId;
 		worldType = emptyString;
@@ -34,6 +43,7 @@ public class LoginPacket extends Packet {
 		this.difficulty = difficulty;
 		this.worldHeight = worldHeight;
 		this.maxPlayers = maxPlayers;
+		this.hardcore = hardcore;
 	}
 
 	public int getEntityId() {
@@ -69,7 +79,22 @@ public class LoginPacket extends Packet {
 	}
 
 	public String getToStringDescription() {
-		return String.format("entityId=\"%d\",username=\"%s\",levelType=\"%s\"mode=\"%d\"," + "dimension=\"%d\",difficulty=\"%d\",worldHeight=\"%d\",maxPlayers=\"%d\"", 
-				entityId, worldType, mode, dimension, difficulty, worldHeight, maxPlayers);
+		return String.format("entityId=\"%d\",levelType=\"%s\"mode=\"%d\",dimension=\"%d\",difficulty=\"%d\",worldHeight=\"%d\",maxPlayers=\"%d\"", entityId, worldType, mode, dimension, difficulty, worldHeight, maxPlayers);
+	}
+
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(entityId);
+		int gamemode = mode;
+
+		if (hardcore)
+			gamemode |= 8;
+
+		output.writeByte(gamemode);
+
+		output.writeByte(dimension);
+		output.writeByte(difficulty);
+		output.writeByte(maxPlayers);
+		writeString(worldType == null ? "" : worldType, output, false);
 	}
 }

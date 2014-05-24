@@ -1,27 +1,35 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+
+import java.io.IOException;
+
 import net.rush.model.ItemStack;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class PlayerBlockPlacementPacket extends Packet {
+	
+	public PlayerBlockPlacementPacket() {
+	}
+
 	@Serialize(type = Type.INT, order = 0)
-	private final int x;
+	private int x;
 	@Serialize(type = Type.BYTE, order = 1)
-	private final byte y;
+	private byte y;
 	@Serialize(type = Type.INT, order = 2)
-	private final int z;
+	private int z;
 	@Serialize(type = Type.BYTE, order = 3)
-	private final byte direction;
+	private byte direction;
 	@Serialize(type = Type.ITEM, order = 4)
-	private final ItemStack heldItem;
+	private ItemStack heldItem;
 	@Serialize(type = Type.BYTE, order = 5)
-	private final byte cursorX;
+	private byte cursorX;
 	@Serialize(type = Type.BYTE, order = 6)
-	private final byte cursorY;
+	private byte cursorY;
 	@Serialize(type = Type.BYTE, order = 7)
-	private final byte cursorZ;
+	private byte cursorZ;
 
 	public PlayerBlockPlacementPacket(int x, byte y, int z, byte action, ItemStack heldItem, byte cursorX, byte cursorY, byte cursorZ) {
 		super();
@@ -73,5 +81,17 @@ public class PlayerBlockPlacementPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("x=\"%d\",y=\"%d\",z=\"%d\",direction=\"%d\",heldItem=\"%s\"", x, y, z, direction, heldItem);
+	}
+	
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		x = input.readInt();
+		y = (byte) input.readUnsignedByte();
+		z = input.readInt();
+		direction = input.readByte();
+		heldItem = readItemstack(input);
+		cursorX = input.readByte();
+		cursorY = input.readByte();
+		cursorZ = input.readByte();
 	}
 }

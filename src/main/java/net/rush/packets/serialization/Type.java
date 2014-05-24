@@ -8,10 +8,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.rush.model.Coordinate;
 import net.rush.model.ItemStack;
+import net.rush.model.Position;
 import net.rush.packets.misc.MetadataType;
 import net.rush.util.ByteBufUtils;
+import net.rush.util.JsonUtils;
 import net.rush.util.Parameter;
 
 public enum Type {
@@ -24,6 +25,17 @@ public enum Type {
 		@Override
 		public void write(DataOutput out, Integer val) throws IOException {
 			out.writeInt(val);
+		}
+	}), NULL_INT(new Serializor<Integer>() {
+		@Override
+		public Integer read(DataInput in) throws IOException {
+			return in.readInt();
+		}
+
+		@Override
+		public void write(DataOutput out, Integer val) throws IOException {
+			if(val != -1)
+				out.writeInt(val);
 		}
 	}), BYTE(new Serializor<Byte>() {
 		@Override
@@ -64,6 +76,16 @@ public enum Type {
 		@Override
 		public void write(DataOutput out, String val) throws IOException {
 			ByteBufUtils.writeStringToDataOutput(out, val);
+		}
+	}), JSON_CHAT(new Serializor<String>() {
+		@Override
+		public String read(DataInput in) throws IOException {
+			return ByteBufUtils.readStringFromDataInput(in, 1000);
+		}
+
+		@Override
+		public void write(DataOutput out, String val) throws IOException {
+			ByteBufUtils.writeStringToDataOutput(out, JsonUtils.chatMessageToJson(val));
 		}
 	}), SHORT(new Serializor<Short>() {
 		@Override
@@ -129,35 +151,35 @@ public enum Type {
 		}
 	}), ENTITY_METADATA(new Serializor<Parameter<?>[]>() {
 		@Override
-		public Parameter<?>[] read(DataInput in) throws IOException {
+		public Parameter<?>[] read(DataInput input) throws IOException {
 			Parameter<?>[] parameters = new Parameter<?>[Parameter.METADATA_SIZE];
-			for (int x = in.readUnsignedByte(); x != 127; x = in.readUnsignedByte()) {
+			for (int x = input.readUnsignedByte(); x != 127; x = input.readUnsignedByte()) {
 				int index = x & 0x1F;
 				int type = x >> 5;
 				MetadataType metaType = MetadataType.fromId(type);
 				switch (metaType) {
 					case BYTE:
-						parameters[index] = new Parameter<Byte>(type, index, in.readByte());
+						parameters[index] = new Parameter<Byte>(type, index, input.readByte());
 						break;
 					case SHORT:
-						parameters[index] = new Parameter<Short>(type, index, in.readShort());
+						parameters[index] = new Parameter<Short>(type, index, input.readShort());
 						break;
 					case INT:
-						parameters[index] = new Parameter<Integer>(type, index, in.readInt());
+						parameters[index] = new Parameter<Integer>(type, index, input.readInt());
 						break;
 					case FLOAT:
-						parameters[index] = new Parameter<Float>(type, index, in.readFloat());
+						parameters[index] = new Parameter<Float>(type, index, input.readFloat());
 						break;
 					case STRING:
-						parameters[index] = new Parameter<String>(type, index, readUtf8String(in));
+						parameters[index] = new Parameter<String>(type, index, readUtf8String(input));
 						break;
 					case ITEM:
-						short id = in.readShort();
+						short id = input.readShort();
 						if (id <= 0) {
-							parameters[index] = new Parameter<ItemStack>(type, index, ItemStack.NULL_ITEM);
+							parameters[index] = new Parameter<ItemStack>(type, index, ItemStack.NULL_ITEMSTACK);
 						} else {
-							byte stackSize = in.readByte();
-							short dataValue = in.readShort();
+							byte stackSize = input.readByte();
+							short dataValue = input.readShort();
 							//short dataLenght = in.readShort();
 							//byte[] metadata = new byte[0];
 							//if(dataLenght > 0) {
@@ -177,7 +199,7 @@ public enum Type {
 
 		@SuppressWarnings("unchecked")
 		@Override
-		public void write(DataOutput out, Parameter<?>[] val) throws IOException {
+		public void write(DataOutput output, Parameter<?>[] val) throws IOException {
 			for (Parameter<?> parameter : val) {
 
 				if (parameter == null)
@@ -186,55 +208,55 @@ public enum Type {
 				int type = parameter.getType();
 				int index = parameter.getIndex();
 
-				out.writeByte(((type & 0x07) << 5) | (index & 0x1F));
+				output.writeByte(((type & 0x07) << 5) | (index & 0x1F));
 
 				switch (type) {
 					case Parameter.TYPE_BYTE:
-						out.writeByte(((Parameter<Byte>) parameter).getValue());
+						output.writeByte(((Parameter<Byte>) parameter).getValue());
 						break;
 					case Parameter.TYPE_SHORT:
-						out.writeShort(((Parameter<Short>) parameter).getValue());
+						output.writeShort(((Parameter<Short>) parameter).getValue());
 						break;
 					case Parameter.TYPE_INT:
-						out.writeInt(((Parameter<Integer>) parameter).getValue());
+						output.writeInt(((Parameter<Integer>) parameter).getValue());
 						break;
 					case Parameter.TYPE_FLOAT:
-						out.writeFloat(((Parameter<Float>) parameter).getValue());
+						output.writeFloat(((Parameter<Float>) parameter).getValue());
 						break;
 					case Parameter.TYPE_STRING:
-						writeUtf8String(out, ((Parameter<String>) parameter).getValue());
+						writeUtf8String(output, ((Parameter<String>) parameter).getValue());
 						break;
 					case Parameter.TYPE_ITEM:
 						ItemStack item = ((Parameter<ItemStack>) parameter).getValue();
 
-						if (item.getId() <= 0) { // FIXME less then zero check
-							out.writeShort(-1);
+						if (item.getId() < 0) { // FIXME less then zero check
+							output.writeShort(-1);
 						} else {
-							out.writeShort(item.getId());
-							out.writeByte(item.getCount());
-							out.writeShort(item.getDamage());
-							out.writeShort(-1);
+							output.writeShort(item.getId());
+							output.writeByte(item.getCount());
+							output.writeShort(item.getDamage());
+							output.writeShort(-1);
 							//if (item.getDataLength() >= 0) { // FIXME previous check if its enchantable
 							//	out.write(item.getMetadata());
 							//}
 						}
 						break;
 					case Parameter.TYPE_COORDINATE:
-						Coordinate coord = ((Parameter<Coordinate>) parameter).getValue();
-						out.writeInt(coord.getX());
-						out.writeInt(coord.getY());
-						out.writeInt(coord.getZ());
+						Position coord = ((Parameter<Position>) parameter).getValue();
+						output.writeInt((int) coord.x);
+						output.writeInt((int) coord.y);
+						output.writeInt((int) coord.z);
 						break;
 				}
 			}
-			out.writeByte(127);
+			output.writeByte(127);
 		}
 	}), ITEM(new Serializor<ItemStack>() {
 		@Override
 		public ItemStack read(DataInput in) throws IOException {
 			short id = in.readShort();
 			if (id <= 0) {
-				return ItemStack.NULL_ITEM;
+				return ItemStack.NULL_ITEMSTACK;
 			} else {
 				byte stackSize = in.readByte();
 				short dataValue = in.readShort();
@@ -250,7 +272,7 @@ public enum Type {
 
 		@Override
 		public void write(DataOutput out, ItemStack val) throws IOException {
-			if (val == ItemStack.NULL_ITEM || val.getId() <= 0) { // FIXME less then zero check
+			if (val == ItemStack.NULL_ITEMSTACK || val.getId() <= 0) { // FIXME less then zero check
 				out.writeShort(-1);
 			} else {
 				out.writeShort(val.getId());
@@ -320,27 +342,27 @@ public enum Type {
 			if (val != Short.MIN_VALUE)
 				out.writeShort(val);
 		}
-	}), BLOCKCOORD_COLLECTION(new Serializor<Collection<Coordinate>>() {
+	}), BLOCKCOORD_COLLECTION(new Serializor<Collection<Position>>() {
 		@Override
-		public Collection<Coordinate> read(DataInput in) throws IOException {
+		public Collection<Position> read(DataInput in) throws IOException {
 			int size = in.readInt();
-			Set<Coordinate> ret = new HashSet<Coordinate>();
+			Set<Position> ret = new HashSet<Position>();
 			for (int i = 0; i < size; i++) {
 				int x = in.readByte();
 				int y = in.readByte();
 				int z = in.readByte();
-				ret.add(new Coordinate(x, y, z));
+				ret.add(new Position(x, y, z));
 			}
 			return ret;
 		}
 
 		@Override
-		public void write(DataOutput out, Collection<Coordinate> val) throws IOException {
+		public void write(DataOutput out, Collection<Position> val) throws IOException {
 			out.writeInt(val.size());
-			for (Coordinate block : val) {
-				out.writeByte(block.getX());
-				out.writeByte(block.getY());
-				out.writeByte(block.getZ());
+			for (Position block : val) {
+				out.writeByte((int) block.x);
+				out.writeByte((int) block.y);
+				out.writeByte((int) block.z);
 			}
 		}
 	});

@@ -1,15 +1,24 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.model.ItemStack;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class CreativeInventoryActionPacket extends Packet {
+	
+	public CreativeInventoryActionPacket() {
+	}
+
 	@Serialize(type = Type.SHORT, order = 0)
-	private final short slot;
+	private short slot;
 	@Serialize(type = Type.ITEM, order = 1)
-	private final ItemStack item;
+	private ItemStack item;
 
 	public CreativeInventoryActionPacket(short slot, ItemStack item) {
 		super();
@@ -32,4 +41,17 @@ public class CreativeInventoryActionPacket extends Packet {
 	public String getToStringDescription() {
 		return String.format("slot=\"%d\",item=\"%s\"", slot, item);
 	}
+	
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		slot = input.readShort();
+		item = readItemstack(input);
+	}
+	
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeShort(slot);
+		writeItemstack(item, output);
+	}
+
 }

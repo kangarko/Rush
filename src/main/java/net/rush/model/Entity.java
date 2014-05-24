@@ -1,7 +1,11 @@
 package net.rush.model;
 
+import java.util.Random;
+
 import net.rush.Server;
+import net.rush.ServerProperties;
 import net.rush.chunk.Chunk;
+import net.rush.model.misc.AxisAlignedBB;
 import net.rush.packets.Packet;
 import net.rush.packets.packet.EntityMetadataPacket;
 import net.rush.util.Parameter;
@@ -19,11 +23,14 @@ public abstract class Entity {
 	 * The world this entity belongs to.
 	 */
 	protected final World world;
-	
+
 	/**
 	 * The entity's metadata.
 	 */
 	protected final Parameter<?>[] metadata = new Parameter<?>[Parameter.METADATA_SIZE];
+	
+	/** If true, the metadata update update packet is sent in no time (0.041847 ms). */
+	protected boolean metadataChanged = false;
 
 	/**
 	 * A flag indicating if this entity is currently active.
@@ -38,7 +45,7 @@ public abstract class Entity {
 	/**
 	 * The current position.
 	 */
-	protected Position position = null;
+	protected Position position = Position.ZERO;
 
 	/**
 	 * The position in the last cycle.
@@ -56,7 +63,20 @@ public abstract class Entity {
 	protected Rotation previousRotation = Rotation.ZERO;
 
 	protected EntityType entityType;
+	
+	protected long ticksLived = 0;
+	protected int throwerId = 0;
 
+	protected AxisAlignedBB boundingBox = AxisAlignedBB.EMPTY_BOUNDING_BOX;
+	protected double motionX = 0;
+	protected double motionY = 0;
+	protected double motionZ = 0;
+
+	// debug purposes
+	protected boolean announced = false;
+	
+	protected Random rand = new Random();
+	
 	/**
 	 * Creates an entity and adds it to the specified world.
 	 * @param world The world.
@@ -64,11 +84,15 @@ public abstract class Entity {
 	protected Entity(World world, EntityType entityType) {
 		this.world = world;
 		this.entityType = entityType;
-		world.getEntities().allocate(this);
+		this.ticksLived = 0;
+		//world.getEntities().allocate(this);
+
+		setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, (byte) 0));
+		setMetadata(new Parameter<Short>(Parameter.TYPE_SHORT, 1, (short) 300));
 	}
 
 	/**
-	 * Checks if this entity is within the {@link Chunk#VISIBLE_RADIUS} of
+	 * Checks if this entity is within the {@link ServerProperties#viewDistance} of
 	 * another.
 	 * @param other The other entity.
 	 * @return {@code true} if the entities can see each other, {@code false} if
@@ -77,10 +101,12 @@ public abstract class Entity {
 	public boolean isWithinDistance(Entity other) {
 		if(position == null)
 			throw new Error("Position of entity is null!");
-			
-		double dx = Math.abs(position.getX() - other.position.getX());
-		double dz = Math.abs(position.getZ() - other.position.getZ());
-		return dx <= (Server.getServer().getProperties().viewDistance * Chunk.WIDTH) && dz <= (Server.getServer().getProperties().viewDistance * Chunk.HEIGHT);
+		
+		int distance = Server.getServer().getProperties().viewDistance > 10 ? 10 : Server.getServer().getProperties().viewDistance;
+		
+		double dx = Math.abs(position.x - other.position.x);
+		double dz = Math.abs(position.z - other.position.z);
+		return dx <= (distance * Chunk.WIDTH) && dz <= (distance * Chunk.HEIGHT);
 	}
 
 	/**
@@ -121,6 +147,28 @@ public abstract class Entity {
 	 * periodic functionality e.g. mob AI.
 	 */
 	public void pulse() {}
+	
+	/**
+	 * The reason this is not in pulse() is to prevent disabling that in case I forget to use super.pulse();
+	 */
+	public void updateEntity() {
+		ticksLived++;
+		
+		if(metadataChanged) {
+			EntityMetadataPacket message = new EntityMetadataPacket(id, metadata.clone());
+			for (Player player : world.getPlayers()) {
+				if (player != this) {
+					player.getSession().send(message);
+					player.sendMessage("&cRecieved metadata of " + entityType.toString() + " (id " + id + ") @ " + position.toString());
+				}
+			}
+			
+			if(!announced)
+				System.out.println("Created Metadada Packet");			
+				
+			metadataChanged = false;
+		}
+	}
 
 	/**
 	 * Resets the previous position and rotations of the entity to the current
@@ -140,7 +188,7 @@ public abstract class Entity {
 			throw new Error("Position of entity is null!");
 		return position;
 	}
-
+	
 	/**
 	 * Gets the entity's previous position.
 	 * @return The previous position of this entity.
@@ -155,6 +203,22 @@ public abstract class Entity {
 	 */
 	public void setPosition(Position position) {
 		this.position = position;
+	}
+
+	public void setPosition(double x, double y, double z) {
+		this.position = new Position(x, y, z);
+	}
+	
+	public void setX(double x) {
+		this.position = new Position(x, position.y, position.z);
+	}
+	
+	public void setY(double y) {
+		this.position = new Position(position.x, y, position.z);
+	}
+	
+	public void setZ(double z) {
+		this.position = new Position(position.x, position.y, z);
 	}
 
 	/**
@@ -181,6 +245,13 @@ public abstract class Entity {
 		this.rotation = rotation;
 	}
 
+	public void setRotation(double yaw, double pitch) {
+		this.rotation = new Rotation(yaw, pitch);
+	}
+	
+	public void onCollideWithPlayer(Player pl) {
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -224,7 +295,7 @@ public abstract class Entity {
 	public boolean hasMoved() {
 		if(position == null)
 			throw new Error("Position of entity is null!");
-		
+
 		return !position.equals(previousPosition);
 	}
 
@@ -239,25 +310,22 @@ public abstract class Entity {
 	public EntityType getType() {
 		return entityType;
 	}
-	
+
 	public Parameter<?> getMetadata(int index) {
 		return metadata[index];
 	}
 
 	public void setMetadata(Parameter<?> data) {
+		setMetadata(data, true);
+	}
+	
+	public void setMetadata(Parameter<?> data, boolean sendPackets) {
 		metadata[data.getIndex()] = data;
-		updateMetadata();
+		metadataChanged = sendPackets;
 	}
 	
-	public void updateMetadata() {
-		EntityMetadataPacket message = new EntityMetadataPacket(id, metadata);
-		for (Player player : world.getPlayers()) {
-			if (player != this) {
-				player.getSession().send(message);
-				player.sendMessage("You have recieved metadata of " + entityType.toString() + " , id " + id);
-			}
-		}
+	public Chunk getChunk() {
+		return getWorld().getChunkFromBlockCoords((int)getPosition().x, (int)getPosition().z);
 	}
-	
 }
 

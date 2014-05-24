@@ -1,27 +1,35 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class PreChunkPacket extends Packet {
+	
+	public PreChunkPacket() {
+	}
+
 	@Serialize(type = Type.SHORT, order = 0)
-	private final short chunkCount;
+	private short chunkCount;
 	@Serialize(type = Type.INT, order = 1)
-	private final int dataLength;
+	private int dataLength;
 	@Serialize(type = Type.BOOL, order = 2)
-	private final boolean skyLight;
+	private boolean skyLight;
 	@Serialize(type = Type.BYTE_ARRAY, order = 3)
-	private final byte[] data;
+	private byte[] data;
 	// Meta information
 	@Serialize(type = Type.INT, order = 4)
-	private final int x;
+	private int x;
 	@Serialize(type = Type.INT, order = 5)
-	private final int z;
+	private int z;
 	@Serialize(type = Type.UNSIGNED_SHORT, order = 6)
-	private final int primaryBitMap;
+	private int primaryBitMap;
 	@Serialize(type = Type.UNSIGNED_SHORT, order = 7)
-	private final int addBitMap;
+	private int addBitMap;
 
 	public PreChunkPacket(short chunkCount, int dataLength, boolean skyLight, byte[] data, int x, int z, int primaryBitMap, int addBitMap) {
 		super();
@@ -74,4 +82,18 @@ public class PreChunkPacket extends Packet {
 	public String getToStringDescription() {
 		return String.format("x=\"%a,%b,%c,x=%d,z=%e,%f,%g", chunkCount, dataLength, data, x, z, primaryBitMap, addBitMap);
 	}
+	
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeShort(chunkCount);
+		output.writeInt(dataLength);
+		output.writeBoolean(skyLight);
+		output.write(data);
+		//meta
+		output.writeInt(x);
+		output.writeInt(z);
+		output.writeShort(primaryBitMap);
+		output.writeShort(addBitMap);
+	}
+
 }

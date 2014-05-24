@@ -1,4 +1,4 @@
-package net.rush.net;
+package net.rush.packets.legacy;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -17,7 +17,7 @@ import net.rush.packets.serialization.SerializationPacketHandler;
  * @author kangarko
  */
 @SuppressWarnings("unchecked")
-public class MinecraftDecoder extends ReplayingDecoder<Packet> {
+public class LegacyDecoder extends ReplayingDecoder<Packet> {
 
 	private int previousOpcode = -1;
 

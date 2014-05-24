@@ -14,7 +14,7 @@ public final class Rotation {
 	/**
 	 * The components of this rotation.
 	 */
-	private final double yaw, pitch, roll;
+	private double yaw, pitch, roll;
 
 	/**
 	 * Creates a rotation with just a yaw and pitch. The roll is set to zero.
@@ -59,6 +59,18 @@ public final class Rotation {
 	 */
 	public double getRoll() {
 		return roll;
+	}
+	
+	public void setYaw(double yaw) {
+		this.yaw = yaw;
+	}
+	
+	public void setPitch(double pitch) {
+		this.pitch = pitch;
+	}
+	
+	public void setRoll(double roll) {
+		this.roll = roll;
 	}
 
 	/**

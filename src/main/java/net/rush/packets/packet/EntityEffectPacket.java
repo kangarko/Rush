@@ -1,18 +1,26 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class EntityEffectPacket extends Packet {
+	
+	public EntityEffectPacket() {
+	}
+
 	@Serialize(type = Type.INT, order = 0)
-	private final int entityId;
+	private int entityId;
 	@Serialize(type = Type.BYTE, order = 1)
-	private final byte effectId;
+	private byte effectId;
 	@Serialize(type = Type.BYTE, order = 2)
-	private final byte amplifier;
+	private byte amplifier;
 	@Serialize(type = Type.SHORT, order = 3)
-	private final short duration;
+	private short duration;
 
 	public EntityEffectPacket(int entityId, byte effectId, byte amplifier, short duration) {
 		super();
@@ -44,5 +52,13 @@ public class EntityEffectPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("entityId=\"%d\",effectId=\"%d\",amplifier=\"%d\",duration=\"%d\"", entityId, effectId, amplifier, duration);
+	}
+
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(entityId);
+		output.writeByte(effectId);
+		output.writeByte(amplifier);
+		output.writeShort(duration);
 	}
 }

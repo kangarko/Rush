@@ -1,16 +1,25 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class ConfirmTransactionPacket extends Packet {
+	
+	public ConfirmTransactionPacket() {
+	}
+
 	@Serialize(type = Type.BYTE, order = 0)
-	private final byte windowId;
+	private byte windowId;
 	@Serialize(type = Type.SHORT, order = 1)
-	private final short action;
+	private short action;
 	@Serialize(type = Type.BOOL, order = 2)
-	private final boolean accepted;
+	private boolean accepted;
 
 	public ConfirmTransactionPacket(byte windowId, short action, boolean accepted) {
 		super();
@@ -37,5 +46,19 @@ public class ConfirmTransactionPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("windowId=\"%d\",action=\"%d\",accepted=\"%b\"", windowId, action, accepted);
+	}
+
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		windowId = input.readByte();
+		action = input.readShort();
+		accepted = input.readBoolean();
+	}
+	
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeByte(windowId);
+		output.writeShort(action);
+		output.writeBoolean(accepted);
 	}
 }

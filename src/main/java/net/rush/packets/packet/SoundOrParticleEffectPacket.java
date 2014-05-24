@@ -1,39 +1,43 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
+import org.bukkit.Effect;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SoundOrParticleEffectPacket extends Packet {
 
-	public static final int CLICK2 = 1000;
-
-	public static final int CLICK1 = 1001;
-
-	public static final int BOW_FIRE = 1002;
-
-	public static final int RECORD_PLAY = 1005;
-
-	public static final int DIG_SOUND = 2001;
+	public SoundOrParticleEffectPacket() {
+	}
 
 	@Serialize(type = Type.INT, order = 0)
-	private final int effectId;
+	private int effectId;
 	@Serialize(type = Type.INT, order = 1)
-	private final int x;
+	private int x;
 	@Serialize(type = Type.BYTE, order = 2)
-	private final byte y;
+	private byte y;
 	@Serialize(type = Type.INT, order = 3)
-	private final int z;
+	private int z;
 	@Serialize(type = Type.INT, order = 4)
-	private final int data;
+	private int data;
 	@Serialize(type = Type.BOOL, order = 5)
-	private final boolean relativeVolume;
+	private boolean relativeVolume;
 
-	public SoundOrParticleEffectPacket(int effectId, int x, byte y, int z, int data, boolean relativeVolume) {
+	@SuppressWarnings("deprecation")
+	public SoundOrParticleEffectPacket(Effect effect, int x, int y, int z, int data) {
+		this(effect.getId(), x, y, z, data, false);
+	}
+	
+	public SoundOrParticleEffectPacket(int effectId, int x, int y, int z, int data, boolean relativeVolume) {
 		super();
 		this.effectId = effectId;
 		this.x = x;
-		this.y = y;
+		this.y = (byte)y;
 		this.z = z;
 		this.data = data;
 		this.relativeVolume = relativeVolume;
@@ -69,5 +73,15 @@ public class SoundOrParticleEffectPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("effectId=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",data=\"%d\"", effectId, x, y, z, data);
+	}
+
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(effectId);
+		output.writeInt(x);
+		output.writeByte(y);
+		output.writeInt(z);
+		output.writeInt(data);
+		output.writeBoolean(relativeVolume);
 	}
 }

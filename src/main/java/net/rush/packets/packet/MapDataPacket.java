@@ -1,20 +1,28 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
-public class ItemDataPacket extends Packet {
-	@Serialize(type = Type.SHORT, order = 0)
-	private final short itemType;
-	@Serialize(type = Type.SHORT, order = 1)
-	private final short itemId;
-	@Serialize(type = Type.SHORT, order = 2)
-	private final byte dataLength;
-	@Serialize(type = Type.BYTE_ARRAY, order = 3, moreInfo = 2)
-	private final byte[] data;
+public class MapDataPacket extends Packet {
+	
+	public MapDataPacket() {
+	}
 
-	public ItemDataPacket(short itemType, short itemId, byte dataLength, byte[] data) {
+	@Serialize(type = Type.SHORT, order = 0)
+	private short itemType;
+	@Serialize(type = Type.SHORT, order = 1)
+	private short itemId;
+	@Serialize(type = Type.SHORT, order = 2)
+	private byte dataLength;
+	@Serialize(type = Type.BYTE_ARRAY, order = 3, moreInfo = 2)
+	private byte[] data;
+
+	public MapDataPacket(short itemType, short itemId, byte dataLength, byte[] data) {
 		super();
 		this.itemType = itemType;
 		this.itemId = itemId;
@@ -45,4 +53,12 @@ public class ItemDataPacket extends Packet {
 	public String getToStringDescription() {
 		return String.format("itemType=\"%d\",itemId=\"%d\",dataLength=\"%d\",data=byte[%d]", itemType, itemId, dataLength, data.length);
 	}
+	
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		writeVarInt(itemType, output);
+		output.writeShort(dataLength);
+		output.write(data);
+	}
+
 }

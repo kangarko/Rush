@@ -6,13 +6,13 @@ import net.rush.packets.serialization.Type;
 
 public class EncryptionKeyResponsePacket extends Packet {
 	@Serialize(type = Type.SHORT, order = 0)
-	private final short secretLength;
+	private short secretLength;
 	@Serialize(type = Type.BYTE_ARRAY, order = 1)
-	private final byte[] secret;
+	private byte[] secret;
 	@Serialize(type = Type.SHORT, order = 2)
-	private final short verifyTokenLength;
+	private short verifyTokenLength;
 	@Serialize(type = Type.BYTE_ARRAY, order = 3)
-	private final byte[] verifyTokenResponse;
+	private byte[] verifyTokenResponse;
 
 	/**
 	 * Empty payload.
@@ -56,4 +56,5 @@ public class EncryptionKeyResponsePacket extends Packet {
 	public String getToStringDescription() {
 		return String.format("reason=\"%a,%b,%c,%d\"", secretLength, secret, verifyTokenLength, verifyTokenResponse);
 	}
+
 }

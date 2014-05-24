@@ -6,15 +6,18 @@ import net.rush.packets.serialization.Type;
 
 public class EncryptionKeyRequestPacket extends Packet {
 	@Serialize(type = Type.STRING, order = 0)
-	private final String serverId;
+	private String serverId;
 	@Serialize(type = Type.SHORT, order = 1)
-	private final short publicKeyLength;
+	private short publicKeyLength;
 	@Serialize(type = Type.BYTE_ARRAY, order = 2)
-	private final byte[] publicKey;
+	private byte[] publicKey;
 	@Serialize(type = Type.SHORT, order = 3)
-	private final short verifyTokenLength;
+	private short verifyTokenLength;
 	@Serialize(type = Type.BYTE_ARRAY, order = 4)
-	private final byte[] verifyToken;
+	private byte[] verifyToken;
+
+	public EncryptionKeyRequestPacket() {
+	}
 
 	public EncryptionKeyRequestPacket(String serverId, short publicKeyLength, byte[] publicKey, short verifyTokenLength, byte[] verifyToken) {
 		super();
@@ -52,4 +55,5 @@ public class EncryptionKeyRequestPacket extends Packet {
 	public String getToStringDescription() {
 		return String.format("reason=\"%s\"", serverId);
 	}
+
 }

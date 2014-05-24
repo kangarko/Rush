@@ -1,14 +1,23 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class EntityStatusPacket extends Packet {
+
+	public EntityStatusPacket() {
+	}
+
 	@Serialize(type = Type.INT, order = 0)
-	private final int entityId;
+	private int entityId;
 	@Serialize(type = Type.BYTE, order = 1)
-	private final byte status;
+	private byte status;
 
 	public EntityStatusPacket(int entityId, byte status) {
 		super();
@@ -30,5 +39,17 @@ public class EntityStatusPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("entityId=\"%d\",status=\"%d\"", entityId, status);
+	}
+
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		entityId = input.readInt();
+		status = input.readByte();
+	}
+
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(entityId);
+		output.writeByte(status);
 	}
 }

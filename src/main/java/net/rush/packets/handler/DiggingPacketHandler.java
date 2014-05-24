@@ -1,17 +1,13 @@
 package net.rush.packets.handler;
 
-import net.rush.chunk.Chunk;
 import net.rush.model.Block;
 import net.rush.model.ItemStack;
 import net.rush.model.Player;
-import net.rush.model.Position;
-import net.rush.model.entity.ItemEntity;
 import net.rush.net.Session;
-import net.rush.packets.packet.BlockChangePacket;
 import net.rush.packets.packet.PlayerDiggingPacket;
-import net.rush.packets.packet.SoundOrParticleEffectPacket;
 import net.rush.world.World;
 
+import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 
@@ -32,49 +28,39 @@ public final class DiggingPacketHandler extends PacketHandler<PlayerDiggingPacke
 		int z = message.getZ();
 		int y = message.getY();
 
-		// TODO it might be nice to move these calculations somewhere else since they will need to be reused
-		int chunkX = x / Chunk.WIDTH + ((x < 0 && x % Chunk.WIDTH != 0) ? -1 : 0);
-		int chunkZ = z / Chunk.HEIGHT + ((z < 0 && z % Chunk.HEIGHT != 0) ? -1 : 0);
+		Block block = Block.byId[world.getTypeId(x, y, z)];
 
-		int localX = (x - chunkX * Chunk.WIDTH) % Chunk.WIDTH;
-		int localZ = (z - chunkZ * Chunk.HEIGHT) % Chunk.HEIGHT;
-
-		Chunk chunk = world.getChunks().getChunk(chunkX, chunkZ);
-		int oldType = chunk.getType(localX, localZ, y);
-		
-		if(player.getGamemode() == GameMode.CREATIVE || message.getStatus() == PlayerDiggingPacket.STATE_DONE_DIGGING)
-			chunk.setType(localX, localZ, y, Block.AIR);
-		
-		if (player.getGamemode() == GameMode.CREATIVE) {
-			SoundOrParticleEffectPacket soundMsg = new SoundOrParticleEffectPacket(SoundOrParticleEffectPacket.DIG_SOUND, x, (byte)y, z, oldType, false);
-			BlockChangePacket blockChangePacket = new BlockChangePacket(x, y, z, world);
-			for (Player p: world.getPlayers()) {
-				p.getSession().send(blockChangePacket);
-				if(p != player && player.isWithinDistance(p)) {
-					p.getSession().send(soundMsg);
-				}
-			}
-			
-			player.sendMessage("block broken in creative: " + Material.getMaterial(oldType) + " at X: " + x + " Y: " + y + " Z: " + z);
+		if(block == null) {
+			player.sendMessage("&cUnknown broken block: " + Material.getMaterial(world.getTypeId(x, y, z)));
 			return;
 		}
-		
-		if (message.getStatus() == PlayerDiggingPacket.STATE_DONE_DIGGING) {
-			SoundOrParticleEffectPacket soundMsg = new SoundOrParticleEffectPacket(SoundOrParticleEffectPacket.DIG_SOUND, x, (byte)y, z, oldType, false);
-			BlockChangePacket blockChangePacket = new BlockChangePacket(x, y, z, world);
-			for (Player p: world.getPlayers()) {
-				p.getSession().send(blockChangePacket);
-				if(p != player && player.isWithinDistance(p)) {
-					p.getSession().send(soundMsg);
-				}
+
+		if(message.getStatus() == PlayerDiggingPacket.DROP_ITEM) {
+			if(player.getItemInHand() != null && player.getItemInHand() != ItemStack.NULL_ITEMSTACK && player.getItemInHand().getId() != 0 ) {
+				player.throwItemFromPlayer(player.getItemInHand(), 1);
+				player.getInventory().takeOrDamageItemInHand(player, false);
 			}
-			
-			ItemEntity item = new ItemEntity(player.getWorld(), new ItemStack(Material.COBBLESTONE.getId(), 1));
-			item.setPosition(new Position(x, y, z));
-			//item.setRotation(new Rotation(player.getRotation().getYaw(), player.getRotation().getPitch(), player.getRotation().getIntRoll()));
-			player.getSession().send(item.createSpawnMessage());
-			item.handleMetadata();
-			player.sendMessage("survival block break: " + Material.getMaterial(oldType) + " at X: " + x + " Y: " + y + " Z: " + z);
+			return;
+		}
+
+		int metadata = world.getBlockData(x, y, z);
+
+		if (player.getGamemode() == GameMode.CREATIVE || message.getStatus() == PlayerDiggingPacket.DONE_DIGGING
+				|| (message.getStatus() == PlayerDiggingPacket.START_DIGGING && block.getBlockHardness() == 0F)) {
+
+			block.onBlockPreDestroy(world, x, y, z, metadata);
+			block.onBlockDestroyedByPlayer(world, player, x, y, z, metadata);
+
+			if(player.getGamemode() != GameMode.CREATIVE) {
+				block.dropBlock(world, x, y, z, metadata, 0);
+				
+				if(player.getItemInHand() != null && player.getItemInHand() != ItemStack.NULL_ITEMSTACK && player.getItemInHand().getId() != 0 )
+					player.getInventory().takeOrDamageItemInHand(player, true);
+			} else
+				player.sendMessage("Block broken in creative: " + block.getName() + " at X: " + x + " Y: " + y + " Z: " + z);
+
+			world.setAir(x, y, z);
+			world.playEffectExceptTo(Effect.STEP_SOUND, x, y, z, block.id, player);
 		}
 	}
 

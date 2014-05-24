@@ -1,20 +1,30 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class ClientSettingsPacket extends Packet {
+
+	public ClientSettingsPacket() {
+	}
+
 	@Serialize(type = Type.STRING, order = 0)
-	private final String locale;
+	private String locale;
 	@Serialize(type = Type.BYTE, order = 1)
-	private final byte viewDistance;
+	private byte viewDistance;
 	@Serialize(type = Type.BYTE, order = 2)
-	private final byte chatFlags;
+	private byte chatFlags;
 	@Serialize(type = Type.BYTE, order = 3)
-	private final byte difficulty;
+	private byte difficulty;
 	@Serialize(type = Type.BOOL, order = 4)
-	private final boolean showCape;
+	private boolean showCape;
+
+	public boolean chatColours;
 
 	public ClientSettingsPacket(String locale, byte viewDistance, byte chatFlags, byte difficulty, boolean showCape) {
 		super();
@@ -51,5 +61,15 @@ public class ClientSettingsPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("locale=%s,viewDistance=%d,chatFlags=%d,difficulty=%d", locale, viewDistance, chatFlags, difficulty);
+	}
+
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		locale = readString(input, 7, false);
+		viewDistance = input.readByte();
+		chatFlags = input.readByte();
+		chatColours = input.readBoolean();
+		difficulty = input.readByte();
+		showCape = input.readBoolean();
 	}
 }

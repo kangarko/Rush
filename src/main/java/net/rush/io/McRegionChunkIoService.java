@@ -156,7 +156,7 @@ public final class McRegionChunkIoService implements ChunkIoService {
 		}
 
 		Map<String, Tag> levelTags = new HashMap<String, Tag>();
-		levelTags.put("Blocks", new ByteArrayTag("Blocks", tileData));
+		levelTags.put("Blocks", new ByteArrayTag("Blocks", chunk.types));
 		levelTags.put("Data", new ByteArrayTag("Data", metaData));
 		levelTags.put("SkyLight", new ByteArrayTag("SkyLight", skyLightData));
 		levelTags.put("BlockLight", new ByteArrayTag("BlockLight", blockLightData));

@@ -1,25 +1,26 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
-
-import org.bukkit.ChatColor;
-import org.json.simple.JSONObject;
+import net.rush.util.JsonUtils;
 
 public class ChatPacket extends Packet {
-	@Serialize(type = Type.STRING, order = 0)
-	private final String message;
 
-	private final String plainText;
+	public ChatPacket() {
+	}
 
-	@SuppressWarnings("unchecked")
+	@Serialize(type = Type.JSON_CHAT, order = 0)
+	private String message;
+
 	public ChatPacket(String message) {
 		super();
-		JSONObject msg = new JSONObject();
-		msg.put("text", ChatColor.translateAlternateColorCodes("&".charAt(0), message));
-		this.message = msg.toJSONString();
-		plainText = message;
+		this.message = message;
 	}
 
 	public int getOpcode() {
@@ -30,11 +31,17 @@ public class ChatPacket extends Packet {
 		return message;
 	}
 
-	public String getPlainMessage() {
-		return plainText;
-	}
-
 	public String getToStringDescription() {
 		return String.format("message=\"%s\"", message);
+	}
+
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		message = readString(input, 65000, false);
+	}
+
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		writeString(JsonUtils.chatMessageToJson(message), output, false);
 	}
 }

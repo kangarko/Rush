@@ -3,15 +3,20 @@ package net.rush;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.bukkit.ChatColor;
+import javax.xml.bind.DatatypeConverter;
+
+import net.rush.util.StringUtils;
 
 public class ServerProperties {
-	
+
 	public String genSettings;
 	public int opPermLevel;
 	public boolean allowNether;
@@ -43,11 +48,13 @@ public class ServerProperties {
 	public boolean generateStructures;
 	public int viewDistance;
 	public String motd;
-	
+
+	public String favicon;
+
 	private final Properties prop = new Properties();
 	private final Logger logger = Logger.getLogger("Minecraft");
 	private final File file;
-	
+
 	protected ServerProperties(String fileName) {
 		this.file = new File(fileName);
 
@@ -66,7 +73,7 @@ public class ServerProperties {
 		} else
 			generateNew();
 	}	
-	
+
 	public void load() {
 		genSettings = getString("generator-settings", "");
 		opPermLevel = getInt("op-permission-level", 4);
@@ -98,21 +105,36 @@ public class ServerProperties {
 		spawnMonsters = getBoolean("spawn-monsters", true);
 		generateStructures = getBoolean("generate-structures", true);
 		viewDistance = getInt("view-distance", 10);
-		motd = ChatColor.translateAlternateColorCodes('&', getString("motd", "A Rush server"));
+		motd = StringUtils.colorize(getString("motd", "A Rush server"));
+
+		favicon = loadFavicon();
 	}
-	
-	boolean getOnlineMode() {
+
+	private String loadFavicon() {
+		File fav = new File( "server-icon.png" );
+		if (fav.exists()) {
+			try {
+				return "data:image/png;base64," + DatatypeConverter.printBase64Binary(Files.readAllBytes(Paths.get(fav.getPath())));
+			} catch (IOException e) {
+				logger.warning("Malformed server-icon.png");
+			}
+		}
+
+		return "";
+	}
+
+	private boolean getOnlineMode() {
 		boolean online = getBoolean("online-mode", true);
 		if(online) {
-			logger.warning("* ! * ! * ! * ! * ! * ! * ! * ! * ! * !");
-			logger.warning("Online mode is currently unavailable!");
-			logger.warning("* ! * ! * ! * ! * ! * ! * ! * ! * ! * !");
+			logger.warning("* ! * ! * ! * ! * ! * ! * ! * ! *");
+			logger.warning("Online mode currently unavailable");
 			set("online-mode", false);
+			online = false;
 		}
 		return online;
 	}
-	
-	int getDifficulty() {
+
+	private int getDifficulty() {
 		int diff = getInt("difficulty", 1);
 		if(diff < 1)
 			diff = 1;
@@ -120,20 +142,20 @@ public class ServerProperties {
 			diff = 3;
 		return diff;
 	}
-	
-	int getGamemode() {
+
+	private int getGamemode() {
 		int gm = getInt("gamemode", 0);
 		if(gm > 2) // FIXME Spectator mode in MC 1.8.
 			gm = 2;
 		return gm;
 	}
 
-	void generateNew() {
+	private void generateNew() {
 		logger.info("Generating new properties file");
 		save();
 	}
 
-	void save() {
+	private void save() {
 		FileWriter writer = null;
 
 		try {
@@ -146,12 +168,12 @@ public class ServerProperties {
 
 		}
 	}
-	
-	void set(String path, Object def) {
+
+	private void set(String path, Object def) {
 		prop.setProperty(path, "" + String.valueOf(def));
 	}
 
-	String getString(String path, String def) {
+	private String getString(String path, String def) {
 		if (!prop.containsKey(path)) {
 			prop.setProperty(path, def);
 			save();
@@ -160,7 +182,7 @@ public class ServerProperties {
 		return prop.getProperty(path, def);
 	}
 
-	int getInt(String path, int def) {
+	private int getInt(String path, int def) {
 		try {
 			return Integer.valueOf(getString(path, "" + def));
 		} catch (NumberFormatException ex) {
@@ -169,7 +191,7 @@ public class ServerProperties {
 		}
 	}
 
-	boolean getBoolean(String path, boolean def) {
+	private boolean getBoolean(String path, boolean def) {
 		try {
 			return Boolean.valueOf(getString(path, "" + def));
 		} catch (Exception ex) {

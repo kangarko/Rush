@@ -1,18 +1,31 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class HandshakePacket extends Packet {
+
+	public HandshakePacket() {
+	}
+
 	@Serialize(type = Type.BYTE, order = 0)
-	private final byte protocolVer;
+	private byte protocolVer;
 	@Serialize(type = Type.STRING, order = 1)
-	private final String username;
+	private String username;
 	@Serialize(type = Type.STRING, order = 2)
-	private final String host;
+	private String host;
 	@Serialize(type = Type.INT, order = 3)
-	private final int port;
+	private int port;
+
+	public int protocolVersion;
+	public String serverAddress;
+	public int serverPort;
+	public int state;
 
 	public HandshakePacket(byte protocolVer, String username, String host, int port) {
 		super();
@@ -44,5 +57,13 @@ public class HandshakePacket extends Packet {
 
 	public String getToStringDescription() {
 		return "message=\"protocol:" + protocolVer + ",nick:" + username + ",host:" + host + ",port:" + port + "\"";
+	}
+
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		protocolVersion = readVarInt(input);
+		serverAddress = readString(input, 0, false);
+		serverPort = input.readUnsignedShort();
+		state = readVarInt(input);
 	}
 }

@@ -1,20 +1,28 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SpawnExperienceOrbPacket extends Packet {
+	
+	public SpawnExperienceOrbPacket() {
+	}
+
 	@Serialize(type = Type.INT, order = 0)
-	private final int entityId;
+	private int entityId;
 	@Serialize(type = Type.INT, order = 1)
-	private final int x;
+	private int x;
 	@Serialize(type = Type.INT, order = 2)
-	private final int y;
+	private int y;
 	@Serialize(type = Type.INT, order = 3)
-	private final int z;
+	private int z;
 	@Serialize(type = Type.SHORT, order = 4)
-	private final short count;
+	private short count;
 
 	public SpawnExperienceOrbPacket(int entityId, int x, int y, int z, short count) {
 		super();
@@ -51,5 +59,14 @@ public class SpawnExperienceOrbPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("entityId=\"%d\",x=\"%d\",y=\"%d\",z=\"%d\",count=\"%d\"", entityId, x, y, z, count);
+	}
+	
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		writeVarInt(entityId, output);
+		output.writeInt(x * 32);
+		output.writeInt(y * 32);
+		output.writeInt(z * 32);
+		output.writeShort(count);
 	}
 }

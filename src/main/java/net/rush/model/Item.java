@@ -1,21 +1,20 @@
 package net.rush.model;
 
 import java.util.Random;
-import java.util.UUID;
 
+import net.rush.model.item.ItemDye;
+import net.rush.model.item.ItemHoe;
 import net.rush.model.item.ItemRecord;
+import net.rush.model.item.ItemSeeds;
+import net.rush.util.enums.EnumToolMaterial;
 import net.rush.world.World;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 public class Item {
-	protected static final UUID uuid = UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF");
 
-	/** The RNG used by the Item subclasses. */
 	protected static Random rand = new Random();
-
-	/** A 32000 elements Item array. */
 	public static Item[] byId = new Item[32000];
 
 	/*public static Item IRON_SPADE = new ItemSpade(0, EnumToolMaterial.IRON).setName("shovelIron");
@@ -42,7 +41,7 @@ public class Item {
 	public static Item DIAMOND_SPADE = new ItemSpade(21, EnumToolMaterial.DIAMOND).setName("shovelDiamond");
 	public static Item DIAMOND_PICKAXE = new ItemPickaxe(22, EnumToolMaterial.DIAMOND).setName("pickaxeDiamond");
 	public static Item DIAMOND_AXE = new ItemAxe(23, EnumToolMaterial.DIAMOND).setName("hatchetDiamond");
-	*/public static Item STICK = new Item(24).setFull3D().setName("stick");
+	*/public static Item STICK = new Item(24).setName("stick");
 	public static Item BOWL = new Item(25).setName("bowl");
 	/*public static Item SOUP = new ItemSoup(26, 6).setName("mushroomStew");
 	public static Item GOLDEN_SWORD = new ItemSword(27, EnumToolMaterial.GOLD).setName("swordGold");
@@ -52,13 +51,13 @@ public class Item {
 	public static Item TRIPWIRE = new ItemReed(31, Block.tripWire).setName("string");
 	*/public static Item FEATHER = new Item(32).setName("feather");
 	/*public static Item GUNPOWDER = new Item(33).setName("sulphur").setPotionEffect(PotionHelper.gunpowderEffect);
-	public static Item WOODEN_HOE = new ItemHoe(34, EnumToolMaterial.WOOD).setName("hoeWood");
+	*/public static Item WOODEN_HOE = new ItemHoe(34, EnumToolMaterial.WOOD).setName("hoeWood");
 	public static Item STONE_HOE = new ItemHoe(35, EnumToolMaterial.STONE).setName("hoeStone");
 	public static Item IRON_HOE = new ItemHoe(36, EnumToolMaterial.IRON).setName("hoeIron");
 	public static Item DIAMOND_HOE = new ItemHoe(37, EnumToolMaterial.DIAMOND).setName("hoeDiamond");
 	public static Item GOLDEN_HOE = new ItemHoe(38, EnumToolMaterial.GOLD).setName("hoeGold");
-	public static Item SEEDS = new ItemSeeds(39, Block.crops.id, Block.tilledField.id).setName("seeds");
-	*/public static Item WHEAT = new Item(40).setName("wheat");
+	public static Item SEEDS = new ItemSeeds(39, Block.CROPS.id).setName("seeds");
+	public static Item WHEAT = new Item(40).setName("wheat");
 	/*public static Item BREAD = new ItemFood(41, 5, 0.6F, false).setName("bread");
 	public static ItemArmor LEATHER_HELMET = (ItemArmor) new ItemArmor(42, EnumArmorMaterial.CLOTH, 0, 0).setName("helmetCloth");
 	public static ItemArmor LEATHER_CHESTPLATE = (ItemArmor) new ItemArmor(43, EnumArmorMaterial.CLOTH, 0, 1).setName("chestplateCloth");
@@ -113,9 +112,9 @@ public class Item {
 	/*public static Item GLOWSTONE = new Item(92).setName("yellowDust").setPotionEffect(PotionHelper.glowstoneEffect);
 	public static Item RAW_FISH = new ItemFood(93, 2, 0.3F, false).setName("fishRaw");
 	public static Item COOKED_FISH = new ItemFood(94, 5, 0.6F, false).setName("fishCooked");
-	public static Item INK_SACK = new ItemDye(95).setName("dyePowder");
-	*/public static Item BONE = new Item(96).setName("bone").setFull3D();
-	/*public static Item SUGAR = new Item(97).setName("sugar").setPotionEffect(PotionHelper.sugarEffect);
+	*/public static Item INK_SACK = new ItemDye(95).setName("dyePowder");
+	/*public static Item BONE = new Item(96).setName("bone").setFull3D();
+	public static Item SUGAR = new Item(97).setName("sugar").setPotionEffect(PotionHelper.sugarEffect);
 	public static Item CAKE = new ItemReed(98, Block.cake).setMaxStackSize(1).setName("cake");
 	public static Item BED = new ItemBed(99).setMaxStackSize(1).setName("bed");
 	public static Item REDSTONE_REPEATER = new ItemReed(100, Block.redstoneRepeaterIdle).setName("diode");
@@ -198,9 +197,6 @@ public class Item {
 	/** Maximum damage an item can handle. */
 	private int maxDamage;
 
-	/** If true, render the object in full 3D, like weapons and tools. */
-	protected boolean bFull3D;
-
 	/**
 	 * Some items (like dyes) have multiple subtypes on same item, this is field define this behavior
 	 */
@@ -218,9 +214,8 @@ public class Item {
 	protected Item(int id) {
 		this.id = 256 + id;
 
-		if (byId[256 + id] != null) {
-			System.out.println("CONFLICT @ " + id);
-		}
+		if (byId[256 + id] != null)
+			System.out.println("ITEM CONFLICT @ " + id);
 
 		byId[256 + id] = this;
 	}
@@ -326,14 +321,6 @@ public class Item {
 	}
 
 	/**
-	 * Sets bFull3D to True and return the object.
-	 */
-	public Item setFull3D() {
-		bFull3D = true;
-		return this;
-	}
-
-	/**
 	 * Sets the unlocalized name of this item to the string passed as the parameter, prefixed by "item."
 	 */
 	public Item setName(String name) {
@@ -342,17 +329,9 @@ public class Item {
 	}
 
 	/**
-	 * Returns the unlocalized name of this item.
+	 * Returns the name of this item.
 	 */
-	public String getUnlocalizedName() {
-		return "item." + name;
-	}
-
-	/**
-	 * Returns the unlocalized name of this item. This version accepts an ItemStack so different stacks can have
-	 * different names based on their damage or NBT.
-	 */
-	public String getUnlocalizedName(ItemStack item) {
+	public String getName() {
 		return "item." + name;
 	}
 
@@ -505,7 +484,7 @@ public class Item {
 	public Multimap<?, ?> getItemAttributeModifiers() {
 		return HashMultimap.create();
 	}
-
+	
 	public enum ActionOnUse {
 		NONE, EAT, DRINK, BLOCK, SHOOT_ARROW;
 	}

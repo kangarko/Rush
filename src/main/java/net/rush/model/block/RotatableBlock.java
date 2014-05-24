@@ -16,15 +16,12 @@ public abstract class RotatableBlock extends Block {
 		return 31;
 	}
 
-	/**
-	 * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
-	 */
 	@Override
-	public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metaData) {
-		int blockMetadata = metaData & 3;
+	public int onBlockPlaced(World world, int x, int y, int z, int direction, float xOffset, float yOffset, float zOffset, int metadata) {
+		int blockMetadata = metadata & 3;
 		byte rotation = 0;
 
-		switch (side) {
+		switch (direction) {
 			case 0:
 			case 1:
 				rotation = 0;
@@ -49,8 +46,8 @@ public abstract class RotatableBlock extends Block {
 	}
 
 	
-	public int func_111050_e(int par1) {
-		return par1 & 3;
+	public int getDamage(int type) {
+		return type & 3;
 	}
 
 	/**
@@ -59,6 +56,6 @@ public abstract class RotatableBlock extends Block {
 	 */
 	@Override
 	protected ItemStack createStackedBlock(int type) {
-		return new ItemStack(id, 1, func_111050_e(type));
+		return new ItemStack(id, 1, getDamage(type));
 	}
 }

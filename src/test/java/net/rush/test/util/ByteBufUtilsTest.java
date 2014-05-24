@@ -6,8 +6,8 @@ import io.netty.buffer.Unpooled;
 
 import java.util.List;
 
-import net.rush.model.Coordinate;
 import net.rush.model.ItemStack;
+import net.rush.model.Position;
 import net.rush.util.ByteBufUtils;
 import net.rush.util.Parameter;
 
@@ -33,7 +33,7 @@ public final class ByteBufUtilsTest {
 		params[3] = new Parameter<Float>(Parameter.TYPE_FLOAT, 3, 1234.5678F);
 		params[4] = new Parameter<String>(Parameter.TYPE_STRING, 4, "test");
 		params[5] = new Parameter<ItemStack>(Parameter.TYPE_ITEM, 5, new ItemStack(1, 64, 0));
-		params[6] = new Parameter<Coordinate>(Parameter.TYPE_COORDINATE, 6, new Coordinate(10, 11, 12));
+		params[6] = new Parameter<Position>(Parameter.TYPE_COORDINATE, 6, new Position(10, 11, 12));
 
 		ByteBuf buffer = Unpooled.buffer(46);
 		ByteBufUtils.writeParameters(buffer, params);
@@ -137,7 +137,7 @@ public final class ByteBufUtilsTest {
 
 		Parameter<?> coordinateParam = params[6];
 		assertEquals(Parameter.TYPE_COORDINATE, coordinateParam.getType());
-		assertEquals(new Coordinate(10, 11, 12), coordinateParam.getValue());
+		assertEquals(new Position(10, 11, 12), coordinateParam.getValue());
 	}
 
 	/**

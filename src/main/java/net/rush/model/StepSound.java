@@ -52,9 +52,9 @@ public class StepSound {
 		}
 	}
 
-	public static class StepSoundSand extends StepSound {
+	public static class StepSoundLadder extends StepSound {
 		
-		public StepSoundSand(String name, float volume, float pitch) {
+		public StepSoundLadder(String name, float volume, float pitch) {
 			super(name, volume, pitch);
 		}
 

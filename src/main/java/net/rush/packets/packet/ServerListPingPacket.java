@@ -5,8 +5,12 @@ import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class ServerListPingPacket extends Packet {
+	
+	public ServerListPingPacket() {
+	}
+
 	@Serialize(type = Type.BYTE, order = 0)
-	private final byte magic;
+	private byte magic;
 
 	public ServerListPingPacket(byte magic) {
 		this.magic = 1;

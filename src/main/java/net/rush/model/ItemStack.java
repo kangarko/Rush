@@ -1,34 +1,36 @@
 package net.rush.model;
 
+import org.bukkit.Material;
+
 public class ItemStack {
 
-	public static final ItemStack NULL_ITEM = new ItemStack(-1, -1, -1) {
-        @Override
-        public int getId() {
-            throw new NullException("You tried to use the legendary NULL-ItemStack!");
-        }
+	public static final ItemStack NULL_ITEMSTACK = new ItemStack(-1, -1, -1) {
+		@Override
+		public int getId() {
+			throw new NullPointerException("You tried to use the legendary NULL-ItemStack!");
+		}
 
-        @Override
-        public int getCount() {
-            throw new NullException("You tried to use the legendary NULL-ItemStack!");
-        }
+		@Override
+		public int getCount() {
+			throw new NullPointerException("You tried to use the legendary NULL-ItemStack!");
+		}
 
-        @Override
-        public int getDamage() {
-            throw new NullException("You tried to use the legendary NULL-ItemStack!");
-        }
-        
-        @Override
-        public int getDataLength() {
-            throw new NullException("You tried to use the legendary NULL-ItemStack!");
-        }
+		@Override
+		public int getDamage() {
+			throw new NullPointerException("You tried to use the legendary NULL-ItemStack!");
+		}
 
-        @Override
-        public byte[] getData() {
-            throw new NullException("You tried to use the legendary NULL-ItemStack!");
-        }
-    };
-	
+		@Override
+		public int getDataLength() {
+			throw new NullPointerException("You tried to use the legendary NULL-ItemStack!");
+		}
+
+		@Override
+		public byte[] getData() {
+			throw new NullPointerException("You tried to use the legendary NULL-ItemStack!");
+		}
+	};
+
 	/**
 	 * The ItemStack's id.
 	 */
@@ -43,12 +45,12 @@ public class ItemStack {
 	 * The ItemStack's damage.
 	 */
 	public int damage;
-	
+
 	/**
 	 * The ItemStack's NBT data length. -1 to disable
 	 */
 	private final int dataLength;
-	
+
 	/**
 	 * The ItemStack's NBT byte array storing data (enchantments, etc).
 	 */
@@ -81,7 +83,7 @@ public class ItemStack {
 	public ItemStack(int id, int count, int damage) {
 		this(id, count, damage, -1, null);
 	}
-	
+
 	/**
 	 * Creates an ItemStack with the specified count, damage, data length and data. Generally ItemStacks that
 	 * can be damaged cannot be stacked so the count should be one.
@@ -120,7 +122,7 @@ public class ItemStack {
 	public int getDamage() {
 		return damage;
 	}
-	
+
 	/**
 	 * Gets the length of NBT data byte array.
 	 * @return The length of NBT data byte array.
@@ -136,15 +138,23 @@ public class ItemStack {
 	public byte[] getData() {
 		return data;
 	}
-	
+
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public void setCount(int count) {
 		this.count = count;	
 	}
-	
+
+	public boolean doMaterialsMatch(ItemStack is) {
+		return this.id == is.id && this.damage == is.damage;
+	}
+
+	public boolean doItemsMatch(ItemStack is) {
+		return this.id == is.id && this.damage == is.damage && this.count == is.count;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -172,20 +182,17 @@ public class ItemStack {
 			return false;
 		return true;
 	}
-	
+
+	@SuppressWarnings("deprecation")
 	@Override
 	public String toString() {
-		return String.format("ItemStack [id=%s,count=%d,damage=%d])", id, count, damage);
+		return Material.getMaterial(id) + "x" + count +  (damage != 0 ? "@" + damage : "");
+		//return String.format("ItemStack [id=%s,count=%d,damage=%d])", id, count, damage);
 	}
 
-	
-	private class NullException extends NullPointerException {
-
-		private static final long serialVersionUID = 1L;
-
-		public NullException(String str) {
-			super(str);
-		}
+	@Override
+	public ItemStack clone() {
+		return new ItemStack(id, count, damage, dataLength, data);
 	}
 }
 

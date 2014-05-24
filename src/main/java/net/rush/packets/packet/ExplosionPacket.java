@@ -2,24 +2,28 @@ package net.rush.packets.packet;
 
 import java.util.Set;
 
-import net.rush.model.Coordinate;
+import net.rush.model.Position;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class ExplosionPacket extends Packet {
-	@Serialize(type = Type.DOUBLE, order = 0)
-	private final double x;
-	@Serialize(type = Type.DOUBLE, order = 1)
-	private final double y;
-	@Serialize(type = Type.DOUBLE, order = 2)
-	private final double z;
-	@Serialize(type = Type.FLOAT, order = 3)
-	private final float size;
-	@Serialize(type = Type.BLOCKCOORD_COLLECTION, order = 4)
-	private final Set<Coordinate> destroyedBlocks;
+	public ExplosionPacket() {
+		// TODO Auto-generated constructor stub
+	}
 
-	public ExplosionPacket(double x, double y, double z, float size, Set<Coordinate> destroyedBlocks) {
+	@Serialize(type = Type.DOUBLE, order = 0)
+	private double x;
+	@Serialize(type = Type.DOUBLE, order = 1)
+	private double y;
+	@Serialize(type = Type.DOUBLE, order = 2)
+	private double z;
+	@Serialize(type = Type.FLOAT, order = 3)
+	private float size;
+	@Serialize(type = Type.BLOCKCOORD_COLLECTION, order = 4)
+	private Set<Position> destroyedBlocks;
+
+	public ExplosionPacket(double x, double y, double z, float size, Set<Position> destroyedBlocks) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -48,11 +52,12 @@ public class ExplosionPacket extends Packet {
 		return size;
 	}
 
-	public Set<Coordinate> getDestroyedBlocks() {
+	public Set<Position> getDestroyedBlocks() {
 		return destroyedBlocks;
 	}
 
 	public String getToStringDescription() {
 		return String.format("x=\"%d\",y=\"%d\",z=\"%d\",size=\"%d\",destroyedBlocks=\"%s\"", x, y, z, size, destroyedBlocks);
 	}
+
 }

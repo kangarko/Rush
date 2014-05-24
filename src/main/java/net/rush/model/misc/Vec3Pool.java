@@ -22,22 +22,22 @@ public class Vec3Pool {
 	/**
 	 * extends the pool if all vecs are currently "out"
 	 */
-	public Vec3 getVecFromPool(double par1, double par3, double par5) {
+	public Vec3 getVecFromPool(double x, double y, double z) {
 		if (isEmpty()) {
-			return new Vec3(this, par1, par3, par5);
+			return new Vec3(this, x, y, z);
 		} else {
-			Vec3 var7;
+			Vec3 vector;
 
 			if (nextFreeSpace >= vec3Cache.size()) {
-				var7 = new Vec3(this, par1, par3, par5);
-				vec3Cache.add(var7);
+				vector = new Vec3(this, x, y, z);
+				vec3Cache.add(vector);
 			} else {
-				var7 = (Vec3) vec3Cache.get(nextFreeSpace);
-				var7.setComponents(par1, par3, par5);
+				vector = (Vec3) vec3Cache.get(nextFreeSpace);
+				vector.setComponents(x, y, z);
 			}
 
 			++nextFreeSpace;
-			return var7;
+			return vector;
 		}
 	}
 

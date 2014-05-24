@@ -1,22 +1,29 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class BlockActionPacket extends Packet {
+	public BlockActionPacket() {
+	}
+
 	@Serialize(type = Type.INT, order = 0)
-	private final int x;
+	private int x;
 	@Serialize(type = Type.SHORT, order = 1)
-	private final short y;
+	private short y;
 	@Serialize(type = Type.INT, order = 2)
-	private final int z;
+	private int z;
 	@Serialize(type = Type.BYTE, order = 3)
-	private final byte byte1;
+	private byte byte1;
 	@Serialize(type = Type.BYTE, order = 4)
-	private final byte byte2;
+	private byte byte2;
 	@Serialize(type = Type.SHORT, order = 5)
-	private final short blockId;
+	private short blockId;
 
 	public BlockActionPacket(int x, short y, int z, byte byte1, byte byte2, short blockId) {
 		super();
@@ -58,5 +65,15 @@ public class BlockActionPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("x=\"%d\",y=\"%d\",z=\"%d\",byte1=\"%d\",byte2=\"%d\", blockId=\"%d\"", x, y, z, byte1, byte2, blockId);
+	}
+
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(x);
+		output.writeShort(y);
+		output.writeInt(z);
+		output.writeByte(byte1);
+		output.writeByte(byte2);
+		writeVarInt(blockId, output);
 	}
 }

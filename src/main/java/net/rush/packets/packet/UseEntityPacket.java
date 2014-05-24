@@ -1,22 +1,30 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufInputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class UseEntityPacket extends Packet {
-	@Serialize(type = Type.INT, order = 0)
-	private final int playerEntityId;
-	@Serialize(type = Type.INT, order = 1)
-	private final int targetEntityId;
-	@Serialize(type = Type.BOOL, order = 2)
-	private final boolean isLeftClick;
+	
+	public UseEntityPacket() {
+	}
 
-	public UseEntityPacket(int playerEntityId, int targetEntityId, boolean isLeftClick) {
+	@Serialize(type = Type.INT, order = 0)
+	private int playerEntityId;
+	@Serialize(type = Type.INT, order = 1)
+	private int targetEntityId;
+	@Serialize(type = Type.BOOL, order = 2)
+	private boolean rightclick;
+
+	public UseEntityPacket(int playerEntityId, int targetEntityId, boolean rightclick) {
 		super();
 		this.playerEntityId = playerEntityId;
 		this.targetEntityId = targetEntityId;
-		this.isLeftClick = isLeftClick;
+		this.rightclick = rightclick;
 	}
 
 	public int getOpcode() {
@@ -31,11 +39,18 @@ public class UseEntityPacket extends Packet {
 		return targetEntityId;
 	}
 
-	public boolean getIsLeftClick() {
-		return isLeftClick;
+	public boolean getRightclick() {
+		return rightclick;
 	}
 
 	public String getToStringDescription() {
-		return String.format("playerEntityId=\"%d\",targetEntityId=\"%d\",isLeftClick=\"%b\"", playerEntityId, targetEntityId, isLeftClick);
+		return String.format("playerEntityId=\"%d\",targetEntityId=\"%d\",rightclick=\"%b\"", playerEntityId, targetEntityId, rightclick);
 	}
+	
+	@Override
+	public void read17(ByteBufInputStream input) throws IOException {
+		targetEntityId = input.readInt();
+		rightclick = input.readByte() == 0;
+	}
+
 }

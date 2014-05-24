@@ -16,6 +16,7 @@ public class BlockLog extends RotatableBlock {
 	 * different metadata value, but before the new metadata value is set. Args: World, x, y, z, old block ID, old
 	 * metadata
 	 */
+	@Override
 	public void breakBlock(World world, int x, int y, int z, int oldId, int oldData) {
 		/*byte four = 4;
 		int var8 = four + 1;
@@ -42,7 +43,7 @@ public class BlockLog extends RotatableBlock {
 	/**
 	 * returns a number between 0 and 3
 	 */
-	public static int limitToValidMetadata(int par0) {
-		return par0 & 3;
+	public static int limitToValidMetadata(int blockRotation) {
+		return blockRotation & 3;
 	}
 }

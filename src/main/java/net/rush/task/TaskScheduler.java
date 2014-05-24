@@ -38,7 +38,7 @@ public final class TaskScheduler {
 	 */
 	private final ScheduledExecutorService scheduleExecutor = Executors.newSingleThreadScheduledExecutor();
 	
-	private final ExecutorService executor = Executors.newWorkStealingPool();
+	private final ExecutorService asyncExecutor = Executors.newWorkStealingPool();
 
 	/**
 	 * A list of new tasks to be added.
@@ -49,6 +49,11 @@ public final class TaskScheduler {
 	 * A list of active tasks.
 	 */
 	private final List<Task> tasks = new ArrayList<Task>();
+	
+    /**
+     * The primary scheduler thread in which pulse() is called.
+     */
+    private Thread primaryThread;
 
 	/**
 	 * Creates a new task scheduler.
@@ -99,7 +104,8 @@ public final class TaskScheduler {
 	}
 
 	/**
-	 * Schedules the specified task.
+	 * Schedules the specified task 
+	 * till the server shutdown.
 	 * @param task The task.
 	 */
 	public void schedule(Task task) {
@@ -107,16 +113,39 @@ public final class TaskScheduler {
 			newTasks.add(task);
 		}
 	}
+
+	/**
+	 * Runs specified task once.
+	 */
+	public void runTaskAsync(Runnable task) {
+		asyncExecutor.submit(task);
+	}
 	
-	public void runOnce(Runnable task) {
-		executor.submit(task);
+	/**
+	 * Runs the specified task once after the ticks in dealy.
+	 * @param delayTicks how long to postpone the task
+	 */
+	public void runTaskSyncLater(Runnable task, int delayTicks) {
+		scheduleExecutor.schedule(task, delayTicks * 50, TimeUnit.MILLISECONDS);
 	}
 
+    /**
+     * Returns true if the current {@link Thread} is the server's primary thread.
+     */
+    public boolean isPrimaryThread() {
+        return Thread.currentThread() == primaryThread;
+    }
+	
 	/**
 	 * Adds new tasks and updates existing tasks, removing them if necessary.
 	 * @return 2 integers. One is lag from session registry pulsing, second from world pulsing.
 	 */
 	private int[] pulse() {
+        if (primaryThread == null) {
+            primaryThread = Thread.currentThread();
+            primaryThread.setName("Rush Core Thread");
+        }
+		
 		int[] lag = new int[2];
 		// handle incoming messages
 		lag[0] = server.getSessionRegistry().pulse();
@@ -138,7 +167,7 @@ public final class TaskScheduler {
 
 		// handle general game logic
 		lag[1] = server.getWorld().pulse();
-		
+
 		return lag;
 	}
 

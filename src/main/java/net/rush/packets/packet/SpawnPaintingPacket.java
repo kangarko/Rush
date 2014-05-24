@@ -1,22 +1,30 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SpawnPaintingPacket extends Packet {
+	
+	public SpawnPaintingPacket() {
+	}
+
 	@Serialize(type = Type.INT, order = 0)
-	private final int entityId;
+	private int entityId;
 	@Serialize(type = Type.STRING, order = 1)
-	private final String title;
+	private String title;
 	@Serialize(type = Type.INT, order = 2)
-	private final int x;
+	private int x;
 	@Serialize(type = Type.INT, order = 3)
-	private final int y;
+	private int y;
 	@Serialize(type = Type.INT, order = 4)
-	private final int z;
+	private int z;
 	@Serialize(type = Type.INT, order = 5)
-	private final int direction;
+	private int direction;
 
 	public SpawnPaintingPacket(int entityId, String title, int x, int y, int z, int direction) {
 		super();
@@ -58,5 +66,15 @@ public class SpawnPaintingPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("entityId=\"%d\",title=\"%s\",x=\"%d\",y=\"%d\",z=\"%d\",direction=\"%d\"", entityId, title, x, y, z, direction);
+	}
+
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		writeVarInt(entityId, output);
+		writeString(title, output, false);
+		output.writeInt(x);
+		output.writeInt(y);
+		output.writeInt(z);
+		output.writeInt(direction);
 	}
 }

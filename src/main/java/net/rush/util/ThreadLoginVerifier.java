@@ -35,13 +35,13 @@ public class ThreadLoginVerifier extends Thread {
 			
 			if (response.equals("YES")) {
 				ServerProperties prop = session.getServer().getProperties();
-				session.send(new LoginPacket(0, prop.levelType, prop.gamemode, Dimension.NORMAL, prop.difficulty, prop.maxBuildHeight, prop.maxPlayers));
+				session.send(new LoginPacket(0, prop.levelType, prop.gamemode, Dimension.NORMAL, prop.difficulty, prop.maxBuildHeight, prop.maxPlayers, prop.hardcore));
 				session.setPlayer(new Player(session, loginPacket.getUsername()));
 			} else
 				session.disconnect("Failed to verify username!");
 			
 		} catch (Exception ex) {
-			session.disconnect("Failed to verify username! [internal error " + ex + "]");
+			session.disconnect("Failed to verify username! [Error: " + ex + "]");
 			ex.printStackTrace();
 		}
 	}

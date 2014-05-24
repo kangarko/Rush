@@ -2,36 +2,36 @@ package net.rush.model;
 
 public class Material {
 
-	public static final Material AIR = new Material(MapColor.airColor);
+	public static final Material AIR = new Material(MapColor.airColor).notSolid();
 	public static final Material GRASS = new Material(MapColor.grassColor);
 	public static final Material DIRT = new Material(MapColor.dirtColor);
 	public static final Material WOOD = new Material(MapColor.woodColor).setBurning();
 	public static final Material STONE = new Material(MapColor.stoneColor).setRequiresTool();
 	public static final Material ORE = new Material(MapColor.ironColor).setRequiresTool();
 	public static final Material ANVIL = new Material(MapColor.ironColor).setRequiresTool().setImmovableMobility();
-	public static final Material WATER = new Material(MapColor.waterColor).setNoPushMobility();
-	public static final Material LAVA = new Material(MapColor.tntColor).setNoPushMobility();
+	public static final Material WATER = new Material(MapColor.waterColor).setNoPushMobility().notSolid();
+	public static final Material LAVA = new Material(MapColor.tntColor).setNoPushMobility().notSolid();
 	public static final Material LEAVES = new Material(MapColor.foliageColor).setBurning().setTranslucent().setNoPushMobility();
-	public static final Material PLANT = new Material(MapColor.foliageColor).setNoPushMobility();
-	public static final Material REPLACEABLE_PLANT = new Material(MapColor.foliageColor).setBurning().setNoPushMobility().setReplaceable();
+	public static final Material PLANT = new Material(MapColor.foliageColor).setNoPushMobility().notSolid();
+	public static final Material REPLACEABLE_PLANT = new Material(MapColor.foliageColor).setBurning().setNoPushMobility().setReplaceable().notSolid();
 	public static final Material SPONGE = new Material(MapColor.clothColor);
 	public static final Material CLOTH = new Material(MapColor.clothColor).setBurning();
-	public static final Material FIRE = new Material(MapColor.airColor).setNoPushMobility();
+	public static final Material FIRE = new Material(MapColor.airColor).setNoPushMobility().notSolid();
 	public static final Material SAND = new Material(MapColor.sandColor);
-	public static final Material ORIENTABLE = new Material(MapColor.airColor).setNoPushMobility();
-	public static final Material CARPET = new Material(MapColor.clothColor).setBurning();
+	public static final Material CIRCUITS = new Material(MapColor.airColor).setNoPushMobility().notSolid();
+	public static final Material CARPET = new Material(MapColor.clothColor).setBurning().notSolid();
 	public static final Material GLASS = new Material(MapColor.airColor).setTranslucent().setAdventureModeExempt();
 	public static final Material BUILDABLE_GLASS = new Material(MapColor.airColor).setAdventureModeExempt();
 	public static final Material TNT = new Material(MapColor.tntColor).setBurning().setTranslucent();
     public static final Material CORAL = (new Material(MapColor.foliageColor)).setNoPushMobility();
     public static final Material ICE = (new Material(MapColor.iceColor)).setTranslucent().setAdventureModeExempt();
-    public static final Material SNOW_LAYER = (new Material(MapColor.snowColor)).setReplaceable().setTranslucent().setRequiresTool().setNoPushMobility();
+    public static final Material SNOW_LAYER = (new Material(MapColor.snowColor)).setReplaceable().setTranslucent().setRequiresTool().setNoPushMobility().notSolid();
     public static final Material SNOW_BLOCK = (new Material(MapColor.snowColor)).setRequiresTool();
     public static final Material CACTUS = (new Material(MapColor.foliageColor)).setTranslucent().setNoPushMobility();
     public static final Material CLAY = new Material(MapColor.clayColor);
     public static final Material PUMPKIN = (new Material(MapColor.foliageColor)).setNoPushMobility();
     public static final Material DRAGON_EGG = (new Material(MapColor.foliageColor)).setNoPushMobility();
-    public static final Material PORTAL = (new Material(MapColor.airColor)).setImmovableMobility();
+    public static final Material PORTAL = (new Material(MapColor.airColor)).setImmovableMobility().notSolid();
     public static final Material CAKE = (new Material(MapColor.airColor)).setNoPushMobility();
     public static final Material WEB = (new Material(MapColor.clothColor)).setRequiresTool().setNoPushMobility();
     public static final Material PISTON = (new Material(MapColor.stoneColor)).setImmovableMobility();
@@ -55,6 +55,8 @@ public class Material {
 	 * Determines if the material can be harvested without a tool (or with the wrong tool)
 	 */
 	private boolean requiresNoTool = true;
+	
+	private boolean solid = true;
 
 	/**
 	 * Mobility information flag. 0 indicates that this block is normal, 1 indicates that it can't push other blocks, 2
@@ -74,8 +76,13 @@ public class Material {
 		return false;
 	}
 
+	public Material notSolid() {
+		solid = false;
+		return this;
+	}
+	
 	public boolean isSolid() {
-		return true;
+		return solid;
 	}
 
 	/**

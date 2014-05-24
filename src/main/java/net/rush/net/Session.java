@@ -16,6 +16,7 @@ import net.rush.packets.handler.HandlerLookupService;
 import net.rush.packets.handler.PacketHandler;
 import net.rush.packets.packet.KeepAlivePacket;
 import net.rush.packets.packet.KickPacket;
+import net.rush.util.StringUtils;
 
 /**
  * A single connection to the server, which may or may not be associated with a
@@ -85,8 +86,15 @@ public final class Session {
 	 * The player associated with this session (if there is one).
 	 */
 	private Player player;
-	
-	boolean pendingRemoval = false;
+
+	/**
+	 * True means that this is a 1.6 client.
+	 */
+	private final boolean compat;
+
+	private ClientVersion clientVersion = new ClientVersion("1.7.2", 4); // default to prevent NPE
+
+	private boolean pendingRemoval = false;
 	private int pingMessageId;
 
 	/**
@@ -94,9 +102,10 @@ public final class Session {
 	 * @param server The server this session belongs to.
 	 * @param channel The channel associated with this session.
 	 */
-	public Session(Server server, Channel channel) {
+	public Session(Server server, Channel channel, boolean compat) {
 		this.server = server;
 		this.channel = channel;
+		this.compat = compat;
 	}
 
 	/**
@@ -155,16 +164,14 @@ public final class Session {
 			if (handler != null) {
 				handler.handle(this, player, packet);
 				String name = packet.getPacketType().getSimpleName();
-				if(!name.contains("Position") && !name.contains("PlayerOnGround") && !name.contains("Look") && !name.contains("ChatPacket") && !name.contains("KeepAlive")  && !name.contains("Animation")) {
+				if(!name.contains("Position") && !name.contains("PlayerOnGround") && !name.contains("Look") && !name.contains("ChatPacket") && !name.contains("KeepAlive")  && !name.contains("Animation"))
 					server.getLogger().info("Handling packet: " + packet.getPacketType().getSimpleName());
-				}
 			} else {
 				server.getLogger().info("&cMissing handler for packet: " + packet.getPacketType().getSimpleName());
 				server.getGui().showPane(new GuiPane("Unhandled packet", "Missing handler for packet:", packet.getPacketType().getSimpleName(), Color.RED, Color.WHITE, Color.WHITE));
 			}
 		}
 
-		//System.out.println("timeoutCounter: " + timeoutCounter);
 		if (timeoutCounter >= TIMEOUT_TICKS) {
 			if (pingMessageId == 0) {
 				pingMessageId = new Random().nextInt();
@@ -194,7 +201,7 @@ public final class Session {
 	 * @param reason The reason for disconnection.
 	 */
 	public void disconnect(String reason) {
-		channel.writeAndFlush(new KickPacket(reason)).addListener(ChannelFutureListener.CLOSE);
+		channel.writeAndFlush(new KickPacket(StringUtils.colorize(reason))).addListener(ChannelFutureListener.CLOSE);
 	}
 
 	/**
@@ -237,7 +244,7 @@ public final class Session {
 	public String getIp() {
 		return channel.remoteAddress().toString().replace("/", "");
 	}
-	
+
 	public void pong() {
 		timeoutCounter = 0;
 		pingMessageId = 0;
@@ -245,6 +252,42 @@ public final class Session {
 
 	void flagForRemoval() {
 		pendingRemoval = true;
+	}
+
+	public boolean isCompat() {
+		return compat;
+	}
+
+	public void setClientVersion(String version, int protocol) {
+		this.clientVersion = new ClientVersion(version, protocol);
+	}
+
+	public ClientVersion getClientVersion() {
+		return clientVersion;
+	}
+
+	public static class ClientVersion {
+		private final String version;
+		private final int protocol;
+
+		public ClientVersion(String version, int protocol) {
+			super();
+			this.version = version;
+			this.protocol = protocol;
+		}
+
+		public String getVersion() {
+			return version;
+		}
+
+		public int getProtocol() {
+			return protocol;
+		}
+
+		@Override
+		public String toString() {
+			return "ver=" + version + ",protocol=" + protocol;
+		}
 	}
 }
 

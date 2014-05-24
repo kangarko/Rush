@@ -1,33 +1,41 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 import net.rush.world.World;
 
 public class BlockChangePacket extends Packet {
+
+	public BlockChangePacket() {
+	}
+
 	@Serialize(type = Type.INT, order = 0)
-	private final int x;
+	private int x;
 	@Serialize(type = Type.BYTE, order = 1)
-	private final byte y;
+	private byte y;
 	@Serialize(type = Type.INT, order = 2)
-	private final int z;
+	private int z;
 	@Serialize(type = Type.SHORT, order = 3)
-	private final short blockType;
+	private short blockType;
 	@Serialize(type = Type.BYTE, order = 4)
-	private final byte blockMetadata;
+	private byte blockMetadata;
 
 	public BlockChangePacket(int x, int y, int z, World world) {
 		this(x, y, z, world.getTypeId(x, y, z), world.getBlockData(x, y, z));
 	}
-	
+
 	public BlockChangePacket(int x, int y, int z, int typeId, int data) {
 		super();
 		this.x = x;
-		this.y = (byte)y;
+		this.y = (byte) y;
 		this.z = z;
-		this.blockType = (short) typeId;
-		this.blockMetadata = (byte) data;
+		blockType = (short) typeId;
+		blockMetadata = (byte) data;
 	}
 
 	public int getOpcode() {
@@ -56,5 +64,14 @@ public class BlockChangePacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("x=\"%d\",y=\"%d\",z=\"%d\",blockType=\"%d\",blockMetadata=\"%d\"", x, y, z, blockType, blockMetadata);
+	}
+
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(x);
+		output.writeByte(y);
+		output.writeInt(z);
+		writeVarInt(blockType, output);
+		output.writeByte(blockMetadata);
 	}
 }

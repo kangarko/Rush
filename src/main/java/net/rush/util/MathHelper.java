@@ -226,6 +226,19 @@ public class MathHelper {
 
 		return output;
 	}
+	
+	/**
+	 * If the value is lower then min, returns min.
+	 * If it is higher then max, returns max,
+	 * otherwise returns the initial value.
+	 */
+	public static int getValueInBounds(int given, int min, int max) {
+		if (given < min)
+			return min;
+		if (given > max)
+			return max;
+		return given;
+	}
 
 	static {
 		for (int index = 0; index < 65536; ++index) {

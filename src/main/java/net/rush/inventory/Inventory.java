@@ -45,8 +45,7 @@ public abstract class Inventory {
 
     private void sendUpdate(int index) {
         for (Player viewer : viewers) {
-        	System.out.println(viewer.getName() + " recieved update!");
-            viewer.onSlotSet(this, index, slots[index]);
+            viewer.onSlotSet(this, getSlotConverter().localToNet(index), slots[index]);
         }
     }
 
@@ -55,7 +54,7 @@ public abstract class Inventory {
     }
 
     public void setItem(int index, ItemStack item) {
-        slots[index] = item;
+    	slots[index] = item;
         sendUpdate(index);
     }
 
@@ -63,15 +62,13 @@ public abstract class Inventory {
         HashMap<Integer, ItemStack> result = new HashMap<Integer, ItemStack>();
 
         for (int i = 0; i < items.length; ++i) {
-            int maxStackSize = Material.getMaterial(items[i].getId())
-                    .getMaxStackSize();
+            int maxStackSize = Material.getMaterial(items[i].getId()).getMaxStackSize();
 			int mat = items[i].getId();
             int toAdd = items[i].getCount();
             short damage = (short) items[i].getDamage();
 
             for (int j = 0; toAdd > 0 && j < getSize(); ++j) {
-                if (slots[j] != null && slots[j].getId() == mat
-                        && slots[j].getDamage() == damage) {
+                if (slots[j] != null && slots[j] != ItemStack.NULL_ITEMSTACK && slots[j].getId() == mat && slots[j].getDamage() == damage) {
                     int space = maxStackSize - slots[j].getCount();
                     if (space < 0)
                         continue;
@@ -86,7 +83,7 @@ public abstract class Inventory {
 
             if (toAdd > 0) {
                 for (int j = 0; toAdd > 0 && j < getSize(); ++j) {
-                    if (slots[j] == null) {
+                    if (slots[j] == null || slots[j] == ItemStack.NULL_ITEMSTACK || slots[j].getId() == 0) {
                         int num = toAdd > maxStackSize ? maxStackSize : toAdd;
                         slots[j] = new ItemStack(mat, num, damage);
                         toAdd -= num;
@@ -95,9 +92,8 @@ public abstract class Inventory {
                 }
             }
 
-            if (toAdd > 0) {
+            if (toAdd > 0)
                 result.put(i, new ItemStack(mat, toAdd, damage));
-            }
         }
 
         return result;
@@ -112,11 +108,10 @@ public abstract class Inventory {
             short damage = (short) items[i].getDamage();
 
             for (int j = 0; j < getSize(); ++j) {
-                if (slots[j] != null && slots[j].getId() == mat
-                        && slots[j].getDamage() == damage) {
-                    if (slots[j].getCount() > toRemove) {
+                if (slots[j] != null && slots[j] != ItemStack.NULL_ITEMSTACK && slots[j].getId() == mat && slots[j].getDamage() == damage) {
+                    
+                	if (slots[j].getCount() > toRemove)
                         slots[j].setCount(slots[j].getCount() - toRemove);
-                    }
                     else {
                         toRemove -= slots[j].getCount();
                         slots[j] = null;

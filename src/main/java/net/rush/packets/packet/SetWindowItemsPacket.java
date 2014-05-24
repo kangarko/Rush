@@ -1,20 +1,28 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.model.ItemStack;
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class SetWindowItemsPacket extends Packet {
-	@Serialize(type = Type.BYTE, order = 0)
-	private final byte windowId;
-	@Serialize(type = Type.SHORT, order = 1)
-	private final short size;
-	@Serialize(type = Type.ITEM_ARRAY, order = 2, moreInfo = 1)
-	private final ItemStack[] items;
+	
+	public SetWindowItemsPacket() {
+	}
 
-	public SetWindowItemsPacket(int windowId, int size, ItemStack[] items) {
-		this((byte) windowId, (short) size, items);
+	@Serialize(type = Type.BYTE, order = 0)
+	private byte windowId;
+	@Serialize(type = Type.SHORT, order = 1)
+	private short size;
+	@Serialize(type = Type.ITEM_ARRAY, order = 2, moreInfo = 1)
+	private ItemStack[] items;
+
+	public SetWindowItemsPacket(int windowId, ItemStack[] items) {
+		this((byte) windowId, (short) items.length, items);
 	}
 
 	public SetWindowItemsPacket(byte windowId, short size, ItemStack[] items) {
@@ -43,4 +51,13 @@ public class SetWindowItemsPacket extends Packet {
 	public String getToStringDescription() {
 		return String.format("windowId=\"%d\",size=\"%d\",items=ItemStack[%d]", windowId, size, items.length);
 	}
+	
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeByte(windowId);
+		output.writeShort(size);
+		for(ItemStack is : items)
+			writeItemstack(is, output);
+	}
+
 }

@@ -1,14 +1,22 @@
 package net.rush.packets.packet;
 
+import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.IOException;
+
 import net.rush.packets.Packet;
 import net.rush.packets.serialization.Serialize;
 import net.rush.packets.serialization.Type;
 
 public class ItemCollectPacket extends Packet {
+	
+	public ItemCollectPacket() {
+	}
+
 	@Serialize(type = Type.INT, order = 0)
-	private final int collected;
+	private int collected;
 	@Serialize(type = Type.INT, order = 1)
-	private final int collector;
+	private int collector;
 
 	public ItemCollectPacket(int collected, int collector) {
 		super();
@@ -30,5 +38,11 @@ public class ItemCollectPacket extends Packet {
 
 	public String getToStringDescription() {
 		return String.format("collected=\"%d\",collector=\"%d\"", collected, collector);
+	}
+
+	@Override
+	public void write17(ByteBufOutputStream output) throws IOException {
+		output.writeInt(collected);
+		output.writeInt(collector);
 	}
 }

@@ -13,9 +13,8 @@ public final class KeepAlivePacketHandler extends PacketHandler<KeepAlivePacket>
 
 	@Override
 	public void handle(Session session, Player player, KeepAlivePacket message) {
-		if (session.getPingMessageId() == message.getToken()) {
-            session.pong();
-        }
+		if (session.getPingMessageId() == message.getToken())
+            session.pong();        
 	}
 
 }

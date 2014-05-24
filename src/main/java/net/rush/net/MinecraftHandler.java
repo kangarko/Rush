@@ -21,21 +21,23 @@ public class MinecraftHandler extends SimpleChannelInboundHandler<Packet> {
 	/**
 	 * The logger for this class.
 	 */
-	private static final Logger logger = Logger.getLogger(MinecraftHandler.class.getName());
+	private static final Logger logger = Logger.getLogger("Minecraft");
 
 	/**
 	 * The server.
 	 */
 	private final Server server;
-
+	private final boolean compact;
+	
 	Session session;
 	
 	/**
 	 * Creates a new network event handler.
 	 * @param server The server.
 	 */
-	public MinecraftHandler(Server server) {
+	public MinecraftHandler(Server server, boolean compact) {
 		this.server = server;
+		this.compact = compact;
 	}
 
 	@Override
@@ -43,7 +45,7 @@ public class MinecraftHandler extends SimpleChannelInboundHandler<Packet> {
 		Channel c = ctx.channel();
 		server.getChannelGroup().add(c);
 
-		Session session = new Session(server, c);
+		Session session = new Session(server, c, compact);
 		server.getSessionRegistry().add(session);
 		//ctx.setAttachment(session);
 		this.session = session;
@@ -71,7 +73,7 @@ public class MinecraftHandler extends SimpleChannelInboundHandler<Packet> {
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 		if (cause instanceof IOException)
-			logger.info("End of stream");
+			logger.info("End of stream ");
 		else
 			logger.log(Level.WARNING, "Exception caught, closing channel: " + ctx.channel() + "...", cause);
 		ctx.close();
