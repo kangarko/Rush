@@ -10,5 +10,6 @@
 * Basic entity interaction and test AI.
 * Block placing & removing + partial interaction (bonemeal, hoe making farmland, ...)
 * Packet logging.
+* World saving (/save-all) and loading
 * W.I.P GUI!
 * and more! still in heavy development
