@@ -223,9 +223,9 @@ public abstract class Packet extends HashcodeAndEqualsStub {
 				case Parameter.TYPE_COORDINATE:
 					Position coord = ((Parameter<Position>) parameter).getValue();
 					
-					output.writeInt((int) coord.getX());
-					output.writeInt((int) coord.getY());
-					output.writeInt((int) coord.getZ());
+					output.writeInt((int) coord.x);
+					output.writeInt((int) coord.y);
+					output.writeInt((int) coord.z);
 			}
 		}
     	output.writeByte(127);

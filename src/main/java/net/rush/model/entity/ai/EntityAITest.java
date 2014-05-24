@@ -33,11 +33,11 @@ public class EntityAITest extends EntityAI {
 				nameVisibleTicks++;
 		}
 
-		if(entity.getWorld().getTypeId((int)entity.getPosition().getX(), (int)entity.getPosition().getY(), (int)entity.getPosition().getZ()) != 0) {
+		if(entity.getWorld().getTypeId((int)entity.getPosition().x, (int)entity.getPosition().y, (int)entity.getPosition().z) != 0) {
 			if(!hasName && !was) {
 				hasName = true;
 				entity.setNameVisible(true);
-				//entity.setName("I am stuck!");
+				entity.setName("I am stuck!");
 				was = true;
 			}
 			return;
@@ -46,23 +46,24 @@ public class EntityAITest extends EntityAI {
 		if(was && !hasName) {
 			hasName = true;
 			entity.setNameVisible(true);
-			//entity.setName(rand.nextBoolean() ? "&aI am free!" : "&9Rush rocks!");
+			entity.setName(rand.nextBoolean() ? "&aI am free!" : "&9Rush rocks!");
 			was = false;
 		}
 
-		if(entity.getWorld().getTypeId((int)entity.getPosition().getX(), (int)entity.getPosition().getY() - 1, (int)entity.getPosition().getZ()) == 0) {
-			System.out.println("entity falling from " + entity.getPosition().getY());
-			entity.setPosition(entity.getPosition().getX(), entity.getPosition().getY() - .5, entity.getPosition().getZ());
+		if(entity.getWorld().getTypeId((int)entity.getPosition().x, (int)entity.getPosition().y - 1, (int)entity.getPosition().z) == 0) {
+			System.out.println("entity falling from " + entity.getPosition().y);
+			
+			entity.setY(entity.getPosition().y - 0.5);
 			airTicks++;
 		} else {
 			if(!finished) {
 				finished = true;
-				System.out.println("entity stabilized at " + entity.getPosition().getY());
+				System.out.println("entity stabilized at " + entity.getPosition().y);
 				System.out.println("ticks in air: " + airTicks);
 
 				if(airTicks > 5) {
-					entity.getWorld().playSound(entity.getPosition().getX(), entity.getPosition().getY(), entity.getPosition().getZ(), Sound.PIG_DEATH, 1F, 1F);
-					//entity.setName(rand.nextBoolean() ? "&cThat hurted!" : "&cDon't u kill me there!");
+					entity.getWorld().playSound(entity.getPosition().x, entity.getPosition().y, entity.getPosition().z, Sound.PIG_DEATH, 1F, 1F);
+					entity.setName(rand.nextBoolean() ? "&cThat hurted!" : "&cDon't u kill me there!");
 					entity.setNameVisible(true);
 
 					for(Player pl : entity.getWorld().getPlayers())
@@ -78,6 +79,6 @@ public class EntityAITest extends EntityAI {
 		}		
 
 		if(rand.nextBoolean())
-			entity.setPosition(entity.getPosition().getX(), entity.getPosition().getY(), entity.getPosition().getZ() + .15);
+			entity.setX(entity.getPosition().x + 0.15);
 	}
 }

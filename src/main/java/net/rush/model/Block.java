@@ -12,6 +12,7 @@ import net.rush.model.block.BlockSapling;
 import net.rush.model.block.BlockSoil;
 import net.rush.model.block.BlockStone;
 import net.rush.model.block.BlockWood;
+import net.rush.model.block.BlockWool;
 import net.rush.model.item.ItemBlock;
 import net.rush.model.misc.AxisAlignedBB;
 import net.rush.model.misc.MovingObjectPosition;
@@ -105,8 +106,8 @@ public class Block {
 	public static final Block DEAD_BUSH = (new Block/*DeadBush*/(32, Material.PLANT)).setHardness(0.0F).setStepSound(Sound.GRASS).setName("deadbush"); // TODO was BlockDeadBush
 	/*public static final BlockPistonBase PISTON_BASE = (BlockPistonBase) (new BlockPistonBase(33, false)).setName("pistonBase");
 	public static final BlockPistonExtension PISTON_EXTENSION = new BlockPistonExtension(34);
-	public static final Block WOOL = (new BlockColored(35, Material.cloth)).setHardness(0.8F).setStepSound(soundClothFootstep).setName("cloth").aliases("wool_colored");
-	public static final BlockPistonMoving MOVING_PISTON = new BlockPistonMoving(36);
+	*/public static final Block WOOL = new BlockWool(35).setHardness(0.8F).setStepSound(Sound.WOOL).setName("cloth").aliases("wool_colored");
+	/*public static final BlockPistonMoving MOVING_PISTON = new BlockPistonMoving(36);
 	*/public static final Block YELLOW_FLOWER = new BlockFlower(37).setHardness(0.0F).setStepSound(Sound.GRASS).setName("flower").aliases("flower_dandelion");
 	public static final Block RED_ROSE = new BlockFlower(38).setHardness(0.0F).setStepSound(Sound.GRASS).setName("rose").aliases("flower_rose");
 	/*public static final BlockFlower BROWN_MUSHROOM = (BlockFlower) (new BlockMushroom(39)).setHardness(0.0F).setStepSound(soundGrassFootstep).setLightValue(0.125F).setName("mushroom").aliases("mushroom_brown");
@@ -719,7 +720,7 @@ public class Block {
 	/**
 	 * Called when a block is placed using its ItemBlock.
 	 */
-	public int onBlockPlaced(World world, int x, int y, int z, int direction, float xOffset, float yOffset, float zOffset, int blockData) {
+	public int onBlockPlaced(World world, int x, int y, int z, int direction, float xOffset, float yOffset, float zOffset, int metadata) {
 		return 0;
 	}
 

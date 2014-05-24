@@ -103,7 +103,7 @@ public class World {
 		advanceTime();
 		resetActiveChunks();
 		tickFromQueue();
-		tickActiveChunks();
+		tickActiveChunks();	
 		return (int) (System.currentTimeMillis() - now);
 	}
 
@@ -117,8 +117,8 @@ public class World {
 		int activationRadius = 6;
 
 		for (Player pl : getPlayers()) {
-			chunkX = ((int) pl.getPosition().getX()) / Chunk.WIDTH;
-			chunkZ = ((int) pl.getPosition().getZ()) / Chunk.HEIGHT;
+			chunkX = ((int) pl.getPosition().x) / Chunk.WIDTH;
+			chunkZ = ((int) pl.getPosition().z) / Chunk.HEIGHT;
 
 			for (int x = (chunkX - activationRadius); x <= (chunkX + activationRadius); x++) {
 				for (int z = (chunkZ - activationRadius); z <= (chunkZ + activationRadius); z++) {

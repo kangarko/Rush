@@ -28,9 +28,9 @@ public class BlockBreakAnimationPacket extends Packet {
 	public BlockBreakAnimationPacket(int entityId, Position pos, byte stage) {
 		super();
 		this.entityId = entityId;
-		x = (int) pos.getX();
-		y = (int) pos.getY();
-		z = (int) pos.getZ();
+		x = (int) pos.x;
+		y = (int) pos.y;
+		z = (int) pos.z;
 		this.stage = stage;
 	}
 

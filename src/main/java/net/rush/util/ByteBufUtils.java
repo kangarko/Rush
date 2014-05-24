@@ -73,9 +73,9 @@ public final class ByteBufUtils {
 				break;
 			case Parameter.TYPE_COORDINATE:
 				Position coord = ((Parameter<Position>) parameter).getValue();
-				buf.writeInt((int) coord.getX());
-				buf.writeInt((int) coord.getY());
-				buf.writeInt((int) coord.getZ());
+				buf.writeInt((int) coord.x);
+				buf.writeInt((int) coord.y);
+				buf.writeInt((int) coord.z);
 				break;
 			}
 		}

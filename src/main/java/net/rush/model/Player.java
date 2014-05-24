@@ -60,7 +60,7 @@ public final class Player extends LivingEntity implements CommandSender {
 	private float exhaustion = 0F;
 	private int food = 20;
 	private float saturation = 0;
-
+	private boolean alive = true;
 	private final PlayerInventory inventory = new PlayerInventory();
 
 	/**
@@ -111,9 +111,9 @@ public final class Player extends LivingEntity implements CommandSender {
 		this.updateTabList();
 
 		this.session.send(new SpawnPositionPacket(position));
-		this.session.send(new PlayerPositionAndLookPacket(position.getX(), position.getY(), position.getZ(), position.getY() + NORMAL_EYE_HEIGHT, (float) rotation.getYaw(), (float) rotation.getPitch(), true));
+		this.session.send(new PlayerPositionAndLookPacket(position.x, position.y, position.z, position.y + NORMAL_EYE_HEIGHT, (float) rotation.getYaw(), (float) rotation.getPitch(), true));
 
-		getServer().getLogger().info(name + " [" + session.getIp() + "] logged in with entity id " + id + " at ([" + world.getName() + "] " + (int)position.getX() + ", " + (int)position.getY() + ", " + (int)position.getZ() + ")");
+		getServer().getLogger().info(name + " [" + session.getIp() + "] logged in with entity id " + id + " at ([" + world.getName() + "] " + (int)position.x + ", " + (int)position.y + ", " + (int)position.z + ")");
 		getServer().broadcastMessage("&e" + name + " has joined the game.");
 		this.sendMessage("&3Rush // &fWelcome to Rush, " + name);
 	}
@@ -139,7 +139,7 @@ public final class Player extends LivingEntity implements CommandSender {
 	}
 	
 	public void playSound(Sound sound, Position pos, float volume, float pitch) {
-		playSound(sound, pos.getX(), pos.getY(), pos.getZ(), volume, pitch);
+		playSound(sound, pos.x, pos.y, pos.z, volume, pitch);
 	}
 	
 	public void playSound(Sound sound, double x, double y, double z, float volume, float pitch) {
@@ -147,7 +147,7 @@ public final class Player extends LivingEntity implements CommandSender {
 	}
 
 	public void playSound(String sound, Position pos) {
-		session.send(new NamedSoundEffectPacket(sound, pos.getX(), pos.getY(), pos.getZ(), (0.5F + 0.5F * (float)rand.nextInt(2)), ((float) (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F)));
+		session.send(new NamedSoundEffectPacket(sound, pos.x, pos.y, pos.z, (0.6F + 0.6F * (float)rand.nextInt(2)), ((float) (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F)));
 	}
 	
 	public void playSound(String sound, double x, double y, double z, float volume, float pitch) {
@@ -163,7 +163,6 @@ public final class Player extends LivingEntity implements CommandSender {
 		session.send(new AnimationPacket(getId(), animationId));
 	}
 
-	
 	/** To prevent typos use animations in AnimationPacket class. */
 	public void playAnimationOf(int entityId, int animationId) {
 		session.send(new AnimationPacket(entityId, animationId));
@@ -227,15 +226,12 @@ public final class Player extends LivingEntity implements CommandSender {
 		if (ticksLived % 20 * 12 == 0)
 			heal();
 
-		/*if (getHealth() > 0) {
-			List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, boundingBox.expand(1.0D, 0.0D, 1.0D));
-			if (list != null)
-				for (int index = 0; index < list.size(); index++) {
-					Entity entity = list.get(index);
-					if (entity.isActive() && entity instanceof Player)
-						onCollideWithPlayer((Player) entity);
-				}
-		}*/
+		if (alive) {			
+			for(Entity en : world.getEntities()) {
+				if(en.isActive())
+					en.onCollideWithPlayer(this);
+			}
+		}
 	}
 
 	/**
@@ -244,8 +240,8 @@ public final class Player extends LivingEntity implements CommandSender {
 	private void streamBlocks() {
 		Set<ChunkCoords> previousChunks = new HashSet<ChunkCoords>(knownChunks);
 
-		int centralX = ((int) position.getX()) / Chunk.WIDTH;
-		int centralZ = ((int) position.getZ()) / Chunk.HEIGHT;
+		int centralX = ((int) position.x) / Chunk.WIDTH;
+		int centralZ = ((int) position.z) / Chunk.HEIGHT;
 
 		int viewDistance = Server.getServer().getProperties().viewDistance;
 
@@ -325,7 +321,10 @@ public final class Player extends LivingEntity implements CommandSender {
 		session.send(new UpdateHealthPacket(newHealth, (short) food, saturation));
 		
 		if(newHealth < oldHealth)
-			playSound(Sound.ARROW_HIT, position);
+			playSound(Sound.HURT_FLESH, position);
+		
+		if(newHealth <= 0)
+			alive = false;
 	}
 
 	public GameMode getGamemode() {
@@ -374,17 +373,16 @@ public final class Player extends LivingEntity implements CommandSender {
 		
 		itemstack.count = count;
 
-		ItemEntity item = new ItemEntity(world, itemstack, getPosition().getX(), getPosition().getY() + getEyeHeight() - .3, getPosition().getZ());
+		ItemEntity item = new ItemEntity(world, itemstack, getPosition().x, getPosition().y + getEyeHeight() - .3, getPosition().z);
 		item.pickupDelay = 40;
-		item.setPosition(getPosition().getX(), getPosition().getY() + getEyeHeight() - .3, getPosition().getZ());
 
 		float offsetX = 0.1F;
 		float offsetZ;
 
 		offsetX = 0.3F;
 		item.motionX = -MathHelper.sin((float)getRotation().getYaw() / 180.0F * (float) Math.PI) * MathHelper.cos((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX;
-		item.motionZ = MathHelper.cos((float)getRotation().getYaw() / 180.0F * (float) Math.PI) * MathHelper.cos((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX;
 		item.motionY = -MathHelper.sin((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX + 0.1F;
+		item.motionZ = MathHelper.cos((float)getRotation().getYaw() / 180.0F * (float) Math.PI) * MathHelper.cos((float)getRotation().getPitch() / 180.0F * (float) Math.PI) * offsetX;
 
 		offsetX = 0.02F;
 		offsetZ = rand.nextFloat() * (float) Math.PI * 2.0F;

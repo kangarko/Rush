@@ -243,9 +243,9 @@ public enum Type {
 						break;
 					case Parameter.TYPE_COORDINATE:
 						Position coord = ((Parameter<Position>) parameter).getValue();
-						output.writeInt((int) coord.getX());
-						output.writeInt((int) coord.getY());
-						output.writeInt((int) coord.getZ());
+						output.writeInt((int) coord.x);
+						output.writeInt((int) coord.y);
+						output.writeInt((int) coord.z);
 						break;
 				}
 			}
@@ -360,9 +360,9 @@ public enum Type {
 		public void write(DataOutput out, Collection<Position> val) throws IOException {
 			out.writeInt(val.size());
 			for (Position block : val) {
-				out.writeByte((int) block.getX());
-				out.writeByte((int) block.getY());
-				out.writeByte((int) block.getZ());
+				out.writeByte((int) block.x);
+				out.writeByte((int) block.y);
+				out.writeByte((int) block.z);
 			}
 		}
 	});

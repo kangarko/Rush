@@ -85,7 +85,7 @@ public final class Chunk {
 	 */
 	public void setTypes(byte[] types) {
 		if (types.length != WIDTH * HEIGHT * DEPTH)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Lenght of types (" + types.length + ") != chunk dimensions (" + (WIDTH * HEIGHT * DEPTH) + ")");
 
 		System.arraycopy(types, 0, this.types, 0, types.length);
 	}

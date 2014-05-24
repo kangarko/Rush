@@ -46,8 +46,6 @@ public abstract class Entity {
 	 * The current position.
 	 */
 	protected Position position = Position.ZERO;
-	
-	public Position chunkPosition = Position.ZERO;
 
 	/**
 	 * The position in the last cycle.
@@ -89,8 +87,8 @@ public abstract class Entity {
 		this.ticksLived = 0;
 		//world.getEntities().allocate(this);
 
-		//setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, (byte) 0));
-		//setMetadata(new Parameter<Short>(Parameter.TYPE_SHORT, 1, (short) 300));
+		setMetadata(new Parameter<Byte>(Parameter.TYPE_BYTE, 0, (byte) 0));
+		setMetadata(new Parameter<Short>(Parameter.TYPE_SHORT, 1, (short) 300));
 	}
 
 	/**
@@ -106,8 +104,8 @@ public abstract class Entity {
 		
 		int distance = Server.getServer().getProperties().viewDistance > 10 ? 10 : Server.getServer().getProperties().viewDistance;
 		
-		double dx = Math.abs(position.getX() - other.position.getX());
-		double dz = Math.abs(position.getZ() - other.position.getZ());
+		double dx = Math.abs(position.x - other.position.x);
+		double dz = Math.abs(position.z - other.position.z);
 		return dx <= (distance * Chunk.WIDTH) && dz <= (distance * Chunk.HEIGHT);
 	}
 
@@ -209,6 +207,18 @@ public abstract class Entity {
 
 	public void setPosition(double x, double y, double z) {
 		this.position = new Position(x, y, z);
+	}
+	
+	public void setX(double x) {
+		this.position = new Position(x, position.y, position.z);
+	}
+	
+	public void setY(double y) {
+		this.position = new Position(position.x, y, position.z);
+	}
+	
+	public void setZ(double z) {
+		this.position = new Position(position.x, position.y, z);
 	}
 
 	/**
@@ -315,7 +325,7 @@ public abstract class Entity {
 	}
 	
 	public Chunk getChunk() {
-		return getWorld().getChunkFromBlockCoords((int)getPosition().getX(), (int)getPosition().getZ());
+		return getWorld().getChunkFromBlockCoords((int)getPosition().x, (int)getPosition().z);
 	}
 }
 

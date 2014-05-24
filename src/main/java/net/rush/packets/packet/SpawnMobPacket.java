@@ -44,15 +44,15 @@ public class SpawnMobPacket extends Packet {
 		super();
 		this.entityId = entityId;
 		this.entityType = entityType;
-		x = (int) pos.getX();
-		y = (int) pos.getY();
-		z = (int) pos.getZ();
+		x = (int) pos.x;
+		y = (int) pos.y;
+		z = (int) pos.z;
 		this.yaw = yaw;
 		this.pitch = pitch;
 		this.headYaw = headYaw;
-		velocityX = (short) velocity.getX();
-		velocityY = (short) velocity.getY();
-		velocityZ = (short) velocity.getZ();
+		velocityX = (short) velocity.x;
+		velocityY = (short) velocity.y;
+		velocityZ = (short) velocity.z;
 		this.metadata = metadata;
 	}
 

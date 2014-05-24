@@ -38,9 +38,9 @@ public class NamedEntitySpawnPacket extends Packet {
 		super();
 		this.entityId = entityId;
 		entityName = playerName;
-		x = (int) pos.getX();
-		y = (int) pos.getY();
-		z = (int) pos.getZ();
+		x = (int) pos.x;
+		y = (int) pos.y;
+		z = (int) pos.z;
 		this.yaw = yaw;
 		this.pitch = pitch;
 		this.currentItem = currentItem;

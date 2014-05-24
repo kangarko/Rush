@@ -39,7 +39,7 @@ public class MovingObjectPosition {
 	public MovingObjectPosition(Entity entity) {
 		this.hittype = HitType.ENTITY;
 		this.entityHit = entity;
-		this.vectorHit = entity.getWorld().vectorPool.getVecFromPool(entity.getPosition().getX(), entity.getPosition().getY(), entity.getPosition().getZ());
+		this.vectorHit = entity.getWorld().vectorPool.getVecFromPool(entity.getPosition().x, entity.getPosition().y, entity.getPosition().z);
 	}
 
 	public enum HitType {

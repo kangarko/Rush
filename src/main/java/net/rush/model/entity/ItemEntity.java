@@ -51,12 +51,16 @@ public final class ItemEntity extends Entity {
 		return item;
 	}
 
-	private boolean isOnGround() {
-		return world.getTypeId((int) (getPosition().getX() + motionX), (int) (getPosition().getY() + motionY), (int) (getPosition().getZ() + motionZ)) != 0;
+	private boolean onGround() {
+		return world.getTypeId((int) (getPosition().x + motionX), (int) (getPosition().y + motionY), (int) (getPosition().z + motionZ)) != 0;
 	}
 	
-	// had to copy the loong double from notchian client to make it accurate with the client
-	// getting accuracy 93-99% still W.I.P
+	private boolean inBlock() {
+		return world.getTypeId((int) (getPosition().x + motionX), (int) getPosition().y, (int) (getPosition().z + motionZ)) != 0;
+	}
+	
+	// had to copy the loong double from the notchian server to make it accurate with the client
+	// getting high accuracy 95-99% still W.I.P
 	@Override
 	public void pulse() {
 		super.pulse();
@@ -66,21 +70,25 @@ public final class ItemEntity extends Entity {
 
 		motionY -= 0.039999999105930328D;
 		
-		float sliperiness = 0.98F;
+		float slipperiness = 0.98F;
 		
-		if (isOnGround()) {
-			sliperiness -= 0.5880001F;
-			//sliperiness = (sliperiness of the block item is laying on) * 0.98F;
+		if (onGround()) {
+			slipperiness -= 0.5880001F;
+			
+			if(inBlock()) {
+				System.out.println("entity item is in block!");
+				slipperiness = 0;
+			}
+			//slipperiness = (sliperiness of the block item is laying on) * 0.98F;
 		}
 		
-		motionX *= sliperiness;
-		motionY *= 0.98000001907348633D;
-		motionZ *= sliperiness;		
+		motionX *= slipperiness;
+		if(!inBlock())
+			motionY *= 0.98000001907348633D;
+		motionZ *= slipperiness;		
 		
-		if (isOnGround())
+		if (onGround() && !inBlock())
 			motionY *= -0.5D;
-		
-		setPosition(getPosition().getX() + motionX, getPosition().getY() + motionY, getPosition().getZ() + motionZ);
 		
 		// FIXME implementation for debug purposes not for real usage
 
@@ -107,7 +115,7 @@ public final class ItemEntity extends Entity {
 
 		}
 
-		if (ticksLived >= 6000 || getPosition().getY() < 0)
+		if (ticksLived >= 6000 || getPosition().y < 0)
 			this.destroy();
 	}
 
@@ -128,6 +136,13 @@ public final class ItemEntity extends Entity {
 	public Packet createUpdateMessage() {
 		if(position == null)
 			throw new NullPointerException("Entity position is null!");
+		
+		setX(getPosition().x + motionX);
+		setY(getPosition().y + motionY);
+		setZ(getPosition().z + motionZ);
+		
+		//System.out.println("prev pos: " + previousPosition);
+		//System.out.println("curr pos: " + position);
 		
 		boolean moved = !position.equals(previousPosition);
 		boolean rotated = !rotation.equals(previousRotation);

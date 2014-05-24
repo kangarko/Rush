@@ -24,9 +24,9 @@ public class SpawnPositionPacket extends Packet {
 
 	public SpawnPositionPacket(Position pos) {
 		super();
-		x = (int) pos.getX();
-		y = (int) pos.getY();
-		z = (int) pos.getZ();
+		x = (int) pos.x;
+		y = (int) pos.y;
+		z = (int) pos.z;
 	}
 
 	public int getOpcode() {
