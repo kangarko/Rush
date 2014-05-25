@@ -85,16 +85,23 @@ public final class Server {
 	 */
 	public static void main(String[] args) {
 		try {
+			
+			boolean jline = true;
+			boolean gui = true;
+
+			for (String arg : args) {
+				if ("-nojline".equalsIgnoreCase(arg) || "--nojline".equalsIgnoreCase(arg))
+					jline = false;
+				if ("-nogui".equalsIgnoreCase(arg) || "--nogui".equalsIgnoreCase(arg))
+					gui = false;
+			}
+			
 			ConsoleLogManager.register();
-			ServerGUI.initGui();
+			
+			if(gui)
+				ServerGUI.initGui();
 			
 			Server server = new Server();
-
-			boolean jline = true;
-
-			for (String arg : args)
-				if ("nojline".equalsIgnoreCase(arg))
-					jline = false;
 
 			new ThreadConsoleReader(server, jline).start();
 
