@@ -1,15 +1,12 @@
-package net.rush.gui;
+package net.rush.gui.contentpane;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-class ContentPanel extends JPanel {
+class ContentPane extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -20,13 +17,14 @@ class ContentPanel extends JPanel {
 	private String title;
 	private String firstLine;
 	private String secondLine;
+	
 	private Color titleColor;
 	private Color firstLineColor;
 	private Color secondLineColor;
 	private Color backgroundColor;
 	private Color mouseOverBackgroundColor;
 
-	ContentPanel(String title, String firstLine, String secondLine) {
+	public ContentPane(String title, String firstLine, String secondLine) {
 		this.title = title;
 		this.firstLine = firstLine;
 		this.secondLine = secondLine;
@@ -38,7 +36,7 @@ class ContentPanel extends JPanel {
 		setBackground(backgroundColor);
 	}
 
-	ContentPanel(String title, String firstLine, String secondLine, Color titleColor, Color firstLineColor, Color secondLineColor) {
+	public ContentPane(String title, String firstLine, String secondLine, Color titleColor, Color firstLineColor, Color secondLineColor) {
 		this.title = title;
 		this.firstLine = firstLine;
 		this.secondLine = secondLine;
@@ -50,7 +48,7 @@ class ContentPanel extends JPanel {
 		setBackground(backgroundColor);
 	}
 
-	ContentPanel(String title, String firstLine, String secondLine, Color titleColor, Color firstLineColor, Color secondLineColor, Color backgroundColor, Color mouseOverBackgroundColor) {
+	public ContentPane(String title, String firstLine, String secondLine, Color titleColor, Color firstLineColor, Color secondLineColor, Color backgroundColor, Color mouseOverBackgroundColor) {
 		this.title = title;
 		this.firstLine = firstLine;
 		this.secondLine = secondLine;
@@ -62,7 +60,7 @@ class ContentPanel extends JPanel {
 		setBackground(backgroundColor);
 	}
 
-	ContentPanel(GuiPane pane) {
+	public ContentPane(GuiPane pane) {
 		title = pane.title;
 		firstLine = pane.firstLine;
 		secondLine = pane.secondLine;
@@ -74,65 +72,28 @@ class ContentPanel extends JPanel {
 		setBackground(backgroundColor);
 	}
 
-	void setBackgroundColor() {
+	public void setBackgroundColor() {
 		setBackground(backgroundColor);
 	}
 
-	void setMouseOverBackgroundColor() {
+	public void setMouseOverBackgroundColor() {
 		setBackground(mouseOverBackgroundColor);
 	}
 
 	@Override
-	public void paint(Graphics graphics) {
-		super.paintComponent(graphics);
-		graphics.setFont(new Font("Verdana", 1, 16));
-		graphics.setColor(titleColor);
+	public void paint(Graphics g) {
+		super.paintComponent(g);
+		g.setFont(new Font("Verdana", 1, 16));
+		g.setColor(titleColor);
 
-		graphics.drawString(title, 17, titleY);
-		graphics.setFont(new Font("Verdana", 0, 12));
+		g.drawString(title, 17, titleY);
+		g.setFont(new Font("Verdana", 0, 12));
 
-		graphics.setColor(firstLineColor);
-		graphics.drawString(firstLine, 17, titleY + additionY1);
+		g.setColor(firstLineColor);
+		g.drawString(firstLine, 17, titleY + additionY1);
 
-		graphics.setColor(secondLineColor);
-		graphics.drawString(secondLine, 17, titleY + additionY1 + additionY2);
+		g.setColor(secondLineColor);
+		g.drawString(secondLine, 17, titleY + additionY1 + additionY2);
 	}
 
-	public static class ContentFrame extends JFrame implements WindowListener {
-
-		private static final long serialVersionUID = 1L;
-
-		ContentFrame(String title) {
-			super(title);
-		}
-
-		@Override
-		public void windowActivated(WindowEvent event) {
-		}
-
-		@Override
-		public void windowClosed(WindowEvent event) {
-		}
-
-		@Override
-		public void windowClosing(WindowEvent event) {
-		}
-
-		@Override
-		public void windowDeactivated(WindowEvent event) {
-			toFront();
-		}
-
-		@Override
-		public void windowDeiconified(WindowEvent event) {
-		}
-
-		@Override
-		public void windowIconified(WindowEvent event) {
-		}
-
-		@Override
-		public void windowOpened(WindowEvent event) {
-		}
-	}
 }

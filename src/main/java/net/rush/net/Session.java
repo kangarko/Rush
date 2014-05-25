@@ -9,7 +9,7 @@ import java.util.Queue;
 import java.util.Random;
 
 import net.rush.Server;
-import net.rush.gui.GuiPane;
+import net.rush.gui.contentpane.GuiPane;
 import net.rush.model.Player;
 import net.rush.packets.Packet;
 import net.rush.packets.handler.HandlerLookupService;

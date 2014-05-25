@@ -1,4 +1,4 @@
-package net.rush.gui;
+package net.rush.gui.contentpane;
 
 import java.awt.Color;
 

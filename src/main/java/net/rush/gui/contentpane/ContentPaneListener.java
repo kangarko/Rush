@@ -1,15 +1,15 @@
-package net.rush.gui;
+package net.rush.gui.contentpane;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-class GuiListener implements ActionListener, MouseListener {
+class ContentPaneListener implements ActionListener, MouseListener {
 
 	private RushGui plugin;
 
-	GuiListener(RushGui plugin) {
+	ContentPaneListener(RushGui plugin) {
 		this.plugin = plugin;
 	}
 

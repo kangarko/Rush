@@ -1,4 +1,4 @@
-package net.rush.gui;
+package net.rush.gui.contentpane;
 
 import java.awt.Cursor;
 import java.awt.GraphicsEnvironment;
@@ -7,17 +7,16 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.geom.RoundRectangle2D;
 
+import javax.swing.JFrame;
 import javax.swing.Timer;
-
-import net.rush.gui.ContentPanel.ContentFrame;
 
 import org.bukkit.ChatColor;
 
 public class RushGui {
 
-	private GuiListener guiListener = new GuiListener(this);;
-	private ContentFrame contentFrame;
-	private ContentPanel contentPanel;
+	private ContentPaneListener guiListener = new ContentPaneListener(this);;
+	private JFrame contentFrame;
+	private ContentPane contentPanel;
 	private Timer timerFadeIn;
 	private Timer timerOpaque;
 	private Timer timerFadeOut;
@@ -43,14 +42,14 @@ public class RushGui {
 
 	public RushGui() {
 		GuiPane pane = new GuiPane("GUI successfully started!");
-		showOwnPane(pane);
+		showPane(pane);
 	}
 
-	ContentFrame getContentFrame() {
+	JFrame getContentFrame() {
 		return contentFrame;
 	}
 
-	ContentPanel getContentPanel() {
+	ContentPane getContentPanel() {
 		return contentPanel;
 	}
 
@@ -66,13 +65,7 @@ public class RushGui {
 		return timerOpaque;
 	}
 
-	public boolean showPane(GuiPane pane) {
-		clear();
-		startPaneTimer(pane);
-		return true;
-	}
-
-	void showOwnPane(GuiPane pane) {
+	public void showPane(GuiPane pane) {
 		clear();
 		startPaneTimer(pane);
 	}
@@ -94,7 +87,7 @@ public class RushGui {
 
 	private void startPaneTimer(GuiPane pane) {
 		try {
-			contentFrame = new ContentFrame(pane.title);
+			contentFrame = new JFrame(pane.title);
 			contentFrame.setResizable(false);
 			contentFrame.setUndecorated(true);
 			contentFrame.setSize(pane.width, pane.height);
@@ -102,7 +95,7 @@ public class RushGui {
 			contentFrame.setVisible(true);
 			contentFrame.setLayout(null);
 			contentFrame.addMouseListener(guiListener);
-			contentPanel = new ContentPanel(pane);
+			contentPanel = new ContentPane(pane);
 			contentPanel.setSize(pane.width, pane.height);
 
 			Rectangle rect = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();

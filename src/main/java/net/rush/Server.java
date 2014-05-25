@@ -24,7 +24,8 @@ import net.rush.cmd.CommandManager;
 import net.rush.console.ConsoleCommandSender;
 import net.rush.console.ConsoleLogManager;
 import net.rush.console.ThreadConsoleReader;
-import net.rush.gui.RushGui;
+import net.rush.gui.ServerGUI;
+import net.rush.gui.contentpane.RushGui;
 import net.rush.io.McRegionChunkIoService;
 import net.rush.model.Player;
 import net.rush.net.MinecraftHandler;
@@ -76,7 +77,7 @@ public final class Server {
 	private final SessionRegistry sessions = new SessionRegistry();
 
 	private boolean saveEnabled = true; // TODO: Does this belong in a different class e.g. the chunk IO service or the chunk manager?
-
+	
 	/**
 	 * Creates a new server on TCP port 25565 and starts listening for
 	 * connections.
@@ -85,6 +86,8 @@ public final class Server {
 	public static void main(String[] args) {
 		try {
 			ConsoleLogManager.register();
+			ServerGUI.initGui();
+			
 			Server server = new Server();
 
 			boolean jline = true;
@@ -233,21 +236,25 @@ public final class Server {
 	/**
 	 * A {@link Runnable} which saves chunks on shutdown.
 	 */
-	private class ServerShutdownHandler extends Thread {
+	private class ServerShutdownHandler implements Runnable {
 
 		@Override
 		public void run() {
-			logger.info("Server is shutting down.");
-			// Save chunks on shutdown.
-			if (saveEnabled) {
-				logger.info("Saving chunks...");
-				try {
-					world.getChunks().saveAll();
-				} catch (IOException e) {
-					logger.log(Level.WARNING, "Failed to save some chunks.", e);
-				}
-				logger.info("Finished!");
+			stopServer();
+		}
+	}
+	
+	public void stopServer() {
+		logger.info("Server is shutting down.");
+		// Save chunks on shutdown.
+		if (saveEnabled) {
+			logger.info("Saving chunks...");
+			try {
+				world.getChunks().saveAll();
+			} catch (IOException e) {
+				logger.log(Level.WARNING, "Failed to save some chunks.", e);
 			}
+			logger.info("Finished!");
 		}
 	}
 

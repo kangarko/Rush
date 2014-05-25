@@ -491,5 +491,10 @@ public final class Player extends LivingEntity implements CommandSender {
 			getSession().send(new UpdateHealthPacket(health, (short)food, saturation));
 		}
 	}
+	
+	@Override
+	public void destroy() {
+		super.destroy();
+	}
 }
 
