@@ -36,7 +36,7 @@ public class ConsoleLogManager {
 			fileHandler.setFormatter(formatter);
 			logger.addHandler(fileHandler);
 		} catch (Exception ex) {
-			logger.log(Level.WARNING, "Failed to log to server.log", ex);
+			logger.log(Level.WARNING, "Failed to initiate server.log", ex);
 		}*/
 		
 		global.addHandler(handler);
