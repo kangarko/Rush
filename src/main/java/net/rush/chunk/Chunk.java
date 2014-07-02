@@ -210,7 +210,7 @@ public final class Chunk {
 		if (x < 0 || z < 0 || y < 0 || x >= WIDTH || z >= HEIGHT || y >= DEPTH)
 			throw new IndexOutOfBoundsException("Coords out of bound! x:" + x + ", z:" + z + ", y:" + y);
 
-		return (y * HEIGHT + z) * WIDTH + x;
+		return y << 8 | z << 4 | x;
 	}
 
 	Set<Position> tickedBlocks = new HashSet<Position>();
