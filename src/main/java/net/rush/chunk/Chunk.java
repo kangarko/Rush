@@ -127,7 +127,7 @@ public final class Chunk {
 	 * @param metaData The metadata.
 	 */
 	public void setMetaData(int x, int z, int y, int metaData) {
-		if (metaData < 0 || metaData >= 16)
+		if (metaData < 0 || metaData >= 15)
 			throw new IllegalArgumentException("Metadata must be between 0 and 15");
 
 		this.metaData[coordToIndex(x, z, y)] = (byte) metaData;
@@ -152,7 +152,7 @@ public final class Chunk {
 	 * @param skyLight The sky light level.
 	 */
 	public void setSkyLight(int x, int z, int y, int skyLight) {
-		if (skyLight < 0 || skyLight >= 16)
+		if (skyLight < 0 || skyLight >= 15)
 			throw new IllegalArgumentException("Skylight must be between 0 and 15");
 
 		this.skyLight[coordToIndex(x, z, y)] = (byte) skyLight;
@@ -177,7 +177,7 @@ public final class Chunk {
 	 * @param blockLight The block light level.
 	 */
 	public void setBlockLight(int x, int z, int y, int blockLight) {
-		if (blockLight < 0 || blockLight >= 16)
+		if (blockLight < 0 || blockLight >= 15)
 			throw new IllegalArgumentException("Blocklight must be between 0 and 15");
 
 		this.blockLight[coordToIndex(x, z, y)] = (byte) blockLight;
