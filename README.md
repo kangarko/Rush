@@ -1,7 +1,11 @@
 Rush
-==========
+====
 
 An alternative Minecraft server in Java.
+
+NB: This software is as of 06.12.2014 under major rewrite 
+---------------------------------------------------------
+Please wait till functional version is out.
 
 Introduction
 ------------
