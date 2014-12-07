@@ -4,9 +4,13 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.UUID;
 
+import net.rush.api.ItemStack;
 import net.rush.exceptions.PacketException;
+import net.rush.model.Position;
+import net.rush.utils.MetaParam;
 
 import org.apache.commons.lang3.Validate;
 
@@ -135,6 +139,132 @@ public class Packet {
 		return new UUID(input.readLong(), input.readLong());
 	}
 
+	@SuppressWarnings("unchecked")
+	public static void writeMetadata(ByteBuf out, MetaParam<?>[] parameters) throws IOException {
+		for (MetaParam<?> parameter : parameters) {
+			Objects.requireNonNull(parameter, "Metadata cannot be null!");
+			
+			int type = (parameter.getType() << 5 | parameter.getIndex() & 31) & 255;
+			out.writeByte(type);
+
+			switch (parameter.getType()) {
+				case MetaParam.TYPE_BYTE:
+					out.writeByte(((MetaParam<Byte>) parameter).getValue());
+					break;
+
+				case MetaParam.TYPE_SHORT:
+					out.writeShort(((MetaParam<Short>) parameter).getValue());
+					break;
+
+				case MetaParam.TYPE_INT:
+					out.writeInt(((MetaParam<Integer>) parameter).getValue());
+					break;
+
+				case MetaParam.TYPE_FLOAT:
+					out.writeFloat(((MetaParam<Float>) parameter).getValue());
+					break;
+
+				case MetaParam.TYPE_STRING:
+					writeString(((MetaParam<String>) parameter).getValue(), out);
+					break;
+
+				case MetaParam.TYPE_ITEM:
+					ItemStack item = ((MetaParam<ItemStack>) parameter).getValue();
+					writeItemstack(item, out);
+					break;
+
+				case MetaParam.TYPE_COORDINATE:
+					Position coord = ((MetaParam<Position>) parameter).getValue();
+					writePosIntegers(coord.intX(), coord.intY(), coord.intZ(), out);
+			}
+		}
+		out.writeByte(127);
+	}
+
+	public static MetaParam<?>[] readMetadata(ByteBuf in) throws IOException {
+		MetaParam<?>[] parameters = new MetaParam<?>[MetaParam.METADATA_SIZE];
+
+		for (int data = in.readUnsignedByte(); data != 127; data = in.readUnsignedByte()) {
+			int index = data & 0x1F;
+			int type = data >> 5;
+
+			switch (type) {
+				case MetaParam.TYPE_BYTE:
+					parameters[index] = new MetaParam<Byte>(index, in.readByte());
+					break;
+
+				case MetaParam.TYPE_SHORT:
+					parameters[index] = new MetaParam<Short>(index, in.readShort());
+					break;
+
+				case MetaParam.TYPE_INT:
+					parameters[index] = new MetaParam<Integer>(index, in.readInt());
+					break;
+
+				case MetaParam.TYPE_FLOAT:
+					parameters[index] = new MetaParam<Float>(index, in.readFloat());
+					break;
+
+				case MetaParam.TYPE_STRING:
+					parameters[index] = new MetaParam<String>(index, readString(in));
+					break;
+
+				case MetaParam.TYPE_ITEM:
+					parameters[index] = new MetaParam<ItemStack>(index, readItemstack(in));
+					break;
+
+				case MetaParam.TYPE_COORDINATE:
+					Position pos;
+					pos = new Position(in.readInt(), in.readInt(), in.readInt());
+
+					parameters[index] = new MetaParam<Position>(index, pos);
+
+				default:
+					throw new UnsupportedOperationException("Unknown metadata ID " + type);
+			}
+		}
+		return parameters;
+	}
+	
+	public static void writeItemstack(ItemStack item, ByteBuf out) {
+		if (item == null || item.id == 0) {
+			out.writeShort(-1);
+			return;
+		}
+
+		out.writeShort(item.id);
+		out.writeByte(item.count);
+		out.writeShort(item.data);
+
+		out.writeShort(-1); // TODO NBT data length.
+		//out.writeBytes(null); Data byte array.
+	}
+
+	public static ItemStack readItemstack(ByteBuf in) {
+		int id = in.readShort();
+
+		if (id == -1)
+			return null;
+
+		int count = in.readByte();
+		int damage = in.readShort();
+		int dataLength = in.readShort();
+		byte[] nbtData = null;
+
+		if(dataLength > 0) {
+			nbtData = new byte[dataLength];
+			in.readBytes(nbtData);
+		}
+
+		return new ItemStack(id, count, damage);
+	}
+	
+	public static void writePosIntegers(int x, int y, int z, ByteBuf out) {
+		out.writeInt(x);
+		out.writeInt(y);
+		out.writeInt(z);
+	}
+	
 	public void read(ByteBuf in) throws IOException {
 		throw new PacketException("Packet " + this + " is missing read method!");
 	}

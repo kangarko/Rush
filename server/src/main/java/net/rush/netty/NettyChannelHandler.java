@@ -25,7 +25,7 @@ public class NettyChannelHandler extends SimpleChannelInboundHandler<Packet> {
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		System.out.println("*********** Channel connected: " + ctx.channel().remoteAddress());
 		
-		connection = new Session(ctx.channel());
+		connection = new Session(ctx.channel(), server);
 		server.sessionRegistry.add(connection);
 	}
 	
