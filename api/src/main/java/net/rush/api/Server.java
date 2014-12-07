@@ -7,13 +7,15 @@ import net.rush.api.scheduler.Scheduler;
 public interface Server {
 
 	/**
-	 * @returns Scheduler that can perform sync, async and delayed tasks.
+	 * Scheduler can perform sync, async and delayed tasks.
+	 * @returns server's scheduler
 	 */
 	public Scheduler getScheduler();
 	
 	
 	/**
-	 * @returns Logger that prints formatted messages in the console.
+	 * Logger that prints formatted messages in the console.
+	 * @returns server's logger
 	 */
 	public Logger getLogger();
 }

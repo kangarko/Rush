@@ -39,8 +39,11 @@ public class RushScheduler implements Scheduler {
 				pending.run();
 		}
 		
-		// Pulse connections.
+		// Pulse each connection and handle it.
 		server.sessionRegistry.pulse();
+		
+		// Handle general game logic.
+		server.world.pulse();
 	}
 
 	@Override

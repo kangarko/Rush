@@ -1,6 +1,8 @@
 package net.rush.protocol.packets;
 
 import net.rush.protocol.Packet;
+import net.rush.protocol.ServerPing;
+import net.rush.utils.JsonUtils;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +15,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper=false)
 public class StatusResponse extends Packet {
 
-	private String response;
+	private ServerPing response;
 	
 	@Override
 	public void read(ByteBuf in) {
@@ -21,7 +23,7 @@ public class StatusResponse extends Packet {
 
 	@Override
 	public void write(ByteBuf out) {
-		writeString(response, out);
+		writeString(JsonUtils.jsonizeServerPing(response), out);
 	}
 
 }

@@ -22,7 +22,7 @@ public class JsonUtils {
 	}
 
 	public static String jsonizeChat(String str) {
-		String json = "{\"text\":\"" + ChatColor.translateAlternateColorCodes('&', str).replace("%Rush", "&3Rush //&f").replace("\"", "\\u0022") + "\"}";
+		String json = "{\"text\":\"" + ChatColor.translateAlternateColorCodes('&', str.replace("%Rush", "&3Rush //&f").replace("\"", "\\u0022")) + "\"}";
 
 		return json;
 	}

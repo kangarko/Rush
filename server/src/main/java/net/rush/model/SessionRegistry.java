@@ -5,10 +5,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Queue;
 
+import net.rush.protocol.Packet;
+
 public final class SessionRegistry {
 
 	private final Queue<Session> pending = new ArrayDeque<>();
-	private final HashSet<Session> sessions = new HashSet<>();
+	public final HashSet<Session> sessions = new HashSet<>();
 
 	public void pulse() {
 		synchronized (pending) {
@@ -26,6 +28,11 @@ public final class SessionRegistry {
 			else
 				it.remove();
 		}
+	}
+	
+	public void broadcastPacket(Packet packet) {
+		for (Session session : sessions)
+			session.sendPacket(packet);
 	}
 
 	public void add(Session session) {

@@ -39,7 +39,8 @@ public class PacketDecoder extends ByteToMessageDecoder {
 					throw new PacketException("Did not read all bytes from packet " + packet);
 
 			} else {
-				System.out.println("Skipping reading packet ID " + id);
+				if (id != 4)
+					System.out.println("Skipping reading packet ID " + id);
 				in.skipBytes(in.readableBytes());			
 				return;
 			}
