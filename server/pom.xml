@@ -15,6 +15,35 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
+	<repositories>
+		<repository>
+			<id>mvn-repo</id>
+			<url>http://mvnrepository.com/artifact</url>
+		</repository>
+		<repository>
+			<id>netty-repo</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>net.rush</groupId>
+			<artifactId>rush-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>5.0.0.Alpha2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.14.8</version>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<defaultGoal>clean install</defaultGoal>
 		<plugins>
@@ -25,7 +54,7 @@
 				<configuration>
 					<archive>
 						<manifestEntries>
-							<Main-Class>net.rush.Server</Main-Class>
+							<Main-Class>net.rush.Main</Main-Class>
 							<Sealed>true</Sealed>
 						</manifestEntries>
 					</archive>
