@@ -8,27 +8,32 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.rush.api.meta.MetaParam;
 import net.rush.protocol.Packet;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class EntityMetadata extends Packet {
+public class ClientSettings extends Packet {
 
-	private int entityId;
-	private MetaParam<?>[] metadata;
+	private String locale;
+	private byte viewDistance;
+	
+	private byte chatFlags;	
+	private byte difficulty;
+	
+	private boolean showCape;
+	public boolean chatColours;
 
 	@Override
 	public void read(ByteBuf in) throws IOException {
-		entityId = in.readInt();
-		metadata = readMetadata(in);
-	}
-
-	@Override
-	public void write(ByteBuf out) throws IOException {
-		out.writeInt(entityId);
-		writeMetadata(out, metadata);
+		locale = readString(in);
+		viewDistance = in.readByte();
+		
+		chatFlags = in.readByte();
+		chatColours = in.readBoolean();
+		
+		difficulty = in.readByte();
+		showCape = in.readBoolean();
 	}
 }

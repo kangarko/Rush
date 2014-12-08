@@ -3,12 +3,12 @@ package net.rush;
 import io.netty.util.ResourceLeakDetector;
 
 import java.io.PrintStream;
+import java.util.HashSet;
+import java.util.Random;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.apache.commons.lang3.Validate;
 
 import net.rush.api.Rush;
 import net.rush.api.Server;
@@ -22,19 +22,27 @@ import net.rush.model.entity.RushPlayer;
 import net.rush.netty.NettyInitializer;
 import net.rush.scheduler.RushScheduler;
 
+import org.apache.commons.lang3.Validate;
+
 
 public class RushServer implements Server {
 
 	public boolean isRunning = true;
-	public int port = 25565;
 	public SessionRegistry sessionRegistry = new SessionRegistry();
 	public RushWorld world;
+	public Random rand = new Random();
+	
+	// ================================================ //
+	public int port = 25565;
+	public int viewDistance = 8;
 	
 	private RushScheduler scheduler;
 	private Logger logger = Logger.getLogger("Minecraft");
 	
-	public void init() {
-		Rush.setServer(this);
+	void init() {
+		Thread.currentThread().setName("Server Thread");
+		
+		Rush.setServer(this);		
 		initLogging();
 		
 		logger.info("Initializing Rush for Minecraft 1.7.10");
@@ -43,7 +51,7 @@ public class RushServer implements Server {
 		reader.start();
 		
 		world = new RushWorld(this);
-		
+
 		scheduler = new RushScheduler(this);
 		scheduler.init();
 		
@@ -52,7 +60,7 @@ public class RushServer implements Server {
 		logger.info("Ready for connections.");
 	}
 
-	public void initLogging() {
+	private void initLogging() {
 		Logger global = Logger.getLogger("");
 		
 		logger.setUseParentHandlers(false);
@@ -75,7 +83,7 @@ public class RushServer implements Server {
 		System.setErr(new PrintStream(new OutputStreamFormatter(logger, Level.SEVERE), true));
 	}
 	
-	public void initConnection() {
+	private void initConnection() {
 		ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED); // Slows down performance.
 		new NettyInitializer(this).start();
 	}
@@ -94,7 +102,7 @@ public class RushServer implements Server {
 		String lowerName = name.toLowerCase();
 		int delta = Integer.MAX_VALUE;
 
-		for (RushPlayer player : world.getPlayers())
+		for (RushPlayer player : getPlayers())
 			if (player.name.toLowerCase().startsWith(lowerName)) {
 				int curDelta = player.name.length() - lowerName.length();
 				if (curDelta < delta) {
@@ -105,6 +113,15 @@ public class RushServer implements Server {
 					break;
 			}
 		return found;
+	}
+	
+	public HashSet<RushPlayer> getPlayers() {
+		return world.getPlayersInWorld(); // TODO Multiworld.
+	}
+	
+	public void broadcastMessage(String message) {
+		for (RushPlayer player : getPlayers())
+			player.sendMessage(message);
 	}
 	
 	@Override

@@ -20,12 +20,12 @@ public class ChatMessage extends Packet {
 	private String message;
 
 	@Override
-	public void read(ByteBuf input) throws IOException {
-		message = readString(input);
+	public void read(ByteBuf in) throws IOException {
+		message = readString(in);
 	}
 
 	@Override
-	public void write(ByteBuf output) throws IOException {
-		writeString(JsonUtils.jsonizeChat(message), output);
+	public void write(ByteBuf out) throws IOException {
+		writeString(JsonUtils.jsonizeChat(message), out);
 	}
 }

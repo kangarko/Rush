@@ -1,13 +1,13 @@
 package net.rush.protocol.packets;
 
-import net.rush.protocol.Packet;
-import net.rush.protocol.ServerPing;
-import net.rush.utils.JsonUtils;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import net.rush.protocol.Packet;
+import net.rush.protocol.ServerPing;
+import net.rush.utils.JsonUtils;
 
 @Data
 @NoArgsConstructor

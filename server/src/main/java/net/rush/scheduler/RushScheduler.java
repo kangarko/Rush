@@ -2,32 +2,35 @@ package net.rush.scheduler;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
 
 import net.rush.RushServer;
 import net.rush.api.scheduler.Scheduler;
 
 public class RushScheduler implements Scheduler {
 
-	private final ScheduledExecutorService executors = Executors.newSingleThreadScheduledExecutor();
+	private final Timer pulseTask = new Timer("Pulse");
+	private final Queue<Runnable> pendingTasks = new LinkedList<>();
 	private final RushServer server;
-
-	private Queue<Runnable> pendingTasks = new LinkedList<>();
 
 	public RushScheduler(RushServer server) {
 		this.server = server;
 	}
 
 	public void init() {
-		executors.scheduleAtFixedRate(new Runnable() {
+		pulseTask.scheduleAtFixedRate(new TimerTask() {
 
 			@Override
 			public void run() {
-				pulse();
+				try {
+					pulse();
+				} catch (Throwable t) {
+					server.getLogger().log(Level.SEVERE, "Uncaught exception in scheduler", t);
+				}
 			}
-		}, 0, 50, TimeUnit.MILLISECONDS);
+		}, 0, 50);
 	}
 
 	public void pulse() {
@@ -38,10 +41,10 @@ public class RushScheduler implements Scheduler {
 			while ((pending = pendingTasks.poll()) != null)
 				pending.run();
 		}
-		
+
 		// Pulse each connection and handle it.
 		server.sessionRegistry.pulse();
-		
+
 		// Handle general game logic.
 		server.world.pulse();
 	}

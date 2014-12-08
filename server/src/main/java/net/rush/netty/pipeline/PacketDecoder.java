@@ -7,7 +7,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
-import net.rush.exceptions.PacketException;
+import net.rush.api.exceptions.PacketException;
 import net.rush.protocol.Packet;
 import net.rush.protocol.Protocol;
 import net.rush.protocol.packets.Handshake;
@@ -23,8 +23,9 @@ public class PacketDecoder extends ByteToMessageDecoder {
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {		
 		try {
-			if (in instanceof EmptyByteBuf) // TODO Bad workaround. Why getting this?
+			if (in instanceof EmptyByteBuf) { // TODO Bad workaround. Why getting this?
 				return;						// This should not happen. Somewhere is a bug I suppose.
+			}
 			
 			Protocol.PacketDirection prot = protocol.TO_SERVER;
 

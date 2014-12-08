@@ -1,12 +1,15 @@
 package net.rush.model.entity;
 
 
+import java.util.Objects;
+
+import net.rush.api.Position;
+import net.rush.api.meta.MetaParam;
 import net.rush.api.world.Chunk;
 import net.rush.model.RushChunk;
 import net.rush.model.RushWorld;
 import net.rush.protocol.Packet;
 import net.rush.protocol.packets.EntityMetadata;
-import net.rush.utils.MetaParam;
 
 /**
  * Represents some entity in the world such as an item on the floor or a player.
@@ -14,15 +17,15 @@ import net.rush.utils.MetaParam;
  */
 public abstract class RushEntity {
 
-	protected final RushWorld world;
+	public final RushWorld world;
 	protected final MetaParam<?>[] metadata = new MetaParam<?>[MetaParam.METADATA_SIZE];
-
-	public boolean active = true;
-
-	public int id;
+	
 	protected long ticksLived = 0;
+	private boolean active = true;
+	public int id;
 
-	public double posX, posY, posZ, prevX, prevY, prevZ;
+	public Position position = null;
+	public Position prevPosition = Position.ZERO;
 
 	protected boolean metadataChanged = false;
 
@@ -34,22 +37,19 @@ public abstract class RushEntity {
 		this.world = world;
 
 		// FIXME Unsure, notchian sends them.
-		//setMetadata(new MetaParam<Byte>(0, (byte) 0));
-		//setMetadata(new MetaParam<Short>(1, (short) 300));
+		setMetadata(new MetaParam<Byte>(0, (byte) 0));
+		setMetadata(new MetaParam<Short>(1, (short) 300));
 		
 		setMetadata(new MetaParam<Float>(6, 20F)); // Health.
+		world.entities.allocate(this);
 	}
 
 	public boolean canSee(RushEntity other) {
 		int distance = 10; // TODO
 
-		double dx = Math.abs(posX - other.posX);
-		double dz = Math.abs(posZ - other.posZ);
+		double dx = Math.abs(position.x - other.position.x);
+		double dz = Math.abs(position.z - other.position.z);
 		return dx <= (distance * RushChunk.WIDTH) && dz <= (distance * RushChunk.HEIGHT);
-	}
-
-	public void destroy() {
-		active = false;
 	}
 
 	public void pulse() {		
@@ -57,48 +57,34 @@ public abstract class RushEntity {
 
 		if (metadataChanged) {
 			metadataChanged = false;
-
-			EntityMetadata message = new EntityMetadata(id, metadata);
-			
-			world.server.sessionRegistry.broadcastPacket(message); // TODO Include self?
+			world.server.sessionRegistry.broadcastPacket(new EntityMetadata(id, metadata)); // TODO Send to self?
 		}
 	}
 
 	public void reset() {
-		prevX = posX;
-		prevY = posY;
-		prevZ = posZ;
+		Objects.requireNonNull(position, "Position of " + this + " id " + id + " is null!");
+		Objects.requireNonNull(prevPosition, "Previous position of " + this + " id " + id + " is null!");
+		
+		prevPosition = position;
 	}
 
 	public void setPosition(double x, double y, double z) {
-		posX = x;
-		posY = y;
-		posZ = z;
+		setPosition(new Position(x, y, z));
+	}
+	
+	public void setPosition(Position position) {
+		this.position = position;
 	}
 
-	/**
-	 * Creates a {@link Packet} which can be sent to a client to spawn this
-	 * entity.
-	 * @return A message which can spawn this entity.
-	 */
 	public abstract Packet createSpawnMessage();
-
-	/**
-	 * Creates a {@link Packet} which can be sent to a client to update this
-	 * entity.
-	 * @return A message which can update this entity.
-	 */
 	public abstract Packet createUpdateMessage();
 
-	/**
-	 * Checks if this entity has moved this cycle.
-	 * @return {@code true} if so, {@code false} if not.
-	 */
 	public boolean hasMoved() {
-		if (prevX == posX && prevY == posY && prevZ == posZ)
-			return false;
-
-		return true;
+		return !(position.equalsPosition(prevPosition));
+	}
+	
+	public boolean hasRotated() {
+		return !(position.equalsRotation(prevPosition));
 	}
 
 	public MetaParam<?> getMetadata(int index) {
@@ -111,9 +97,17 @@ public abstract class RushEntity {
 	}
 
 	public Chunk getChunk() {
-		return world.getChunkFromBlockCoords((int) posX, (int) posZ);
+		return world.getChunkFromBlockCoords(position.intX(), position.intZ());
 	}
 
+	public boolean isActive() {
+		return active;
+	}
+	
+	public void destroy() {
+		active = false;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -135,7 +129,7 @@ public abstract class RushEntity {
 	
 	@Override
 	public String toString() {
-		return "id=" + id;
+		return getClass().getSimpleName();
 	}
 }
 

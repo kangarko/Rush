@@ -13,16 +13,14 @@ import lombok.ToString;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
 @ToString(callSuper=true)
-public class PlayerLookAndPosition extends PlayerOnGround {
+public class PlayerPosition extends PlayerOnGround {
 
-	public PlayerLookAndPosition(double x, double yOrStance, double stanceOrY, double z, float yaw, float pitch, boolean onGround) {
+	public PlayerPosition(double x, double y, double stance, double z, boolean onGround) {
 		super(onGround);
 		this.x = x;
-		this.yOrStance = yOrStance;
-		this.stanceOrY = stanceOrY;
+		yOrStance = y;
+		stanceOrY = stance;
 		this.z = z;
-		this.yaw = yaw;
-		this.pitch = pitch;
 	}
 
 	@Override
@@ -31,19 +29,15 @@ public class PlayerLookAndPosition extends PlayerOnGround {
 		yOrStance = in.readDouble();
 		stanceOrY = in.readDouble();
 		z = in.readDouble();
-		
-		yaw = in.readFloat();
-		pitch = in.readFloat();
 		onGround = in.readBoolean();
 	}
 
 	@Override
 	public void write(ByteBuf out) throws IOException {
 		out.writeDouble(x);
-		out.writeDouble(yOrStance); //feet height ??
+		out.writeDouble(yOrStance - 1.62);
+		out.writeDouble(stanceOrY);
 		out.writeDouble(z);
-		out.writeFloat(yaw);
-		out.writeFloat(pitch);
 		out.writeBoolean(onGround);
 	}
 }

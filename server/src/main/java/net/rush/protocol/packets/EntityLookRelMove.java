@@ -8,27 +8,38 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.rush.api.meta.MetaParam;
 import net.rush.protocol.Packet;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class EntityMetadata extends Packet {
+public class EntityLookRelMove extends Packet {
 
 	private int entityId;
-	private MetaParam<?>[] metadata;
+	private int diffX;
+	private int diffY;
+	private int diffZ;
+	private int yaw;
+	private int pitch;
 
 	@Override
 	public void read(ByteBuf in) throws IOException {
 		entityId = in.readInt();
-		metadata = readMetadata(in);
+		diffX = in.readByte();
+		diffY = in.readByte();
+		diffZ = in.readByte();
+		yaw = in.readByte();
+		pitch = in.readByte();
 	}
 
 	@Override
 	public void write(ByteBuf out) throws IOException {
 		out.writeInt(entityId);
-		writeMetadata(out, metadata);
+		out.writeByte(diffX);
+		out.writeByte(diffY);
+		out.writeByte(diffZ);
+		out.writeByte(yaw);
+		out.writeByte(pitch);
 	}
 }

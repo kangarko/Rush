@@ -14,13 +14,18 @@ import net.rush.protocol.Packet;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class Kick extends Packet {
+public class EntityRelMove extends Packet {
 
-	private String reason;
+	private int entityId;
+	private byte diffX;
+	private byte diffY;
+	private byte diffZ;
 
 	@Override
 	public void write(ByteBuf out) throws IOException {
-		writeString(reason, out);
+		out.writeInt(entityId);
+		out.writeByte(diffX);
+		out.writeByte(diffY);
+		out.writeByte(diffZ);
 	}
-
 }

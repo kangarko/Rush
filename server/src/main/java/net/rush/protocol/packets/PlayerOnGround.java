@@ -15,7 +15,6 @@ import net.rush.protocol.Packet;
 public class PlayerOnGround extends Packet {
 
 	protected boolean onGround;
-
 	protected double x;
 	protected double yOrStance;
 	protected double stanceOrY;
@@ -23,7 +22,7 @@ public class PlayerOnGround extends Packet {
 	protected float yaw;
 	protected float pitch;
 
-	public PlayerOnGround(boolean onGround) {
+	protected PlayerOnGround(boolean onGround) {
 		this.onGround = onGround;
 	}
 

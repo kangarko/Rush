@@ -14,13 +14,20 @@ import net.rush.protocol.Packet;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class Kick extends Packet {
+public class EntityHeadLook extends Packet {
 
-	private String reason;
+	private int entityId;
+	private int headYaw;
+
+	@Override
+	public void read(ByteBuf in) throws IOException {
+		entityId = in.readInt();
+		headYaw = in.readByte();
+	}
 
 	@Override
 	public void write(ByteBuf out) throws IOException {
-		writeString(reason, out);
+		out.writeInt(entityId);
+		out.writeByte(headYaw);
 	}
-
 }

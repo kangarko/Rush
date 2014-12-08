@@ -4,22 +4,27 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.rush.protocol.Packet;
+import lombok.ToString;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class LoginStart extends Packet {
+@ToString(callSuper=true)
+public class PlayerLook extends PlayerOnGround {
 
-	private String name;
+	public PlayerLook(float yaw, float pitch, boolean onGround) {
+		super(onGround);
+		this.yaw = yaw;
+		this.pitch = pitch;
+	}
 
 	@Override
 	public void read(ByteBuf in) throws IOException {
-		name = readString(in);
+		yaw = in.readFloat();
+		pitch = in.readFloat();
+		onGround = in.readBoolean();
 	}
 }

@@ -8,7 +8,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import net.rush.RushServer;
-import net.rush.netty.pipeline.KickStringEncoder;
+import net.rush.netty.pipeline.KickStringWriter;
 import net.rush.netty.pipeline.PacketDecoder;
 import net.rush.netty.pipeline.PacketEncoder;
 import net.rush.netty.pipeline.Varint21Decoder;
@@ -21,14 +21,15 @@ public class NettyInitializer extends Thread {
 
 	public NettyInitializer(RushServer server) {
 		this.server = server;
+		setName("Netty Initializer Thread");
 	}
 
 	@Override
 	public void run() {
-		
+
 		EventLoopGroup bossgroup = new NioEventLoopGroup();
 		EventLoopGroup workergroup = new NioEventLoopGroup();
-		
+
 		try {
 			ServerBootstrap bootstrap = new ServerBootstrap()
 			.group(bossgroup, workergroup)
@@ -37,10 +38,10 @@ public class NettyInitializer extends Thread {
 				@Override
 				protected void initChannel(SocketChannel ch) throws Exception {
 					ch.pipeline()
-					
+
 					.addLast("timer", new ReadTimeoutHandler(30))
-					.addLast("kickwriter", new KickStringEncoder())
-					
+					.addLast("kickwriter", new KickStringWriter())
+
 					.addLast("varintdecoder", new Varint21Decoder())
 					.addLast("decoder", new PacketDecoder(Protocol.HANDSHAKE))
 
@@ -50,12 +51,16 @@ public class NettyInitializer extends Thread {
 					.addLast("handler", new NettyChannelHandler(server));
 				}
 			});
-			
-			bootstrap.bind(server.port).sync().channel().closeFuture().sync();
-			
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
-			
+
+			try {
+				bootstrap.bind(server.port).sync().channel().closeFuture().sync();
+			} catch (Throwable t) {
+				server.getLogger().severe("** FAILED TO BIND TO THE PORT! Make sure that");
+				server.getLogger().severe("another server is not running on that port. **");
+				server.getLogger().severe("The exception was: " + t.getMessage());
+				System.exit(0);
+			}
+
 		} finally {
 			bossgroup.shutdownGracefully();
 			workergroup.shutdownGracefully();

@@ -25,13 +25,13 @@ public class ChunkBulk extends Packet {
 	
 
 	@Override
-	public void write(ByteBuf output) throws IOException {
-		output.writeInt(x);
-		output.writeInt(z);
-		output.writeBoolean(groundUpContinuous);
-		output.writeShort(primaryBitMap);
-		output.writeShort(addBitMap);
-		output.writeInt(chunkData.length);
-		output.writeBytes(chunkData);
+	public void write(ByteBuf out) throws IOException {
+		out.writeInt(x);
+		out.writeInt(z);
+		out.writeBoolean(groundUpContinuous);
+		out.writeShort(primaryBitMap);
+		out.writeShort(addBitMap);
+		out.writeInt(chunkData.length);
+		out.writeBytes(chunkData);
 	}
 }

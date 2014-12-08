@@ -1,75 +1,51 @@
 package net.rush.model;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 import net.rush.model.entity.RushEntity;
 
+import org.apache.commons.lang3.Validate;
+
+@SuppressWarnings("unchecked")
 public final class EntityManager implements Iterable<RushEntity> {
 
 	private final HashMap<Integer, RushEntity> entities = new HashMap<>();
-	private final HashMap<Class<? extends RushEntity>, Set<? extends RushEntity>> groupedEntities = new HashMap<>();
+	private final HashMap<Class<RushEntity>, HashSet<RushEntity>> entityGroups = new HashMap<>();
 
 	private int nextId = 1;
-
-	/**
-	 * Gets all entities with the specified type.
-	 * @param type The {@link Class} for the type.
-	 * @param <T> The type of entity.
-	 * @return A collection of entities with the specified type.
-	 */
-	@SuppressWarnings("unchecked")
-	public <T extends RushEntity> Set<T> getAll(Class<T> type) {
-		Set<T> set = (Set<T>) groupedEntities.get(type);
-
-		if (set == null) {
-			set = new HashSet<T>();
-			groupedEntities.put(type, set);
-		}
-		return set;
-	}
 
 	public RushEntity getEntity(int id) {
 		return entities.get(id);
 	}
 
-	@SuppressWarnings("unchecked")
-	public int allocate(RushEntity entity) {
-		for (int id = nextId; id < Integer.MAX_VALUE; id++) {
-			if (entities.containsKey(id))
-				continue;
+	public <T extends RushEntity> HashSet<T> getAll(Class<T> type) {
+		if (!entityGroups.containsKey(type))
+			entityGroups.put((Class<RushEntity>) type, new HashSet<>());
+			
+		return (HashSet<T>) entityGroups.get(type);
+	}
 
-			entities.put(id, entity);
-			entity.id =	 id;
-
-			((Collection<RushEntity>) getAll(entity.getClass())).add(entity);
-
-			nextId = id + 1;
-
-			return id;
-		}
-
-		for (int id = Integer.MIN_VALUE; id < -1; id++) {
-			if (entities.containsKey(id))
+	public void allocate(RushEntity entity) {
+		for (int i = nextId; i < Integer.MAX_VALUE; i++) {
+			if (entities.containsKey(entity.id))
 				continue;
 			
-			entities.put(id, entity);
+			System.out.println("Allocated new entity " + entity + " id " + entity.id);
 
-			((Collection<RushEntity>) getAll(entity.getClass())).add(entity);
+			entity.id = nextId++;
 
-			nextId = id + 1;
-
-			return id;
+			entities.put(entity.id, entity);
+			((HashSet<RushEntity>) getAll(entity.getClass())).add(entity);			
+			break;
 		}
-
-		throw new IllegalStateException("No free entity ids");
 	}
 
 	public void deallocate(RushEntity entity) {
-		entities.remove(entity.id);
+		Validate.isTrue(entities.containsKey(entity.id), "Error deallocating entity id " + entity.id + " (does not exist in the map)");
+
+		entities.remove(entity);
 		getAll(entity.getClass()).remove(entity);
 	}
 
@@ -77,6 +53,5 @@ public final class EntityManager implements Iterable<RushEntity> {
 	public Iterator<RushEntity> iterator() {
 		return entities.values().iterator();
 	}
-
 }
 

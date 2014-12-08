@@ -6,19 +6,17 @@ import java.util.Set;
 
 import net.rush.RushServer;
 import net.rush.api.ChunkCoords;
+import net.rush.api.meta.MetaParam;
 import net.rush.model.RushChunk;
 import net.rush.model.Session;
 import net.rush.protocol.Packet;
 import net.rush.protocol.packets.ChatMessage;
 import net.rush.protocol.packets.DestroyEntity;
+import net.rush.protocol.packets.NamedEntitySpawn;
 import net.rush.protocol.packets.PlayerLookAndPosition;
 import net.rush.protocol.packets.SpawnPosition;
-import net.rush.utils.MetaParam;
 
-/**
- * Represents an in-game player.
- */
-public final class RushPlayer extends RushEntity {
+public final class RushPlayer extends RushTrackeableEntity {
 
 	/**
 	 * The normal height of a player's eyes above their feet.
@@ -38,7 +36,8 @@ public final class RushPlayer extends RushEntity {
 	public final HashSet<ChunkCoords> knownChunks = new HashSet<>();
 
 	public boolean sprinting = false;
-	private boolean crouching = false;
+	public boolean crouching = false;
+	public boolean onGround = false;
 
 	public RushPlayer(Session session, String name) {
 		super(session.server.world);
@@ -47,16 +46,16 @@ public final class RushPlayer extends RushEntity {
 		this.session = session;
 		this.server = session.server;
 		
-		setPosition(0, 80, 0);
+		setPosition(world.spawnPosition);
 
 		// stream the initial set of blocks and teleport us
 		streamBlocks();
 
-		session.sendPacket(new SpawnPosition(0, 80, 0)); // compass
-		session.sendPacket(new PlayerLookAndPosition(posX, posY, posZ, posY + NORMAL_EYE_HEIGHT, 0F, 0F, true));
+		session.sendPacket(new SpawnPosition(world.spawnPosition)); // compass
+		session.sendPacket(new PlayerLookAndPosition(position.x, position.y, position.z, position.y + NORMAL_EYE_HEIGHT, 0F, 0F, true));
 
 		server.getLogger().info(name + " [" + session.removeAddress() + "] logged in with id " + id + " at ([world] x:? y:? z:?)");
-		//server.broadcastMessage("&e" + name + " has joined the game.");
+		server.broadcastMessage("&3" + name + " &fhas joined the game.");
 		
 		sendMessage("%Rush Welcome to Rush, " + name);
 	}
@@ -71,10 +70,23 @@ public final class RushPlayer extends RushEntity {
 		
 		streamBlocks();
 
+		// Spawn new entities.
+		for (RushEntity entity : world.entities) {
+			if (entity.id == id)
+				continue;
+
+			if (!knownEntities.contains(entity) && entity.isActive() && canSee(entity)) {
+				knownEntities.add(entity);
+				session.sendPacket(entity.createSpawnMessage());
+				sendMessage("Recieved metadata of " + entity + " id " + id);
+			}
+		}
+		
+		// Update existing entities.
 		for (Iterator<RushEntity> it = knownEntities.iterator(); it.hasNext(); ) {
 			RushEntity entity = it.next();
 			
-			if (entity.active && canSee(entity)) {
+			if (entity.isActive() && canSee(entity)) {
 				Packet updatePacket = entity.createUpdateMessage();
 
 				if (updatePacket != null)
@@ -85,16 +97,6 @@ public final class RushPlayer extends RushEntity {
 				it.remove();
 			}
 		}
-
-		for (RushEntity entity : world.entities) {
-			if (entity == this)
-				continue;
-
-			if (!knownEntities.contains(entity) && entity.active && canSee(entity)) {
-				knownEntities.add(entity);
-				session.sendPacket(entity.createSpawnMessage());
-			}
-		}
 	}
 
 	/**
@@ -103,10 +105,10 @@ public final class RushPlayer extends RushEntity {
 	public void streamBlocks() {
 		Set<ChunkCoords> previousChunks = new HashSet<>(knownChunks);
 
-		int centralX = ((int) posX) / RushChunk.WIDTH;
-		int centralZ = ((int) posZ) / RushChunk.HEIGHT;
+		int centralX = position.intX() / RushChunk.WIDTH;
+		int centralZ = position.intZ() / RushChunk.HEIGHT;
 
-		int viewDistance = 10;
+		int viewDistance = server.viewDistance;
 
 		for (int x = (centralX - viewDistance); x <= (centralX + viewDistance); x++)
 			for (int z = (centralZ - viewDistance); z <= (centralZ + viewDistance); z++) {
@@ -121,7 +123,6 @@ public final class RushPlayer extends RushEntity {
 			}
 
 		for (ChunkCoords key : previousChunks)
-			//session.send(new PreChunkPacketImpl(key.x, key.z, false));
 			knownChunks.remove(key);
 
 		previousChunks.clear();
@@ -129,13 +130,8 @@ public final class RushPlayer extends RushEntity {
 
 
 	@Override
-	public Packet createSpawnMessage() {
-		return null;
-	}
-
-	@Override
-	public Packet createUpdateMessage() {
-		return null;
+	public Packet createSpawnMessage() {		
+		return new NamedEntitySpawn(id, name, position, 0, metadata);
 	}
 	
 	public void setCrouching(boolean crouching) {

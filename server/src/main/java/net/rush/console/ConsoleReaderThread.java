@@ -13,6 +13,8 @@ public class ConsoleReaderThread extends Thread {
 
 	public ConsoleReaderThread(RushServer server) {
 		this.server = server;
+		
+		setName("Console Thread");
 	}
 
 	@Override

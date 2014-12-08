@@ -6,7 +6,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import lombok.RequiredArgsConstructor;
 import net.rush.RushServer;
 import net.rush.model.Session;
 import net.rush.protocol.Packet;
@@ -15,31 +14,34 @@ import net.rush.protocol.Packet;
  * This is new instance for every channel - client that connects to
  * the server. It manages incoming messages (packets).
  */
-@RequiredArgsConstructor
 public class NettyChannelHandler extends SimpleChannelInboundHandler<Packet> {
 	
 	private final RushServer server;
-	private Session connection;
+	private Session session;
+	
+	public NettyChannelHandler(RushServer server) {
+		this.server = server;
+	}
 	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		System.out.println("*********** Channel connected: " + ctx.channel().remoteAddress());
 		
-		connection = new Session(ctx.channel(), server);
-		server.sessionRegistry.add(connection);
+		session = new Session(ctx.channel(), server);
+		server.sessionRegistry.add(session);
 	}
 	
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		System.out.println("Channel disconnected: " + ctx.channel().remoteAddress() + " ***********");
 		
-		server.sessionRegistry.remove(connection);
-		connection = null;
+		server.sessionRegistry.remove(session);
+		session = null;
 	}
 
 	@Override
-	protected void messageReceived(ChannelHandlerContext ctx, Packet msg) throws Exception {		
-		connection.messageReceived(msg);
+	protected void messageReceived(ChannelHandlerContext ctx, Packet msg) throws Exception {
+		session.messageReceived(msg);
 	}
 	
 	@Override
@@ -47,6 +49,6 @@ public class NettyChannelHandler extends SimpleChannelInboundHandler<Packet> {
 		Logger.getLogger("Minecraft").log(Level.SEVERE, "Exception caught, closing channel.", cause);
 		
 		ctx.close();
-		connection = null;
+		session = null;
 	}
 }
