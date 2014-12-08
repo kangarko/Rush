@@ -13,8 +13,8 @@ public class LogFormatter extends Formatter {
 
 		if (record.getThrown() != null)
 			record.getThrown().printStackTrace();
-
-		return date.format(record.getMillis()) + " [" + record.getLevel().toString() + "] " + formatMessage(record) + System.lineSeparator();
+		
+		return date.format(record.getMillis()) + " [" + record.getLevel() + "/" + Thread.currentThread().getName() + "] " + formatMessage(record) + System.lineSeparator();
 	}
 
 }

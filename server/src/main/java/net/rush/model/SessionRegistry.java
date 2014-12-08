@@ -23,10 +23,10 @@ public final class SessionRegistry {
 		for (Iterator<Session> it = sessions.iterator(); it.hasNext(); ) {
 			Session session = it.next();
 
-			if (session.active)
-				session.pulse();
-			else
+			if (session.isPendingRemoval())
 				it.remove();
+			else
+				session.pulse();
 		}
 	}
 	
@@ -42,7 +42,7 @@ public final class SessionRegistry {
 	}
 
 	public void remove(Session session) {
-		session.active = false;
+		session.destroy();
 	}
 
 }

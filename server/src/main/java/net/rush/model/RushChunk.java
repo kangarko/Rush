@@ -8,7 +8,6 @@ import net.rush.protocol.packets.ChunkBulk;
 
 import org.apache.commons.lang3.Validate;
 
-
 public final class RushChunk implements Chunk {
 
 	public static final int WIDTH = 16, DEPTH = 256, HEIGHT = 16;
@@ -21,9 +20,6 @@ public final class RushChunk implements Chunk {
 	 */
 	public final byte[] types, metaData, skyLight, blockLight, biomes;
 
-	/**
-	 * Creates a new chunk with a specified X and Z coordinates.
-	 */
 	public RushChunk(int x, int z) {
 		this.x = x;
 		this.z = z;
@@ -100,7 +96,6 @@ public final class RushChunk implements Chunk {
 	 */
 	public Packet toPacket() {
 		return new ChunkBulk(x, z, true, 0xFFFF, 0, serializeTileData());
-		//return new MapChunkPacketImpl(x * Chunk.WIDTH, z * Chunk.HEIGHT, 0, WIDTH, HEIGHT, DEPTH, serializeTileData());
 	}
 
 	/**
@@ -115,17 +110,18 @@ public final class RushChunk implements Chunk {
 	}
 
 	public byte[] serializeTileData() {
-		// (types + metaData + blocklight + skylight + add) * 16 vanilla-chunks + biome
-		byte[] data;
-
+		// (types + metaData + blocklight + skylight + add) * 16 sections in 1 chunks + biome // Using chunk sections.
+		//final byte[] data = new byte[(4096 + 2048 + 2048 + 2048 + 0) * 16 + 256];
+		
+		// (types + metaData + blocklight + skylight + add) + biome // Chunk is not divided into sections.
+		final byte[] data = new byte[65536 + 32768 + 32768 + 32768 + 0 + 256];
+		
 		int pos = types.length;
-
-		data = new byte[(4096 + 2048 + 2048 + 2048 + 0) * 16 + 256];
+		
 		// types
 		System.arraycopy(types, 0, data, 0, types.length);
 
-		if (pos != types.length)
-			throw new IllegalStateException("Illegal pos: " + pos + " vs " + types.length);
+		Validate.isTrue(pos == types.length, "Illegal pos: " + pos + " vs " + types.length);
 
 		// metadata
 		for (int i = 0; i < metaData.length; i += 2) {
@@ -152,8 +148,8 @@ public final class RushChunk implements Chunk {
 		for (int i = 0; i < 256; i++)
 			data[pos++] = biomes[i];
 
-		if (pos != data.length)
-			throw new IllegalStateException("Illegal Pos: " + pos + " vs " + data.length);
+		// Check if the position has reached the data length and filling up the whole array.
+		Validate.isTrue(pos == data.length, "Illegal Pos: " + pos + " vs " + data.length);
 
 		// compress
 		Deflater deflater = new Deflater(Deflater.BEST_SPEED);

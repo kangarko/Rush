@@ -32,14 +32,16 @@ public final class ChunkManager {
 			for (int z = 0; z < RushChunk.HEIGHT; z++)
 				for (int y = 0; y < RushChunk.DEPTH; y++) {
 					int id = 0;
-
-					if (y == 60)
-						id = 2;
-					else if (y >= 55 && y < 60)
-						id = 3;
-					else if (y == 0)
+					int grassHeight = 54;
+					int stoneHeight = 50;
+					
+					if (y == 0)
 						id = 7;
-					else if (y < 55)
+					else if (y == grassHeight)
+						id = 2;
+					else if (y > stoneHeight && y < grassHeight)
+						id = 3;
+					else if (y <= stoneHeight)
 						id = 1;
 
 					chunk.setType(x, y, z, id);

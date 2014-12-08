@@ -26,24 +26,24 @@ public class PlayerLookAndPosition extends PlayerOnGround {
 	}
 
 	@Override
-	public void read(ByteBuf input) throws IOException {
-		x = input.readDouble();
-		yOrStance = input.readDouble();
-		stanceOrY = input.readDouble();
-		z = input.readDouble();
+	public void read(ByteBuf in) throws IOException {
+		x = in.readDouble();
+		yOrStance = in.readDouble();
+		stanceOrY = in.readDouble();
+		z = in.readDouble();
 		
-		yaw = input.readFloat();
-		pitch = input.readFloat();
-		onGround = input.readBoolean();
+		yaw = in.readFloat();
+		pitch = in.readFloat();
+		onGround = in.readBoolean();
 	}
 
 	@Override
-	public void write(ByteBuf output) throws IOException {
-		output.writeDouble(x);
-		output.writeDouble(yOrStance); //feet height ??
-		output.writeDouble(z);
-		output.writeFloat(yaw);
-		output.writeFloat(pitch);
-		output.writeBoolean(onGround);
+	public void write(ByteBuf out) throws IOException {
+		out.writeDouble(x);
+		out.writeDouble(yOrStance); //feet height ??
+		out.writeDouble(z);
+		out.writeFloat(yaw);
+		out.writeFloat(pitch);
+		out.writeBoolean(onGround);
 	}
 }

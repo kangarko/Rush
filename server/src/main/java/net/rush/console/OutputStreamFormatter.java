@@ -16,7 +16,7 @@ public class OutputStreamFormatter extends ByteArrayOutputStream {
 	}
 
 	@Override
-	public void flush() throws IOException {
+	public void flush() throws IOException {		
 		synchronized (this) {
 			super.flush();
 			String record = this.toString();

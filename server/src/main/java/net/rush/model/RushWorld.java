@@ -1,12 +1,10 @@
 package net.rush.model;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Random;
 
 import net.rush.RushServer;
 import net.rush.api.ChunkCoords;
+import net.rush.api.Position;
 import net.rush.model.entity.RushEntity;
 import net.rush.model.entity.RushPlayer;
 
@@ -17,36 +15,43 @@ import org.apache.commons.lang3.Validate;
  */
 public class RushWorld {
 
-	public final Random rand = new Random();
 	public final RushServer server;
 
 	public final ChunkManager chunks;
 	public final EntityManager entities = new EntityManager();
-	public final HashSet<ChunkCoords> activeChunks = new HashSet<>();
 	
+	public final HashSet<ChunkCoords> loadedChunks = new HashSet<>();
+	
+	public final Position spawnPosition = new Position(0, 70, 0);
+			
 	public RushWorld(RushServer server) {
 		this.server = server;
 		this.chunks = new ChunkManager(this);
 	}
 
 	public void pulse() {
-		for (Iterator<RushEntity> it = entities.iterator(); it.hasNext(); ) {
+		resetActiveChunks();
+		
+		for (RushEntity entity : entities)
+			entity.pulse();
+		
+		for (RushEntity entity : entities)
+			entity.reset();
+		
+		// TODO Which one?
+		/*for (Iterator<RushEntity> it = entities.iterator(); it.hasNext(); ) {
 			RushEntity entity = it.next();
 
 			if (entity.active) {
 				entity.pulse();
 				entity.reset();
-			} else {
-				entity.destroy();
+			} else
 				it.remove();
-			}
-		}
-
-		resetActiveChunks();
+		}*/
 	}
 
 	protected void resetActiveChunks() {
-		activeChunks.clear();
+		loadedChunks.clear();
 
 		int chunkX, chunkZ;
 
@@ -54,25 +59,20 @@ public class RushWorld {
 		// is 7 in notchian server
 		int activationRadius = 7;
 
-		for (RushPlayer pl : getPlayers()) {
-			chunkX = ((int) pl.posX) / RushChunk.WIDTH;
-			chunkZ = ((int) pl.posZ) / RushChunk.HEIGHT;
+		for (RushPlayer pl : getPlayersInWorld()) {
+			chunkX = pl.position.intX() / RushChunk.WIDTH;
+			chunkZ = pl.position.intZ() / RushChunk.HEIGHT;
 
 			for (int x = (chunkX - activationRadius); x <= (chunkX + activationRadius); x++)
 				for (int z = (chunkZ - activationRadius); z <= (chunkZ + activationRadius); z++) {
 					ChunkCoords key = new ChunkCoords(x, z);
 					
-					activeChunks.add(key);
+					loadedChunks.add(key);
 				}
 		}
 	}
 
-	/**
-	 * Gets a collection of all the players within this world.
-	 *
-	 * @return A {@link Collection} of {@link RushPlayer} objects.
-	 */
-	public Collection<RushPlayer> getPlayers() {
+	public HashSet<RushPlayer> getPlayersInWorld() {
 		return entities.getAll(RushPlayer.class);
 	}
 

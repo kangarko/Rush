@@ -8,9 +8,9 @@ import java.util.Objects;
 import java.util.UUID;
 
 import net.rush.api.ItemStack;
-import net.rush.exceptions.PacketException;
-import net.rush.model.Position;
-import net.rush.utils.MetaParam;
+import net.rush.api.Position;
+import net.rush.api.exceptions.PacketException;
+import net.rush.api.meta.MetaParam;
 
 import org.apache.commons.lang3.Validate;
 
@@ -141,39 +141,42 @@ public class Packet {
 
 	@SuppressWarnings("unchecked")
 	public static void writeMetadata(ByteBuf out, MetaParam<?>[] parameters) throws IOException {
+		Objects.requireNonNull(parameters, "Metadata cannot be null!");
+		
 		for (MetaParam<?> parameter : parameters) {
-			Objects.requireNonNull(parameter, "Metadata cannot be null!");
+			if (parameter == null) // Parameter on current index is not set, continue to see if the next index has some parameter.
+				continue;
 			
-			int type = (parameter.getType() << 5 | parameter.getIndex() & 31) & 255;
+			int type = (parameter.getType().getId() << 5 | parameter.getIndex() & 31) & 255;
 			out.writeByte(type);
 
 			switch (parameter.getType()) {
-				case MetaParam.TYPE_BYTE:
+				case BYTE:
 					out.writeByte(((MetaParam<Byte>) parameter).getValue());
 					break;
 
-				case MetaParam.TYPE_SHORT:
+				case SHORT:
 					out.writeShort(((MetaParam<Short>) parameter).getValue());
 					break;
 
-				case MetaParam.TYPE_INT:
+				case INT:
 					out.writeInt(((MetaParam<Integer>) parameter).getValue());
 					break;
 
-				case MetaParam.TYPE_FLOAT:
+				case FLOAT:
 					out.writeFloat(((MetaParam<Float>) parameter).getValue());
 					break;
 
-				case MetaParam.TYPE_STRING:
+				case STRING:
 					writeString(((MetaParam<String>) parameter).getValue(), out);
 					break;
 
-				case MetaParam.TYPE_ITEM:
+				case ITEM:
 					ItemStack item = ((MetaParam<ItemStack>) parameter).getValue();
 					writeItemstack(item, out);
 					break;
 
-				case MetaParam.TYPE_COORDINATE:
+				case COORDINATE:
 					Position coord = ((MetaParam<Position>) parameter).getValue();
 					writePosIntegers(coord.intX(), coord.intY(), coord.intZ(), out);
 			}
@@ -186,34 +189,34 @@ public class Packet {
 
 		for (int data = in.readUnsignedByte(); data != 127; data = in.readUnsignedByte()) {
 			int index = data & 0x1F;
-			int type = data >> 5;
+			MetaParam.Type type = MetaParam.Type.fromId(data >> 5);
 
 			switch (type) {
-				case MetaParam.TYPE_BYTE:
+				case BYTE:
 					parameters[index] = new MetaParam<Byte>(index, in.readByte());
 					break;
 
-				case MetaParam.TYPE_SHORT:
+				case SHORT:
 					parameters[index] = new MetaParam<Short>(index, in.readShort());
 					break;
 
-				case MetaParam.TYPE_INT:
+				case INT:
 					parameters[index] = new MetaParam<Integer>(index, in.readInt());
 					break;
 
-				case MetaParam.TYPE_FLOAT:
+				case FLOAT:
 					parameters[index] = new MetaParam<Float>(index, in.readFloat());
 					break;
 
-				case MetaParam.TYPE_STRING:
+				case STRING:
 					parameters[index] = new MetaParam<String>(index, readString(in));
 					break;
 
-				case MetaParam.TYPE_ITEM:
+				case ITEM:
 					parameters[index] = new MetaParam<ItemStack>(index, readItemstack(in));
 					break;
 
-				case MetaParam.TYPE_COORDINATE:
+				case COORDINATE:
 					Position pos;
 					pos = new Position(in.readInt(), in.readInt(), in.readInt());
 

@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.rush.model.Position;
+import net.rush.api.Position;
 import net.rush.protocol.Packet;
 
 @Data

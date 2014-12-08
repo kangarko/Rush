@@ -4,10 +4,10 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
-import net.rush.protocol.Packet;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import net.rush.protocol.Packet;
 
 @Data
 @NoArgsConstructor

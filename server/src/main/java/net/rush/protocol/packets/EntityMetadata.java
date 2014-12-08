@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import net.rush.api.meta.MetaParam;
 import net.rush.protocol.Packet;
-import net.rush.utils.MetaParam;
 
 @Data
 @AllArgsConstructor
