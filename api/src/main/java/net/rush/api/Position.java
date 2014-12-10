@@ -125,6 +125,6 @@ public final class Position {
 	
 	@Override
 	public String toString() {
-		return "Position{x=" + x +",y=" + y + ",z=" + z + "}";
+		return "x:" + x +" y:" + y + " z:" + z;
 	}
 }

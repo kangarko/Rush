@@ -3,6 +3,7 @@ package net.rush.model.entity;
 
 import java.util.Objects;
 
+import net.rush.RushServer;
 import net.rush.api.Position;
 import net.rush.api.meta.MetaParam;
 import net.rush.api.world.Chunk;
@@ -11,13 +12,11 @@ import net.rush.model.RushWorld;
 import net.rush.protocol.Packet;
 import net.rush.protocol.packets.EntityMetadata;
 
-/**
- * Represents some entity in the world such as an item on the floor or a player.
-
- */
 public abstract class RushEntity {
 
+	public final RushServer server;
 	public final RushWorld world;
+	
 	protected final MetaParam<?>[] metadata = new MetaParam<?>[MetaParam.METADATA_SIZE];
 	
 	protected long ticksLived = 0;
@@ -34,14 +33,13 @@ public abstract class RushEntity {
 	 * @param world The world.
 	 */
 	protected RushEntity(RushWorld world) {
+		this.server = world.server;
 		this.world = world;
-
+		world.entities.allocate(this);
+		
 		// FIXME Unsure, notchian sends them.
 		setMetadata(new MetaParam<Byte>(0, (byte) 0));
 		setMetadata(new MetaParam<Short>(1, (short) 300));
-		
-		setMetadata(new MetaParam<Float>(6, 20F)); // Health.
-		world.entities.allocate(this);
 	}
 
 	public boolean canSee(RushEntity other) {
@@ -57,13 +55,13 @@ public abstract class RushEntity {
 
 		if (metadataChanged) {
 			metadataChanged = false;
-			world.server.sessionRegistry.broadcastPacket(new EntityMetadata(id, metadata)); // TODO Send to self?
+			world.server.sessionRegistry.broadcastPacketExcept(new EntityMetadata(id, metadata), id); // TODO Send to self?
 		}
 	}
 
 	public void reset() {
-		Objects.requireNonNull(position, "Position of " + this + " id " + id + " is null!");
-		Objects.requireNonNull(prevPosition, "Previous position of " + this + " id " + id + " is null!");
+		Objects.requireNonNull(position, "Position of " + this + id + " is null!");
+		Objects.requireNonNull(prevPosition, "Previous position of " + this + id + " is null!");
 		
 		prevPosition = position;
 	}
@@ -128,8 +126,8 @@ public abstract class RushEntity {
 	}
 	
 	@Override
-	public String toString() {
-		return getClass().getSimpleName();
+	public String toString() {		
+		return getClass().getSimpleName() + " id " + id;
 	}
 }
 

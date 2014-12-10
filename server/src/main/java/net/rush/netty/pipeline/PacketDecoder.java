@@ -8,6 +8,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import java.util.List;
 
 import net.rush.api.exceptions.PacketException;
+import net.rush.netty.NettyChannelHandler;
 import net.rush.protocol.Packet;
 import net.rush.protocol.Protocol;
 import net.rush.protocol.packets.Handshake;
@@ -28,12 +29,14 @@ public class PacketDecoder extends ByteToMessageDecoder {
 			}
 			
 			Protocol.PacketDirection prot = protocol.TO_SERVER;
-
+			int protocol = ctx.pipeline().get(NettyChannelHandler.class).session.protocol;
+			
 			int id = Packet.readVarInt(in);
 			Packet packet = null;
 
 			if (prot.hasPacket(id)) {
 				packet = prot.newPacket(id);
+				packet.protocol = protocol;
 				packet.read(in);
 
 				if (in.readableBytes() != 0)

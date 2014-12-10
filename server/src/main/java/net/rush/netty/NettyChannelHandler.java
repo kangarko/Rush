@@ -17,7 +17,7 @@ import net.rush.protocol.Packet;
 public class NettyChannelHandler extends SimpleChannelInboundHandler<Packet> {
 	
 	private final RushServer server;
-	private Session session;
+	public Session session;
 	
 	public NettyChannelHandler(RushServer server) {
 		this.server = server;
