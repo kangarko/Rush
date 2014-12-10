@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import net.rush.RushServer;
+import net.rush.api.ChatColor;
 import net.rush.api.ChunkCoords;
 import net.rush.api.meta.MetaParam;
 import net.rush.model.RushChunk;
@@ -12,7 +12,8 @@ import net.rush.model.Session;
 import net.rush.protocol.Packet;
 import net.rush.protocol.packets.ChatMessage;
 import net.rush.protocol.packets.DestroyEntity;
-import net.rush.protocol.packets.NamedEntitySpawn;
+import net.rush.protocol.packets.SpawnPlayer;
+import net.rush.protocol.packets.PlayerListItem;
 import net.rush.protocol.packets.PlayerLookAndPosition;
 import net.rush.protocol.packets.SpawnPosition;
 
@@ -30,8 +31,7 @@ public final class RushPlayer extends RushTrackeableEntity {
 
 	public final String name;
 	public final Session session;
-	public final RushServer server;
-	
+
 	public final HashSet<RushEntity> knownEntities = new HashSet<>();
 	public final HashSet<ChunkCoords> knownChunks = new HashSet<>();
 
@@ -44,19 +44,19 @@ public final class RushPlayer extends RushTrackeableEntity {
 
 		this.name = name;
 		this.session = session;
-		this.server = session.server;
 		
+		setMetadata(new MetaParam<Float>(6, 20F)); // Health.
 		setPosition(world.spawnPosition);
 
-		// stream the initial set of blocks and teleport us
 		streamBlocks();
+		updateTabList();
 
 		session.sendPacket(new SpawnPosition(world.spawnPosition)); // compass
-		session.sendPacket(new PlayerLookAndPosition(position.x, position.y, position.z, position.y + NORMAL_EYE_HEIGHT, 0F, 0F, true));
+		session.sendPacket(new PlayerLookAndPosition(position.x, position.y, position.z, 0F, 0F, true));
 
-		server.getLogger().info(name + " [" + session.removeAddress() + "] logged in with id " + id + " at ([world] x:? y:? z:?)");
+		server.getLogger().info(name + " [" + session.removeAddress() + "] logged in with id " + id + " at ([world] " + position + ")");
 		server.broadcastMessage("&3" + name + " &fhas joined the game.");
-		
+
 		sendMessage("%Rush Welcome to Rush, " + name);
 	}
 
@@ -67,7 +67,7 @@ public final class RushPlayer extends RushTrackeableEntity {
 	@Override
 	public void pulse() {
 		super.pulse();
-		
+
 		streamBlocks();
 
 		// Spawn new entities.
@@ -78,14 +78,15 @@ public final class RushPlayer extends RushTrackeableEntity {
 			if (!knownEntities.contains(entity) && entity.isActive() && canSee(entity)) {
 				knownEntities.add(entity);
 				session.sendPacket(entity.createSpawnMessage());
-				sendMessage("Recieved metadata of " + entity + " id " + id);
+				sendMessage(ChatColor.GRAY + "Recieved spawn packet of " + ChatColor.GREEN + entity);
+				System.out.println(this + " has received spawn packet of " + entity);
 			}
 		}
-		
+
 		// Update existing entities.
 		for (Iterator<RushEntity> it = knownEntities.iterator(); it.hasNext(); ) {
 			RushEntity entity = it.next();
-			
+
 			if (entity.isActive() && canSee(entity)) {
 				Packet updatePacket = entity.createUpdateMessage();
 
@@ -131,9 +132,17 @@ public final class RushPlayer extends RushTrackeableEntity {
 
 	@Override
 	public Packet createSpawnMessage() {		
-		return new NamedEntitySpawn(id, name, position, 0, metadata);
+		return new SpawnPlayer(id, name, position, 0, metadata);
 	}
-	
+
+	@Override
+	public void destroy() {
+		super.destroy();
+
+		server.broadcastMessage("&3" + name + " &fleft the game.");
+		removeFromTabList();
+	}
+
 	public void setCrouching(boolean crouching) {
 		this.crouching = crouching;
 		setMetadata(new MetaParam<Byte>(0, new Byte((byte) (crouching ? 0x02: 0))));
@@ -147,8 +156,32 @@ public final class RushPlayer extends RushTrackeableEntity {
 		// FIXME: other bits in the bitmask would be wiped out
 	}
 
+	public void updateTabList() {
+		PlayerListItem thisPlayer = new PlayerListItem(name, true, 0);
+
+		for(RushPlayer otherPlayer : server.getPlayers()) {
+			otherPlayer.session.sendPacket(thisPlayer);
+			session.sendPacket(new PlayerListItem(otherPlayer.name, true, 0));
+		}
+	}
+
+	public void removeFromTabList() {
+		PlayerListItem playerToRemove = new PlayerListItem(name, false, 0);
+
+		for(RushPlayer otherPlayer : server.getPlayers())
+			if (otherPlayer.id == id)
+				continue;
+			else
+				otherPlayer.session.sendPacket(playerToRemove);		
+	}
+
 	public double getEyeHeight() {
 		return crouching ? CROUCH_EYE_HEIGHT : NORMAL_EYE_HEIGHT;
+	}
+
+	@Override
+	public String toString() {
+		return name == null ? super.toString() : name + " id " + id;
 	}
 }
 

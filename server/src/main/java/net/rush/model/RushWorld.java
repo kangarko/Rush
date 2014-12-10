@@ -1,6 +1,7 @@
 package net.rush.model;
 
 import java.util.HashSet;
+import java.util.Iterator;
 
 import net.rush.RushServer;
 import net.rush.api.ChunkCoords;
@@ -22,7 +23,7 @@ public class RushWorld {
 	
 	public final HashSet<ChunkCoords> loadedChunks = new HashSet<>();
 	
-	public final Position spawnPosition = new Position(0, 70, 0);
+	public final Position spawnPosition = new Position(0, 60, 0);
 			
 	public RushWorld(RushServer server) {
 		this.server = server;
@@ -32,22 +33,24 @@ public class RushWorld {
 	public void pulse() {
 		resetActiveChunks();
 		
-		for (RushEntity entity : entities)
+		/*for (RushEntity entity : entities)
 			entity.pulse();
 		
 		for (RushEntity entity : entities)
-			entity.reset();
+			entity.reset();*/
 		
 		// TODO Which one?
-		/*for (Iterator<RushEntity> it = entities.iterator(); it.hasNext(); ) {
+		for (Iterator<RushEntity> it = entities.iterator(); it.hasNext(); ) {
 			RushEntity entity = it.next();
 
-			if (entity.active) {
+			if (entity.isActive()) {
 				entity.pulse();
-				entity.reset();
 			} else
 				it.remove();
-		}*/
+		}
+		
+		for (RushEntity entity : entities)
+			entity.reset();
 	}
 
 	protected void resetActiveChunks() {

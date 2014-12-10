@@ -16,8 +16,8 @@ public class PlayerOnGround extends Packet {
 
 	protected boolean onGround;
 	protected double x;
-	protected double yOrStance;
-	protected double stanceOrY;
+	protected double feetY;
+	protected double headY;
 	protected double z;
 	protected float yaw;
 	protected float pitch;

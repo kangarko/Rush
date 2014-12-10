@@ -57,6 +57,17 @@ public class RushServer implements Server {
 		
 		initConnection();
 		
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				if (isRunning) {
+					logger.info("Error: Unexpected server shutdown!");
+					logger.info("Server shutdown initiated but");
+					logger.info("the isRunning flag is still true!");
+				}
+			}
+		});
+		
 		logger.info("Ready for connections.");
 	}
 
@@ -89,8 +100,12 @@ public class RushServer implements Server {
 	}
 	
 	public void stop() {
-		logger.info("Stopping Rush. Thank you and Good Bye!");
 		isRunning = false;
+		
+		for (RushPlayer player : getPlayers())
+			player.session.disconnect("Server closed");
+		
+		logger.info("Rush stopped. Thank you and good bye!");
 		
 		System.exit(0);
 	}

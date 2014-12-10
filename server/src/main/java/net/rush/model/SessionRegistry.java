@@ -15,7 +15,7 @@ public final class SessionRegistry {
 	public void pulse() {
 		synchronized (pending) {
 			Session session;
-			
+
 			while ((session = pending.poll()) != null)
 				sessions.add(session);
 		}
@@ -30,9 +30,12 @@ public final class SessionRegistry {
 		}
 	}
 	
-	public void broadcastPacket(Packet packet) {
-		for (Session session : sessions)
+	public void broadcastPacketExcept(Packet packet, int entityId) {
+		for (Session session : sessions) {
+			if (session.player.id == entityId)
+				continue;
 			session.sendPacket(packet);
+		}
 	}
 
 	public void add(Session session) {

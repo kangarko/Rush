@@ -9,7 +9,7 @@ import net.rush.model.entity.RushEntity;
 import org.apache.commons.lang3.Validate;
 
 @SuppressWarnings("unchecked")
-public final class EntityManager implements Iterable<RushEntity> {
+public class EntityManager implements Iterable<RushEntity> {
 
 	private final HashMap<Integer, RushEntity> entities = new HashMap<>();
 	private final HashMap<Class<RushEntity>, HashSet<RushEntity>> entityGroups = new HashMap<>();
@@ -31,13 +31,12 @@ public final class EntityManager implements Iterable<RushEntity> {
 		for (int i = nextId; i < Integer.MAX_VALUE; i++) {
 			if (entities.containsKey(entity.id))
 				continue;
-			
-			System.out.println("Allocated new entity " + entity + " id " + entity.id);
 
 			entity.id = nextId++;
-
 			entities.put(entity.id, entity);
-			((HashSet<RushEntity>) getAll(entity.getClass())).add(entity);			
+			((HashSet<RushEntity>) getAll(entity.getClass())).add(entity);
+			
+			System.out.println("Allocated new entity " + entity);
 			break;
 		}
 	}

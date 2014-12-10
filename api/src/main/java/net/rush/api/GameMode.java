@@ -3,7 +3,7 @@ package net.rush.api;
 import java.util.HashMap;
 
 /**
- * Represents the various type of game modes that {@link HumanEntity}s may
+ * Represents the various types of game modes that Player may
  * have
  */
 public enum GameMode {

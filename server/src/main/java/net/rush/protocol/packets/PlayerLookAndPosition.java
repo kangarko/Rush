@@ -15,11 +15,11 @@ import lombok.ToString;
 @ToString(callSuper=true)
 public class PlayerLookAndPosition extends PlayerOnGround {
 
-	public PlayerLookAndPosition(double x, double yOrStance, double stanceOrY, double z, float yaw, float pitch, boolean onGround) {
+	public PlayerLookAndPosition(double x, double headY, double z, float yaw, float pitch, boolean onGround) {
 		super(onGround);
 		this.x = x;
-		this.yOrStance = yOrStance;
-		this.stanceOrY = stanceOrY;
+		this.feetY = headY;
+		this.headY = headY;
 		this.z = z;
 		this.yaw = yaw;
 		this.pitch = pitch;
@@ -28,19 +28,20 @@ public class PlayerLookAndPosition extends PlayerOnGround {
 	@Override
 	public void read(ByteBuf in) throws IOException {
 		x = in.readDouble();
-		yOrStance = in.readDouble();
-		stanceOrY = in.readDouble();
+		feetY = in.readDouble();
+		headY = in.readDouble();
 		z = in.readDouble();
 		
 		yaw = in.readFloat();
 		pitch = in.readFloat();
+		
 		onGround = in.readBoolean();
 	}
 
 	@Override
 	public void write(ByteBuf out) throws IOException {
 		out.writeDouble(x);
-		out.writeDouble(yOrStance); //feet height ??
+		out.writeDouble(headY);
 		out.writeDouble(z);
 		out.writeFloat(yaw);
 		out.writeFloat(pitch);

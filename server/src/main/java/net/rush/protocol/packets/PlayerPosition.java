@@ -18,16 +18,16 @@ public class PlayerPosition extends PlayerOnGround {
 	public PlayerPosition(double x, double y, double stance, double z, boolean onGround) {
 		super(onGround);
 		this.x = x;
-		yOrStance = y;
-		stanceOrY = stance;
+		feetY = y;
+		headY = stance;
 		this.z = z;
 	}
 
 	@Override
 	public void read(ByteBuf in) throws IOException {
 		x = in.readDouble();
-		yOrStance = in.readDouble();
-		stanceOrY = in.readDouble();
+		feetY = in.readDouble();
+		headY = in.readDouble();
 		z = in.readDouble();
 		onGround = in.readBoolean();
 	}
@@ -35,8 +35,8 @@ public class PlayerPosition extends PlayerOnGround {
 	@Override
 	public void write(ByteBuf out) throws IOException {
 		out.writeDouble(x);
-		out.writeDouble(yOrStance - 1.62);
-		out.writeDouble(stanceOrY);
+		out.writeDouble(feetY - 1.62);
+		out.writeDouble(headY);
 		out.writeDouble(z);
 		out.writeBoolean(onGround);
 	}

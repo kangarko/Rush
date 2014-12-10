@@ -15,6 +15,8 @@ import net.rush.api.meta.MetaParam;
 import org.apache.commons.lang3.Validate;
 
 public class Packet {
+	
+	public int protocol;
 
 	public static void writeString(String s, ByteBuf buf) {
 		Validate.isTrue(s.length() <= Short.MAX_VALUE, "Cannot send string longer than Short.MAX_VALUE (got %s characters)", s.length());
@@ -39,8 +41,8 @@ public class Packet {
 		buf.writeBytes(b);
 	}
 
-	public static byte[] readArray(ByteBuf buf) {
-		byte[] ret = new byte[readVarInt(buf)];
+	public static byte[] readArrayShort(ByteBuf buf) {
+		byte[] ret = new byte[buf.readShort()];
 		buf.readBytes(ret);
 		
 		return ret;

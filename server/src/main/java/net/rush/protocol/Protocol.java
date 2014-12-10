@@ -24,11 +24,13 @@ import net.rush.protocol.packets.KeepAlive;
 import net.rush.protocol.packets.Kick;
 import net.rush.protocol.packets.LoginStart;
 import net.rush.protocol.packets.LoginSuccess;
-import net.rush.protocol.packets.NamedEntitySpawn;
+import net.rush.protocol.packets.SpawnPlayer;
+import net.rush.protocol.packets.PlayerListItem;
 import net.rush.protocol.packets.PlayerLook;
 import net.rush.protocol.packets.PlayerLookAndPosition;
 import net.rush.protocol.packets.PlayerOnGround;
 import net.rush.protocol.packets.PlayerPosition;
+import net.rush.protocol.packets.PluginMessage;
 import net.rush.protocol.packets.SpawnPosition;
 import net.rush.protocol.packets.StatusPing;
 import net.rush.protocol.packets.StatusRequest;
@@ -57,7 +59,7 @@ public enum Protocol {
 			/*TO_CLIENT.registerPacket(0x09, PacketHeldItemChange.class);
 			TO_CLIENT.registerPacket(0x0A, PacketUseBed.class); //Packet17EntityLocationAction
 			TO_CLIENT.registerPacket(0x0B, PacketAnimation.class);
-			*/TO_CLIENT.registerPacket(0x0C, NamedEntitySpawn.class);
+			*/TO_CLIENT.registerPacket(0x0C, SpawnPlayer.class);
 			/*TO_CLIENT.registerPacket(0x0D, PacketItemCollect.class);
 			TO_CLIENT.registerPacket(0x0E, PacketSpawnObject.class);
 			TO_CLIENT.registerPacket(0x0F, PacketSpawnMob.class);
@@ -65,7 +67,7 @@ public enum Protocol {
 			TO_CLIENT.registerPacket(0x11, PacketSpawnExpOrb.class);
 			TO_CLIENT.registerPacket(0x12, PacketEntityVelocity.class);
 			*/TO_CLIENT.registerPacket(0x13, DestroyEntity.class);
-			//TO_CLIENT.registerPacket(0x14, PacketEntityExists.class);
+			//TO_CLIENT.registerPacket(0x14, PacketEntityExists.class); // Inherit this as base for other entity packets
 			TO_CLIENT.registerPacket(0x15, EntityRelMove.class);
 			TO_CLIENT.registerPacket(0x16, EntityLook.class);
 			TO_CLIENT.registerPacket(0x17, EntityLookRelMove.class);
@@ -101,14 +103,14 @@ public enum Protocol {
 			TO_CLIENT.registerPacket(0x35, PacketUpdateTileEntity.class);
 			TO_CLIENT.registerPacket(0x36, Packet133OpenTileEntity.class);
 			TO_CLIENT.registerPacket(0x37, Packet200Statistic.class);
-			TO_CLIENT.registerPacket(0x38, PacketPlayerListItem.class);
-			TO_CLIENT.registerPacket(0x39, PacketPlayerAbilities.class);
+			*/TO_CLIENT.registerPacket(0x38, PlayerListItem.class);
+			/*TO_CLIENT.registerPacket(0x39, PacketPlayerAbilities.class);
 			TO_CLIENT.registerPacket(0x3A, PacketTabComplete.class);
 			TO_CLIENT.registerPacket(0x3B, Packet206SetScoreboardObjective.class);
 			TO_CLIENT.registerPacket(0x3C, Packet207SetScoreboardScore.class);
 			TO_CLIENT.registerPacket(0x3D, Packet208SetScoreboardDisplayObjective.class);
-			TO_CLIENT.registerPacket(0x3E, Packet209SetScoreboardTeam.class);
-			TO_CLIENT.registerPacket(0x3F, PacketPluginMessage.class);*/
+			TO_CLIENT.registerPacket(0x3E, Packet209SetScoreboardTeam.class);*/
+			TO_CLIENT.registerPacket(0x3F, PluginMessage.class);
 			TO_CLIENT.registerPacket(0x40, Kick.class);
 
 			TO_SERVER.registerPacket(0x00, KeepAlive.class);
@@ -134,7 +136,7 @@ public enum Protocol {
 			TO_SERVER.registerPacket(0x14, PacketTabComplete.class);
 			*/TO_SERVER.registerPacket(0x15, ClientSettings.class);
 			TO_SERVER.registerPacket(0x16, ClientStatus.class);
-			//TO_SERVER.registerPacket(0x17, PacketPluginMessage.class);
+			TO_SERVER.registerPacket(0x17, PluginMessage.class);
 			// 1.8
 			//TO_CLIENT.registerPacket(0x45, Packet18Title.class);
 		}

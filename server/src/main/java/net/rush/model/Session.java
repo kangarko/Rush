@@ -29,6 +29,8 @@ public class Session {
 
 	public int pingTimer;
 	public int pingToken = 0;
+	public int protocol = 5;
+	
 	private boolean pendingRemoval = false;
 	public RushPlayer player = null;
 
@@ -39,7 +41,7 @@ public class Session {
 	public void sendPacket(Kick packet) {
 		disconnect(packet.getReason());
 	}
-
+	
 	public void disconnect(String reason) {
 		channel.writeAndFlush(new Kick(JsonUtils.jsonizeChat(reason))).addListener(ChannelFutureListener.CLOSE);
 	}
