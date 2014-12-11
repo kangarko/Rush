@@ -35,7 +35,7 @@ public class PlayerLookAndPosition extends PlayerOnGround {
 		yaw = in.readFloat();
 		pitch = in.readFloat();
 		
-		onGround = in.readBoolean();
+		super.read(in);
 	}
 
 	@Override
@@ -45,6 +45,6 @@ public class PlayerLookAndPosition extends PlayerOnGround {
 		out.writeDouble(z);
 		out.writeFloat(yaw);
 		out.writeFloat(pitch);
-		out.writeBoolean(onGround);
+		super.write(out);
 	}
 }

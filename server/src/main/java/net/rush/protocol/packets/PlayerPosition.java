@@ -29,7 +29,7 @@ public class PlayerPosition extends PlayerOnGround {
 		feetY = in.readDouble();
 		headY = in.readDouble();
 		z = in.readDouble();
-		onGround = in.readBoolean();
+		super.read(in);
 	}
 
 	@Override
@@ -38,6 +38,6 @@ public class PlayerPosition extends PlayerOnGround {
 		out.writeDouble(feetY - 1.62);
 		out.writeDouble(headY);
 		out.writeDouble(z);
-		out.writeBoolean(onGround);
+		super.write(out);
 	}
 }

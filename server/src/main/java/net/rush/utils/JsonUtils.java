@@ -21,15 +21,14 @@ public class JsonUtils {
 		return json;
 	}
 
-	public static String jsonizeChat(String str) {
+	public static String jsonizePlainText(String str) {
 		String json = "{\"text\":\"" + ChatColor.translateAlternateColorCodes('&', str.replace("%Rush", "&3Rush //&f").replace("\"", "\\u0022")) + "\"}";
 
 		return json;
 	}
 
-	/*public static String chatMessageToJson(Message message) {
-		String
-		json = "{";
+	/*public static String jsonizeChatMessage(Message message) {
+		String json = "{";
 
 		json+= "\"text\":\"" + message.text + "\",";
 
@@ -38,10 +37,11 @@ public class JsonUtils {
 		json+= "\"underlined\":\"" + message.underlined + "\",";
 		json+= "\"strikethrough\":\"" + message.strikethrough + "\",";
 		json+= "\"obfuscated\":\"" + message.obfuscated + "\",";
-
-		json+= "\"color\":{\"code\":\"" + message.color.code + "\"" + "},";
-		json+= "\"clickEvent\":{\"action\":" + message.clickEvent.action + ",\"value\":" + message.clickEvent.value + "}";
-
+		
+		
+		json+= "\"color\":" + message.color.name().toLowerCase() + "";
+		//json+= "\"clickEvent\":{\"action\":" + message.clickEvent.action + ",\"value\":" + message.clickEvent.value + "}";
+		
 		json+= "}";
 		return json;
 	}

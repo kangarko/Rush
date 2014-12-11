@@ -104,7 +104,7 @@ public final class RushChunk implements Chunk {
 	 * @return The index within the arrays.
 	 */
 	private int coordToIndex(int x, int y, int z) {
-		Validate.isTrue(x >= 0 && z >= 0 && y >= 0 && x <= WIDTH && y <= DEPTH && z <= HEIGHT, "Coords out of bound! x:" + x + ", z:" + z + ", y:" + y);
+		Validate.isTrue(x >= 0 && z >= 0 && y >= 0 && x <= WIDTH && y <= DEPTH && z <= HEIGHT, "Coords out of bound! x:" + x + ", y:" + y + ", z:" + z);
 
 		return y << 8 | z << 4 | x;
 	}

@@ -9,26 +9,32 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import net.rush.api.meta.MetaParam;
-import net.rush.protocol.Packet;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class EntityMetadata extends Packet {
+public class EntityMetadata extends EntityExists {
 
-	private int entityId;
 	private MetaParam<?>[] metadata;
+	
+	public EntityMetadata(int entityId, MetaParam<?>[] metadata) {
+		super(entityId);
+		
+		this.metadata = metadata;
+	}
 
 	@Override
 	public void read(ByteBuf in) throws IOException {
-		entityId = in.readInt();
+		super.read(in);
+
 		metadata = readMetadata(in);
 	}
 
 	@Override
 	public void write(ByteBuf out) throws IOException {
-		out.writeInt(entityId);
+		super.write(out);
+
 		writeMetadata(out, metadata);
 	}
 }

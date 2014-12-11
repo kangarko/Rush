@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import net.rush.protocol.Packet;
-import net.rush.utils.JsonUtils;
 
 @Data
 @AllArgsConstructor
@@ -26,6 +25,6 @@ public class ChatMessage extends Packet {
 
 	@Override
 	public void write(ByteBuf out) throws IOException {
-		writeString(JsonUtils.jsonizeChat(message), out);
+		writeString(message, out);
 	}
 }

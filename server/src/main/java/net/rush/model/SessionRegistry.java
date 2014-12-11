@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Queue;
 
+import net.rush.model.entity.RushPlayer;
 import net.rush.protocol.Packet;
 
 public final class SessionRegistry {
@@ -29,13 +30,19 @@ public final class SessionRegistry {
 				session.pulse();
 		}
 	}
-	
+
 	public void broadcastPacketExcept(Packet packet, int entityId) {
 		for (Session session : sessions) {
 			if (session.player.id == entityId)
 				continue;
 			session.sendPacket(packet);
 		}
+	}
+
+	public void broadcastPacketInRange(Packet packet, RushPlayer player) {
+		for (RushPlayer pl : player.server.getPlayers())
+			if (pl.id != player.id && pl.isActive() && pl.canSee(player))
+				pl.session.sendPacket(packet);
 	}
 
 	public void add(Session session) {

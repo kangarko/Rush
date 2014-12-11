@@ -4,30 +4,24 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.rush.api.MathHelper;
-import net.rush.protocol.Packet;
+import net.rush.api.utils.MathHelper;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class EntityTeleport extends Packet {
+public class EntityTeleport extends EntityExists {
 
-	private int entityId;
-	private int x;
-	private int y;
-	private int z;
-	private float yaw;
-	private float pitch;
-
+	public EntityTeleport(int entityId, int x, int y, int z, int yaw, int pitch) {
+		super(entityId, x, y, z, yaw, pitch);
+	}
 
 	@Override
 	public void write(ByteBuf out) throws IOException {
-		out.writeInt(entityId);
+		super.write(out);
+
 		writePosIntegers(x, y, z, out);
 		out.writeByte(MathHelper.floatToByte(yaw));
 		out.writeByte(MathHelper.floatToByte(pitch));

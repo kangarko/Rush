@@ -4,11 +4,11 @@ import net.rush.model.RushWorld;
 import net.rush.protocol.Packet;
 import net.rush.protocol.packets.SpawnPlayer;
 
-public class RushDebugEntity extends RushTrackeableEntity {
+public class RushFakePlayer extends RushTrackeableEntity {
 
 	private final String name;
 	
-	public RushDebugEntity(RushWorld world, String name) {
+	public RushFakePlayer(RushWorld world, String name) {
 		super(world);
 
 		this.name = name;

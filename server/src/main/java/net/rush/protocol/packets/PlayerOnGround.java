@@ -14,7 +14,7 @@ import net.rush.protocol.Packet;
 @EqualsAndHashCode(callSuper=false)
 public class PlayerOnGround extends Packet {
 
-	protected boolean onGround;
+	private boolean onGround;
 	protected double x;
 	protected double feetY;
 	protected double headY;
