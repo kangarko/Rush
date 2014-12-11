@@ -1,4 +1,4 @@
-package net.rush.api;
+package net.rush.api.utils;
 
 public class MathHelper {
 

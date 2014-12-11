@@ -7,11 +7,14 @@ import java.util.HashMap;
 import net.rush.api.exceptions.PacketException;
 import net.rush.netty.pipeline.PacketDecoder;
 import net.rush.netty.pipeline.PacketEncoder;
+import net.rush.protocol.packets.Animation;
+import net.rush.protocol.packets.ChangeGameState;
 import net.rush.protocol.packets.ChatMessage;
 import net.rush.protocol.packets.ChunkBulk;
 import net.rush.protocol.packets.ClientSettings;
 import net.rush.protocol.packets.ClientStatus;
 import net.rush.protocol.packets.DestroyEntity;
+import net.rush.protocol.packets.EntityExists;
 import net.rush.protocol.packets.EntityHeadLook;
 import net.rush.protocol.packets.EntityLook;
 import net.rush.protocol.packets.EntityLookRelMove;
@@ -24,13 +27,13 @@ import net.rush.protocol.packets.KeepAlive;
 import net.rush.protocol.packets.Kick;
 import net.rush.protocol.packets.LoginStart;
 import net.rush.protocol.packets.LoginSuccess;
-import net.rush.protocol.packets.SpawnPlayer;
 import net.rush.protocol.packets.PlayerListItem;
 import net.rush.protocol.packets.PlayerLook;
 import net.rush.protocol.packets.PlayerLookAndPosition;
 import net.rush.protocol.packets.PlayerOnGround;
 import net.rush.protocol.packets.PlayerPosition;
 import net.rush.protocol.packets.PluginMessage;
+import net.rush.protocol.packets.SpawnPlayer;
 import net.rush.protocol.packets.SpawnPosition;
 import net.rush.protocol.packets.StatusPing;
 import net.rush.protocol.packets.StatusRequest;
@@ -57,9 +60,9 @@ public enum Protocol {
 			TO_CLIENT.registerPacket(0x07, PacketRespawn.class);
 			*/TO_CLIENT.registerPacket(0x08, PlayerLookAndPosition.class);
 			/*TO_CLIENT.registerPacket(0x09, PacketHeldItemChange.class);
-			TO_CLIENT.registerPacket(0x0A, PacketUseBed.class); //Packet17EntityLocationAction
-			TO_CLIENT.registerPacket(0x0B, PacketAnimation.class);
-			*/TO_CLIENT.registerPacket(0x0C, SpawnPlayer.class);
+			TO_CLIENT.registerPacket(0x0A, PacketUseBed.class); //Packet17EntityLocationAction*/
+			TO_CLIENT.registerPacket(0x0B, Animation.class);
+			TO_CLIENT.registerPacket(0x0C, SpawnPlayer.class);
 			/*TO_CLIENT.registerPacket(0x0D, PacketItemCollect.class);
 			TO_CLIENT.registerPacket(0x0E, PacketSpawnObject.class);
 			TO_CLIENT.registerPacket(0x0F, PacketSpawnMob.class);
@@ -67,14 +70,14 @@ public enum Protocol {
 			TO_CLIENT.registerPacket(0x11, PacketSpawnExpOrb.class);
 			TO_CLIENT.registerPacket(0x12, PacketEntityVelocity.class);
 			*/TO_CLIENT.registerPacket(0x13, DestroyEntity.class);
-			//TO_CLIENT.registerPacket(0x14, PacketEntityExists.class); // Inherit this as base for other entity packets
+			TO_CLIENT.registerPacket(0x14, EntityExists.class);
 			TO_CLIENT.registerPacket(0x15, EntityRelMove.class);
-			TO_CLIENT.registerPacket(0x16, EntityLook.class);
-			TO_CLIENT.registerPacket(0x17, EntityLookRelMove.class);
-			TO_CLIENT.registerPacket(0x18, EntityTeleport.class);
-			TO_CLIENT.registerPacket(0x19, EntityHeadLook.class);
-			/*TO_CLIENT.registerPacket(0x1A, PacketEntityStatus.class);
-			TO_CLIENT.registerPacket(0x1B, PacketAttachEntity.class);
+			TO_CLIENT.registerPacket(0x16, EntityLook.class);			
+			TO_CLIENT.registerPacket(0x17, EntityLookRelMove.class);			
+			TO_CLIENT.registerPacket(0x18, EntityTeleport.class);			
+			TO_CLIENT.registerPacket(0x19, EntityHeadLook.class);	
+			/*TO_CLIENT.registerPacket(0x1A, PacketEntityStatus.class); // inherit from entityexist
+			TO_CLIENT.registerPacket(0x1B, PacketAttachEntity.class); // inherit from entityexist
 			*/TO_CLIENT.registerPacket(0x1C, EntityMetadata.class);
 			/*TO_CLIENT.registerPacket(0x1D, PacketEntityEffect.class);
 			TO_CLIENT.registerPacket(0x1E, PacketRemoveEntityEffect.class);
@@ -90,8 +93,8 @@ public enum Protocol {
 			TO_CLIENT.registerPacket(0x28, PacketSoundOrParticleEffect.class);
 			TO_CLIENT.registerPacket(0x29, PacketNamedSoundEffect.class);
 			TO_CLIENT.registerPacket(0x2A, Packet63WorldParticles.class);
-			TO_CLIENT.registerPacket(0x2B, PacketChangeGameState.class);
-			TO_CLIENT.registerPacket(0x2C, PacketThunderbolt.class);
+			*/TO_CLIENT.registerPacket(0x2B, ChangeGameState.class);
+			/*TO_CLIENT.registerPacket(0x2C, PacketThunderbolt.class);
 			TO_CLIENT.registerPacket(0x2D, PacketOpenWindow.class);
 			TO_CLIENT.registerPacket(0x2E, PacketCloseWindow.class);
 			TO_CLIENT.registerPacket(0x2F, PacketSetSlot.class);
@@ -123,8 +126,8 @@ public enum Protocol {
 			/*TO_SERVER.registerPacket(0x07, PacketDigging.class);
 			TO_SERVER.registerPacket(0x08, PacketBlockPlacement.class);
 			TO_SERVER.registerPacket(0x09, PacketHeldItemChange.class);
-			TO_SERVER.registerPacket(0x0A, PacketAnimation.class);
-			TO_SERVER.registerPacket(0x0B, PacketEntityAction.class);
+			*/TO_SERVER.registerPacket(0x0A, Animation.class);
+			/*TO_SERVER.registerPacket(0x0B, PacketEntityAction.class);
 			TO_SERVER.registerPacket(0x0C, PacketSteerVehicle.class);
 			TO_SERVER.registerPacket(0x0D, PacketCloseWindow.class);
 			TO_SERVER.registerPacket(0x0E, PacketClickWindow.class);

@@ -4,41 +4,37 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.rush.protocol.Packet;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class EntityLookRelMove extends Packet {
+public class EntityLookRelMove extends EntityExists {
 
-	private int entityId;
-	private int diffX;
-	private int diffY;
-	private int diffZ;
-	private int yaw;
-	private int pitch;
-
+	public EntityLookRelMove(int entityId, int x, int y, int z, int yaw, int pitch) {
+		super(entityId, x, y, z, yaw, pitch);
+	}
+	
 	@Override
 	public void read(ByteBuf in) throws IOException {
-		entityId = in.readInt();
-		diffX = in.readByte();
-		diffY = in.readByte();
-		diffZ = in.readByte();
+		super.read(in);
+
+		x = in.readByte();
+		y = in.readByte();
+		z = in.readByte();
 		yaw = in.readByte();
 		pitch = in.readByte();
 	}
 
 	@Override
 	public void write(ByteBuf out) throws IOException {
-		out.writeInt(entityId);
-		out.writeByte(diffX);
-		out.writeByte(diffY);
-		out.writeByte(diffZ);
+		super.write(out);
+
+		out.writeByte(x);
+		out.writeByte(y);
+		out.writeByte(z);
 		out.writeByte(yaw);
 		out.writeByte(pitch);
 	}

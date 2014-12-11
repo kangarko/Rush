@@ -12,13 +12,17 @@ import java.util.logging.Logger;
 
 import net.rush.api.Rush;
 import net.rush.api.Server;
+import net.rush.api.model.ConsoleCommandSender;
 import net.rush.api.scheduler.Scheduler;
+import net.rush.cmd.CommandManager;
 import net.rush.console.ConsoleReaderThread;
 import net.rush.console.LogFormatter;
 import net.rush.console.OutputStreamFormatter;
+import net.rush.model.ChunkManager;
 import net.rush.model.RushWorld;
 import net.rush.model.SessionRegistry;
 import net.rush.model.entity.RushPlayer;
+import net.rush.model.gen.FlatWorldGenerator;
 import net.rush.netty.NettyInitializer;
 import net.rush.scheduler.RushScheduler;
 
@@ -31,12 +35,14 @@ public class RushServer implements Server {
 	public SessionRegistry sessionRegistry = new SessionRegistry();
 	public RushWorld world;
 	public Random rand = new Random();
+	public CommandManager commandManager = new CommandManager();
 	
 	// ================================================ //
 	public int port = 25565;
 	public int viewDistance = 8;
 	
 	private RushScheduler scheduler;
+	private ConsoleCommandSender consoleSender = new ConsoleCommandSender();
 	private Logger logger = Logger.getLogger("Minecraft");
 	
 	void init() {
@@ -50,7 +56,7 @@ public class RushServer implements Server {
 		ConsoleReaderThread reader = new ConsoleReaderThread(this);
 		reader.start();
 		
-		world = new RushWorld(this);
+		world = new RushWorld(this, new ChunkManager(new FlatWorldGenerator()));
 
 		scheduler = new RushScheduler(this);
 		scheduler.init();
@@ -118,8 +124,8 @@ public class RushServer implements Server {
 		int delta = Integer.MAX_VALUE;
 
 		for (RushPlayer player : getPlayers())
-			if (player.name.toLowerCase().startsWith(lowerName)) {
-				int curDelta = player.name.length() - lowerName.length();
+			if (player.getName().toLowerCase().startsWith(lowerName)) {
+				int curDelta = player.getName().length() - lowerName.length();
 				if (curDelta < delta) {
 					found = player;
 					delta = curDelta;
@@ -147,5 +153,10 @@ public class RushServer implements Server {
 	@Override
 	public Logger getLogger() {
 		return logger;
+	}
+
+	@Override
+	public ConsoleCommandSender getConsoleCommandSender() {
+		return consoleSender;
 	}
 }

@@ -43,7 +43,7 @@ public class Session {
 	}
 	
 	public void disconnect(String reason) {
-		channel.writeAndFlush(new Kick(JsonUtils.jsonizeChat(reason))).addListener(ChannelFutureListener.CLOSE);
+		channel.writeAndFlush(new Kick(JsonUtils.jsonizePlainText(reason))).addListener(ChannelFutureListener.CLOSE);
 	}
 
 	public void pulse() {
@@ -67,7 +67,7 @@ public class Session {
 	}
 
 	public void setPlayer(RushPlayer player) {
-		Validate.isTrue(player != null, "Player with name " + player.name + " already associated with the session!");
+		Validate.isTrue(player != null, "Player with name " + player.getName() + " already associated with the session!");
 		this.player = player;
 	}
 

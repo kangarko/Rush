@@ -25,9 +25,9 @@ public class RushWorld {
 	
 	public final Position spawnPosition = new Position(0, 60, 0);
 			
-	public RushWorld(RushServer server) {
+	public RushWorld(RushServer server, ChunkManager chunks) {
 		this.server = server;
-		this.chunks = new ChunkManager(this);
+		this.chunks = chunks;
 	}
 
 	public void pulse() {

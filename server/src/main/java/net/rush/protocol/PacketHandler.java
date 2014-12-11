@@ -7,8 +7,8 @@ import net.rush.api.Difficulty;
 import net.rush.api.Environment;
 import net.rush.api.GameMode;
 import net.rush.model.Session;
-import net.rush.model.entity.RushDebugEntity;
 import net.rush.model.entity.RushPlayer;
+import net.rush.protocol.packets.Animation;
 import net.rush.protocol.packets.ChatMessage;
 import net.rush.protocol.packets.ClientSettings;
 import net.rush.protocol.packets.EntityHeadLook;
@@ -49,32 +49,33 @@ public class PacketHandler {
 	public void handle(Session session, ChatMessage packet) {
 		String text = packet.getMessage();
 
-		if(text == null || "".equals(text))
+		if (text == null || "".equals(text))
 			session.disconnect("Cannot send an empty message");
 		else if (text.length() > 110)
 			session.disconnect("Chat message too long");
-		else {
-
-			if (text.startsWith("/test")) {
-				RushDebugEntity debug = new RushDebugEntity(session.player.world, "Notch");
-				debug.setPosition(session.player.world.spawnPosition);
-				
-				session.player.sendMessage("Created debug entity " + debug);
-			}
-			
-			if(text.matches("(&([a-f0-9k-or]))"))
+		else {			
+			if (text.matches("(&([a-f0-9k-or]))"))
 				return;
 
-			text = text.replaceAll("\\s+", " ").trim();
-
-			session.server.broadcastMessage(session.player.name + ": " + text);
-			logger.info(session.player.name + ": " + text.replaceAll("(&([a-f0-9k-or]))", ""));
-
+			if (text.startsWith("/")) {
+				session.server.commandManager.dispatchCommand(session.player, text.substring(1));
+				
+			} else {
+				text = session.player.getName() + ": " + text.replaceAll("\\s+", " ").trim();
+				
+				logger.info(text.replaceAll("(&([a-f0-9k-or]))", ""));
+				session.server.broadcastMessage(text);
+			}
 		}
 	}
 
 	public void handle(Session session, Handshake packet) {
 		session.protocol = packet.getProtocolVer();
+	}
+	
+	public void handle(Session session, Animation packet) {
+		packet = new Animation(session.player.id, packet.getAnimation());		
+		session.server.sessionRegistry.broadcastPacketInRange(packet, session.player);
 	}
 
 	public void handle(Session session, ClientSettings packet) {

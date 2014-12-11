@@ -36,9 +36,9 @@ public abstract class RushTrackeableEntity extends RushEntity {
 		else if (moved && rotated)
 			return new EntityLookRelMove(id, (byte)dx, (byte)dy, (byte)dz, (byte)yaw, (byte)pitch);
 		else if (moved)
-			return new EntityRelMove(id, (byte)dx, (byte)dy, (byte)dz);
+			return new EntityRelMove(id, dx, dy, dz);
 		else if (rotated)
-			return new EntityLook(id, (byte)yaw, (byte)pitch);
+			return new EntityLook(id, yaw, pitch);
 
 		return null;
 	}

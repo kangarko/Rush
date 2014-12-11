@@ -25,6 +25,6 @@ public class PlayerLook extends PlayerOnGround {
 	public void read(ByteBuf in) throws IOException {
 		yaw = in.readFloat();
 		pitch = in.readFloat();
-		onGround = in.readBoolean();
+		super.read(in);
 	}
 }

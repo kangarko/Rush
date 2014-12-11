@@ -4,28 +4,26 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.rush.protocol.Packet;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class EntityRelMove extends Packet {
+public class EntityRelMove extends EntityExists {
 
-	private int entityId;
-	private byte diffX;
-	private byte diffY;
-	private byte diffZ;
+	public EntityRelMove(int entityId, int x, int y, int z) {
+		super(entityId, x, y, z);
+	}
+
 
 	@Override
 	public void write(ByteBuf out) throws IOException {
-		out.writeInt(entityId);
-		out.writeByte(diffX);
-		out.writeByte(diffY);
-		out.writeByte(diffZ);
+		super.write(out);
+		
+		out.writeByte(x);
+		out.writeByte(y);
+		out.writeByte(z);
 	}
 }

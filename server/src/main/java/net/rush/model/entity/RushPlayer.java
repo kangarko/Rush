@@ -6,18 +6,24 @@ import java.util.Set;
 
 import net.rush.api.ChatColor;
 import net.rush.api.ChunkCoords;
+import net.rush.api.GameMode;
+import net.rush.api.Server;
 import net.rush.api.meta.MetaParam;
+import net.rush.api.model.CommandSender;
 import net.rush.model.RushChunk;
 import net.rush.model.Session;
 import net.rush.protocol.Packet;
+import net.rush.protocol.packets.ChangeGameState;
 import net.rush.protocol.packets.ChatMessage;
 import net.rush.protocol.packets.DestroyEntity;
 import net.rush.protocol.packets.SpawnPlayer;
 import net.rush.protocol.packets.PlayerListItem;
 import net.rush.protocol.packets.PlayerLookAndPosition;
 import net.rush.protocol.packets.SpawnPosition;
+import net.rush.protocol.packets.ChangeGameState.GameStateReason;
+import net.rush.utils.JsonUtils;
 
-public final class RushPlayer extends RushTrackeableEntity {
+public class RushPlayer extends RushTrackeableEntity implements CommandSender {
 
 	/**
 	 * The normal height of a player's eyes above their feet.
@@ -29,7 +35,7 @@ public final class RushPlayer extends RushTrackeableEntity {
 	 */
 	public final double CROUCH_EYE_HEIGHT = 1.42D;
 
-	public final String name;
+	private final String name;
 	public final Session session;
 
 	public final HashSet<RushEntity> knownEntities = new HashSet<>();
@@ -38,6 +44,8 @@ public final class RushPlayer extends RushTrackeableEntity {
 	public boolean sprinting = false;
 	public boolean crouching = false;
 	public boolean onGround = false;
+	
+	private GameMode gamemode = GameMode.SURVIVAL;
 
 	public RushPlayer(Session session, String name) {
 		super(session.server.world);
@@ -61,7 +69,7 @@ public final class RushPlayer extends RushTrackeableEntity {
 	}
 
 	public void sendMessage(String message) {
-		session.sendPacket(new ChatMessage(message));
+		session.sendPacket(new ChatMessage(JsonUtils.jsonizePlainText(message)));
 	}
 
 	@Override
@@ -143,19 +151,6 @@ public final class RushPlayer extends RushTrackeableEntity {
 		removeFromTabList();
 	}
 
-	public void setCrouching(boolean crouching) {
-		this.crouching = crouching;
-		setMetadata(new MetaParam<Byte>(0, new Byte((byte) (crouching ? 0x02: 0))));
-		// FIXME: other bits in the bitmask would be wiped out
-		// TODO: update other clients, needs to be figured out
-	}
-
-	public void setSprinting(boolean sprinting) {
-		this.sprinting = sprinting;
-		setMetadata(new MetaParam<Byte>(0, new Byte((byte) (sprinting ? 0x08: 0))));
-		// FIXME: other bits in the bitmask would be wiped out
-	}
-
 	public void updateTabList() {
 		PlayerListItem thisPlayer = new PlayerListItem(name, true, 0);
 
@@ -175,6 +170,29 @@ public final class RushPlayer extends RushTrackeableEntity {
 				otherPlayer.session.sendPacket(playerToRemove);		
 	}
 
+	public void setCrouching(boolean crouching) {
+		this.crouching = crouching;
+		setMetadata(new MetaParam<Byte>(0, new Byte((byte) (crouching ? 0x02: 0))));
+		// FIXME: other bits in the bitmask would be wiped out
+		// TODO: update other clients, needs to be figured out
+	}
+
+	public void setSprinting(boolean sprinting) {
+		this.sprinting = sprinting;
+		setMetadata(new MetaParam<Byte>(0, new Byte((byte) (sprinting ? 0x08: 0))));
+		// FIXME: other bits in the bitmask would be wiped out
+	}
+	
+	public GameMode getGamemode() {
+		return gamemode;
+	}
+	
+	public void setGamemode(GameMode gameMode) {
+		this.gamemode = gameMode;
+		
+		session.sendPacket(new ChangeGameState(GameStateReason.CHANGE_GAMEMODE, gameMode.getValue()));
+	}
+	
 	public double getEyeHeight() {
 		return crouching ? CROUCH_EYE_HEIGHT : NORMAL_EYE_HEIGHT;
 	}
@@ -182,6 +200,21 @@ public final class RushPlayer extends RushTrackeableEntity {
 	@Override
 	public String toString() {
 		return name == null ? super.toString() : name + " id " + id;
+	}
+
+	@Override
+	public Server getServer() {
+		return server;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public boolean isPlayer() {
+		return true;
 	}
 }
 

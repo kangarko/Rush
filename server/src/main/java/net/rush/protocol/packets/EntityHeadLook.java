@@ -4,30 +4,30 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.rush.protocol.Packet;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=false)
-public class EntityHeadLook extends Packet {
+public class EntityHeadLook extends EntityExists {
 
-	private int entityId;
-	private int headYaw;
+	public EntityHeadLook(int entityId, int yaw) {
+		super(entityId, yaw, 0);
+	}
 
 	@Override
 	public void read(ByteBuf in) throws IOException {
-		entityId = in.readInt();
-		headYaw = in.readByte();
+		super.read(in);
+		
+		yaw = in.readByte();
 	}
 
 	@Override
 	public void write(ByteBuf out) throws IOException {
-		out.writeInt(entityId);
-		out.writeByte(headYaw);
+		super.write(out);
+		
+		out.writeByte(yaw);
 	}
 }

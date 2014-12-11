@@ -3,8 +3,11 @@ package net.rush.netty;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.lang3.Validate;
 
 import net.rush.RushServer;
 import net.rush.model.Session;
@@ -27,6 +30,7 @@ public class NettyChannelHandler extends SimpleChannelInboundHandler<Packet> {
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		System.out.println("*********** Channel connected: " + ctx.channel().remoteAddress());
 		
+		Validate.isTrue(session == null, "Session already set!");
 		session = new Session(ctx.channel(), server);
 		server.sessionRegistry.add(session);
 	}
@@ -34,7 +38,8 @@ public class NettyChannelHandler extends SimpleChannelInboundHandler<Packet> {
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		System.out.println("Channel disconnected: " + ctx.channel().remoteAddress() + " ***********");
-		
+
+		Objects.requireNonNull(session, "Session cannot be null!");
 		server.sessionRegistry.remove(session);
 		session = null;
 	}
