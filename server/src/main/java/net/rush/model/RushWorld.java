@@ -24,7 +24,9 @@ public class RushWorld {
 	public final HashSet<ChunkCoords> loadedChunks = new HashSet<>();
 	
 	public final Position spawnPosition = new Position(0, 60, 0);
-			
+	
+	public boolean terrainGenerated = false;
+	
 	public RushWorld(RushServer server, ChunkManager chunks) {
 		this.server = server;
 		this.chunks = chunks;
@@ -115,6 +117,26 @@ public class RushWorld {
 		Validate.isTrue(y >= 0 && y < 256, "Invalid coords x:" + x + " y: " + y + " z: " + z);
 	}
 
+	public void generateSpawnArea() {
+		if (terrainGenerated)
+			return;
+		
+		int radius = server.viewDistance;
+		boolean told = false;
+		
+		for (int x = -radius; x <= radius; ++x) {
+			if (!told)
+				server.getLogger().info("Preparing spawn area: " + (x + radius) * 100 / (radius + radius + 1) + "%");
+			
+			told = !told;
+			
+			for (int z = -radius; z <= radius; ++z)
+				getChunkFromChunkCoords( ((int)spawnPosition.x >> 4) + x, ((int)spawnPosition.z >> 4) + z);
+		}
+		
+		terrainGenerated = true;
+	}
+	
 	/*protected void tickActiveChunks() {
 		Iterator<ChunkCoords> it = activeChunks.iterator();
 

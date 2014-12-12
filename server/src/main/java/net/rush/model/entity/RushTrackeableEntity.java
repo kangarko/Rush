@@ -34,7 +34,7 @@ public abstract class RushTrackeableEntity extends RushEntity {
 		if (moved && teleported)
 			return new EntityTeleport(id, x, y, z, yaw, pitch);
 		else if (moved && rotated)
-			return new EntityLookRelMove(id, (byte)dx, (byte)dy, (byte)dz, (byte)yaw, (byte)pitch);
+			return new EntityLookRelMove(id, dx, dy, dz, yaw, pitch);
 		else if (moved)
 			return new EntityRelMove(id, dx, dy, dz);
 		else if (rotated)

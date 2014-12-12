@@ -15,18 +15,22 @@ public class JsonUtils {
 	public static String jsonizeServerPing(ServerPing ping) {
 		String json = "{";
 		json+= "\"version\":{\"name\":\"" + ping.getProtocol().getName() + "\",\"protocol\":" + ping.getProtocol().getProtocol() + "},";
-		json+= "\"description\":\"" + ping.getDescription() + "\",";
+		json+= "\"description\":\"" + colorize(ping.getDescription()) + "\",";
 		json+= "\"favicon\":\"" + ping.getFavicon() + "\",";
 		json+= "\"players\":{\"max\":" + ping.getPlayers().getMaximum() + ",\"online\":" + ping.getPlayers().getOnline() + "}}";
 		return json;
 	}
 
 	public static String jsonizePlainText(String str) {
-		String json = "{\"text\":\"" + ChatColor.translateAlternateColorCodes('&', str.replace("%Rush", "&3Rush //&f").replace("\"", "\\u0022")) + "\"}";
+		String json = "{\"text\":\"" + colorize(str.replace("%Rush", "&3Rush //&f").replace("\"", "\\u0022")) + "\"}";
 
 		return json;
 	}
 
+	private static String colorize(String str) {
+		return ChatColor.translateAlternateColorCodes('&', str);
+	}
+	
 	/*public static String jsonizeChatMessage(Message message) {
 		String json = "{";
 

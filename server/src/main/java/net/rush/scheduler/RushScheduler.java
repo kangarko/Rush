@@ -24,10 +24,16 @@ public class RushScheduler implements Scheduler {
 
 			@Override
 			public void run() {
+				long now = System.currentTimeMillis();
+				
 				try {
 					pulse();
 				} catch (Throwable t) {
 					server.getLogger().log(Level.SEVERE, "Uncaught exception in scheduler", t);
+				} finally {
+					long lag = System.currentTimeMillis() - now;
+					if (lag > 99)
+						System.out.println("[Lag] Server froze for " + lag + " miliseconds.");
 				}
 			}
 		}, 0, 50);
