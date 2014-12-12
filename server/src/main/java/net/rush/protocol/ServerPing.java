@@ -1,12 +1,14 @@
 package net.rush.protocol;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
+@AllArgsConstructor
 @Data
 public class ServerPing {
 
 	private final Protocol protocol;
-	private final String description;
+	private String description;
 	private final String favicon;
 	private final Players players;
 

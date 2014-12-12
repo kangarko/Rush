@@ -1,5 +1,7 @@
 package net.rush.protocol;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Logger;
 
 import net.rush.api.ChatColor;
@@ -59,10 +61,10 @@ public class PacketHandler {
 
 			if (text.startsWith("/")) {
 				session.server.commandManager.dispatchCommand(session.player, text.substring(1));
-				
+
 			} else {
 				text = session.player.getName() + ": " + text.replaceAll("\\s+", " ").trim();
-				
+
 				logger.info(text.replaceAll("(&([a-f0-9k-or]))", ""));
 				session.server.broadcastMessage(text);
 			}
@@ -72,7 +74,7 @@ public class PacketHandler {
 	public void handle(Session session, Handshake packet) {
 		session.protocol = packet.getProtocolVer();
 	}
-	
+
 	public void handle(Session session, Animation packet) {
 		packet = new Animation(session.player.id, packet.getAnimation());		
 		session.server.sessionRegistry.broadcastPacketInRange(packet, session.player);
@@ -121,14 +123,66 @@ public class PacketHandler {
 		session.setPlayer(new RushPlayer(session, packet.getName()));
 	}
 
+	// ------------------ Animated Motd ------------------ //
+	private int counter;
+	private long time = 0;
+	
+	private final Timer motdTimer = new Timer("Anim Motd");
+	private final String motdColorDef = "&f&l";
+	private final String motdC1 = "&e&l";
+	private final String motdC2 = "&6&l";
+	private final String[] motdParts = {
+			motdColorDef + "Checking spawn area...",
+			motdColorDef + motdC1 + "C" + motdC2 + "h" + motdColorDef + "ecking spawn area...",
+			motdColorDef + "C" + motdC1 + "h" + motdC2 + "e" + motdColorDef + "cking spawn area...",
+			motdColorDef + "Ch" + motdC1 + "e" + motdC2 + "c" + motdColorDef + "king spawn area...",
+			motdColorDef + "Che" + motdC1 + "c" + motdC2 + "k" + motdColorDef + "ing spawn area...",
+			motdColorDef + "Chec" + motdC1 + "k" + motdC2 + "i" + motdColorDef + "ng spawn area...",
+			motdColorDef + "Check" + motdC1 + "i" + motdC2 + "n" + motdColorDef + "g spawn area...",
+			motdColorDef + "Checki" + motdC1 + "n" + motdC2 + "g" + motdColorDef + " spawn area...",
+			motdColorDef + "Checkin" + motdC1 + "g" + motdC2 + " " + motdColorDef + "spawn area...",
+			motdColorDef + "Checking" + motdC1 + " " + motdC2 + "s" + motdColorDef + "pawn area...",
+			motdColorDef + "Checking " + motdC1 + "s" + motdC2 + "p" + motdColorDef + "awn area...",
+			motdColorDef + "Checking s" + motdC1 + "p" + motdC2 + "a" + motdColorDef + "wn area...",
+			motdColorDef + "Checking sp" + motdC1 + "a" + motdC2 + "w" + motdColorDef + "n area...",
+			motdColorDef + "Checking spa" + motdC1 + "w" + motdC2 + "n" + motdColorDef + " area...",
+			motdColorDef + "Checking spaw" + motdC1 + "n" + motdC2 + " " + motdColorDef + "area...",
+			motdColorDef + "Checking spawn" + motdC1 + " " + motdC2 + "a" + motdColorDef + "rea...",
+			motdColorDef + "Checking spawn " + motdC1 + "a" + motdC2 + "r" + motdColorDef + "ea...",
+			motdColorDef + "Checking spawn a" + motdC1 + "r" + motdC2 + "e" + motdColorDef + "a...",
+			motdColorDef + "Checking spawn ar" + motdC1 + "e" + motdC2 + "a" + motdColorDef + "...",
+			motdColorDef + "Checking spawn are" + motdC1 + "a" + motdC2 + "." + motdColorDef + "..",
+			motdColorDef + "Checking spawn area" + motdC1 + "." + motdC2 + "." + motdColorDef + ".",
+			motdColorDef + "Checking spawn area." + motdC1 + "." + motdC2 + "." + motdColorDef,
+			motdColorDef + "Checking spawn area.." + motdC1 + "." + motdC2,
+			motdColorDef + "Checking spawn area...",
+			"                      &b&lRush Server\\n                 &9&l>>  &6Join &enow  &9&l<<",
+			};
+
 	public void handle(Session session, StatusPing packet) {
-		session.sendPacket(new StatusPing(packet.getTime()));
+		time = packet.getTime();
 	}
 
 	public void handle(Session session, StatusRequest packet) {
-		ServerPing response = new ServerPing(new ServerPing.Protocol("1.7.10", session.protocol), ChatColor.GOLD + "Hello World" + ChatColor.RESET + "\\nThis is a Test :)", "", new ServerPing.Players(20, 0));
-		System.out.println("Sending status: " + response);
-
+		ServerPing response = new ServerPing(new ServerPing.Protocol("1.7.10", session.protocol), session.server.world.terrainGenerated ? motdParts[0] : "&6&lGenerating spawn area...\\n&4&lDon't connect! Check console for status.", "", new ServerPing.Players(20, 0));
 		session.sendPacket(new StatusResponse(response));
+
+		counter = 1;
+
+		session.server.world.generateSpawnArea();
+		
+		motdTimer.scheduleAtFixedRate(new TimerTask() {
+
+			@Override
+			public void run() {
+				if (counter < motdParts.length) {
+					response.setDescription(motdParts[counter++]);
+					session.sendPacket(new StatusResponse(response));
+				} else {
+					session.sendPacket(new StatusPing(time));
+					this.cancel();
+				}
+			}
+		}, 35, 35);
 	}
 }

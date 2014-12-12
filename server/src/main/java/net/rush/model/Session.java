@@ -30,7 +30,7 @@ public class Session {
 	public int pingTimer;
 	public int pingToken = 0;
 	public int protocol = 5;
-	
+
 	private boolean pendingRemoval = false;
 	public RushPlayer player = null;
 
@@ -41,7 +41,7 @@ public class Session {
 	public void sendPacket(Kick packet) {
 		disconnect(packet.getReason());
 	}
-	
+
 	public void disconnect(String reason) {
 		channel.writeAndFlush(new Kick(JsonUtils.jsonizePlainText(reason))).addListener(ChannelFutureListener.CLOSE);
 	}
@@ -54,16 +54,17 @@ public class Session {
 				handler.handle(this, packet);
 		}
 
-		if (pingTimer++ == 10 * 20) { // Ping every 10. second.
-			if (pingToken == 0) {
-				pingToken = server.rand.nextInt();
+		if (player != null) // Prevent pinging while viewing MoTD.
+			if (pingTimer++ == 7 * 20) { // Ping every 7. second.
+				if (pingToken == 0) {
+					pingToken = server.rand.nextInt();
 
-				sendPacket(new KeepAlive(pingToken));
-			} else
-				disconnect("Timed out");
+					sendPacket(new KeepAlive(pingToken));
+				} else
+					disconnect("Timed out");
 
-			pingTimer = 0;
-		}
+				pingTimer = 0;
+			}
 	}
 
 	public void setPlayer(RushPlayer player) {
@@ -80,14 +81,14 @@ public class Session {
 	public SocketAddress removeAddress() {
 		return channel.remoteAddress();
 	}
-	
+
 	public boolean isPendingRemoval() {
 		return pendingRemoval;
 	}
-	
+
 	public void destroy() {
 		pendingRemoval = true;
-		
+
 		if (player != null) {
 			player.destroy();
 			player = null;

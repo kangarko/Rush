@@ -90,7 +90,7 @@ public class RushPlayer extends RushTrackeableEntity implements CommandSender {
 				System.out.println(this + " has received spawn packet of " + entity);
 			}
 		}
-
+		
 		// Update existing entities.
 		for (Iterator<RushEntity> it = knownEntities.iterator(); it.hasNext(); ) {
 			RushEntity entity = it.next();

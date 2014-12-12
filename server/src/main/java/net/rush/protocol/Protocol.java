@@ -214,7 +214,7 @@ public enum Protocol {
 
 		public final int getId(Class<? extends Packet> packetClass) {
 			if (!packetIdMap.containsKey(packetClass))
-				throw new PacketException("Cannot get ID for packet " + packetClass.getSimpleName());
+				throw new PacketException("Protocol " + Protocol.this + " doesn't contains packet " + packetClass.getSimpleName());
 
 			return packetIdMap.get(packetClass);
 		}
