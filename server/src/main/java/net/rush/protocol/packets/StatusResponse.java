@@ -16,10 +16,6 @@ import net.rush.utils.JsonUtils;
 public class StatusResponse extends Packet {
 
 	private ServerPing response;
-	
-	@Override
-	public void read(ByteBuf in) {
-	}
 
 	@Override
 	public void write(ByteBuf out) {

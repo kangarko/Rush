@@ -13,6 +13,7 @@ import net.rush.model.entity.RushPlayer;
 import net.rush.protocol.packets.Animation;
 import net.rush.protocol.packets.ChatMessage;
 import net.rush.protocol.packets.ClientSettings;
+import net.rush.protocol.packets.EntityAction;
 import net.rush.protocol.packets.EntityHeadLook;
 import net.rush.protocol.packets.Handshake;
 import net.rush.protocol.packets.JoinGame;
@@ -79,6 +80,27 @@ public class PacketHandler {
 		packet = new Animation(session.player.id, packet.getAnimation());		
 		session.server.sessionRegistry.broadcastPacketInRange(packet, session.player);
 	}
+	
+	public void handle(Session session, EntityAction packet) {
+		switch (packet.getAction()) {
+			case ACTION_CROUCH:
+				session.player.setCrouching(true);
+				break;
+			case UNCROUCH:
+				session.player.setCrouching(false);
+				break;
+			case START_SPRINTING:
+				session.player.setSprinting(true);
+				break;
+			case STOP_SPRINTING:
+				session.player.setSprinting(false);
+				break;
+			case LEAVE_BED:
+				break;
+			default:
+				throw new RuntimeException("Unhandled action: " + packet.getAction());			
+		}
+	}
 
 	public void handle(Session session, ClientSettings packet) {
 	}
@@ -108,7 +130,7 @@ public class PacketHandler {
 
 		if (hasLook) {
 			session.player.position.setRotation(packet.getYaw(), packet.getPitch());
-			session.server.sessionRegistry.broadcastPacketExcept(new EntityHeadLook(session.player.id, (int)session.player.position.getIntYaw()), session.player.id); // TODO Fix incorrect yaw.
+			session.server.sessionRegistry.broadcastPacketExcept(new EntityHeadLook(session.player.id, session.player.position.getIntYaw()), session.player.id); // TODO Fix incorrect yaw.
 		}
 
 		session.player.onGround = packet.isOnGround();
@@ -164,7 +186,7 @@ public class PacketHandler {
 	}
 
 	public void handle(Session session, StatusRequest packet) {
-		ServerPing response = new ServerPing(new ServerPing.Protocol("1.7.10", session.protocol), session.server.world.terrainGenerated ? motdParts[0] : "&6&lGenerating spawn area...\\n&4&lDon't connect! Check console for status.", "", new ServerPing.Players(20, 0));
+		ServerPing response = new ServerPing(new ServerPing.Protocol("1.7.10", session.protocol), session.server.world.isTerrainGenerated() ? motdParts[0] : "&6&lGenerating spawn area...\\n&4&lDon't connect! Check console for status.", "", new ServerPing.Players(20, 0));
 		session.sendPacket(new StatusResponse(response));
 
 		counter = 1;

@@ -8,6 +8,7 @@ import net.rush.api.ChunkCoords;
 import net.rush.api.Position;
 import net.rush.model.entity.RushEntity;
 import net.rush.model.entity.RushPlayer;
+import net.rush.protocol.packets.TimeUpdate;
 
 import org.apache.commons.lang3.Validate;
 
@@ -20,13 +21,14 @@ public class RushWorld {
 
 	public final ChunkManager chunks;
 	public final EntityManager entities = new EntityManager();
-	
+
 	public final HashSet<ChunkCoords> loadedChunks = new HashSet<>();
-	
+
 	public final Position spawnPosition = new Position(0, 60, 0);
-	
-	public boolean terrainGenerated = false;
-	
+
+	private boolean terrainGenerated = false;
+	private int time;
+
 	public RushWorld(RushServer server, ChunkManager chunks) {
 		this.server = server;
 		this.chunks = chunks;
@@ -34,13 +36,13 @@ public class RushWorld {
 
 	public void pulse() {
 		resetActiveChunks();
-		
+
 		/*for (RushEntity entity : entities)
 			entity.pulse();
-		
+
 		for (RushEntity entity : entities)
 			entity.reset();*/
-		
+
 		// TODO Which one?
 		for (Iterator<RushEntity> it = entities.iterator(); it.hasNext(); ) {
 			RushEntity entity = it.next();
@@ -50,9 +52,11 @@ public class RushWorld {
 			} else
 				it.remove();
 		}
-		
+
 		for (RushEntity entity : entities)
 			entity.reset();
+
+		advanceTime();
 	}
 
 	protected void resetActiveChunks() {
@@ -71,7 +75,7 @@ public class RushWorld {
 			for (int x = (chunkX - activationRadius); x <= (chunkX + activationRadius); x++)
 				for (int z = (chunkZ - activationRadius); z <= (chunkZ + activationRadius); z++) {
 					ChunkCoords key = new ChunkCoords(x, z);
-					
+
 					loadedChunks.add(key);
 				}
 		}
@@ -94,7 +98,7 @@ public class RushWorld {
 
 		return getChunkFromBlockCoords(x, z).getType(x & 15, y, z & 15);
 	}
-	
+
 	public void setType(int x, int y, int z, int type) {
 		ensure(x, y, z);
 
@@ -106,7 +110,7 @@ public class RushWorld {
 
 		return getChunkFromBlockCoords(x, z).getMetadata(x & 15, y, z & 15);
 	}
-	
+
 	public void setMetadata(int x, int y, int z, int type, int data) {
 		ensure(x, y, z);
 
@@ -117,26 +121,41 @@ public class RushWorld {
 		Validate.isTrue(y >= 0 && y < 256, "Invalid coords x:" + x + " y: " + y + " z: " + z);
 	}
 
+	public boolean isTerrainGenerated() {
+		return terrainGenerated;
+	}
+
+	public void setTime(int time) {
+		this.time = time;
+
+		for (RushPlayer player : getPlayersInWorld())
+			player.session.sendPacket(new TimeUpdate(time, time));
+	}
+
+	public int getTime() {
+		return time;
+	}
+
 	public void generateSpawnArea() {
 		if (terrainGenerated)
 			return;
-		
+
 		int radius = server.viewDistance;
 		boolean told = false;
-		
+
 		for (int x = -radius; x <= radius; ++x) {
 			if (!told)
 				server.getLogger().info("Preparing spawn area: " + (x + radius) * 100 / (radius + radius + 1) + "%");
-			
+
 			told = !told;
-			
+
 			for (int z = -radius; z <= radius; ++z)
 				getChunkFromChunkCoords( ((int)spawnPosition.x >> 4) + x, ((int)spawnPosition.z >> 4) + z);
 		}
-		
+
 		terrainGenerated = true;
 	}
-	
+
 	/*protected void tickActiveChunks() {
 		Iterator<ChunkCoords> it = activeChunks.iterator();
 
@@ -166,4 +185,9 @@ public class RushWorld {
 			}
 		}
 	}*/
+
+	private void advanceTime() {
+		if (time++ >= 24000)
+			time = 0;
+	}
 }

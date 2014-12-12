@@ -24,9 +24,8 @@ public class PacketDecoder extends ByteToMessageDecoder {
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {		
 		try {
-			if (in instanceof EmptyByteBuf) { // TODO Bad workaround. Why getting this?
-				return;						// This should not happen. Somewhere is a bug I suppose.
-			}
+			if (in instanceof EmptyByteBuf)  // TODO Bad workaround. Why getting this?
+				return;						 // This should not happen. Somewhere is a bug I suppose.
 			
 			Protocol.PacketDirection prot = protocol.TO_SERVER;
 			int protocol = ctx.pipeline().get(NettyChannelHandler.class).session.protocol;
