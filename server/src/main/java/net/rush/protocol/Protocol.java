@@ -14,6 +14,7 @@ import net.rush.protocol.packets.ChunkBulk;
 import net.rush.protocol.packets.ClientSettings;
 import net.rush.protocol.packets.ClientStatus;
 import net.rush.protocol.packets.DestroyEntity;
+import net.rush.protocol.packets.EntityAction;
 import net.rush.protocol.packets.EntityExists;
 import net.rush.protocol.packets.EntityHeadLook;
 import net.rush.protocol.packets.EntityLook;
@@ -38,6 +39,7 @@ import net.rush.protocol.packets.SpawnPosition;
 import net.rush.protocol.packets.StatusPing;
 import net.rush.protocol.packets.StatusRequest;
 import net.rush.protocol.packets.StatusResponse;
+import net.rush.protocol.packets.TimeUpdate;
 
 public enum Protocol {
 
@@ -53,9 +55,9 @@ public enum Protocol {
 			TO_CLIENT.registerPacket(0x00, KeepAlive.class);
 			TO_CLIENT.registerPacket(0x01, JoinGame.class);
 			TO_CLIENT.registerPacket(0x02, ChatMessage.class);
-			/*TO_CLIENT.registerPacket(0x03, PacketTimeUpdate.class);
-			TO_CLIENT.registerPacket(0x04, PacketEntityEquipment.class);
-			*/TO_CLIENT.registerPacket(0x05, SpawnPosition.class);
+			TO_CLIENT.registerPacket(0x03, TimeUpdate.class);
+			//TO_CLIENT.registerPacket(0x04, PacketEntityEquipment.class);
+			TO_CLIENT.registerPacket(0x05, SpawnPosition.class);
 			/*TO_CLIENT.registerPacket(0x06, PacketUpdateHealth.class);
 			TO_CLIENT.registerPacket(0x07, PacketRespawn.class);
 			*/TO_CLIENT.registerPacket(0x08, PlayerLookAndPosition.class);
@@ -127,8 +129,8 @@ public enum Protocol {
 			TO_SERVER.registerPacket(0x08, PacketBlockPlacement.class);
 			TO_SERVER.registerPacket(0x09, PacketHeldItemChange.class);
 			*/TO_SERVER.registerPacket(0x0A, Animation.class);
-			/*TO_SERVER.registerPacket(0x0B, PacketEntityAction.class);
-			TO_SERVER.registerPacket(0x0C, PacketSteerVehicle.class);
+			TO_SERVER.registerPacket(0x0B, EntityAction.class);
+			/*TO_SERVER.registerPacket(0x0C, PacketSteerVehicle.class);
 			TO_SERVER.registerPacket(0x0D, PacketCloseWindow.class);
 			TO_SERVER.registerPacket(0x0E, PacketClickWindow.class);
 			TO_SERVER.registerPacket(0x0F, PacketConfirmTransaction.class);

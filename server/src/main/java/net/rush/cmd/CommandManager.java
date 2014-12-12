@@ -14,6 +14,8 @@ public class CommandManager {
 		register(new GamemodeCommand());
 		//register(new KickCommand()); // FIXME Fix non working second kick.
 		register(new StopCommand());
+		register(new TimeCommand());
+		register(new HelpCommand(this));
 	}
 	
 	private void register(Command command) {
@@ -26,7 +28,7 @@ public class CommandManager {
 		Command command = commands.get(label);
 		
 		if (command == null) {
-			sender.sendMessage("Unknown command. Check for typos and try again.");
+			sender.sendMessage("Unknown command. Type /help for help.");
 			return;
 		}
 		

@@ -30,10 +30,10 @@ public final class SessionRegistry {
 				session.pulse();
 		}
 	}
-
+	
 	public void broadcastPacketExcept(Packet packet, int entityId) {
 		for (Session session : sessions) {
-			if (session.player.id == entityId)
+			if (session.player != null && session.player.id == entityId)
 				continue;
 			session.sendPacket(packet);
 		}

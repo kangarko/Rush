@@ -20,6 +20,7 @@ import net.rush.protocol.packets.SpawnPlayer;
 import net.rush.protocol.packets.PlayerListItem;
 import net.rush.protocol.packets.PlayerLookAndPosition;
 import net.rush.protocol.packets.SpawnPosition;
+import net.rush.protocol.packets.TimeUpdate;
 import net.rush.protocol.packets.ChangeGameState.GameStateReason;
 import net.rush.utils.JsonUtils;
 
@@ -31,7 +32,7 @@ public class RushPlayer extends RushTrackeableEntity implements CommandSender {
 	public final double NORMAL_EYE_HEIGHT = 1.62D;
 
 	/**
-	 * The height of a player's eyes above their feet when they are crouching.
+	 * The height of a player's eyes above their feet when crouching.
 	 */
 	public final double CROUCH_EYE_HEIGHT = 1.42D;
 
@@ -53,7 +54,7 @@ public class RushPlayer extends RushTrackeableEntity implements CommandSender {
 		this.name = name;
 		this.session = session;
 		
-		setMetadata(new MetaParam<Float>(6, 20F)); // Health.
+		setMetadata(new MetaParam<Float>(6, 20F)); // Health. TODO move to RushLivingEntity
 		setPosition(world.spawnPosition);
 
 		streamBlocks();
@@ -61,7 +62,8 @@ public class RushPlayer extends RushTrackeableEntity implements CommandSender {
 
 		session.sendPacket(new SpawnPosition(world.spawnPosition)); // compass
 		session.sendPacket(new PlayerLookAndPosition(position.x, position.y, position.z, 0F, 0F, true));
-
+		session.sendPacket(new TimeUpdate(world.getTime(), world.getTime()));
+		
 		server.getLogger().info(name + " [" + session.removeAddress() + "] logged in with id " + id + " at ([world] " + position + ")");
 		server.broadcastMessage("&3" + name + " &fhas joined the game.");
 

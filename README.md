@@ -32,6 +32,7 @@ Rush is currently compatible with following Minecraft versions.
 * 1.7.2 - 1.7.5 (protocol #4)
 
 Planned compatibility:
+* 1.8.1 (high priority)
 * 1.2.5 (fork maybe?)
 * beta1.7.3 (fork maybe?)
 

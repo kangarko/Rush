@@ -15,8 +15,4 @@ public class StatusRequest extends Packet {
 	public void read(ByteBuf in) {
 	}
 
-	@Override
-	public void write(ByteBuf out) {
-	}
-
 }
