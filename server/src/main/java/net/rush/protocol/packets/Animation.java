@@ -1,14 +1,13 @@
 package net.rush.protocol.packets;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
-import java.util.HashMap;
 
+import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import net.rush.api.safety.SafeMapa;
 import net.rush.protocol.Packet;
 
 @Data
@@ -28,7 +27,7 @@ public class Animation extends Packet {
 		CROUNCH(104),
 		UNCROUNCH(105);
 
-		private final static HashMap<Integer, Type> BY_ID = new HashMap<>();
+		private final static SafeMapa<Integer, Type> BY_ID = new SafeMapa<>();
 		public final int id;
 		
 		Type(int id) {

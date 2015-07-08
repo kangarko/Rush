@@ -10,7 +10,8 @@ import net.rush.protocol.ServerPing;
  */
 public class JsonUtils {
 
-	private JsonUtils() {}
+	private JsonUtils() {
+	}
 
 	public static String jsonizeServerPing(ServerPing ping) {
 		String json = "{";

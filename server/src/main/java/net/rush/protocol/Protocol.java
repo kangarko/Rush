@@ -1,19 +1,20 @@
 package net.rush.protocol;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import java.util.HashMap;
 
+import io.netty.channel.ChannelHandlerContext;
 import net.rush.api.exceptions.PacketException;
 import net.rush.netty.pipeline.PacketDecoder;
 import net.rush.netty.pipeline.PacketEncoder;
 import net.rush.protocol.packets.Animation;
+import net.rush.protocol.packets.BlockChange;
 import net.rush.protocol.packets.ChangeGameState;
 import net.rush.protocol.packets.ChatMessage;
 import net.rush.protocol.packets.ChunkBulk;
 import net.rush.protocol.packets.ClientSettings;
 import net.rush.protocol.packets.ClientStatus;
 import net.rush.protocol.packets.DestroyEntity;
+import net.rush.protocol.packets.Digging;
 import net.rush.protocol.packets.EntityAction;
 import net.rush.protocol.packets.EntityExists;
 import net.rush.protocol.packets.EntityHeadLook;
@@ -49,6 +50,7 @@ public enum Protocol {
 			TO_SERVER.registerPacket(0x00, Handshake.class);
 		}
 	},
+	
 	// 0
 	GAME {
 		{
@@ -74,10 +76,10 @@ public enum Protocol {
 			*/TO_CLIENT.registerPacket(0x13, DestroyEntity.class);
 			TO_CLIENT.registerPacket(0x14, EntityExists.class);
 			TO_CLIENT.registerPacket(0x15, EntityRelMove.class);
-			TO_CLIENT.registerPacket(0x16, EntityLook.class);			
-			TO_CLIENT.registerPacket(0x17, EntityLookRelMove.class);			
-			TO_CLIENT.registerPacket(0x18, EntityTeleport.class);			
-			TO_CLIENT.registerPacket(0x19, EntityHeadLook.class);	
+			TO_CLIENT.registerPacket(0x16, EntityLook.class);
+			TO_CLIENT.registerPacket(0x17, EntityLookRelMove.class);
+			TO_CLIENT.registerPacket(0x18, EntityTeleport.class);
+			TO_CLIENT.registerPacket(0x19, EntityHeadLook.class);
 			/*TO_CLIENT.registerPacket(0x1A, PacketEntityStatus.class); // inherit from entityexist
 			TO_CLIENT.registerPacket(0x1B, PacketAttachEntity.class); // inherit from entityexist
 			*/TO_CLIENT.registerPacket(0x1C, EntityMetadata.class);
@@ -86,9 +88,9 @@ public enum Protocol {
 			TO_CLIENT.registerPacket(0x1F, PacketSetExperience.class);
 			TO_CLIENT.registerPacket(0x20, Packet44UpdateAttributes.class);
 			*/TO_CLIENT.registerPacket(0x21, ChunkBulk.class);
-			/*TO_CLIENT.registerPacket(0x22, PacketMultiBlockChange.class);
-			TO_CLIENT.registerPacket(0x23, PacketBlockChange.class);
-			TO_CLIENT.registerPacket(0x24, PacketBlockAction.class);
+			//TO_CLIENT.registerPacket(0x22, PacketMultiBlockChange.class);
+			TO_CLIENT.registerPacket(0x23, BlockChange.class);
+			/*TO_CLIENT.registerPacket(0x24, PacketBlockAction.class);
 			TO_CLIENT.registerPacket(0x25, PacketBlockBreakAnim.class);
 			TO_CLIENT.registerPacket(0x26, PacketChunkBulk.class);
 			TO_CLIENT.registerPacket(0x27, PacketExplosion.class);
@@ -125,8 +127,8 @@ public enum Protocol {
 			TO_SERVER.registerPacket(0x04, PlayerPosition.class);
 			TO_SERVER.registerPacket(0x05, PlayerLook.class);
 			TO_SERVER.registerPacket(0x06, PlayerLookAndPosition.class);
-			/*TO_SERVER.registerPacket(0x07, PacketDigging.class);
-			TO_SERVER.registerPacket(0x08, PacketBlockPlacement.class);
+			TO_SERVER.registerPacket(0x07, Digging.class);
+			/*TO_SERVER.registerPacket(0x08, PacketBlockPlacement.class);
 			TO_SERVER.registerPacket(0x09, PacketHeldItemChange.class);
 			*/TO_SERVER.registerPacket(0x0A, Animation.class);
 			TO_SERVER.registerPacket(0x0B, EntityAction.class);
@@ -146,6 +148,7 @@ public enum Protocol {
 			//TO_CLIENT.registerPacket(0x45, Packet18Title.class);
 		}
 	},
+	
 	// 1
 	STATUS {
 		{
@@ -156,6 +159,7 @@ public enum Protocol {
 			TO_SERVER.registerPacket(0x01, StatusPing.class);
 		}
 	},
+	
 	//2
 	LOGIN {
 		{
@@ -170,7 +174,7 @@ public enum Protocol {
 		}
 	};
 
-	private final int MAX_PACKET_ID = 0xFF;
+	public static final int MAX_PACKET_ID = 0xFF;
 
 	public final PacketDirection TO_SERVER = new PacketDirection();
 	public final PacketDirection TO_CLIENT = new PacketDirection();
@@ -186,11 +190,12 @@ public enum Protocol {
 		}
 
 		public Packet newPacket(int id) {
+			
 			if (id > MAX_PACKET_ID)
 				throw new PacketException("Packet id " + id + " outside of range");
 
-			if (packetClasses[id] == null) 
-				throw new PacketException("Unknown packet id " + id);			
+			if (packetClasses[id] == null)
+				throw new PacketException("Unknown packet id " + id);
 
 			try {
 				return packetClasses[id].newInstance();
@@ -221,9 +226,9 @@ public enum Protocol {
 			return packetIdMap.get(packetClass);
 		}
 
-		public void setProtocol(ChannelHandlerContext channel, Protocol prot) {
-			channel.pipeline().get(PacketDecoder.class).protocol = prot;
-			channel.pipeline().get(PacketEncoder.class).protocol = prot;
+		public void changeProtocol(ChannelHandlerContext channel, Protocol newProtocol) {
+			channel.pipeline().get(PacketDecoder.class).setProtocol(newProtocol);
+			channel.pipeline().get(PacketEncoder.class).setProtocol(newProtocol);
 		}
 	}
 }
