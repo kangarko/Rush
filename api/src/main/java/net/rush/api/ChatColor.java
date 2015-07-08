@@ -1,6 +1,7 @@
 package net.rush.api;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.Validate;
@@ -165,7 +166,7 @@ public enum ChatColor {
      *     or null if it doesn't exist
      */
     public static ChatColor getByChar(String code) {
-        Validate.notNull(code, "Code cannot be null");
+        Objects.requireNonNull(code, "Code cannot be null");
         Validate.isTrue(code.length() > 0, "Code must have at least one char");
 
         return BY_CHAR.get(code.charAt(0));

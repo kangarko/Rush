@@ -1,44 +1,70 @@
 package net.rush.cmd;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
-import net.rush.api.model.CommandSender;
-import net.rush.api.model.ConsoleCommandSender;
+import lombok.Data;
+import net.rush.api.safety.SafeMapa;
+import net.rush.api.safety.SafeOrderedZoznam;
+import net.rush.entity.EntityPlayer;
+import net.rush.model.CommandSender;
 
-public class CommandManager {
+public final class CommandManager {
 
-	public HashMap<String, Command> commands = new HashMap<>();
+	private final SafeMapa<String, Command> commands = new SafeMapa<>();
+	private final SafeOrderedZoznam<PendingCommand> pendingCommands = new SafeOrderedZoznam<>();
 	
-	public CommandManager() {
-		register(new GamemodeCommand());
-		//register(new KickCommand()); // FIXME Fix non working second kick.
-		register(new StopCommand());
-		register(new TimeCommand());
-		register(new HelpCommand(this));
+	public void loadCommands() {
+		register(new CommandGamemode());
+		register(new CommandKick());
+		register(new CommandStop());
+		register(new CommandTime());
+		register(new CommandHelp(this));
 	}
 	
 	private void register(Command command) {
-		commands.put(command.label, command);
+		commands.put(command.getLabel(), command);
 	}
 	
-	public void dispatchCommand(CommandSender sender, String rawMessage) {
-		String[] args = rawMessage.split(" ");
-		String label = args[0];	
-		Command command = commands.get(label);
-		
-		if (command == null) {
-			sender.sendMessage("Unknown command. Type /help for help.");
-			return;
+	public void pulse() {
+		synchronized (pendingCommands) {
+			for (PendingCommand pendingCmd : pendingCommands) {
+				String[] args = pendingCmd.getRawCommand().split(" ");
+				String label = args[0];	
+				
+				Command command = commands.get(label);
+				CommandSender sender = pendingCmd.getSender();
+				
+				if (command == null) {
+					sender.sendMessage("Unknown command. Type /help for help.");
+					continue;
+				}
+				
+				if (!(sender instanceof EntityPlayer) && command.isPlayerRequired()) {
+					sender.sendMessage("This command can only be accessed by a player.");
+					continue;
+				}
+				
+				String[] rangedArgs = Arrays.copyOfRange(args, 1, args.length);
+				
+				command.execute(sender, rangedArgs);
+			}
+			pendingCommands.clear();
 		}
-		
-		if (sender instanceof ConsoleCommandSender && command.noConsole) {
-			sender.sendMessage("This command is not accesible from console.");
-			return;
-		}
-		
-		String[] rangedArgs = Arrays.copyOfRange(args, 1, args.length);
-		
-		command.execute(sender, rangedArgs);
 	}
+	
+	public void dispatchCommand(CommandSender sender, String rawCommand) {
+		synchronized (pendingCommands) {
+			pendingCommands.add(new PendingCommand(sender, rawCommand));
+		}
+	}
+	
+	SafeMapa<String, Command> getCommands() {
+		return commands;
+	}
+}
+
+@Data
+class PendingCommand {
+	private final CommandSender sender;
+	private final String rawCommand;
 }

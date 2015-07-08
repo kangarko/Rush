@@ -3,14 +3,17 @@ package net.rush.netty.pipeline;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import net.rush.netty.NettyChannelHandler;
+import lombok.Setter;
+import net.rush.netty.ChannelHandler;
 import net.rush.protocol.Packet;
 import net.rush.protocol.Protocol;
+import net.rush.protocol.Protocol.PacketDirection;
 import net.rush.protocol.packets.LoginSuccess;
 
 public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
-	public Protocol protocol;
+	@Setter
+	private Protocol protocol;
 
 	public PacketEncoder(Protocol protocol) {
 		this.protocol = protocol;
@@ -19,15 +22,15 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 	@Override
 	protected void encode(ChannelHandlerContext ctx, Packet packet, ByteBuf out) {
 		try {
-			Protocol.PacketDirection prot = protocol.TO_CLIENT;
-			int protocol = ctx.pipeline().get(NettyChannelHandler.class).session.protocol;
+			PacketDirection prot = protocol.TO_CLIENT;
+			int protocol = ctx.pipeline().get(ChannelHandler.class).getSession().protocol;
 			
 			Packet.writeVarInt(prot.getId(packet.getClass()), out);
-			packet.protocol = protocol;
+			packet.setProtocol(protocol);
 			packet.write(out);
 			
 			if (packet instanceof LoginSuccess)
-				prot.setProtocol(ctx, Protocol.GAME);
+				prot.changeProtocol(ctx, Protocol.GAME);
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}

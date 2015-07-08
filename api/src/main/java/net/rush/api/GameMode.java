@@ -16,12 +16,7 @@ public enum GameMode {
     /**
      * Survival mode is the "normal" gameplay type, with no special features.
      */
-    SURVIVAL(0),
-
-    /**
-     * Adventure mode cannot break blocks without the correct tools.
-     */
-    ADVENTURE(2);
+    SURVIVAL(0);
 
     private final int value;
     private final static HashMap<Integer, GameMode> BY_ID = new HashMap<>();

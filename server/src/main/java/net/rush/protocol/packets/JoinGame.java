@@ -1,9 +1,8 @@
 package net.rush.protocol.packets;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 
+import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

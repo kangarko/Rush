@@ -8,11 +8,14 @@ import net.rush.api.ChatColor;
 import net.rush.api.Difficulty;
 import net.rush.api.Environment;
 import net.rush.api.GameMode;
+import net.rush.block.Block;
+import net.rush.entity.EntityPlayer;
 import net.rush.model.Session;
-import net.rush.model.entity.RushPlayer;
 import net.rush.protocol.packets.Animation;
 import net.rush.protocol.packets.ChatMessage;
 import net.rush.protocol.packets.ClientSettings;
+import net.rush.protocol.packets.Digging;
+import net.rush.protocol.packets.Digging.DiggingStatus;
 import net.rush.protocol.packets.EntityAction;
 import net.rush.protocol.packets.EntityHeadLook;
 import net.rush.protocol.packets.Handshake;
@@ -28,6 +31,7 @@ import net.rush.protocol.packets.PluginMessage;
 import net.rush.protocol.packets.StatusPing;
 import net.rush.protocol.packets.StatusRequest;
 import net.rush.protocol.packets.StatusResponse;
+import net.rush.world.World;
 
 public class PacketHandler {
 
@@ -45,7 +49,7 @@ public class PacketHandler {
 	}
 
 	public void handle(Session session, KeepAlive packet) {
-		if (session.pingToken == packet.getToken())
+		if (session.getPingToken() == packet.getToken())
 			session.pong();
 	}
 
@@ -61,13 +65,14 @@ public class PacketHandler {
 				return;
 
 			if (text.startsWith("/")) {
-				session.server.commandManager.dispatchCommand(session.player, text.substring(1));
+				logger.info(session.getPlayer().getName() + " issued server command: " + text);
+				session.getServer().getCommandManager().dispatchCommand(session.getPlayer(), text.substring(1));
 
 			} else {
-				text = session.player.getName() + ": " + text.replaceAll("\\s+", " ").trim();
+				text = session.getPlayer().getName() + ": " + text.replaceAll("\\s+", " ").trim();
 
 				logger.info(text.replaceAll("(&([a-f0-9k-or]))", ""));
-				session.server.broadcastMessage(text);
+				session.getServer().broadcastMessage(text);
 			}
 		}
 	}
@@ -77,31 +82,70 @@ public class PacketHandler {
 	}
 
 	public void handle(Session session, Animation packet) {
-		packet = new Animation(session.player.id, packet.getAnimation());		
-		session.server.sessionRegistry.broadcastPacketInRange(packet, session.player);
+		packet = new Animation(session.getPlayer().getId(), packet.getAnimation());		
+		session.getServer().getSessionRegistry().broadcastPacketInRange(packet, session.getPlayer());
 	}
-	
+
 	public void handle(Session session, EntityAction packet) {
+		EntityPlayer player = session.getPlayer();
+
 		switch (packet.getAction()) {
 			case ACTION_CROUCH:
-				session.player.setCrouching(true);
+				player.setCrouching(true);
 				break;
 			case UNCROUCH:
-				session.player.setCrouching(false);
+				player.setCrouching(false);
 				break;
 			case START_SPRINTING:
-				session.player.setSprinting(true);
+				player.setSprinting(true);
 				break;
 			case STOP_SPRINTING:
-				session.player.setSprinting(false);
+				player.setSprinting(false);
 				break;
 			case LEAVE_BED:
 				break;
 			default:
-				throw new RuntimeException("Unhandled action: " + packet.getAction());			
+				throw new RuntimeException("Unhandled action: " + packet.getAction());
 		}
 	}
 
+	public void handle(Session session, Digging packet) {		
+		EntityPlayer player = session.getPlayer();
+		World world = player.getWorld();
+
+		int x = packet.getX();
+		int z = packet.getZ();
+		int y = packet.getY();
+		
+		int id = world.getType(x, y, z);
+		
+		if (!Block.exists(id)) {
+			player.sendMessage("&cUnknown broken block ID " + world.getType(x, y, z));
+			return;
+		}
+		
+		Block block = Block.byId(id);
+		int metadata = world.getMetadata(x, y, z);
+		
+		if ((player.getGamemode() == GameMode.CREATIVE && packet.getStatus() == DiggingStatus.START) 
+				|| (player.getGamemode() == GameMode.SURVIVAL && packet.getStatus() == DiggingStatus.DONE)
+				/*|| (packet.getStatus() == DiggingStatus.START && block.getHardness() == 0)*/) {
+
+			block.onBlockDestroy(world, player, x, y, z, metadata);
+
+			/*if (player.getGamemode() != GameMode.CREATIVE) {
+				block.dropBlock(world, x, y, z, metadata, 0);
+
+				if(player.getItemInHand() != null && player.getItemInHand() != null && player.getItemInHand().getId() != 0 )
+					player.getInventory().takeOrDamageItemInHand(player, true);
+			}*/
+
+			world.setAir(x, y, z);
+			//world.playEffectExceptTo(Effect.STEP_SOUND, x, y, z, block.id, player);
+			player.sendMessage("&7Registered block break of &3" + block.getClass().getSimpleName().replace("Block", "") + " &7id &3" + block.id);
+		}		
+	}
+	
 	public void handle(Session session, ClientSettings packet) {
 	}
 
@@ -125,30 +169,38 @@ public class PacketHandler {
 	}
 
 	public void handlePosition(Session session, boolean hasPos, boolean hasLook, PlayerOnGround packet) {		
+		EntityPlayer player = session.getPlayer();
+
 		if (hasPos)
-			session.player.setPosition(packet.getX(), packet.getFeetY(), packet.getZ());
+			player.setPosition(packet.getX(), packet.getFeetY(), packet.getZ());
 
 		if (hasLook) {
-			session.player.position.setRotation(packet.getYaw(), packet.getPitch());
-			session.server.sessionRegistry.broadcastPacketExcept(new EntityHeadLook(session.player.id, session.player.position.getIntYaw()), session.player.id); // TODO Fix incorrect yaw.
+			player.getPosition().setRotation(packet.getYaw(), packet.getPitch());
+			session.getServer().getSessionRegistry().broadcastPacketExcept(new EntityHeadLook(player.getId(), player.getPosition().getIntYaw()), player.getId()); // TODO Fix incorrect yaw.
 		}
 
-		session.player.onGround = packet.isOnGround();
+		player.setOnGround(packet.isOnGround());
 	}
 
 	public void handle(Session session, LoginStart packet) {
-		if(session.server.getPlayer(packet.getName()) != null)
-			session.server.getPlayer(packet.getName()).session.disconnect(ChatColor.RED + "You are logged from another location");
+		if (session.protocol != 4 && session.protocol != 5)			
+			session.disconnect("Outdated client! Connect with 1.7.x");			
+		else {
+			EntityPlayer existing = session.getServer().getPlayer(packet.getName());
 
-		session.sendPacket(new LoginSuccess("0-0-0-0-0", packet.getName()));
-		session.sendPacket(new JoinGame(0, "DEFAULT", GameMode.SURVIVAL, Environment.NORMAL, Difficulty.NORMAL, 256, 20, false));		
-		session.setPlayer(new RushPlayer(session, packet.getName()));
+			if (existing != null)
+				existing.kickPlayer(ChatColor.RED + "You are logged from another location");
+			
+			session.sendPacket(new LoginSuccess("0-0-0-0-0", packet.getName()));
+			session.sendPacket(new JoinGame(0, "DEFAULT", GameMode.SURVIVAL, Environment.NORMAL, Difficulty.NORMAL, 256, 20, false));
+			session.startJoining(packet.getName());
+		}
 	}
 
 	// ------------------ Animated Motd ------------------ //
 	private int counter;
 	private long time = 0;
-	
+
 	private final Timer motdTimer = new Timer("Anim Motd");
 	private final String motdColorDef = "&f&l";
 	private final String motdC1 = "&e&l";
@@ -179,20 +231,18 @@ public class PacketHandler {
 			motdColorDef + "Checking spawn area.." + motdC1 + "." + motdC2,
 			motdColorDef + "Checking spawn area...",
 			"                      &b&lRush Server\\n                 &9&l>>  &6Join &enow  &9&l<<",
-			};
+	};
 
 	public void handle(Session session, StatusPing packet) {
 		time = packet.getTime();
 	}
 
 	public void handle(Session session, StatusRequest packet) {
-		ServerPing response = new ServerPing(new ServerPing.Protocol("1.7.10", session.protocol), session.server.world.isTerrainGenerated() ? motdParts[0] : "&6&lGenerating spawn area...\\n&4&lDon't connect! Check console for status.", "", new ServerPing.Players(20, 0));
+		ServerPing response = new ServerPing(new ServerPing.Protocol("1.7.10", session.protocol), motdParts[0], "", new ServerPing.Players(20, 0));
 		session.sendPacket(new StatusResponse(response));
 
 		counter = 1;
 
-		session.server.world.generateSpawnArea();
-		
 		motdTimer.scheduleAtFixedRate(new TimerTask() {
 
 			@Override

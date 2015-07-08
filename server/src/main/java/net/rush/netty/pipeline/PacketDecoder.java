@@ -1,21 +1,23 @@
 package net.rush.netty.pipeline;
 
+import java.util.List;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.EmptyByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-
-import java.util.List;
-
+import lombok.Setter;
 import net.rush.api.exceptions.PacketException;
-import net.rush.netty.NettyChannelHandler;
+import net.rush.netty.ChannelHandler;
 import net.rush.protocol.Packet;
 import net.rush.protocol.Protocol;
+import net.rush.protocol.Protocol.PacketDirection;
 import net.rush.protocol.packets.Handshake;
 
 public class PacketDecoder extends ByteToMessageDecoder {
 
-	public Protocol protocol;
+	@Setter
+	private Protocol protocol;
 
 	public PacketDecoder(Protocol protocol) {
 		this.protocol = protocol;
@@ -27,15 +29,15 @@ public class PacketDecoder extends ByteToMessageDecoder {
 			if (in instanceof EmptyByteBuf)  // TODO Bad workaround. Why getting this?
 				return;						 // This should not happen. Somewhere is a bug I suppose.
 			
-			Protocol.PacketDirection prot = protocol.TO_SERVER;
-			int protocol = ctx.pipeline().get(NettyChannelHandler.class).session.protocol;
+			PacketDirection prot = protocol.TO_SERVER;
+			int protocol = ctx.pipeline().get(ChannelHandler.class).getSession().protocol;
 			
 			int id = Packet.readVarInt(in);
 			Packet packet = null;
 
 			if (prot.hasPacket(id)) {
 				packet = prot.newPacket(id);
-				packet.protocol = protocol;
+				packet.setProtocol(protocol);
 				packet.read(in);
 
 				if (in.readableBytes() != 0)
@@ -55,10 +57,10 @@ public class PacketDecoder extends ByteToMessageDecoder {
 
 				switch (handshake.getState()) {
 					case 1:
-						prot.setProtocol(ctx, Protocol.STATUS);
+						prot.changeProtocol(ctx, Protocol.STATUS);
 						break;
 					case 2:
-						prot.setProtocol(ctx, Protocol.LOGIN);
+						prot.changeProtocol(ctx, Protocol.LOGIN);
 						break;
 				}
 			}

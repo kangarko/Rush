@@ -43,7 +43,7 @@ public class MetaParam<T> {
 	private final T value;
 	
 	public MetaParam(int index, T value) {
-		this.type = typeFromValue(value);
+		this.type = fromValue(value);
 		this.index = index;
 		this.value = value;
 	}
@@ -60,7 +60,7 @@ public class MetaParam<T> {
 		return value;
 	}
 	
-	public static Type typeFromValue(Object value) {
+	private Type fromValue(T value) {
 		if (value instanceof Byte)
 			return Type.BYTE;
 		else if (value instanceof Short)
@@ -78,6 +78,63 @@ public class MetaParam<T> {
 		
 		throw new NullPointerException("Unknown metadata type: " + value.getClass().getTypeName());
 	}
+	
+	/*public static class MetaParamByte extends MetaParam<Byte> {
+		
+		public MetaParamByte(int index, byte value) {
+			super(Type.BYTE, index, value);
+		}
+		
+		public MetaParamByte(int index, int value) {
+			super(Type.BYTE, index, (byte) value);
+		}
+	}
+	
+	public static class MetaParamShort extends MetaParam<Short> {
+		
+		public MetaParamShort(int index, short value) {
+			super(Type.SHORT, index, value);
+		}
+		
+		public MetaParamShort(int index, int value) {
+			super(Type.SHORT, index, (short) value);
+		}
+	}
+	
+	public static class MetaParamInt extends MetaParam<Integer> {
+		
+		public MetaParamInt(int index, int value) {
+			super(Type.INT, index, value);
+		}
+	}
+	
+	public static class MetaParamFloat extends MetaParam<Float> {
+		
+		public MetaParamFloat(int index, float value) {
+			super(Type.FLOAT, index, value);
+		}
+	}
+	
+	public static class MetaParamString extends MetaParam<String> {
+		
+		public MetaParamString(int index, String value) {
+			super(Type.STRING, index, value);
+		}
+	}
+	
+	public static class MetaParamItem extends MetaParam<ItemStack> {
+		
+		public MetaParamItem(int index, ItemStack value) {
+			super(Type.ITEM, index, value);
+		}
+	}
+	
+	public static class MetaParamPos extends MetaParam<Position> {
+		
+		public MetaParamPos(int index, Position value) {
+			super(Type.COORDINATE, index, value);
+		}
+	}*/
 	
 	@Override
 	public String toString() {

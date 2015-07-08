@@ -1,23 +1,27 @@
 package net.rush.protocol;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.apache.commons.lang3.Validate;
+
+import io.netty.buffer.ByteBuf;
+import lombok.Setter;
 import net.rush.api.ItemStack;
 import net.rush.api.Position;
 import net.rush.api.exceptions.PacketException;
 import net.rush.api.meta.MetaParam;
 
-import org.apache.commons.lang3.Validate;
-
-public class Packet {
+public abstract class Packet {
 	
-	public int protocol;
+	@Setter
+	protected int protocol;
 
+	protected Packet() {
+	}
+	
 	public static void writeString(String s, ByteBuf buf) {
 		Validate.isTrue(s.length() <= Short.MAX_VALUE, "Cannot send string longer than Short.MAX_VALUE (got %s characters)", s.length());
 
@@ -267,6 +271,12 @@ public class Packet {
 	public static void writePosIntegers(int x, int y, int z, ByteBuf out) {
 		out.writeInt(x);
 		out.writeInt(y);
+		out.writeInt(z);
+	}
+	
+	public static void writePosYByte(int x, int y, int z, ByteBuf out) {
+		out.writeInt(x);
+		out.writeByte(y);
 		out.writeInt(z);
 	}
 	

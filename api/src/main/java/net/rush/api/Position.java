@@ -1,5 +1,6 @@
 package net.rush.api;
 
+import java.util.Objects;
 
 public final class Position {
 
@@ -10,7 +11,7 @@ public final class Position {
 	 * the number of pixels in a block, as each block uses a 32x32 texture.
 	 */
 	public static final int GRANULARITY = 32;
-	public static final Position ZERO = new Position(0.0D, 0.0D, 0.0D);
+	public static final Position ZERO = new Position(0D, 0D, 0D);
 
 	public double x, y, z, yaw, pitch;
 
@@ -117,8 +118,7 @@ public final class Position {
 	}
 
 	public double distanceSquared(Position o) {
-		if (o == null)
-			throw new IllegalArgumentException("Cannot measure distance to a null location");
+		Objects.requireNonNull(o, "Cannot measure distance to a null location");
 
 		return Math.sqrt(x - o.x) + Math.sqrt(y - o.y) + Math.sqrt(z - o.z);
 	}

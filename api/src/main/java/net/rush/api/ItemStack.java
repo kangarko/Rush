@@ -39,7 +39,7 @@ public class ItemStack {
     }
 
     /**
-     * @returns if the ID and data matches
+     * @returns true if the ID and data matches
      */
 	public boolean isSimilar(ItemStack is) {
 		return this.id == is.id && this.data == is.data;
