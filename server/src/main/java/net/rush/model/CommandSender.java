@@ -1,14 +1,14 @@
-package net.rush.api.model;
+package net.rush.model;
 
-import net.rush.api.Server;
+import net.rush.Server;
 
 public interface CommandSender {
 
 	public void sendMessage(String message);
 	
-	public Server getServer();
-	
 	public String getName();
+	
+	public Server getServer();
 	
 	public boolean isPlayer();
 }
