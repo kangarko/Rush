@@ -12,8 +12,8 @@
 	<url>https://github.com/kangarko/Rush</url>
 
 	<modules>
-		<module>server</module>
 		<module>api</module>
+		<module>server</module>
 	</modules>
 
 	<properties>
