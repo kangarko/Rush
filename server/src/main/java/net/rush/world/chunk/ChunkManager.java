@@ -23,6 +23,7 @@ public final class ChunkManager {
 
 		if (chunk == null) {			
 			chunk = generator.generate(x, z);
+
 			chunks.put(key, chunk);
 		}
 
