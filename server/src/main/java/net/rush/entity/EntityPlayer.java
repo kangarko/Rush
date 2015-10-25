@@ -91,7 +91,7 @@ public class EntityPlayer extends EntityTrackeable implements CommandSender {
 			if (!knownEntities.contains(entity) && entity.isActive() && canSee(entity)) {
 				knownEntities.add(entity);
 				session.sendPacket(entity.createSpawnMessage());
-				sendMessage(ChatColor.GRAY + "Recieved spawn packet of " + ChatColor.GREEN + entity);
+				sendMessage(ChatColor.GRAY + "You now see the " + ChatColor.GREEN + entity);
 				System.out.println(this + " has received spawn packet of " + entity);
 			}
 		}
@@ -134,7 +134,7 @@ public class EntityPlayer extends EntityTrackeable implements CommandSender {
 					
 					session.sendPacket(chunk.toPacket());
 				
-					world.forcePopulate(chunk);
+					//world.forcePopulate(chunk);
 				}
 
 				previousChunks.remove(key);
