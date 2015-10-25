@@ -4,7 +4,7 @@ import java.util.Random;
 
 import imported.MathHelper;
 import net.rush.block.Block;
-import net.rush.world.WorldGenerator.WorldPopulate;
+import net.rush.world.World;
 
 public class WorldGenClay extends WorldPopulator {
 
@@ -17,7 +17,7 @@ public class WorldGenClay extends WorldPopulator {
 	}
 
 	@Override
-	public boolean generate(WorldPopulate world, Random random, int x, int y, int z) {
+	public boolean generate(World world, Random random, int x, int y, int z) {
 		//if (world.getMaterial(x, y, z) != Material.WATER)
 		// TODO	return false;
 
