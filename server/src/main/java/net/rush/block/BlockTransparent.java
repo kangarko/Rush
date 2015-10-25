@@ -7,7 +7,7 @@ public class BlockTransparent extends Block {
 	}
 	
 	@Override
-	public boolean isOpaqueCube() {
+	public boolean isOpaque() {
 		return false;
 	}
 
