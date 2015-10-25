@@ -3,7 +3,7 @@ package net.rush.world.populator;
 import java.util.Random;
 
 import net.rush.block.Block;
-import net.rush.world.World;
+import net.rush.world.WorldGenerator.WorldPopulate;
 
 public class WorldGenLiquids extends WorldPopulator {
 
@@ -14,7 +14,7 @@ public class WorldGenLiquids extends WorldPopulator {
 	}
 
 	@Override
-	public boolean generate(World world, Random random, int x, int y, int z) {
+	public boolean generate(WorldPopulate world, Random random, int x, int y, int z) {
 		// rush start
 		if (y < 1)
 			return false;
