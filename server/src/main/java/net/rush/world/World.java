@@ -138,7 +138,7 @@ public final class World {
 	}
 
 	public void forcePopulate(Chunk chunk) {
-		chunkManager.populateIfNot(chunk);
+		chunkManager.populate(chunk);
 	}
 
 	public int getType(int x, int y, int z) {
