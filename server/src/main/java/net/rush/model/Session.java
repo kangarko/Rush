@@ -127,7 +127,7 @@ public class Session {
 		Validate.isTrue(!pendingRemoval, "Already pending removal.");
 		
 		pendingRemoval = true;
-	}
+	}	
 	
 	void onDispose() {		
 		if (player != null) {

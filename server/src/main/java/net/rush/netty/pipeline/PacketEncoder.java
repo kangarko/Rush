@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.Setter;
-import net.rush.netty.ChannelHandler;
+import net.rush.netty.RushChannelHandler;
 import net.rush.protocol.Packet;
 import net.rush.protocol.Protocol;
 import net.rush.protocol.Protocol.PacketDirection;
@@ -23,7 +23,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 	protected void encode(ChannelHandlerContext ctx, Packet packet, ByteBuf out) {
 		try {
 			PacketDirection prot = protocol.TO_CLIENT;
-			int protocol = ctx.pipeline().get(ChannelHandler.class).getSession().protocol;
+			int protocol = ctx.pipeline().get(RushChannelHandler.class).getSession().protocol;
 			
 			Packet.writeVarInt(prot.getId(packet.getClass()), out);
 			packet.setProtocol(protocol);

@@ -1,4 +1,4 @@
-package net.rush.world.decorator.mapgen;
+package net.rush.world.decorator;
 
 import java.util.Random;
 

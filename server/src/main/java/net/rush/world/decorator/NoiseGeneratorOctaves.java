@@ -1,4 +1,4 @@
-package net.rush.world.decorator.noise;
+package net.rush.world.decorator;
 
 import java.util.Random;
 

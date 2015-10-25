@@ -16,13 +16,15 @@ import net.rush.protocol.Packet;
  * This is new instance for every channel - client that connects to
  * the server. It manages incoming messages (packets).
  */
-public class ChannelHandler extends SimpleChannelInboundHandler<Packet> {
+public class RushChannelHandler extends SimpleChannelInboundHandler<Packet> {
 
 	private final Server server;
 	@Getter
 	private Session session;
 
-	public ChannelHandler(Server server) {
+	//private boolean sessionClosing = false;
+
+	public RushChannelHandler(Server server) {
 		this.server = server;
 	}
 
@@ -57,7 +59,9 @@ public class ChannelHandler extends SimpleChannelInboundHandler<Packet> {
 	private void dispatchSession() {
 		Objects.requireNonNull(session);
 
-		session.destroy();
+		if (!session.isPendingRemoval())
+			session.destroy();
+		
 		session = null;
 	}
 }
