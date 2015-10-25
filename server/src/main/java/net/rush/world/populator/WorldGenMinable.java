@@ -4,7 +4,7 @@ import java.util.Random;
 
 import imported.MathHelper;
 import net.rush.block.Block;
-import net.rush.world.World;
+import net.rush.world.WorldGenerator.WorldPopulate;
 
 public class WorldGenMinable extends WorldPopulator {
 
@@ -17,7 +17,7 @@ public class WorldGenMinable extends WorldPopulator {
 	}
 
 	@Override
-	public boolean generate(World world, Random random, int x, int y, int z) {
+	public boolean generate(WorldPopulate world, Random random, int x, int y, int z) {
 		float probability = random.nextFloat() * 3.1415927F;
 		double xVein1 = x + 8 + MathHelper.floor_double(probability) * density / 8.0F;
 		double xVein2 = x + 8 - MathHelper.floor_double(probability) * density / 8.0F;

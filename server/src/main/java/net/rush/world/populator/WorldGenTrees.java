@@ -3,12 +3,12 @@ package net.rush.world.populator;
 import java.util.Random;
 
 import net.rush.block.Block;
-import net.rush.world.World;
+import net.rush.world.WorldGenerator.WorldPopulate;
 
 public class WorldGenTrees extends WorldPopulator {
 
 	@Override
-	public boolean generate(World world, Random random, int x, int y, int z) {
+	public boolean generate(WorldPopulate world, Random random, int x, int y, int z) {
 		int height = random.nextInt(3) + 4;
 		boolean canGrow = true;
 
@@ -60,7 +60,7 @@ public class WorldGenTrees extends WorldPopulator {
 						for (int zPos = z - trunkZ; zPos <= z + trunkZ; ++zPos) {
 							int l2 = zPos - z;
 
-							if ((Math.abs(j2) != trunkZ || Math.abs(l2) != trunkZ || random.nextInt(2) != 0 && trunkX != 0) && !Block.byId(world.getType(idOrPos, yPos, zPos)).isOpaque())
+							if ((Math.abs(j2) != trunkZ || Math.abs(l2) != trunkZ || random.nextInt(2) != 0 && trunkX != 0) && !Block.byId(world.getType(idOrPos, yPos, zPos)).isOpaqueCube())
 								world.setType(idOrPos, yPos, zPos, Block.LEAVES.id);
 						}
 					}

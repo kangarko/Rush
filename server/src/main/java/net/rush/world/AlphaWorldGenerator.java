@@ -330,7 +330,7 @@ public class AlphaWorldGenerator implements net.rush.world.WorldGenerator {
 	}
 
 	@Override
-	public void populate(World world, int chunkX, int chunkZ) {		
+	public void populate(WorldPopulate world, int chunkX, int chunkZ) {		
 		int blockX = chunkX * 16;
 		int blockZ = chunkZ * 16;
 

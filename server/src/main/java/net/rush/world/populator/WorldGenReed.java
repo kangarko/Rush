@@ -3,11 +3,12 @@ package net.rush.world.populator;
 import java.util.Random;
 
 import net.rush.world.World;
+import net.rush.world.WorldGenerator.WorldPopulate;
 
 public class WorldGenReed extends WorldPopulator {
 
 	@Override
-	public boolean generate(World world, Random random, int x, int y, int z) {
+	public boolean generate(WorldPopulate world, Random random, int x, int y, int z) {
 		/*for (int tries = 0; tries < 15; ++tries) {
 			int xPos = x + random.nextInt(4) - random.nextInt(4);
 			int yPos = y;
