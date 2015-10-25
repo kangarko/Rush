@@ -71,6 +71,11 @@ public final class Server {
 			new Server();
 		} catch (Throwable ex) {
 			ex.printStackTrace();
+			
+			if (ex instanceof StackOverflowError) {
+				System.out.println("[x] Stack overflow in server, stopping!");
+				System.exit(0);
+			}
 		}
 	}
 
@@ -118,7 +123,7 @@ public final class Server {
 					getLogger().log(Level.SEVERE, "Uncaught exception in scheduler", t);
 					
 					if (t instanceof StackOverflowError) {
-						System.out.println("[x] Detected stack overflow, killing server!");
+						System.out.println("[x] Stack overflow in scheduler, killing server!");
 						System.exit(0);
 					}
 					

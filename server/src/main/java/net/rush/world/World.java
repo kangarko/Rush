@@ -114,7 +114,7 @@ public final class World {
 
 				Block block = Block.byId(chunk.getType(randX, randY, randZ));
 
-				if (block.isTicking())
+				if (block.isTickingRandomly())
 					block.onTick(this, posX + randX, randY, posZ + randZ);
 			}
 		}
@@ -138,7 +138,7 @@ public final class World {
 	}
 
 	public void forcePopulate(Chunk chunk) {
-		chunkManager.populate(chunk);
+		chunkManager.populateIfNot(chunk);
 	}
 
 	public int getType(int x, int y, int z) {

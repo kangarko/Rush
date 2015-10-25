@@ -45,11 +45,13 @@ public abstract class Block {
 	protected Block(int id) {
 		this.id = id;
 		
-		Validate.isTrue(byId[id] == null, "Error assigning " + this + " to id " + id + "! Occupied by " + byId[id]);
+		Validate.isTrue(byId[id] == null, "Error assigning " + this + " to id " + id + "! Id occupied by " + byId[id]);
 		byId[id] = this;
 	}
 	
 	public static final Block byId(int id) {
+		Validate.isTrue(id < byId.length, "Id out of range! (max. " + byId.length + ")");
+		
 		Block block = byId[id];
 		Objects.requireNonNull(block, "Block id " + id + " not found!");
 		
@@ -57,7 +59,7 @@ public abstract class Block {
 	}
 	
 	public static final boolean exists(int id) {
-		return byId[id] != null;
+		return id < byId.length ? byId[id] != null : false;
 	}
 	
 	public void onBlockDestroy(World world, EntityPlayer player, int x, int y, int z, int metadata) {
@@ -66,7 +68,7 @@ public abstract class Block {
 	public void onTick(World world, int x, int y, int z) {
 	}
 	
-	public boolean isTicking() {
+	public boolean isTickingRandomly() {
 		return false;
 	}
 	
@@ -74,7 +76,10 @@ public abstract class Block {
 		return true;
 	}
 	
-	public boolean isOpaqueCube() {
+	/**
+	 * Is the block non-transparent?
+	 */
+	public boolean isOpaque() {
 		return true;
 	}
 	

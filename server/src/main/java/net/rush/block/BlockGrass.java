@@ -9,7 +9,7 @@ public class BlockGrass extends Block {
 	}
 
 	@Override
-	public boolean isTicking() {
+	public boolean isTickingRandomly() {
 		return true;
 	}
 	
