@@ -134,7 +134,7 @@ public class EntityPlayer extends EntityTrackeable implements CommandSender {
 					
 					session.sendPacket(chunk.toPacket());
 				
-					//world.forcePopulate(chunk);
+					world.forcePopulate(chunk);
 				}
 
 				previousChunks.remove(key);

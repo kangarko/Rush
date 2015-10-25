@@ -42,6 +42,7 @@ public abstract class Entity {
 		this.world = world;
 		
 		world.getEntities().allocate(this);
+		
 		// FIXME Unsure, notchian sends them.
 		setMetadata(new MetaParam<Byte>(0, (byte) 0));
 		setMetadata(new MetaParam<Short>(1, (short) 300));

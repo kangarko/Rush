@@ -49,7 +49,7 @@ public class Session {
 	 */
 	private JoinHelper joinHelper;
 
-	public void sendPacket(Packet packet) {
+	public void sendPacket(Packet packet) {		
 		channel.writeAndFlush(packet);
 	}
 
