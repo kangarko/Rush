@@ -4,8 +4,8 @@ import java.util.Random;
 
 import net.rush.block.Block;
 import net.rush.world.chunk.Chunk;
-import net.rush.world.decorator.mapgen.MapGenCaves;
-import net.rush.world.decorator.noise.NoiseGeneratorOctaves;
+import net.rush.world.decorator.MapGenCaves;
+import net.rush.world.decorator.NoiseGeneratorOctaves;
 import net.rush.world.populator.WorldGenBigTree;
 import net.rush.world.populator.WorldGenCactus;
 import net.rush.world.populator.WorldGenClay;

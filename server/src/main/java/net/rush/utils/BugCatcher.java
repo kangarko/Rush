@@ -2,19 +2,28 @@ package net.rush.utils;
 
 public class BugCatcher {
 
-	public static void TraceLog(String msg) {			
-		System.out.println("\n");
+	public static void TraceLog(String msg, boolean fromTop, int elementCount) {			
+		System.out.println("[================[ TRACELOG START ]================]");
+
 		try {
 			throw new RuntimeException(msg);
+
 		} catch (RuntimeException t) {
 
 			String[] element = formatStackTrace(t.getStackTrace());
 
-
-			print(element[3],
+			if (fromTop)
+				for (int i = 0; i < (elementCount > element.length ? element.length : elementCount); i++)
+					print(element[i]);
+			
+			else
+				for (int i = (elementCount > element.length ? element.length : elementCount); i > 0; i--)
+					print(element[i]);
+			
+			/*print(element[3],
 					" -> " + element[2],
-					"   -> " + element[1] + " (" + msg + ")");
-
+					"   -> " + element[1] + " (" + msg + ")");*/
+			System.out.println("[================[ TRACELOG END ]================]");
 		}
 	}
 
@@ -23,9 +32,9 @@ public class BugCatcher {
 
 		for (int i = 0; i < stacks.length; i++) {
 			StackTraceElement stack = stacks[i];
-			String[] splitted = stack.getClassName().split("\\.");
+			String[] classSplitted = stack.getClassName().split("\\.");
 
-			formattedStacks[i] = splitted[splitted.length - 1] + "." + stack.getMethodName() + "()";
+			formattedStacks[i] = classSplitted[classSplitted.length - 1] + "." + stack.getMethodName() + "() " + stack.getLineNumber() + ".";
 		}
 
 		return formattedStacks;

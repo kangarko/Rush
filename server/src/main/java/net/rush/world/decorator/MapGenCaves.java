@@ -1,4 +1,4 @@
-package net.rush.world.decorator.mapgen;
+package net.rush.world.decorator;
 
 import imported.MathHelper;
 import net.rush.block.Block;

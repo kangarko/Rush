@@ -45,7 +45,7 @@ public class NettyInitializer extends Thread {
 						.addLast("varintencoder", new Varint21Encoder())
 						.addLast("encoder", new PacketEncoder(Protocol.HANDSHAKE))
 
-						.addLast("handler", new ChannelHandler(server));
+						.addLast("handler", new RushChannelHandler(server));
 					}
 				});
 

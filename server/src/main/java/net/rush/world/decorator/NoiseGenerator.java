@@ -1,4 +1,4 @@
-package net.rush.world.decorator.noise;
+package net.rush.world.decorator;
 
 public abstract class NoiseGenerator {
 	
