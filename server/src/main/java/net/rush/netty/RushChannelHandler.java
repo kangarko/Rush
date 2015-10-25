@@ -22,8 +22,6 @@ public class RushChannelHandler extends SimpleChannelInboundHandler<Packet> {
 	@Getter
 	private Session session;
 
-	//private boolean sessionClosing = false;
-
 	public RushChannelHandler(Server server) {
 		this.server = server;
 	}
@@ -42,7 +40,7 @@ public class RushChannelHandler extends SimpleChannelInboundHandler<Packet> {
 
 		dispatchSession();
 	}
-
+	
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, Packet msg) throws Exception {
 		session.messageReceived(msg);

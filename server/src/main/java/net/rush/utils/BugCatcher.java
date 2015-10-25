@@ -3,7 +3,7 @@ package net.rush.utils;
 public class BugCatcher {
 
 	public static void TraceLog(String msg, boolean fromTop, int elementCount) {			
-		System.out.println("[================[ TRACELOG START ]================]");
+		System.out.println("[=============[ TRACK: " + msg + " ]=============]");
 
 		try {
 			throw new RuntimeException(msg);
@@ -23,7 +23,7 @@ public class BugCatcher {
 			/*print(element[3],
 					" -> " + element[2],
 					"   -> " + element[1] + " (" + msg + ")");*/
-			System.out.println("[================[ TRACELOG END ]================]");
+			System.out.println("[================[ TRACK ENDS ]================]");
 		}
 	}
 

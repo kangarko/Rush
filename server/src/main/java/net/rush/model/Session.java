@@ -20,9 +20,9 @@ import net.rush.protocol.packets.Kick;
 import net.rush.utils.JsonUtils;
 
 public class Session {
-	
+
 	public int protocol = 5;
-	
+
 	private final PacketHandler handler = new PacketHandler();
 	private final Queue<Packet> messageQueue = new LinkedList<>();
 	private final Channel channel;
@@ -30,25 +30,25 @@ public class Session {
 	private final Server server;
 	@Getter
 	private EntityPlayer player = null;
-	
+
 	private int pingTimer;
 	@Getter
 	private int pingToken = 0;
 	@Getter
 	private boolean pendingRemoval = false;
-	
+
 	public Session(Server server, Channel channel) {
 		this.server = server;
 		this.channel = channel;
-		
+
 		server.getSessionRegistry().add(this);
 	}
-	
+
 	/**
 	 * This is to ensure the player has actually logged in.
 	 */
 	private JoinHelper joinHelper;
-	
+
 	public void sendPacket(Packet packet) {
 		channel.writeAndFlush(packet);
 	}
@@ -62,7 +62,7 @@ public class Session {
 
 	public void disconnect(String reason) {
 		channel.writeAndFlush(new Kick(JsonUtils.jsonizePlainText(reason))).addListener(ChannelFutureListener.CLOSE);
-		
+
 		if (!pendingRemoval)
 			destroy();
 	}
@@ -86,11 +86,11 @@ public class Session {
 
 				pingTimer = 0;
 			}
-		
+
 		if (joinHelper != null && joinHelper.getDecreasedWaitCount() == 0) {
 			if (!pendingRemoval)
 				setPlayer(new EntityPlayer(this, joinHelper.getPlayerName()));
-		
+
 			joinHelper = null;
 		}
 	}
@@ -98,17 +98,17 @@ public class Session {
 	public void setPlayer(EntityPlayer newPlayer) {
 		Objects.requireNonNull(newPlayer, "New player cannot be null!");
 		Validate.isTrue(player == null, "Player already associated with the session!");
-		
+
 		this.player = newPlayer;
 	}
-	
+
 	public void startJoining(String name) {
 		Validate.isTrue(joinHelper == null, "Already joining!");
 		Validate.isTrue(player == null, "Player has already joined!");
-		
+
 		joinHelper = new JoinHelper(name);
 	}
-	
+
 	public boolean hasPlayer() {
 		return player != null;
 	}
@@ -125,18 +125,18 @@ public class Session {
 
 	public void destroy() {
 		Validate.isTrue(!pendingRemoval, "Already pending removal.");
-		
+
 		pendingRemoval = true;
 	}	
-	
-	void onDispose() {		
+
+	void onDispose() {
 		if (player != null) {
 			System.out.println("[!] - >> An assosiated player (" + player + ") has been removed!");
 			player.destroy();
 			player.onDisconnect();
 			player = null;
 		}
-		
+
 		System.out.println("Session removed.");
 	}
 
@@ -153,7 +153,7 @@ class JoinHelper {
 	private int waitCount = 1;
 	@Getter
 	private final String playerName;
-	
+
 	public int getDecreasedWaitCount() {
 		return waitCount--;
 	}

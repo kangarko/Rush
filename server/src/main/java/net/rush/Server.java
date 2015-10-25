@@ -89,7 +89,7 @@ public final class Server {
 
 		world = new World(this);
 
-		ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID); // Slows down performance.
+		ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED); // Slows down performance.
 		nettyInitializer = new NettyInitializer(this);
 		nettyInitializer.start();
 
@@ -117,8 +117,10 @@ public final class Server {
 				} catch (Throwable t) {
 					getLogger().log(Level.SEVERE, "Uncaught exception in scheduler", t);
 					
-					if (t instanceof StackOverflowError)
+					if (t instanceof StackOverflowError) {
+						System.out.println("[x] Detected stack overflow, killing server!");
 						System.exit(0);
+					}
 					
 				} finally {
 					long lag = System.currentTimeMillis() - now;
@@ -176,7 +178,7 @@ public final class Server {
 			player.kickPlayer("Server closed");
 
 		nettyInitializer.shutdown();
-		
+
 		logger.info("Rush stopped. Thank you and good bye!");
 
 		System.exit(0);
