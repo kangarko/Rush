@@ -20,7 +20,7 @@ desired than the official software can deliver.
 Jenkins
 -------
 
-Official build server with compiled builds is found [here](http://jenkins.block.academy/job/Rush)
+Official build server with compiled builds is found [here](https://ci.ekranos.me/job/Rush/)
 
 Credits to Ekranos for setup and host.
 
