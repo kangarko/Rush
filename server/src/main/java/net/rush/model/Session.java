@@ -8,7 +8,6 @@ import java.util.Queue;
 import org.apache.commons.lang3.Validate;
 
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFutureListener;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.rush.Server;
@@ -24,7 +23,10 @@ public class Session {
 	public int protocol = 5;
 
 	private final PacketHandler handler = new PacketHandler();
-	private final Queue<Packet> messageQueue = new LinkedList<>();
+
+	private final Queue<Packet> inPacketQueue = new LinkedList<>();
+	private final Queue<Packet> outPacketQueue = new LinkedList<>();
+
 	private final Channel channel;
 	@Getter
 	private final Server server;
@@ -50,35 +52,46 @@ public class Session {
 	private JoinHelper joinHelper;
 
 	public void sendPacket(Packet packet) {		
-		channel.writeAndFlush(packet);
+		synchronized (outPacketQueue) {
+			outPacketQueue.add(packet);
+		}
 	}
 
-	/**
+	/*
 	 * @deprecated Use disconnect method
-	 */
+	 *  
 	public void sendPacket(Kick packet) {
 		disconnect(packet.getReason());
-	}
+	}*/
 
 	public void disconnect(String reason) {
-		channel.writeAndFlush(new Kick(JsonUtils.jsonizePlainText(reason))).addListener(ChannelFutureListener.CLOSE);
+		sendPacket(new Kick(JsonUtils.jsonizePlainText(reason)));
+		
+		/*channel.writeAndFlush(new Kick(JsonUtils.jsonizePlainText(reason))).addListener(ChannelFutureListener.CLOSE);
 
 		if (!pendingRemoval)
-			destroy();
+			destroy();*/
 	}
 
 	public void pulse() {
-		synchronized (messageQueue) {
+		synchronized (inPacketQueue) {
 			Packet packet;
 
-			while ((packet = messageQueue.poll()) != null)
+			while ((packet = inPacketQueue.poll()) != null)
 				handler.handle(this, packet);
+		}
+
+		synchronized (outPacketQueue) {
+			Packet packet;
+
+			while ((packet = outPacketQueue.poll()) != null)
+				channel.writeAndFlush(packet);
 		}
 
 		if (player != null) // Prevent pinging while viewing MoTD.
 			if (pingTimer++ == 7 * 20) { // Ping every 7. second.
 				if (pingToken == 0) {
-					pingToken = server.rand.nextInt();
+					pingToken = server.getRandom().nextInt();
 
 					sendPacket(new KeepAlive(pingToken));
 				} else
@@ -87,7 +100,7 @@ public class Session {
 				pingTimer = 0;
 			}
 
-		if (joinHelper != null && joinHelper.getDecreasedWaitCount() == 0) {
+		if (joinHelper != null && joinHelper.getWaitCountAndDecrease() == 0) {
 			if (!pendingRemoval)
 				setPlayer(new EntityPlayer(this, joinHelper.getPlayerName()));
 
@@ -114,8 +127,8 @@ public class Session {
 	}
 
 	public void messageReceived(Packet packet) {
-		synchronized (messageQueue) {
-			messageQueue.add(packet);
+		synchronized (inPacketQueue) {
+			inPacketQueue.add(packet);
 		}
 	}
 
@@ -154,7 +167,7 @@ class JoinHelper {
 	@Getter
 	private final String playerName;
 
-	public int getDecreasedWaitCount() {
+	public int getWaitCountAndDecrease() {
 		return waitCount--;
 	}
 }

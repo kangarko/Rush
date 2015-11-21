@@ -42,8 +42,8 @@ public final class Server {
 	 * 7. private
 	 */
 
-	public final Random rand = new Random();
-
+	@Getter
+	private final Random random = new Random();
 	@Getter
 	private final Logger logger = Logger.getLogger("Minecraft");	
 	@Getter
@@ -73,7 +73,7 @@ public final class Server {
 			ex.printStackTrace();
 			
 			if (ex instanceof StackOverflowError) {
-				System.out.println("[x] Stack overflow in server, stopping!");
+				System.out.println("[x] Stack overflow in server, stopping :(");
 				System.exit(0);
 			}
 		}
