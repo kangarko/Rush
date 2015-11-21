@@ -40,6 +40,7 @@ public class PacketHandler {
 	public <T extends Packet> void handle(Session session, T packet) {
 		try {			
 			getClass().getMethod("handle", Session.class, packet.getClass()).invoke(this, session, packet);
+		
 		} catch (NoSuchMethodException ex) {
 			logger.info("Missing handler for packet: " + packet.getClass().getSimpleName());
 
@@ -58,8 +59,10 @@ public class PacketHandler {
 
 		if (text == null || "".equals(text))
 			session.disconnect("Cannot send an empty message");
+		
 		else if (text.length() > 110)
 			session.disconnect("Chat message too long");
+		
 		else {			
 			if (text.matches("(&([a-f0-9k-or]))"))
 				return;

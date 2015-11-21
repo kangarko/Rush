@@ -18,25 +18,29 @@ import net.rush.protocol.Protocol;
 public class NettyInitializer extends Thread {
 
 	private final Server server;
-	private final EventLoopGroup bossgroup = new NioEventLoopGroup();
-	private final EventLoopGroup workergroup = new NioEventLoopGroup();
+	private final EventLoopGroup bossgroup;
+	//private final EventLoopGroup workergroup = new NioEventLoopGroup();
 
 	public NettyInitializer(Server server) {
 		this.server = server;
+		this.bossgroup = new NioEventLoopGroup();
 	}
 
 	@Override
 	public void run() {
 
 		ServerBootstrap bootstrap = new ServerBootstrap()
-				.group(bossgroup, workergroup)
+				.group(bossgroup/*, workergroup*/)
 				.channel(NioServerSocketChannel.class)
 				.childHandler(new ChannelInitializer<SocketChannel>() {
+					
 					@Override
 					protected void initChannel(SocketChannel ch) throws Exception {
 						ch.pipeline()
 
-						.addLast("timer", new ReadTimeoutHandler(30))
+						// Throw an error when no data was read (in seconds). Bad code/malfunction detector.
+						.addLast("timer", new ReadTimeoutHandler(10))
+						// Kick 1.6.4 and older clients
 						.addLast("kickwriter", new KickStringWriter())
 
 						.addLast("varintdecoder", new Varint21Decoder())
@@ -62,6 +66,6 @@ public class NettyInitializer extends Thread {
 		System.out.println("Closing Netty");
 
 		bossgroup.shutdownGracefully();
-		workergroup.shutdownGracefully();		
+		//workergroup.shutdownGracefully();		
 	}
 }
