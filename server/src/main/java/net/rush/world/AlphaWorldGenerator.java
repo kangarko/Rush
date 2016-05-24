@@ -53,7 +53,7 @@ public class AlphaWorldGenerator implements net.rush.world.WorldGenerator {
 		generateTerrain(x, z, blocks);
 		mapGenCaves.initDecoration(world.getSeed(), x, z, blocks);
 
-		return new Chunk(x, z, convertBlockArray(blocks)); // rush
+		return new Chunk(world, x, z, convertBlockArray(blocks)); // rush
 	}
 
 	private void generateHeights(int x, int z, byte[] blocks) {
@@ -330,7 +330,7 @@ public class AlphaWorldGenerator implements net.rush.world.WorldGenerator {
 	}
 
 	@Override
-	public void populate(WorldPopulate world, int chunkX, int chunkZ) {		
+	public void populate(World world, int chunkX, int chunkZ) {		
 		int blockX = chunkX * 16;
 		int blockZ = chunkZ * 16;
 

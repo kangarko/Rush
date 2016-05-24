@@ -11,6 +11,7 @@ public abstract class Block {
 
 	private static final Block[] byId = new Block[255];
 	
+	/** @deprecated not really a block */
 	public static final Block AIR = new BlockTransparent(0);
 	public static final Block STONE = new BlockDummy(1);
 	public static final Block GRASS = new BlockGrass(2);
@@ -49,6 +50,15 @@ public abstract class Block {
 		byId[id] = this;
 	}
 	
+	/**
+	 * Get the block by its id. You MUST enter a valid id, otherwise
+	 * and error will be thrown. The id must be within the range and block under it must be registered.
+	 * 
+	 * Use {@link #exists(int)} to determine whenever a block is associated with an id.
+	 * 
+	 * @param id the block id
+	 * @return the block
+	 */
 	public static final Block byId(int id) {
 		Validate.isTrue(id < byId.length, "Id out of range! (max. " + byId.length + ")");
 		

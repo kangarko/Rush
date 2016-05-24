@@ -4,7 +4,7 @@
 
 	<groupId>net.rush</groupId>
 	<artifactId>rush-parent</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${rush_version}</version>
 	<packaging>pom</packaging>
 
 	<name>Rush-Parent</name>
@@ -17,6 +17,7 @@
 	</modules>
 
 	<properties>
+		<rush_version>0.0.1-SNAPSHOT</rush_version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<minecraft_version>1.7.10</minecraft_version>
 		<java_version>1.8</java_version>

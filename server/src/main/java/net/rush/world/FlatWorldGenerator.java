@@ -6,7 +6,9 @@ public abstract class FlatWorldGenerator implements WorldGenerator {
 
 	@Override
 	public Chunk generate(int chunkX, int chunkZ) {
-		Chunk chunk = new Chunk(chunkX, chunkZ);
+		throw new Error("Not implemented!");
+		
+		/*Chunk chunk = new Chunk(chunkX, chunkZ);
 
 		for (int x = 0; x < Chunk.WIDTH; x++)
 			for (int z = 0; z < Chunk.HEIGHT; z++)
@@ -28,6 +30,6 @@ public abstract class FlatWorldGenerator implements WorldGenerator {
 					chunk.setSkylight(x, y, z, 15);
 				}
 
-		return chunk;
+		return chunk;*/
 	}
 }
