@@ -1,7 +1,5 @@
 package net.rush.world;
 
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Random;
 
 import org.apache.commons.lang3.Validate;
@@ -30,6 +28,7 @@ public final class World {
 	private final Position spawnPosition = new Position(63, 106, -107);
 	@Getter
 	private final EntityManager entities = new EntityManager();
+	@Getter
 	private final ChunkManager chunkManager;
 	private final SafeUnorderedZoznam<ChunkCoords> loadedChunks = new SafeUnorderedZoznam<>();
 	private final Random rand = new Random();
@@ -59,8 +58,9 @@ public final class World {
 				lastProgress = progress;
 			}
 
-			for (int z = -radius; z <= radius; ++z)
+			for (int z = -radius; z <= radius; ++z) {
 				getChunkFromChunkCoords(((int) spawnPosition.x >> 4) + x, ((int) spawnPosition.z >> 4) + z);
+			}
 		}
 	}
 
@@ -71,8 +71,8 @@ public final class World {
 
 		entities.pulse();
 		
-		while (!packetPendingTask.isEmpty())
-			packetPendingTask.poll().run();
+		//while (!blockChangePacketQueue.isEmpty())
+		//	blockChangePacketQueue.poll().run();
 	}
 
 	private void resetActiveChunks() {
@@ -137,10 +137,6 @@ public final class World {
 		return chunkManager.getChunk(x, z);
 	}
 
-	public void forcePopulate(Chunk chunk) {
-		chunkManager.populate(chunk);
-	}
-
 	public int getType(int x, int y, int z) {
 		ensure(x, y, z);
 
@@ -182,17 +178,17 @@ public final class World {
 		Validate.isTrue(y >= 0 && y < 256, "Invalid coords x:" + x + " y: " + y + " z: " + z);
 	}
 
-	private Queue<Runnable> packetPendingTask = new LinkedList<>();
+	//private Queue<Runnable> blockChangePacketQueue = new LinkedList<>();
 	
 	private void sendBlockChange(int x, int y, int z, int type, int data) {
-		packetPendingTask.add(new Runnable() {
+		/*blockChangePacketQueue.add(new Runnable() {
 			
 			@Override
-			public void run() {
+			public void run() {*/
 				for (EntityPlayer player : getPlayersInWorld())
 					player.getSession().sendPacket(new BlockChange(x, y, z, type, data));
-			}
-		});
+			/*}
+		});*/
 	}
 
 	public int getTerrainHeight(int x, int z) {

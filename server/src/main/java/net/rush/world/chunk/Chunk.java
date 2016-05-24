@@ -8,6 +8,7 @@ import org.apache.commons.lang3.Validate;
 import lombok.Getter;
 import net.rush.protocol.Packet;
 import net.rush.protocol.packets.ChunkBulk;
+import net.rush.world.World;
 
 public final class Chunk {
 
@@ -17,18 +18,21 @@ public final class Chunk {
 	/**
 	 * The data in this chunk representing all of the blocks and their state.
 	 */
-	private byte[] types, metadata, skylight, blocklight, biomes;
+	public byte[] types, metadata, skylight, blocklight, biomes;
 
+	private World world;
+	
 	@Getter
 	private final int x, z;
 	@Getter
 	private boolean populated = false;
 
-	public Chunk(int x, int z) {
-		this(x, z, null);
+	public Chunk(World world, int x, int z) {
+		this(world, x, z, null);
 	}
 	
-	public Chunk(int x, int z, byte[] blocks) {
+	public Chunk(World world, int x, int z, byte[] blocks) {
+		this.world = world;
 		this.x = x;
 		this.z = z;
 
@@ -51,7 +55,7 @@ public final class Chunk {
 		Arrays.fill(blocklight, (byte) 15);
 	}
 
-	public int getType(int x, int y, int z) {		
+	public int getType(int x, int y, int z) {
 		return types[coordToIndex(x, y, z)];
 	}
 
@@ -66,7 +70,7 @@ public final class Chunk {
 		setData(x, y, z, data);
 	}
 
-	public int getData(int x, int y, int z) {
+	public int getData(int x, int y, int z) {		
 		return metadata[coordToIndex(x, y, z)];
 	}
 
@@ -92,7 +96,7 @@ public final class Chunk {
 
 	public void setBlockLight(int x, int y, int z, int lightLevel) {
 		Validate.isTrue(lightLevel >= 0 && lightLevel < 16, "Blocklight must be between 0 and 15");
-
+		
 		blocklight[coordToIndex(x, y, z)] = (byte) lightLevel;
 	}
 
@@ -190,6 +194,11 @@ public final class Chunk {
 			realCompressed[i] = compressed[i];
 
 		return realCompressed;
+	}
+	
+	@Override
+	public String toString() {
+		return "Chunk{" + x + "," + z + "}";
 	}
 }
 

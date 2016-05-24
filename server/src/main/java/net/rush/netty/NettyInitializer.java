@@ -2,6 +2,7 @@ package net.rush.netty;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -32,6 +33,10 @@ public class NettyInitializer extends Thread {
 		ServerBootstrap bootstrap = new ServerBootstrap()
 				.group(bossgroup/*, workergroup*/)
 				.channel(NioServerSocketChannel.class)
+				
+				.childOption(ChannelOption.TCP_NODELAY, true)
+                .childOption(ChannelOption.SO_KEEPALIVE, true)
+                
 				.childHandler(new ChannelInitializer<SocketChannel>() {
 					
 					@Override

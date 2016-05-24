@@ -42,8 +42,15 @@ public final class Server {
 	 * 7. private
 	 */
 
+	/**
+	 * The random instance for this server.
+	 */
 	@Getter
 	private final Random random = new Random();
+	
+	/**
+	 * Logger that manages console messages.
+	 */
 	@Getter
 	private final Logger logger = Logger.getLogger("Minecraft");	
 	@Getter
@@ -56,7 +63,9 @@ public final class Server {
 	private final Scheduler scheduler = new Scheduler();
 	@Getter
 	private final World world;
+	
 	private final NettyInitializer nettyInitializer;
+	
 	private final Thread mainThread;
 
 	@Getter
@@ -67,6 +76,7 @@ public final class Server {
 	private boolean isRunning = true;
 
 	public static void main(String[] args) {
+		
 		try {
 			new Server();
 		} catch (Throwable ex) {
@@ -184,8 +194,9 @@ public final class Server {
 
 		nettyInitializer.shutdown();
 
-		logger.info("Rush stopped. Thank you and good bye!");
-
+		//logger.info("Rush stopped. Thank you and good bye!");
+		logger.info("Namaste motherfuckers!");
+		
 		System.exit(0);
 	}
 

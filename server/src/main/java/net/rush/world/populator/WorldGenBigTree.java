@@ -3,13 +3,13 @@ package net.rush.world.populator;
 import java.util.Random;
 
 import imported.MathHelper;
-import net.rush.world.WorldGenerator.WorldPopulate;
+import net.rush.world.World;
 
 public class WorldGenBigTree extends WorldPopulator {
 
 	private static final byte[] otherCoordPairs = new byte[] { 2, 0, 0, 1, 2, 1 };
 
-	private WorldPopulate world;
+	private World world;
 	private Random rand = new Random();
 
 	private int[] defaultPos = new int[] { 0, 0, 0 };
@@ -326,13 +326,16 @@ public class WorldGenBigTree extends WorldPopulator {
 	}
 
 	@Override
-	public boolean generate(WorldPopulate world, Random random, int i, int j, int k) {
+	public boolean generate(World world, Random random, int i, int y, int k) {
 		this.world = world;
 		long l = random.nextLong();
 
+		if (y == 0)
+			return false;
+		
 		rand.setSeed(l);
 		defaultPos[0] = i;
-		defaultPos[1] = j;
+		defaultPos[1] = y;
 		defaultPos[2] = k;
 		if (heightLimit == 0)
 			heightLimit = 5 + rand.nextInt(heightLimitLimit);
