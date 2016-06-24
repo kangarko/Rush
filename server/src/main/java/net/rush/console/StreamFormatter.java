@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class FormatterOutputStream extends ByteArrayOutputStream {
+public class StreamFormatter extends ByteArrayOutputStream {
 
 	private final Logger logger;
 	private final Level level;
 
-	public FormatterOutputStream(Logger logger, Level level) {		
+	public StreamFormatter(Logger logger, Level level) {		
 		this.logger = logger;
 		this.level = level;
 	}

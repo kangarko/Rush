@@ -16,15 +16,17 @@ import net.rush.netty.pipeline.Varint21Decoder;
 import net.rush.netty.pipeline.Varint21Encoder;
 import net.rush.protocol.Protocol;
 
-public class NettyInitializer extends Thread {
+public class NettyThread extends Thread {
 
 	private final Server server;
 	private final EventLoopGroup bossgroup;
 	//private final EventLoopGroup workergroup = new NioEventLoopGroup();
 
-	public NettyInitializer(Server server) {
+	public NettyThread(Server server) {
 		this.server = server;
 		this.bossgroup = new NioEventLoopGroup();
+		
+		setName("Netty");
 	}
 
 	@Override
@@ -54,7 +56,7 @@ public class NettyInitializer extends Thread {
 						.addLast("varintencoder", new Varint21Encoder())
 						.addLast("encoder", new PacketEncoder(Protocol.HANDSHAKE))
 
-						.addLast("handler", new RushChannelHandler(server));
+						.addLast("handler", new ChannelHandler(server));
 					}
 				});
 
