@@ -16,14 +16,18 @@ import net.rush.protocol.Packet;
  * This is new instance for every channel - client that connects to
  * the server. It manages incoming messages (packets).
  */
-public class RushChannelHandler extends SimpleChannelInboundHandler<Packet> {
+public class ChannelHandler extends SimpleChannelInboundHandler<Packet> {
 
+	private static volatile int channelCount = 0;
+	
 	private final Server server;
 	@Getter
 	private Session session;
-
-	public RushChannelHandler(Server server) {
+	
+	public ChannelHandler(Server server) {		
 		this.server = server;
+		
+		Thread.currentThread().setName("Channel " + ++channelCount);
 	}
 
 	@Override

@@ -1,10 +1,12 @@
 package net.rush;
 
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
 import java.util.Random;
 import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
+import java.util.logging.Formatter;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.Validate;
@@ -13,13 +15,12 @@ import io.netty.util.ResourceLeakDetector;
 import lombok.Getter;
 import net.rush.api.safety.SafeUnorderedZoznam;
 import net.rush.cmd.CommandManager;
-import net.rush.console.FormatterLog;
-import net.rush.console.FormatterOutputStream;
+import net.rush.console.StreamFormatter;
 import net.rush.console.ThreadConsoleReader;
 import net.rush.entity.EntityPlayer;
 import net.rush.model.ConsoleCommandSender;
 import net.rush.model.SessionRegistry;
-import net.rush.netty.NettyInitializer;
+import net.rush.netty.NettyThread;
 import net.rush.scheduler.Scheduler;
 import net.rush.world.World;
 
@@ -64,7 +65,7 @@ public final class Server {
 	@Getter
 	private final World world;
 	
-	private final NettyInitializer nettyInitializer;
+	private final NettyThread nettyInitializer;
 	
 	private final Thread mainThread;
 
@@ -105,7 +106,7 @@ public final class Server {
 		world = new World(this);
 
 		ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED); // Slows down performance.
-		nettyInitializer = new NettyInitializer(this);
+		nettyInitializer = new NettyThread(this);
 		nettyInitializer.start();
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -119,8 +120,36 @@ public final class Server {
 			}
 		});
 
+		start();
+		
 		logger.info("Ready for connections.");
+	}
 
+	private void setupLogging() {
+		ConsoleHandler handler = new ConsoleHandler();
+		handler.setFormatter(new Formatter() {
+			
+			private final SimpleDateFormat date = new SimpleDateFormat("HH:mm:ss");
+
+			@Override
+			public String format(LogRecord record) {
+
+				//if (record.getThrown() != null)
+				//	record.getThrown().printStackTrace();
+				final String level = record.getLevel() == Level.SEVERE ? "ERROR" : record.getLevel() == Level.WARNING ? "WARN" : "INFO";
+				
+				return date.format(record.getMillis()) + " [" + level + "/" + Thread.currentThread().getName() + "] " + formatMessage(record) + System.lineSeparator();
+			}
+		});
+
+		logger.addHandler(handler);
+		logger.setUseParentHandlers(false);
+
+		System.setOut(new PrintStream(new StreamFormatter(logger, Level.INFO), true));
+		System.setErr(new PrintStream(new StreamFormatter(logger, Level.SEVERE), true));
+	}
+	
+	private void start() throws InterruptedException {
 		try {
 			while (isRunning) {
 				Thread.sleep(50);
@@ -149,29 +178,6 @@ public final class Server {
 		}
 	}
 
-	private void setupLogging() {
-		Logger global = Logger.getLogger("");
-
-		logger.setUseParentHandlers(false);
-
-		for (Handler handler : logger.getHandlers())
-			logger.removeHandler(handler);
-
-		for (Handler handler : global.getHandlers())
-			global.removeHandler(handler);
-
-		FormatterLog formatter = new FormatterLog();
-
-		ConsoleHandler handler = new ConsoleHandler();
-		handler.setFormatter(formatter);
-
-		logger.addHandler(handler);
-		global.addHandler(handler);
-
-		System.setOut(new PrintStream(new FormatterOutputStream(logger, Level.INFO), true));
-		System.setErr(new PrintStream(new FormatterOutputStream(logger, Level.SEVERE), true));
-	}
-
 	private void pulse() {
 		// Execute commands.
 		commandManager.pulse();
@@ -194,8 +200,7 @@ public final class Server {
 
 		nettyInitializer.shutdown();
 
-		//logger.info("Rush stopped. Thank you and good bye!");
-		logger.info("Namaste motherfuckers!");
+		logger.info("Rush stopped. Thank you and good bye!");
 		
 		System.exit(0);
 	}

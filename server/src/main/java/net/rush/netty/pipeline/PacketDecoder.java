@@ -8,7 +8,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import lombok.Setter;
 import net.rush.api.exceptions.PacketException;
-import net.rush.netty.RushChannelHandler;
+import net.rush.netty.ChannelHandler;
 import net.rush.protocol.Packet;
 import net.rush.protocol.Protocol;
 import net.rush.protocol.Protocol.PacketDirection;
@@ -30,7 +30,7 @@ public class PacketDecoder extends ByteToMessageDecoder {
 				return;						 // This should not happen. Somewhere is a bug I suppose.
 			
 			PacketDirection prot = protocol.TO_SERVER;
-			int protocol = ctx.pipeline().get(RushChannelHandler.class).getSession().protocol;
+			int protocol = ctx.pipeline().get(ChannelHandler.class).getSession().protocol;
 			
 			int id = Packet.readVarInt(in);
 			Packet packet = null;
