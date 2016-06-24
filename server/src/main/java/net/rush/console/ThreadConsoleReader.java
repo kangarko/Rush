@@ -13,17 +13,19 @@ public class ThreadConsoleReader extends Thread {
 	public ThreadConsoleReader(Server server) {
 		this.server = server;
 		
-		setName("Console Thread");
+		setName("Console");
 	}
 
 	@Override
 	public void run() {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
 		while (server.isRunning()) {
 			try {
-				String line = reader.readLine();
-				server.getCommandManager().dispatchCommand(server.getConsoleSender(), line);
+				final String line = reader.readLine();
+				
+				if (line != null && !line.isEmpty())
+					server.getCommandManager().dispatchCommand(server.getConsoleSender(), line);
 				
 			} catch (IOException ex) {
 				ex.printStackTrace();
