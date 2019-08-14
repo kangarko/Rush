@@ -1,7 +1,7 @@
 <p align="center">
-  Do you want to easily code your own Rush?
-  <a href="https://www.spigotcourse.org/?utm_source=github&utm_medium=github">
-    <img src="https://i.imgur.com/Xr0p2g3.png" />
+  Do you want to code your own Rush?
+  <a href="https://mineacademy.org/gh-join">
+    <img src="https://i.imgur.com/SuIyaDV.png" />
   </a>
 </p>
 
