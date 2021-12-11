@@ -1,7 +1,7 @@
 <p align="center">
   Do you want to code your own Rush?
-  <a href="https://mineacademy.org/gh-join">
-    <img src="https://i.imgur.com/TgLAJUg.png" />
+  <a href="https://mineacademy.org/project-orion">
+    <img src="https://i.imgur.com/OJuN0qP.png" />
   </a>
 </p>
 
