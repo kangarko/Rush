@@ -7,7 +7,7 @@
 
 ---
 
-### Latest information (03.2018): The development has been paused for a few years due to other priorities. It will remain here for historical purposes and for possible future comeback(s).
+### 03.2018: The development has been paused due to other priorities. It will remain here for historical purposes and for possible future comeback when AI finally takes over.
 
 Rush
 ====
